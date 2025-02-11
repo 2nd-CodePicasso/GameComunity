@@ -12,6 +12,5 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     public void exception(){
-        throw new NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 }
