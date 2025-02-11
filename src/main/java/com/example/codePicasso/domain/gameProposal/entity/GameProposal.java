@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.gameProposal.entity;
 
+import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.users.entity.Admin;
 import com.example.codePicasso.domain.users.entity.User;
@@ -26,12 +27,21 @@ public class GameProposal extends TimeStamp {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JoinColumn(name = "admin_id")
     private Admin admin;
 
     @Column(nullable = false)
-    private String game_title;
+    private String gameTitle;
 
     @Column(nullable = false)
     private ProposalStatus status;
+
+    public GameProposalResponse toDto(){
+        return GameProposalResponse.builder()
+                .id(id)
+                .userId(user.getId())
+                .gameTitle(gameTitle)
+                .status(status)
+                .build();
+    }
 }
