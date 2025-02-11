@@ -7,4 +7,7 @@ import org.springframework.stereotype.Component;
 public interface GameProposalConnector {
     void save(GameProposal proposal);
     boolean existsByGameTitle(String gameTitle);
+
+    GameProposal findById(Long proposalId);
+
 }

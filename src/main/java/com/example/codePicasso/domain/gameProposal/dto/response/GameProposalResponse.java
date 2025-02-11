@@ -7,6 +7,7 @@ import lombok.Builder;
 public record GameProposalResponse(
         Long id,
         Long userId,
+        Long adminId,
         String gameTitle,
         ProposalStatus status
 ) {

@@ -44,4 +44,19 @@ public class GameProposal extends TimeStamp {
                 .status(status)
                 .build();
     }
+
+    public GameProposalResponse toDto(Admin admin){
+        return GameProposalResponse.builder()
+                .id(id)
+                .userId(user.getId())
+                .adminId(admin.getId())
+                .gameTitle(gameTitle)
+                .status(status)
+                .build();
+    }
+
+    public void update(Admin admin, ProposalStatus status){
+        this.admin = admin;
+        this.status = status;
+    }
 }

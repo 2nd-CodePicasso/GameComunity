@@ -18,4 +18,9 @@ public class GameProposalConnectorImpl implements GameProposalConnector {
     public boolean existsByGameTitle(String gameTitle) {
         return repository.existsByGameTitle(gameTitle);
     }
+
+    @Override
+    public GameProposal findById(Long proposalId) {
+        return repository.findById(proposalId).orElseThrow();
+    }
 }
