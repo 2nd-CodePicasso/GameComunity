@@ -31,7 +31,7 @@ public class Games extends TimeStamp {
     private String gameDescription;
 
     @Column(nullable = false)
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
     public GameResponse toDto() {
         return GameResponse.builder()
