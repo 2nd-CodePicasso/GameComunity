@@ -2,6 +2,8 @@ package com.example.codePicasso.domain.games.repository;
 
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.domain.games.service.GameConnector;
+import com.example.codePicasso.global.exception.base.NotFoundException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,8 @@ public class GameConnectorImpl implements GameConnector {
 
     @Override
     public Games findById(Long gameId) {
-        return gamesRepository.findById(gameId).orElseThrow();
+        return gamesRepository.findById(gameId).orElseThrow(
+                () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND)
+        );
     }
 }
