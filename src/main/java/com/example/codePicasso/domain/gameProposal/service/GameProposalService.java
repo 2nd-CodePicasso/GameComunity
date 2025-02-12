@@ -5,6 +5,8 @@ import com.example.codePicasso.domain.gameProposal.dto.request.ReviewGameProposa
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
+import com.example.codePicasso.domain.games.dto.request.GameRequest;
+import com.example.codePicasso.domain.games.service.GameService;
 import com.example.codePicasso.domain.users.entity.Admin;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.domain.users.service.AdminConnector;
@@ -21,6 +23,7 @@ public class GameProposalService {
     private final GameProposalConnector gameProposalConnector;
     private final UserConnector userConnector;
     private final AdminConnector adminConnector;
+    private final GameService gameService;
 
     public GameProposalResponse createProposal(CreateGameProposalRequest request, Long userId) {
         User foundUser = userConnector.findById(userId);
@@ -36,7 +39,7 @@ public class GameProposalService {
 
         gameProposalConnector.save(proposal);
 
-        return proposal.toDto();
+        return proposal.toDtoWithoutAdmin();
     }
 
 
@@ -48,6 +51,10 @@ public class GameProposalService {
 
         gameProposalConnector.save(proposal);
 
-        return proposal.toDto(foundAdmin);
+        if (proposal.getStatus() == ProposalStatus.APPROVED) {
+            gameService.createGame(new GameRequest(proposal));
+        }
+
+        return proposal.toDtoWithAdmin(foundAdmin);
     }
 }

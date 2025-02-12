@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.games.controller;
 
-import com.example.codePicasso.domain.games.dto.request.GameRequest;
 import com.example.codePicasso.domain.games.dto.request.UpdateGameRequest;
 import com.example.codePicasso.domain.games.dto.response.GameResponse;
 import com.example.codePicasso.domain.games.dto.response.GetAllGameResponse;
@@ -10,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/games")
@@ -18,8 +19,8 @@ public class GameController {
     private final GameService gameService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<GetAllGameResponse>> getAllGamesApi() {
-        GetAllGameResponse response = gameService.getAllGames();
+    public ResponseEntity<ApiResponse<List<GetAllGameResponse>>> getAllGamesApi() {
+        List<GetAllGameResponse> response = gameService.getAllGames();
 
         return ApiResponse.success(response);
     }
@@ -38,5 +39,12 @@ public class GameController {
         gameService.deleteGame(gameId);
 
         return ApiResponse.noContentAndSendMessage("게임이 삭제되었습니다.");
+    }
+
+    @PatchMapping("/{gameId}/restore")
+    public ResponseEntity<ApiResponse<Void>> restoreGameApi(@PathVariable Long gameId) {
+        gameService.restoreGame(gameId);
+
+        return ApiResponse.noContentAndSendMessage("게임이 복구되었습니다.");
     }
 }

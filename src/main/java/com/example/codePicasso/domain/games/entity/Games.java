@@ -47,7 +47,11 @@ public class Games extends TimeStamp {
         this.gameDescription = gameDescription;
     }
 
-    public void toggleDeleted() {
-        isDeleted = !isDeleted;
+    public void deleteGame() {
+        isDeleted = true;
+    }
+
+    public void restore() {
+        isDeleted = false;
     }
 }

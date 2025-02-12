@@ -39,7 +39,7 @@ public class GameProposal extends TimeStamp {
     @Column(nullable = false)
     private ProposalStatus status;
 
-    public GameProposalResponse toDto(){
+    public GameProposalResponse toDtoWithoutAdmin(){
         return GameProposalResponse.builder()
                 .id(id)
                 .userId(user.getId())
@@ -48,7 +48,7 @@ public class GameProposal extends TimeStamp {
                 .build();
     }
 
-    public GameProposalResponse toDto(Admin admin){
+    public GameProposalResponse toDtoWithAdmin(Admin admin){
         return GameProposalResponse.builder()
                 .id(id)
                 .userId(user.getId())

@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.games.service;
 
-import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector;
 import com.example.codePicasso.domain.games.dto.request.GameRequest;
 import com.example.codePicasso.domain.games.dto.request.UpdateGameRequest;
@@ -30,13 +29,12 @@ public class GameService {
         return game.toDto();
     }
 
-    public GetAllGameResponse getAllGames() {
+    public List<GetAllGameResponse> getAllGames() {
         List<Games> games = gameConnector.findAll();
 
-        return new GetAllGameResponse(games.stream()
-                .map(Games::getGameTitle)
-                .toList()
-        );
+        return games.stream()
+                .map(game -> new GetAllGameResponse(game.getId(), game.getGameTitle()))
+                .toList();
     }
 
     @Transactional
@@ -49,7 +47,13 @@ public class GameService {
 
     public void deleteGame(Long gameId) {
         Games foundGame = gameConnector.findById(gameId);
-        foundGame.toggleDeleted();
+        foundGame.deleteGame();
+        gameConnector.save(foundGame);
+    }
+
+    public void restoreGame(Long gameId) {
+        Games foundGame = gameConnector.findById(gameId);
+        foundGame.restore();
         gameConnector.save(foundGame);
     }
 }

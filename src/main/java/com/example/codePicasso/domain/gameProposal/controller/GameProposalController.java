@@ -29,7 +29,8 @@ public class GameProposalController {
 
     @PatchMapping("/{proposalId}/admin")
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(
-            @PathVariable Long proposalId, @RequestBody ReviewGameProposalRequest request, @RequestAttribute Long adminId
+            @PathVariable Long proposalId, @RequestBody ReviewGameProposalRequest request
+            , @RequestAttribute Long adminId
     ) {
         GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
 
