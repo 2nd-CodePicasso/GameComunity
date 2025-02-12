@@ -13,7 +13,7 @@ public record ExchangeRequest(
         String description,
         int quantity
 ) {
-    public Exchange toEntity(User user, Games games) {
+    public Exchange toEntity(User user, Games games, TradeType tradeType) {
         return Exchange.builder()
                 .user(user)
                 .games(games)
@@ -21,6 +21,7 @@ public record ExchangeRequest(
                 .price(price)
                 .description(description)
                 .quantity(quantity)
+                .tradeType(tradeType)
                 .build();
     }
 }

@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.exchanges.entity;
 
-import com.example.codePicasso.domain.exchanges.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
@@ -35,9 +34,12 @@ public class Exchange extends TimeStamp {
 
     private String title;
 
+    private int quantity;
     private int price;
     private String description;
-    private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    private TradeType tradeType;
 
     @CreationTimestamp
     private LocalDateTime created_at;
