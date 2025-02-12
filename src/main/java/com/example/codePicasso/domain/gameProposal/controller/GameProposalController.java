@@ -29,7 +29,7 @@ public class GameProposalController {
         return ApiResponse.created(response);
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/all/admin")
     public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getAllProposalsApi() {
         List<GameProposalResponse> response = gameProposalService.getAllProposals();
         return ApiResponse.success(response);
@@ -43,6 +43,22 @@ public class GameProposalController {
         return ApiResponse.success(response);
     }
 
+    @GetMapping("/my-proposals")
+    public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getMyProposalsApi(
+            @RequestAttribute Long userId
+    ) {
+        List<GameProposalResponse> response = gameProposalService.getMyProposals(userId);
+        return ApiResponse.success(response);
+    }
+
+    @PatchMapping("/{proposalId}")
+    public ResponseEntity<ApiResponse<GameProposalResponse>> cancelMyProposal(
+            @PathVariable Long proposalId, @RequestAttribute Long userId
+    ) {
+        GameProposalResponse response = gameProposalService.cancelProposal(proposalId, userId);
+
+        return ApiResponse.success(response);
+    }
 
     @PatchMapping("/{proposalId}/admin")
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(

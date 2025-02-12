@@ -3,6 +3,8 @@ package com.example.codePicasso.domain.gameProposal.repository;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector;
+import com.example.codePicasso.global.exception.base.NotFoundException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +26,9 @@ public class GameProposalConnectorImpl implements GameProposalConnector {
 
     @Override
     public GameProposal findById(Long proposalId) {
-        return repository.findById(proposalId).orElseThrow();
+        return repository.findById(proposalId).orElseThrow(
+                () -> new NotFoundException(ErrorCode.PROPOSAL_NOT_FOUND)
+        );
     }
 
     @Override
@@ -37,4 +41,8 @@ public class GameProposalConnectorImpl implements GameProposalConnector {
         return repository.findByStatus(status);
     }
 
+    @Override
+    public List<GameProposal> findByUserId(Long userId) {
+        return repository.findByUserId(userId);
+    }
 }

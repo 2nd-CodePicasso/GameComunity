@@ -11,4 +11,6 @@ public interface GameProposalRepository extends JpaRepository<GameProposal, Long
     boolean existsByGameTitle (String gameTitle);
 
     List<GameProposal> findByStatus (ProposalStatus status);
+
+    List<GameProposal> findByUserId (Long userId);
 }

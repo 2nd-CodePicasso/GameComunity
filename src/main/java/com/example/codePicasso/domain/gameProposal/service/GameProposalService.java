@@ -11,6 +11,9 @@ import com.example.codePicasso.domain.users.entity.Admin;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.domain.users.service.AdminConnector;
 import com.example.codePicasso.domain.users.service.UserConnector;
+import com.example.codePicasso.global.exception.base.AccessDeniedException;
+import com.example.codePicasso.global.exception.base.ConflictException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,23 @@ public class GameProposalService {
                 .map(GameProposal::toDto).toList();
     }
 
+    public List<GameProposalResponse> getMyProposals(Long userId) {
+        return gameProposalConnector.findByUserId(userId).stream()
+                .map(GameProposal::toDto).toList();
+    }
+
+    public GameProposalResponse cancelProposal(Long proposalId, Long userId) {
+        GameProposal foundProposal = gameProposalConnector.findById(proposalId);
+        if (foundProposal.getStatus() != ProposalStatus.WAITING) {
+            throw new ConflictException(ErrorCode.PROPOSAL_ALREADY_REVIEWED);
+        }
+        if (!foundProposal.getUser().getId().equals(userId)) {
+            throw new AccessDeniedException(ErrorCode.NOT_YOUR_PROPOSAL);
+        }
+        foundProposal.update(null, ProposalStatus.CANCELED);
+        gameProposalConnector.save(foundProposal);
+        return foundProposal.toDto();
+    }
 
     public GameProposalResponse reviewProposal(Long proposalId, ReviewGameProposalRequest request, Long adminId) {
         GameProposal proposal = gameProposalConnector.findById(proposalId);
