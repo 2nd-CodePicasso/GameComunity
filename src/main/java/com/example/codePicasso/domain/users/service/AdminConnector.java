@@ -10,4 +10,6 @@ public interface AdminConnector {
     Admin save(Admin admin);
 
     Admin findByLoginId(String s);
+
+    Admin findById(Long adminId);
 }
