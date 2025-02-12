@@ -46,4 +46,10 @@ public class GameService {
 
         return foundGame.toDto();
     }
+
+    public void deleteGame(Long gameId) {
+        Games foundGame = gameConnector.findById(gameId);
+        foundGame.toggleDeleted();
+        gameConnector.save(foundGame);
+    }
 }
