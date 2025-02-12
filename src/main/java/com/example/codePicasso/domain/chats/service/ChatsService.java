@@ -14,6 +14,7 @@ public class ChatsService {
     private final ChatsConnector chatsConnector;
 
     public ChatsResponse addMessage(ChatsRequest chatsRequest) {
+
         return null;
     }
 }

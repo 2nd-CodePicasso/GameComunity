@@ -5,6 +5,7 @@ import com.example.codePicasso.domain.chats.dto.response.ChatsResponse;
 import com.example.codePicasso.domain.chats.service.ChatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ public class ChatsController {
 
     @MessageMapping
     @SendTo
-    public ChatsResponse sendMessage(ChatsRequest chatsRequest, Principal principal) {
+    public ChatsResponse sendMessage(@Payload ChatsRequest chatsRequest, Principal principal) {
         return chatsService.addMessage(chatsRequest);
     }
 }
