@@ -36,6 +36,7 @@ public class GameProposal extends TimeStamp {
     @Column(nullable = false)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProposalStatus status;
 
