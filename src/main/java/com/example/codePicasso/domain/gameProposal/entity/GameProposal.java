@@ -34,6 +34,9 @@ public class GameProposal extends TimeStamp {
     private String gameTitle;
 
     @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
     private ProposalStatus status;
 
     public GameProposalResponse toDto(){
