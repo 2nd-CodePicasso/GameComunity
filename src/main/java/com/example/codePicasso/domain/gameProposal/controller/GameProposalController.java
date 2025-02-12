@@ -29,13 +29,13 @@ public class GameProposalController {
         return ApiResponse.created(response);
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getAllProposalsApi() {
         List<GameProposalResponse> response = gameProposalService.getAllProposals();
         return ApiResponse.success(response);
     }
 
-    @GetMapping("/status")
+    @GetMapping("/status/admin")
     public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getProposalsByStatusApi(
             @RequestParam ProposalStatus status
             ) {
