@@ -5,6 +5,8 @@ import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class GameProposalConnectorImpl implements GameProposalConnector {
@@ -23,4 +25,11 @@ public class GameProposalConnectorImpl implements GameProposalConnector {
     public GameProposal findById(Long proposalId) {
         return repository.findById(proposalId).orElseThrow();
     }
+
+    @Override
+    public List<GameProposal> findAll() {
+        return repository.findAll();
+    }
+
+
 }

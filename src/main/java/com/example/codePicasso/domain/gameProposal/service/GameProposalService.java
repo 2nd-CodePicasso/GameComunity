@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -39,7 +41,12 @@ public class GameProposalService {
 
         gameProposalConnector.save(proposal);
 
-        return proposal.toDtoWithoutAdmin();
+        return proposal.toDto();
+    }
+
+    public List<GameProposalResponse> getAllProposals() {
+        return gameProposalConnector.findAll().stream()
+                .map(GameProposal::toDto).toList();
     }
 
 
@@ -55,6 +62,6 @@ public class GameProposalService {
             gameService.createGame(new GameRequest(proposal));
         }
 
-        return proposal.toDtoWithAdmin(foundAdmin);
+        return proposal.toDto();
     }
 }

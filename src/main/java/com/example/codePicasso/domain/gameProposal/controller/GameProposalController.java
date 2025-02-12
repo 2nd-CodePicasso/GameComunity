@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/proposals")
@@ -16,7 +18,7 @@ public class GameProposalController {
 
     private final GameProposalService gameProposalService;
 
-    @PostMapping("/users")
+    @PostMapping
     public ResponseEntity<ApiResponse<GameProposalResponse>> createGameProposal(
             @RequestBody CreateGameProposalRequest request
             , @RequestAttribute Long userId
@@ -24,6 +26,12 @@ public class GameProposalController {
         GameProposalResponse response = gameProposalService.createProposal(request, userId);
 
         return ApiResponse.created(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getAllProposalsApi() {
+        List<GameProposalResponse> response = gameProposalService.getAllProposals();
+        return ApiResponse.success(response);
     }
 
 
