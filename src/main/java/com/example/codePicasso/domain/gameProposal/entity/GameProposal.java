@@ -44,7 +44,7 @@ public class GameProposal extends TimeStamp {
         return GameProposalResponse.builder()
                 .id(id)
                 .userId(user.getId())
-                .userId(admin == null ? null : admin.getId())
+                .adminId(admin == null ? null : admin.getId())
                 .gameTitle(gameTitle)
                 .status(status)
                 .build();
