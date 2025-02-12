@@ -3,6 +3,7 @@ package com.example.codePicasso.domain.gameProposal.controller;
 import com.example.codePicasso.domain.gameProposal.dto.request.CreateGameProposalRequest;
 import com.example.codePicasso.domain.gameProposal.dto.request.ReviewGameProposalRequest;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
+import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,14 @@ public class GameProposalController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getAllProposalsApi() {
         List<GameProposalResponse> response = gameProposalService.getAllProposals();
+        return ApiResponse.success(response);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getProposalsByStatusApi(
+            @RequestParam ProposalStatus status
+            ) {
+        List<GameProposalResponse> response = gameProposalService.getProposalsByStatus(status);
         return ApiResponse.success(response);
     }
 

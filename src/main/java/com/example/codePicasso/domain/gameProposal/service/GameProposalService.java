@@ -49,6 +49,11 @@ public class GameProposalService {
                 .map(GameProposal::toDto).toList();
     }
 
+    public List<GameProposalResponse> getProposalsByStatus(ProposalStatus status) {
+        return gameProposalConnector.findByStatus(status).stream()
+                .map(GameProposal::toDto).toList();
+    }
+
 
     public GameProposalResponse reviewProposal(Long proposalId, ReviewGameProposalRequest request, Long adminId) {
         GameProposal proposal = gameProposalConnector.findById(proposalId);
