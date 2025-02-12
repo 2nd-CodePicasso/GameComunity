@@ -2,7 +2,9 @@ package com.example.codePicasso.domain.users.repository;
 
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.domain.users.service.UserConnector;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserConnectorImpl implements UserConnector {
     UserRepository userRepository;
 
