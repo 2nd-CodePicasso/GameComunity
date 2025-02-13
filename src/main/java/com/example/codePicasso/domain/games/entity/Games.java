@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -19,5 +21,9 @@ public class Games extends TimeStamp {
     @JoinColumn(name = "admin_id", nullable = false)
     private Admin admin;
 
+    @Column(nullable = false)
     private String gameTitle;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

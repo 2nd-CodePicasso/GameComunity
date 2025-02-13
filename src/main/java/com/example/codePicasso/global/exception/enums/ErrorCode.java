@@ -17,7 +17,7 @@ public enum ErrorCode {
     //Auth
     ID_ALREADY_EXISTS(HttpStatus.CONFLICT,"","이미 해당 아이디가 존재합니다."),
     NOT_FOUND_ID(HttpStatus.BAD_REQUEST,"", "해당 아이디가 존재하지 않습니다."),
-    UNAUTHORIZED_ID(HttpStatus.UNAUTHORIZED,"","권한이 없습니다. 관리자만 접근이 가능합니다."),
+    UNAUTHORIZED_ID(HttpStatus.UNAUTHORIZED,"","권한이 없습니다."),
 
     //User
     ID_ERROR(HttpStatus.UNAUTHORIZED,"1","아이디가 올바르지 않습니다."),
@@ -28,8 +28,8 @@ public enum ErrorCode {
     //Game
     GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "", "게임을 찾을 수 없습니다."),
 
-    //Community
-    COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND, "", "커뮤니티를 찾을 수 없습니다."),
+    //Post
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "", "커뮤니티를 찾을 수 없습니다."),
 
     //Chatting
     CHATTING_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅 기록을 찾을 수 없습니다."),

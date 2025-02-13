@@ -13,3 +13,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+jwt:
+  config:
+    import: optional:myInfo.yml
+  secretKey: ${secure.key}
+  tokenTime: ${secure.timer}

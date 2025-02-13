@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.communities.entity;
+package com.example.codePicasso.domain.posts.entity;
 
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.global.common.TimeStamp;
