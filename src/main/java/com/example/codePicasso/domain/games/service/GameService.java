@@ -30,11 +30,7 @@ public class GameService {
     }
 
     public List<GetAllGameResponse> getAllGames() {
-        List<Games> games = gameConnector.findAll();
-
-        return games.stream()
-                .map(game -> new GetAllGameResponse(game.getId(), game.getGameTitle()))
-                .toList();
+        return gameConnector.findAll();
     }
 
     @Transactional

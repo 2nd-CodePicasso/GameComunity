@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.games.repository;
 
+import com.example.codePicasso.domain.games.dto.response.GetAllGameResponse;
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.domain.games.service.GameConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
@@ -21,8 +22,8 @@ public class GameConnectorImpl implements GameConnector {
     }
 
     @Override
-    public List<Games> findAll() {
-        return gamesRepository.findAll();
+    public List<GetAllGameResponse> findAll() {
+        return gamesRepository.findAllGames();
     }
 
     @Override
