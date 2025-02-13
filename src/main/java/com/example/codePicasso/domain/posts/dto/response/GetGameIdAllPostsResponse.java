@@ -1,17 +1,16 @@
 package com.example.codePicasso.domain.posts.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Builder
-public record PostResponse(
+@AllArgsConstructor
+public record GetGameIdAllPostsResponse(
         Long postId,
+        String nickname,
         Long gameId,
         String categoryName,
         String title,
-        String description,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime createdAt
 ) {
 }

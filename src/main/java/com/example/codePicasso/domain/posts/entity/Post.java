@@ -47,7 +47,7 @@ public class Post extends TimeStamp {
 
     public PostResponse toDto() {
         return PostResponse.builder().
-                categoryId(categories.getId()).
+                categoryName(categories.getCategoryName()).
                 title(title).
                 description(description).
                 createdAt(getCreatedAt()).

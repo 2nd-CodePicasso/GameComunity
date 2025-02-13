@@ -4,11 +4,11 @@ import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.domain.games.service.GamesConnector;
 import com.example.codePicasso.domain.posts.dto.request.PostCreateRequest;
 import com.example.codePicasso.domain.posts.dto.request.UpdateRequest;
+import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.posts.dto.response.PostResponse;
 import com.example.codePicasso.domain.posts.entity.Categories;
 import com.example.codePicasso.domain.posts.entity.Post;
 import com.example.codePicasso.domain.users.service.UserConnector;
-import com.example.codePicasso.global.exception.base.AccessDeniedException;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +38,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> findPostByGameId(Long gameId) {
-        List<Post> findpostsByGameId = postConnector.findPostByGameId(gameId);
-        return findpostsByGameId.stream()
-                .map(Post::toDto).toList();
+    public List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId) {
+        List<GetGameIdAllPostsResponse> findpostsByGameId = postConnector.findPostByGameId(gameId);
+        return findpostsByGameId;
     }
 
     @Transactional(readOnly = true)
@@ -49,6 +48,12 @@ public class PostService {
         List<Post> findPostsByCategoryId = postConnector.findPostByCategoryId(categoryId);
         return findPostsByCategoryId.stream()
                 .map(Post::toDto).toList();
+    }
+
+    public PostResponse findByid(Long postId) {
+        Post getPost = postConnector.findById(postId).
+                orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        return getPost.toDto();
     }
 
     @Transactional
@@ -73,4 +78,6 @@ public class PostService {
 
         postConnector.delete(deletePost);
     }
+
+
 }

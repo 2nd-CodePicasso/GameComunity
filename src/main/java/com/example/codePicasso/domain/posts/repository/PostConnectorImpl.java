@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.posts.repository;
 
+import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.posts.entity.Post;
 import com.example.codePicasso.domain.posts.service.PostConnector;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,18 @@ public class PostConnectorImpl implements PostConnector {
     }
 
     @Override
-    public List<Post> findPostByGameId(Long gameId) {
+    public List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId) {
         return postRepository.findPostByGameId(gameId);
     }
 
     @Override
     public List<Post> findPostByCategoryId(Long categoryId) {
         return postRepository.findPostByCategoryId(categoryId);
+    }
+
+    @Override
+    public Optional<Post> findById(Long postId) {
+        return postRepository.findById(postId);
     }
 
     @Override
