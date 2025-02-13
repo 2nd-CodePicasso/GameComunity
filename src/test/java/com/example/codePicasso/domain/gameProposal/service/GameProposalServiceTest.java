@@ -107,7 +107,6 @@ class GameProposalServiceTest {
         when(gameProposalConnector.findById(proposalId)).thenReturn(mockProposal);
         when(adminConnector.findById(adminId)).thenReturn(mockAdmin);
         doNothing().when(gameProposalConnector).save(any());
-        doNothing().when(gameService).createGame(any());
 
         // When
         GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
