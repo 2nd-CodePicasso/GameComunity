@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.gameProposal.service;
 
+import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,9 @@ public interface GameProposalConnector {
 
     GameProposal findById(Long proposalId);
 
-    List<GameProposal> findAll();
+    List<GameProposalResponse> findAll();
 
-    List<GameProposal> findByStatus(ProposalStatus status);
+    List<GameProposalResponse> findByStatus(ProposalStatus status);
 
-    List<GameProposal> findByUserId(Long userId);
+    List<GameProposalResponse> findByUserId(Long userId);
 }

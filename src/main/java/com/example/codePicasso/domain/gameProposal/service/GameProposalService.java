@@ -48,18 +48,15 @@ public class GameProposalService {
     }
 
     public List<GameProposalResponse> getAllProposals() {
-        return gameProposalConnector.findAll().stream()
-                .map(GameProposal::toDto).toList();
+        return gameProposalConnector.findAll();
     }
 
     public List<GameProposalResponse> getProposalsByStatus(ProposalStatus status) {
-        return gameProposalConnector.findByStatus(status).stream()
-                .map(GameProposal::toDto).toList();
+        return gameProposalConnector.findByStatus(status);
     }
 
     public List<GameProposalResponse> getMyProposals(Long userId) {
-        return gameProposalConnector.findByUserId(userId).stream()
-                .map(GameProposal::toDto).toList();
+        return gameProposalConnector.findByUserId(userId);
     }
 
     public GameProposalResponse cancelProposal(Long proposalId, Long userId) {
