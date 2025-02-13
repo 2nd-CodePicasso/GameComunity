@@ -6,7 +6,6 @@ import com.example.codePicasso.domain.games.dto.request.UpdateGameRequest;
 import com.example.codePicasso.domain.games.dto.response.GameResponse;
 import com.example.codePicasso.domain.games.dto.response.GetAllGameResponse;
 import com.example.codePicasso.domain.games.entity.Games;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,23 +20,20 @@ public class GameService {
     private final GameProposalConnector gameProposalConnector;
     private final GameConnector gameConnector;
 
-    public GameResponse createGame(GameRequest request) {
+    public void createGame(GameRequest request) {
         Games game = request.toEntity();
 
         gameConnector.save(game);
-
-        return game.toDto();
     }
 
     public List<GetAllGameResponse> getAllGames() {
         return gameConnector.findAll();
     }
 
-    @Transactional
     public GameResponse updateGame(Long gameId, UpdateGameRequest request) {
         Games foundGame = gameConnector.findById(gameId);
         foundGame.updateDetails(request.gameDescription());
-
+        gameConnector.save(foundGame);
         return foundGame.toDto();
     }
 
