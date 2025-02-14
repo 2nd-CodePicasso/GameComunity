@@ -7,16 +7,14 @@ import com.example.codePicasso.domain.posts.entity.Post;
 import com.example.codePicasso.domain.users.entity.User;
 
 public record PostCreateRequest(
-        User user,
-        Long gameId,
         Long categoryId,
         String title,
         String description
 ) {
-    public Post toEntity(Games games, Categories categories) {
+    public Post toEntity(User user, Games game, Categories categories) {
         return Post.builder()
                 .user(user)
-                .games(games)
+                .games(game)
                 .categories(categories)
                 .title(title)
                 .description(description)
