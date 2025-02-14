@@ -10,14 +10,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-#    show-sql: true
     properties:
       hibernate:
         format_sql: true
-#        default_batch_fetch_size: 100
-
-jwt:
-  config:
-    import: optional:myInfo.yml
-  secretKey: ${secure.key}
-  tokenTime: ${secure.timer}
