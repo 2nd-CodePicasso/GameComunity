@@ -1,15 +1,16 @@
-package com.example.codePicasso.domain.exchanges.controller;
+package com.example.codePicasso.domain.exchange.controller;
 
-import com.example.codePicasso.domain.exchanges.dto.request.ExchangeRequest;
-import com.example.codePicasso.domain.exchanges.dto.response.ExchangeResponse;
-import com.example.codePicasso.domain.exchanges.entity.TradeType;
-import com.example.codePicasso.domain.exchanges.service.ExchangeService;
+import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
+import com.example.codePicasso.domain.exchange.entity.TradeType;
+import com.example.codePicasso.domain.exchange.service.ExchangeService;
 import com.example.codePicasso.global.common.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class ExchangeController {
     // 구매 거래소 게시글 생성 (201 Created)
     @PostMapping("/buy")
     public ResponseEntity<ApiResponse<ExchangeResponse>> addBuyExchange(
-            @RequestBody ExchangeRequest exchangeRequest,
+            @Valid @RequestBody ExchangeRequest exchangeRequest,
             HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.BUY, userId));
@@ -30,7 +31,7 @@ public class ExchangeController {
     // 판매 거래소 게시글 생성 (201 Created)
     @PostMapping("/sell")
     public ResponseEntity<ApiResponse<ExchangeResponse>> addSellExchange(
-            @RequestBody ExchangeRequest exchangeRequest,
+            @Valid @RequestBody ExchangeRequest exchangeRequest,
             HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
         return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.SELL, userId));
@@ -44,26 +45,36 @@ public class ExchangeController {
 //    }
 //
     // 구매 거래소 게시글 목록 조회 (200 OK)
-    @GetMapping( "/buy")
-    public ResponseEntity<ApiResponse<List<ExchangeResponse>>> getBuyExchange(
-            @RequestParam(required = false) Long gameId
+    @GetMapping( "/buy/list")
+    public ResponseEntity<ApiResponse<Page<ExchangeResponse>>> getBuyExchange(
+            @RequestParam(required = false) Long gameId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
             ) {
-        List<ExchangeResponse> responses = exchangeService.getBuyExchangesByGameId(gameId);
+        Page<ExchangeResponse> responses = exchangeService.getBuyExchangesByGameId(gameId, page, size);
         return ApiResponse.success(responses);
     }
 
     // 판매 거래소 게시글 목록 조회 (200 OK)
-    @GetMapping( "/sell")
-    public ResponseEntity<ApiResponse<List<ExchangeResponse>>> getSellExchange(
-            @RequestParam(required = false) Long gameId
+    @GetMapping( "/sell/list")
+    public ResponseEntity<ApiResponse<Page<ExchangeResponse>>> getSellExchange(
+            @RequestParam(required = false) Long gameId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
             ) {
-        List<ExchangeResponse> responses = exchangeService.getSellExchangesByGameId(gameId);
+        Page<ExchangeResponse> responses = exchangeService.getSellExchangesByGameId(gameId, page, size);
         return ApiResponse.success(responses);
     }
 
-    // 거래소의 특정 게시글 조회 (200 OK)
-    @GetMapping("/{exchangesId}")
-    public ResponseEntity<ApiResponse<ExchangeResponse>> getExchange(@PathVariable Long exchangesId) {
+    // 거래소의 구매 게시글 세부페이지 조회 (200 OK)
+    @GetMapping("/buy/{exchangesId}")
+    public ResponseEntity<ApiResponse<ExchangeResponse>> getDetailBuyExchange(@PathVariable Long exchangesId) {
+        return ApiResponse.success(exchangeService.getExchangeById(exchangesId));
+    }
+
+    // 거래소의 구매 게시글 세부페이지 조회 (200 OK)
+    @GetMapping("/sell/{exchangesId}")
+    public ResponseEntity<ApiResponse<ExchangeResponse>> getDetailSellExchange(@PathVariable Long exchangesId) {
         return ApiResponse.success(exchangeService.getExchangeById(exchangesId));
     }
 
@@ -71,7 +82,7 @@ public class ExchangeController {
     @PatchMapping("/{exchangeId}")
     public ResponseEntity<ApiResponse<ExchangeResponse>> updateExchange(
             @PathVariable Long exchangeId,
-            @RequestBody ExchangeRequest request,
+            @Valid @RequestBody ExchangeRequest request,
             HttpServletRequest httprequest
     ) {
         Long userId = (Long) httprequest.getAttribute("userId");

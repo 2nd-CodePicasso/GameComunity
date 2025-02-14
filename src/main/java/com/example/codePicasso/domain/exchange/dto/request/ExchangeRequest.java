@@ -1,16 +1,22 @@
-package com.example.codePicasso.domain.exchanges.dto.request;
+package com.example.codePicasso.domain.exchange.dto.request;
 
-import com.example.codePicasso.domain.exchanges.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.domain.users.entity.User;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record ExchangeRequest(
-        Long id,
-        Long userId,
+        @NotNull(message = "게임을 입력하세요.")
         Long gameId,
+        @NotNull(message = "제목을 입력하세요.")
+        @Size(max = 50)
         String title,
+        @NotNull(message = "가격을 입력하세요.")
         int price,
         String description,
+        @NotNull(message = "수량을 입력하세요.")
         int quantity
 ) {
     public Exchange toEntity(User user, Games games, TradeType tradeType) {

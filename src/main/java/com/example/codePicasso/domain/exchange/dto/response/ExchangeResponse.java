@@ -1,6 +1,6 @@
-package com.example.codePicasso.domain.exchanges.dto.response;
+package com.example.codePicasso.domain.exchange.dto.response;
 
-import com.example.codePicasso.domain.exchanges.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.Exchange;
 import lombok.Builder;
 
 @Builder

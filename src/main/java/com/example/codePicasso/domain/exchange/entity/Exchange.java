@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.exchanges.entity;
+package com.example.codePicasso.domain.exchange.entity;
 
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.domain.users.entity.User;
@@ -8,10 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -41,21 +37,6 @@ public class Exchange extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
 
-    @CreationTimestamp
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    private LocalDateTime updated_at;
-
-//    public ExchangeResponse toDto() {
-//        return ExchangeResponse.builder()
-//                .id(id)
-//                .gameId(games.getId())
-//                .title(title)
-//                .price(price)
-//                .build();
-//    }
-//
     public void update(String title, int price) {
         this.title = title;
         this.price = price;
