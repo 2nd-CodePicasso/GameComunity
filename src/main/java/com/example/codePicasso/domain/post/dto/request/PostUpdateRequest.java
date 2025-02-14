@@ -1,8 +1,8 @@
-package com.example.codePicasso.domain.posts.dto.request;
+package com.example.codePicasso.domain.post.dto.request;
 
-import com.example.codePicasso.domain.posts.entity.Post;
+import com.example.codePicasso.domain.post.entity.Post;
 
-public record UpdateRequest(
+public record PostUpdateRequest(
         Long categoryId,
         String title,
         String description

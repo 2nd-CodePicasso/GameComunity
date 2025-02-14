@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.posts.dto.response;
+package com.example.codePicasso.domain.post.dto.response;
 
 import java.time.LocalDateTime;
 

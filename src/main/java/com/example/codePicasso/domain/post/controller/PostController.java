@@ -1,10 +1,10 @@
-package com.example.codePicasso.domain.posts.controller;
+package com.example.codePicasso.domain.post.controller;
 
-import com.example.codePicasso.domain.posts.dto.request.PostCreateRequest;
-import com.example.codePicasso.domain.posts.dto.request.UpdateRequest;
-import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
-import com.example.codePicasso.domain.posts.dto.response.PostResponse;
-import com.example.codePicasso.domain.posts.service.PostService;
+import com.example.codePicasso.domain.post.dto.request.PostCreateRequest;
+import com.example.codePicasso.domain.post.dto.request.PostUpdateRequest;
+import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
+import com.example.codePicasso.domain.post.dto.response.PostResponse;
+import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +49,7 @@ public class PostController {
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse>> updatePost(@PathVariable Long postId, @RequestBody UpdateRequest request, @RequestAttribute Long userid) {
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request, @RequestAttribute Long userid) {
         PostResponse response = postService.updatePost(postId, request, userid);
         return ApiResponse.success(response);
     }

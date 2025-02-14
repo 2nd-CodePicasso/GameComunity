@@ -1,11 +1,12 @@
-package com.example.codePicasso.domain.posts.service;
+package com.example.codePicasso.domain.post.service;
 
+import com.example.codePicasso.domain.category.entity.Category;
+import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.posts.dto.request.PostCreateRequest;
-import com.example.codePicasso.domain.posts.dto.response.PostResponse;
-import com.example.codePicasso.domain.posts.entity.Categories;
-import com.example.codePicasso.domain.posts.entity.Post;
+import com.example.codePicasso.domain.post.dto.request.PostCreateRequest;
+import com.example.codePicasso.domain.post.dto.response.PostResponse;
+import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.users.entity.Admin;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.domain.users.service.UserConnector;
@@ -41,7 +42,7 @@ class PostServiceTest {
     private User mockUser;
     private Admin mockAdmin;
     private Game mockGame;
-    private Categories mockCategory;
+    private Category mockCategory;
 
     @BeforeEach
     void setUp() {
@@ -53,7 +54,7 @@ class PostServiceTest {
                 .gameTitle("testTitle")
                 .gameDescription("This is a test game.")
                 .build();
-        mockCategory = Categories.builder()
+        mockCategory = Category.builder()
                 .id(1L)
                 .game(mockGame)
                 .categoryName("test Category")
@@ -61,7 +62,7 @@ class PostServiceTest {
         mockPost = Post.builder()
                 .user(mockUser)
                 .game(mockGame)
-                .categories(mockCategory)
+                .category(mockCategory)
                 .title("test Title")
                 .description("This is a test post.")
                 .build();

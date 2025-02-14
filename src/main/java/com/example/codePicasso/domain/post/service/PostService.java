@@ -1,13 +1,14 @@
-package com.example.codePicasso.domain.posts.service;
+package com.example.codePicasso.domain.post.service;
 
+import com.example.codePicasso.domain.category.entity.Category;
+import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.posts.dto.request.PostCreateRequest;
-import com.example.codePicasso.domain.posts.dto.request.UpdateRequest;
-import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
-import com.example.codePicasso.domain.posts.dto.response.PostResponse;
-import com.example.codePicasso.domain.posts.entity.Categories;
-import com.example.codePicasso.domain.posts.entity.Post;
+import com.example.codePicasso.domain.post.dto.request.PostCreateRequest;
+import com.example.codePicasso.domain.post.dto.request.PostUpdateRequest;
+import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
+import com.example.codePicasso.domain.post.dto.response.PostResponse;
+import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.domain.users.service.UserConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
@@ -33,8 +34,8 @@ public class PostService {
     public PostResponse createPost(Long userId, Long gameId, PostCreateRequest request) {
         Game game = gameConnector.findById(gameId);
         User user = userConnector.findById(userId);
-        Categories categories = categoriesConnector.findById(request.categoryId());
-        Post createPost = request.toEntity(user, game, categories);
+        Category category = categoryConnector.findById(request.categoryId());
+        Post createPost = request.toEntity(user, game, category);
         postConnector.save(createPost);
         return createPost.toDto();
     }
@@ -60,13 +61,13 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse updatePost(Long postId, UpdateRequest request, Long userId) {
+    public PostResponse updatePost(Long postId, PostUpdateRequest request, Long userId) {
         Post foundPost = postConnector.findByUserIdAndPostId(postId, userId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
 
-        if (!foundPost.getCategories().getId().equals(request.categoryId())) {
-            Categories categories = categoriesConnector.findById(request.categoryId());
-            foundPost.updateCategories(categories);
+        if (!foundPost.getCategory().getId().equals(request.categoryId())) {
+            Category category = categoryConnector.findById(request.categoryId());
+            foundPost.updateCategories(category);
         }
 
         foundPost.updatePost(request.title(), request.description());

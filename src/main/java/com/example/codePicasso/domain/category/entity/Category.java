@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.posts.entity;
+package com.example.codePicasso.domain.category.entity;
 
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.global.common.TimeStamp;
@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Categories extends TimeStamp {
+@Table(name = "categories")
+public class Category extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

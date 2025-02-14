@@ -1,7 +1,7 @@
-package com.example.codePicasso.domain.posts.service;
+package com.example.codePicasso.domain.post.service;
 
-import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
-import com.example.codePicasso.domain.posts.entity.Post;
+import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
+import com.example.codePicasso.domain.post.entity.Post;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

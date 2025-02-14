@@ -1,9 +1,9 @@
-package com.example.codePicasso.domain.posts.dto.request;
+package com.example.codePicasso.domain.post.dto.request;
 
 
+import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.posts.entity.Categories;
-import com.example.codePicasso.domain.posts.entity.Post;
+import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.users.entity.User;
 
 public record PostCreateRequest(
@@ -11,11 +11,11 @@ public record PostCreateRequest(
         String title,
         String description
 ) {
-    public Post toEntity(User user, Game game, Categories categories) {
+    public Post toEntity(User user, Game game, Category category) {
         return Post.builder()
                 .user(user)
                 .game(game)
-                .categories(categories)
+                .category(category)
                 .title(title)
                 .description(description)
                 .build();

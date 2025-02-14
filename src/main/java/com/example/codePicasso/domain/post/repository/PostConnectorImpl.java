@@ -1,8 +1,8 @@
-package com.example.codePicasso.domain.posts.repository;
+package com.example.codePicasso.domain.post.repository;
 
-import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
-import com.example.codePicasso.domain.posts.entity.Post;
-import com.example.codePicasso.domain.posts.service.PostConnector;
+import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
+import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.service.PostConnector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
