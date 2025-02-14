@@ -31,6 +31,8 @@ public enum ErrorCode {
 
     //Game
     GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "", "게임을 찾을 수 없습니다."),
+    GAME_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "", "이미 삭제된 게임입니다."),
+    GAME_ALREADY_ACTIVATED(HttpStatus.BAD_REQUEST,"", "이미 활성화된 게임입니다.."),
 
     //Community
     COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND, "", "커뮤니티를 찾을 수 없습니다."),
