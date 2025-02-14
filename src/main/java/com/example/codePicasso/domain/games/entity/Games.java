@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Builder
@@ -33,7 +31,7 @@ public class Games extends TimeStamp {
     private String gameDescription;
 
     @Column(nullable = false)
-    private boolean isDeleted = false;
+    private boolean isDeleted;
 
     public GameResponse toDto() {
         return GameResponse.builder()
