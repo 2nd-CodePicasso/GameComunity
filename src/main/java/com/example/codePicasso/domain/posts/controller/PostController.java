@@ -25,8 +25,8 @@ public class PostController {
      * @return 생성된 게시글
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponse>> createPost(@RequestBody PostCreateRequest request) {
-        PostResponse response = postService.createPost(request);
+    public ResponseEntity<ApiResponse<PostResponse>> createPost(@RequestAttribute Long userId, @PathVariable Long gameId, @RequestBody PostCreateRequest request) {
+        PostResponse response = postService.createPost(userId, gameId, request);
         return ApiResponse.created(response);
     }
 
@@ -48,13 +48,13 @@ public class PostController {
         return ApiResponse.success(response);
     }
 
-    @PatchMapping
+    @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(@PathVariable Long postId, @RequestBody UpdateRequest request, @RequestAttribute Long userid) {
         PostResponse response = postService.updatePost(postId, request, userid);
         return ApiResponse.success(response);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable Long postId, @RequestAttribute Long userId) {
         postService.deletePost(postId, userId);
         return ApiResponse.noContent();
