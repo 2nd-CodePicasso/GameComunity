@@ -31,18 +31,18 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GetGameIdAllPostsResponse>>> findPostByGameId(Long gameId) {
+    public ResponseEntity<ApiResponse<List<GetGameIdAllPostsResponse>>> findPostByGameId(@PathVariable Long gameId) {
         List<GetGameIdAllPostsResponse> response = postService.findPostByGameId(gameId);
         return ApiResponse.success(response);
     }
 
-    @GetMapping
+    @GetMapping("/categories/{categoryId}")
     public ResponseEntity<ApiResponse<List<PostResponse>>> findPostsByCategoryId(@PathVariable Long categoryId) {
         List<PostResponse> response = postService.findPostByCategoryId(categoryId);
         return ApiResponse.success(response);
     }
 
-    @GetMapping
+    @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> findById(@PathVariable Long postId) {
         PostResponse response = postService.findById(postId);
         return ApiResponse.success(response);
