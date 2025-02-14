@@ -21,8 +21,8 @@ public class GameProposalController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<GameProposalResponse>> createGameProposal(
-            @RequestBody CreateGameProposalRequest request
-            , @RequestAttribute Long userId
+            @RequestBody CreateGameProposalRequest request,
+            @RequestAttribute Long userId
     ) {
         GameProposalResponse response = gameProposalService.createProposal(request, userId);
 
@@ -38,7 +38,7 @@ public class GameProposalController {
     @GetMapping("/status/admin")
     public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getProposalsByStatusApi(
             @RequestParam ProposalStatus status
-            ) {
+    ) {
         List<GameProposalResponse> response = gameProposalService.getProposalsByStatus(status);
         return ApiResponse.success(response);
     }
@@ -53,7 +53,8 @@ public class GameProposalController {
 
     @PatchMapping("/{proposalId}")
     public ResponseEntity<ApiResponse<GameProposalResponse>> cancelMyProposal(
-            @PathVariable Long proposalId, @RequestAttribute Long userId
+            @PathVariable Long proposalId,
+            @RequestAttribute Long userId
     ) {
         GameProposalResponse response = gameProposalService.cancelProposal(proposalId, userId);
 
@@ -62,8 +63,9 @@ public class GameProposalController {
 
     @PatchMapping("/{proposalId}/admin")
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(
-            @PathVariable Long proposalId, @RequestBody ReviewGameProposalRequest request
-            , @RequestAttribute Long adminId
+            @PathVariable Long proposalId,
+            @RequestBody ReviewGameProposalRequest request,
+            @RequestAttribute Long adminId
     ) {
         GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
 

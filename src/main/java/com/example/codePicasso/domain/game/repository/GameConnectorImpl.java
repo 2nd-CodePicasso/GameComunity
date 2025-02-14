@@ -1,12 +1,13 @@
 package com.example.codePicasso.domain.game.repository;
 
-import com.example.codePicasso.domain.game.dto.response.GetAllGameResponse;
+import com.example.codePicasso.domain.game.dto.response.GameGetAllResponse;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class GameConnectorImpl implements GameConnector {
     }
 
     @Override
-    public List<GetAllGameResponse> findAll() {
+    public List<GameGetAllResponse> findAll() {
         return gameRepository.findAllGames();
     }
 

@@ -1,6 +1,6 @@
 package com.example.codePicasso.domain.game.service;
 
-import com.example.codePicasso.domain.game.dto.request.UpdateGameRequest;
+import com.example.codePicasso.domain.game.dto.request.GameUpdateRequest;
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
@@ -32,7 +32,7 @@ class GameServiceTest {
     void setUp() {
         mockGame = spy(new Game(1L, null, "Test Game", "Initial Description", false));
         lenient().when(gameConnector.findById(1L)).thenReturn(mockGame);
-//        when(gameConnector.findAll()).thenReturn(List.of(new GetAllGameResponse(1L, "Test Game")));
+//        when(gameConnector.findAll()).thenReturn(List.of(new GameGetAllResponse(1L, "Test Game")));
     }
 
     // ✅성공 케이스
@@ -41,7 +41,7 @@ class GameServiceTest {
         // Given
         Long gameId = 1L;
         String newDescription = "Updated Description";
-        UpdateGameRequest request = new UpdateGameRequest(newDescription);
+        GameUpdateRequest request = new GameUpdateRequest(newDescription);
 
         // When
         GameResponse response = gameService.updateGame(gameId, request);
@@ -90,7 +90,7 @@ class GameServiceTest {
         // When & Then
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> gameService.updateGame(gameId,
-                        new UpdateGameRequest("Updated Description")));
+                        new GameUpdateRequest("Updated Description")));
         assertEquals(ErrorCode.GAME_NOT_FOUND, exception.getErrorCode());
     }
 

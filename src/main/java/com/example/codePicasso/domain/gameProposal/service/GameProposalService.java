@@ -39,6 +39,7 @@ public class GameProposalService {
         GameProposal proposal = GameProposal.builder()
                 .user(foundUser)
                 .gameTitle(request.gameTitle())
+                .description(request.description())
                 .status(status)
                 .build();
 

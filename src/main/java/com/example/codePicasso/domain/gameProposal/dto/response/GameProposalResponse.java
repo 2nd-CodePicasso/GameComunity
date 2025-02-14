@@ -9,6 +9,7 @@ public record GameProposalResponse(
         Long userId,
         Long adminId,
         String gameTitle,
+        String description,
         ProposalStatus status
 ) {
 }
