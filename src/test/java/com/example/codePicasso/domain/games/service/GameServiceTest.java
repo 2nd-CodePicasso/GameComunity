@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -33,11 +32,11 @@ class GameServiceTest {
     @BeforeEach
     void setUp() {
         mockGame = spy(new Games(1L, null, "Test Game", "Initial Description", false));
-        when(gameConnector.findById(1L)).thenReturn(mockGame);
-//        when(gameConnector.findById(2L)).thenThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+        lenient().when(gameConnector.findById(1L)).thenReturn(mockGame);
 //        when(gameConnector.findAll()).thenReturn(List.of(new GetAllGameResponse(1L, "Test Game")));
     }
 
+    // ✅성공 케이스
     @Test
     void 게임_설명_업데이트() {
         // Given
@@ -67,19 +66,6 @@ class GameServiceTest {
     }
 
     @Test
-    void 삭제된_게임_삭제_시도() {
-        // Given
-        Long gameId = 1L;
-        gameService.deleteGame(1L);
-
-        // When & Then
-        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
-                () -> gameService.deleteGame(gameId));
-        assertEquals(ErrorCode.GAME_ALREADY_DELETED, exception.getErrorCode());
-        verify(gameConnector, times(1)).save(mockGame);
-    }
-
-    @Test
     void 게임_복구() {
         // Given
         Long gameId = 1L;
@@ -91,6 +77,35 @@ class GameServiceTest {
         // Then
         assertFalse(mockGame.isDeleted());
         verify(gameConnector, times(2)).save(mockGame);
+    }
+
+
+    // ❌실패 케이스
+    @Test
+    void 존재하지_않는_게임아이디로_조회() {
+        // Given
+        Long gameId = 999L;
+        when(gameConnector.findById(gameId))
+                .thenThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+
+        // When & Then
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> gameService.updateGame(gameId,
+                        new UpdateGameRequest("Updated Description")));
+        assertEquals(ErrorCode.GAME_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    void 삭제된_게임_삭제_시도() {
+        // Given
+        Long gameId = 1L;
+        gameService.deleteGame(1L);
+
+        // When & Then
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> gameService.deleteGame(gameId));
+        assertEquals(ErrorCode.GAME_ALREADY_DELETED, exception.getErrorCode());
+        verify(gameConnector, times(1)).save(mockGame);
     }
 
     @Test
