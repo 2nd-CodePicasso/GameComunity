@@ -1,9 +1,10 @@
 package com.example.codePicasso.domain.games.service;
 
-import com.example.codePicasso.domain.games.dto.request.UpdateGameRequest;
-import com.example.codePicasso.domain.games.dto.response.GameResponse;
-import com.example.codePicasso.domain.games.dto.response.GetAllGameResponse;
-import com.example.codePicasso.domain.games.entity.Games;
+import com.example.codePicasso.domain.game.dto.request.GameUpdateRequest;
+import com.example.codePicasso.domain.game.dto.response.GameResponse;
+import com.example.codePicasso.domain.game.entity.Game;
+import com.example.codePicasso.domain.game.service.GameConnector;
+import com.example.codePicasso.domain.game.service.GameService;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,11 +27,11 @@ class GameServiceTest {
     @InjectMocks
     private GameService gameService;
 
-    private Games mockGame;
+    private Game mockGame;
 
     @BeforeEach
     void setUp() {
-        mockGame = spy(new Games(1L, null, "Test Game", "Initial Description", false));
+        mockGame = spy(new Game(1L, null, "Test Game", "Initial Description", false));
         lenient().when(gameConnector.findById(1L)).thenReturn(mockGame);
 //        when(gameConnector.findAll()).thenReturn(List.of(new GetAllGameResponse(1L, "Test Game")));
     }
@@ -42,7 +42,7 @@ class GameServiceTest {
         // Given
         Long gameId = 1L;
         String newDescription = "Updated Description";
-        UpdateGameRequest request = new UpdateGameRequest(newDescription);
+        GameUpdateRequest request = new GameUpdateRequest(newDescription);
 
         // When
         GameResponse response = gameService.updateGame(gameId, request);
@@ -91,7 +91,7 @@ class GameServiceTest {
         // When & Then
         NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> gameService.updateGame(gameId,
-                        new UpdateGameRequest("Updated Description")));
+                        new GameUpdateRequest("Updated Description")));
         assertEquals(ErrorCode.GAME_NOT_FOUND, exception.getErrorCode());
     }
 
