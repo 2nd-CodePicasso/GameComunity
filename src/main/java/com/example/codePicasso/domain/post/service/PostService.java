@@ -27,7 +27,7 @@ public class PostService {
 
     private final PostConnector postConnector;
     private final GameConnector gameConnector;
-    private final CategoriesConnector categoriesConnector;
+    private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
 
     @Transactional
