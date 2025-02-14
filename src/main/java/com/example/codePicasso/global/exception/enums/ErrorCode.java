@@ -24,9 +24,15 @@ public enum ErrorCode {
     PW_ERROR(HttpStatus.UNAUTHORIZED,"2","비밀번호가 올바르지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "", "유저를 찾을 수 없습니다."),
 
+    // GameProposal
+    PROPOSAL_NOT_FOUND(HttpStatus.NOT_FOUND, "", "요청을 찾을 수 없습니다."),
+    PROPOSAL_ALREADY_REVIEWED(HttpStatus.BAD_REQUEST, "", "이미 관리자에 의해 처리된 요청입니다."),
+    NOT_YOUR_PROPOSAL(HttpStatus.UNAUTHORIZED, "","귀하가 신청한 요청이 아닙니다."),
 
     //Game
     GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "", "게임을 찾을 수 없습니다."),
+    GAME_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "", "이미 삭제된 게임입니다."),
+    GAME_ALREADY_ACTIVATED(HttpStatus.BAD_REQUEST,"", "이미 활성화된 게임입니다.."),
 
     //Community
     COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND, "", "커뮤니티를 찾을 수 없습니다."),
