@@ -6,6 +6,8 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.post.dto.response.GetAllCategoryByGameIdResponse;
 import com.example.codePicasso.domain.post.service.PostConnector;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,6 @@ public class CategoryService {
     private final GameConnector gameConnector;
     private final PostConnector postConnector;
 
-    // 파라미터에 userId, gameId만 있어서 Long 타입이라고 추가해뒀습니다
     public CategoryResponse createCategory(Long gameId, String categoryName) {
         Game game = gameConnector.findById(gameId);
         Category createCategory = Category.toEntity(game, categoryName);
@@ -31,4 +32,20 @@ public class CategoryService {
                 .map(GetAllCategoryByGameIdResponse::toDto).toList();
     }
 
+    public CategoryResponse updateCategory(Long categoryId, String categoryName) {
+        Category foundCategory = categoryConnector.findByCategoryId(categoryId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        foundCategory.updateCategory(categoryName);
+
+        return CategoryResponse.toDto(foundCategory);
+    }
+
+    public void deleteCategory(Long categoryId) {
+        Category deleteCategory = categoryConnector.findByCategoryId(categoryId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        categoryConnector.delete(deleteCategory);
+
+    }
 }

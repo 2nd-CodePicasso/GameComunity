@@ -5,9 +5,10 @@ import com.example.codePicasso.domain.post.dto.response.GetAllCategoryByGameIdRe
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category findByCategoryId(Long categoryId);
+    Optional<Category> findByCategoryId(Long categoryId);
 
     List<Category> findByGameId(Long gameId);
 }

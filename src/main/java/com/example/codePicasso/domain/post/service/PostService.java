@@ -33,7 +33,8 @@ public class PostService {
     public PostResponse createPost(Long userId, Long gameId, Long categoryId, String title, String description) {
         Game game = gameConnector.findById(gameId);
         User user = userConnector.findById(userId);
-        Category category = categoryConnector.findById(categoryId);
+        Category category = categoryConnector.findByCategoryId(categoryId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
         Post createPost = Post.toEntity(user, game, category, title, description);
         postConnector.save(createPost);
         return PostResponse.toDto(createPost);
@@ -44,12 +45,10 @@ public class PostService {
     }
 
     public List<PostResponse> findPostByCategoryId(Long categoryId) {
-        List<Post> findPostsByCategoryId = postConnector.findPostByCategoryId(categoryId);
-        return findPostsByCategoryId.stream()
+        return postConnector.findPostByCategoryId(categoryId).stream()
                 .map(PostResponse::toDto).toList();
     }
 
-    @Transactional
     public PostResponse findPostById(Long postId) {
         Post getPost = postConnector.findById(postId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
@@ -62,7 +61,8 @@ public class PostService {
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
 
         if (!foundPost.getCategory().getId().equals(categoryId)) {
-            Category category = categoryConnector.findById(categoryId);
+            Category category = categoryConnector.findByCategoryId(categoryId)
+                    .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
             foundPost.updateCategories(category);
         }
 

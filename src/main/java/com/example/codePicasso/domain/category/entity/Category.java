@@ -33,4 +33,8 @@ public class Category extends TimeStamp {
                 .categoryName(categoryName)
                 .build();
     }
+
+    public void updateCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

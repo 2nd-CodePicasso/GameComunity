@@ -20,7 +20,9 @@ public class PostController {
 
     /**
      * 게시글 생성
-     * @param toDto
+     * @param userId
+     * @param gameId
+     * @param request (categoryId, title, description)
      * @return 생성된 게시글
      */
     @PostMapping
@@ -33,6 +35,11 @@ public class PostController {
         return ApiResponse.created(response);
     }
 
+    /**
+     * gameId로 게시글 전체 조회
+     * @param gameId
+     * @return gameId 내 모든 게시글 조회
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<GetGameIdAllPostsResponse>>> findPostByGameId(
             @PathVariable("gameId") Long gameId
@@ -41,6 +48,11 @@ public class PostController {
         return ApiResponse.success(response);
     }
 
+    /**
+     * 카테고리별 게시글 전체 조회
+     * @param categoryId
+     * @return categoryId 내 모든 게시글 조회
+     */
     @GetMapping("/categories/{categoryId}")
     public ResponseEntity<ApiResponse<List<PostResponse>>> findPostsByCategoryId(
             @PathVariable("categoryId") Long categoryId
@@ -49,6 +61,11 @@ public class PostController {
         return ApiResponse.success(response);
     }
 
+    /**
+     * 개별 게시글 조회
+     * @param postId
+     * @return 개별 게시물
+     */
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> findPostById(
             @PathVariable("postId") Long postId
@@ -57,6 +74,13 @@ public class PostController {
         return ApiResponse.success(response);
     }
 
+    /**
+     * 게시글 수정
+     * @param postId
+     * @param userid
+     * @param request (categoryId, title, description)
+     * @return 수정된 게시물
+     */
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable("postId") Long postId, @RequestAttribute Long userid, PostRequest request
@@ -65,6 +89,12 @@ public class PostController {
         return ApiResponse.success(response);
     }
 
+    /**
+     * 게시물 삭제
+     * @param postId
+     * @param userId
+     * @return return 없음
+     */
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable("postId") Long postId,
