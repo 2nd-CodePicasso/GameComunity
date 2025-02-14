@@ -25,7 +25,7 @@ public class CategoryConnectorImpl implements CategoryConnector {
     }
 
     @Override
-    public List<GetAllCategoryByGameIdResponse> findCategoryByGameId(Long gameId) {
+    public List<Category> findCategoryByGameId(Long gameId) {
         return categoryRepository.findByGameId(gameId);
     }
 }

@@ -51,8 +51,8 @@ public class PostService {
 
     @Transactional
     public PostResponse findPostById(Long postId) {
-        Post getPost = postConnector.findById(postId).
-                orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post getPost = postConnector.findById(postId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
         return PostResponse.toDto(getPost);
     }
 

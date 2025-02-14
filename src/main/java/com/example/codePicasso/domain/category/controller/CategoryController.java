@@ -20,11 +20,12 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(
             @PathVariable Long gameId,
-            @RequestBody CategoryCreateRequest request
+            CategoryCreateRequest request
     ) {
-        CategoryResponse response = categoryService.createCategory(gameId, request);
+        CategoryResponse response = categoryService.createCategory(gameId, request.categoryName());
         return ApiResponse.created(response);
     }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<GetAllCategoryByGameIdResponse>>> getCategory(
             @PathVariable Long gameId

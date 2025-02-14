@@ -1,8 +1,6 @@
 package com.example.codePicasso.domain.category.dto.request;
 
-import com.example.codePicasso.domain.category.entity.Category;
-import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.users.entity.User;
+
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,10 +9,4 @@ public record CategoryCreateRequest (
         @Length(max = 10)
         String categoryName
 ) {
-        public Category toEntity(Game game) {
-                return Category.builder()
-                        .game(game)
-                        .categoryName(categoryName)
-                        .build();
-        }
 }

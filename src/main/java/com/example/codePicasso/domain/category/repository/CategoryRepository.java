@@ -9,5 +9,5 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     Category findByCategoryId(Long categoryId);
 
-    List<GetAllCategoryByGameIdResponse> findByGameId(Long gameId);
+    List<Category> findByGameId(Long gameId);
 }

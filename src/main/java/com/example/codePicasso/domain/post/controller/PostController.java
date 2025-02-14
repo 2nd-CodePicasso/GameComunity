@@ -1,7 +1,6 @@
 package com.example.codePicasso.domain.post.controller;
 
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
-import com.example.codePicasso.domain.post.dto.request.PostUpdateRequest;
 import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
@@ -28,7 +27,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
             @RequestAttribute Long userId,
             @PathVariable("gameId") Long gameId,
-            @RequestBody PostRequest request
+            PostRequest request
     ) {
         PostResponse response = postService.createPost(userId, gameId, request.categoryId(), request.title(), request.description());
         return ApiResponse.created(response);

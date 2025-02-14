@@ -12,5 +12,5 @@ public interface CategoryConnector {
 
     Category save(Category createCategory);
 
-    List<GetAllCategoryByGameIdResponse> findCategoryByGameId(Long gameId);
+    List<Category> findCategoryByGameId(Long gameId);
 }
