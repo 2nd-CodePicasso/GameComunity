@@ -1,6 +1,6 @@
 package com.example.codePicasso.domain.game.dto.response;
 
-public record GetAllGameResponse(
+public record GameGetAllResponse(
         Long gameId,
         String gameTitle
 ) {

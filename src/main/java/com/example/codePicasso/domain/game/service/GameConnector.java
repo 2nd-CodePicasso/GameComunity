@@ -1,6 +1,6 @@
 package com.example.codePicasso.domain.game.service;
 
-import com.example.codePicasso.domain.game.dto.response.GetAllGameResponse;
+import com.example.codePicasso.domain.game.dto.response.GameGetAllResponse;
 import com.example.codePicasso.domain.game.entity.Game;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public interface GameConnector {
     public void save(Game game);
 
-    public List<GetAllGameResponse> findAll();
+    public List<GameGetAllResponse> findAll();
 
     public Game findById(Long gameId);
 }
