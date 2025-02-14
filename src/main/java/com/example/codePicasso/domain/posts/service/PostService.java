@@ -8,7 +8,6 @@ import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsRespon
 import com.example.codePicasso.domain.posts.dto.response.PostResponse;
 import com.example.codePicasso.domain.posts.entity.Categories;
 import com.example.codePicasso.domain.posts.entity.Post;
-import com.example.codePicasso.domain.users.service.UserConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class PostService {
     private final PostConnector postConnector;
     private final GamesConnector gamesConnector;
     private final CategoriesConnector categoriesConnector;
-    private final UserConnector userConnector;
 
     @Transactional
     public PostResponse createPost(PostCreateRequest request) {
@@ -50,7 +48,8 @@ public class PostService {
                 .map(Post::toDto).toList();
     }
 
-    public PostResponse findByid(Long postId) {
+    @Transactional
+    public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId).
                 orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
         return getPost.toDto();
@@ -58,17 +57,17 @@ public class PostService {
 
     @Transactional
     public PostResponse updatePost(Long postId, UpdateRequest request, Long userId) {
-        Post updatePost = postConnector.findByUserIdAndPostId(postId, userId)
+        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
 
-        if (!updatePost.getCategories().getId().equals(request.categoryId())) {
+        if (!foundPost.getCategories().getId().equals(request.categoryId())) {
             Categories categories = categoriesConnector.findById(request.categoryId());
-            updatePost.updateCategories(categories);
+            foundPost.updateCategories(categories);
         }
 
-        updatePost.updatePost(request.title(), request.description());
+        foundPost.updatePost(request.title(), request.description());
 
-        return updatePost.toDto();
+        return foundPost.toDto();
     }
 
     @Transactional
@@ -78,6 +77,4 @@ public class PostService {
 
         postConnector.delete(deletePost);
     }
-
-
 }

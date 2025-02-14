@@ -19,9 +19,14 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping()
-    public ResponseEntity<ApiResponse<PostResponse>> createPost(@RequestBody PostCreateRequest toDto) {
-        PostResponse response = postService.createPost(toDto);
+    /**
+     * 게시글 생성
+     * @param toDto
+     * @return 생성된 게시글
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<PostResponse>> createPost(@RequestBody PostCreateRequest request) {
+        PostResponse response = postService.createPost(request);
         return ApiResponse.created(response);
     }
 
@@ -39,13 +44,13 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PostResponse>> findById(@PathVariable Long postId) {
-        PostResponse response = postService.findByid(postId);
+        PostResponse response = postService.findById(postId);
         return ApiResponse.success(response);
     }
 
     @PatchMapping
-    public ResponseEntity<ApiResponse<PostResponse>> updatePost(@PathVariable Long postId, @RequestBody UpdateRequest toDto, @RequestAttribute Long userid) {
-        PostResponse response = postService.updatePost(postId, toDto, userid);
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(@PathVariable Long postId, @RequestBody UpdateRequest request, @RequestAttribute Long userid) {
+        PostResponse response = postService.updatePost(postId, request, userid);
         return ApiResponse.success(response);
     }
 
