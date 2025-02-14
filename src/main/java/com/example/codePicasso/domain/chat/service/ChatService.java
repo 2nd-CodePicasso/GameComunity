@@ -15,17 +15,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final ChatConnector chatsConnector;
+    private final ChatConnector chatConnector;
 
     @Transactional
     public ChatResponse addMessage(ChatRequest chatsRequest, Long userId) {
         Chat chats = chatsRequest.toEntity(userId);
-        chatsConnector.save(chats);
+        chatConnector.save(chats);
         return chats.toDto();
     }
 
     public List<ChatResponse> getChatsHistory() {
-        List<Chat> chats = chatsConnector.findAll();
+        List<Chat> chats = chatConnector.findAll();
         return chats.stream().map(Chat::toDto).toList();
     }
 }
