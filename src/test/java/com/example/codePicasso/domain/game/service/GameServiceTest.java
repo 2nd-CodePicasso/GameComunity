@@ -1,9 +1,8 @@
-package com.example.codePicasso.domain.games.service;
+package com.example.codePicasso.domain.game.service;
 
-import com.example.codePicasso.domain.games.dto.request.UpdateGameRequest;
-import com.example.codePicasso.domain.games.dto.response.GameResponse;
-import com.example.codePicasso.domain.games.dto.response.GetAllGameResponse;
-import com.example.codePicasso.domain.games.entity.Games;
+import com.example.codePicasso.domain.game.dto.request.UpdateGameRequest;
+import com.example.codePicasso.domain.game.dto.response.GameResponse;
+import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -27,11 +26,11 @@ class GameServiceTest {
     @InjectMocks
     private GameService gameService;
 
-    private Games mockGame;
+    private Game mockGame;
 
     @BeforeEach
     void setUp() {
-        mockGame = spy(new Games(1L, null, "Test Game", "Initial Description", false));
+        mockGame = spy(new Game(1L, null, "Test Game", "Initial Description", false));
         lenient().when(gameConnector.findById(1L)).thenReturn(mockGame);
 //        when(gameConnector.findAll()).thenReturn(List.of(new GetAllGameResponse(1L, "Test Game")));
     }

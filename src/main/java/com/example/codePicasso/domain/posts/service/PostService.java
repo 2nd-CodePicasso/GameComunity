@@ -1,7 +1,7 @@
 package com.example.codePicasso.domain.posts.service;
 
-import com.example.codePicasso.domain.games.entity.Games;
-import com.example.codePicasso.domain.games.service.GameConnector;
+import com.example.codePicasso.domain.game.entity.Game;
+import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.posts.dto.request.PostCreateRequest;
 import com.example.codePicasso.domain.posts.dto.request.UpdateRequest;
 import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
@@ -31,10 +31,10 @@ public class PostService {
 
     @Transactional
     public PostResponse createPost(Long userId, Long gameId, PostCreateRequest request) {
-        Games games = gameConnector.findById(gameId);
+        Game game = gameConnector.findById(gameId);
         User user = userConnector.findById(userId);
         Categories categories = categoriesConnector.findById(request.categoryId());
-        Post createPost = request.toEntity(user, games, categories);
+        Post createPost = request.toEntity(user, game, categories);
         postConnector.save(createPost);
         return createPost.toDto();
     }

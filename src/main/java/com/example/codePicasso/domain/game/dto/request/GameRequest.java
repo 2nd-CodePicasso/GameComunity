@@ -1,13 +1,13 @@
-package com.example.codePicasso.domain.games.dto.request;
+package com.example.codePicasso.domain.game.dto.request;
 
+import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
-import com.example.codePicasso.domain.games.entity.Games;
 
 public record GameRequest(
         GameProposal gameProposal
 ) {
-    public Games toEntity() {
-        return Games.builder()
+    public Game toEntity() {
+        return Game.builder()
                 .admin(gameProposal.getAdmin())
                 .gameTitle(gameProposal.getGameTitle())
                 .gameDescription(gameProposal.getDescription())

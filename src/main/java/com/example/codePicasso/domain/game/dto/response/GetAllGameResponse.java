@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.games.dto.response;
+package com.example.codePicasso.domain.game.dto.response;
 
 public record GetAllGameResponse(
         Long gameId,

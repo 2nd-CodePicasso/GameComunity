@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.games.dto.request;
+package com.example.codePicasso.domain.game.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

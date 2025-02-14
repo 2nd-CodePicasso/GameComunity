@@ -1,6 +1,6 @@
 package com.example.codePicasso.domain.posts.entity;
 
-import com.example.codePicasso.domain.games.entity.Games;
+import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.posts.dto.response.PostResponse;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
@@ -24,7 +24,7 @@ public class Post extends TimeStamp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
-    private Games games;
+    private Game game;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -37,9 +37,9 @@ public class Post extends TimeStamp {
     private String description;
 
     @Builder
-    public Post(User user, Games games, Categories categories, String title, String description) {
+    public Post(User user, Game game, Categories categories, String title, String description) {
         this.user = user;
-        this.games = games;
+        this.game = game;
         this.categories = categories;
         this.title = title;
         this.description = description;
@@ -48,7 +48,7 @@ public class Post extends TimeStamp {
     public PostResponse toDto() {
         return PostResponse.builder().
                 postId(id).
-                gameId(games.getId()).
+                gameId(game.getId()).
                 categoryName(categories.getCategoryName()).
                 title(title).
                 description(description).

@@ -1,6 +1,6 @@
-package com.example.codePicasso.domain.games.entity;
+package com.example.codePicasso.domain.game.entity;
 
-import com.example.codePicasso.domain.games.dto.response.GameResponse;
+import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.users.entity.Admin;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Games extends TimeStamp {
+public class Game extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,7 @@
 package com.example.codePicasso.domain.posts.service;
 
-import com.example.codePicasso.domain.games.entity.Games;
-import com.example.codePicasso.domain.games.service.GameConnector;
+import com.example.codePicasso.domain.game.entity.Game;
+import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.posts.dto.request.PostCreateRequest;
 import com.example.codePicasso.domain.posts.dto.response.PostResponse;
 import com.example.codePicasso.domain.posts.entity.Categories;
@@ -40,14 +40,14 @@ class PostServiceTest {
     private Post mockPost;
     private User mockUser;
     private Admin mockAdmin;
-    private Games mockGame;
+    private Game mockGame;
     private Categories mockCategory;
 
     @BeforeEach
     void setUp() {
         mockUser = new User("user", "testUser","user123");  // 예시: User 객체 생성
         mockAdmin = new Admin("admin", "testAdmin");
-        mockGame = Games.builder()
+        mockGame = Game.builder()
                 .id(1L)
                 .admin(mockAdmin)
                 .gameTitle("testTitle")
@@ -60,7 +60,7 @@ class PostServiceTest {
                 .build();
         mockPost = Post.builder()
                 .user(mockUser)
-                .games(mockGame)
+                .game(mockGame)
                 .categories(mockCategory)
                 .title("test Title")
                 .description("This is a test post.")

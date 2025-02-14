@@ -1,9 +1,9 @@
-package com.example.codePicasso.domain.games.controller;
+package com.example.codePicasso.domain.game.controller;
 
-import com.example.codePicasso.domain.games.dto.request.UpdateGameRequest;
-import com.example.codePicasso.domain.games.dto.response.GameResponse;
-import com.example.codePicasso.domain.games.dto.response.GetAllGameResponse;
-import com.example.codePicasso.domain.games.service.GameService;
+import com.example.codePicasso.domain.game.dto.request.UpdateGameRequest;
+import com.example.codePicasso.domain.game.dto.response.GameResponse;
+import com.example.codePicasso.domain.game.dto.response.GetAllGameResponse;
+import com.example.codePicasso.domain.game.service.GameService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -5,8 +5,8 @@ import com.example.codePicasso.domain.gameProposal.dto.request.ReviewGameProposa
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
-import com.example.codePicasso.domain.games.dto.request.GameRequest;
-import com.example.codePicasso.domain.games.service.GameService;
+import com.example.codePicasso.domain.game.dto.request.GameRequest;
+import com.example.codePicasso.domain.game.service.GameService;
 import com.example.codePicasso.domain.users.entity.Admin;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.domain.users.service.AdminConnector;
