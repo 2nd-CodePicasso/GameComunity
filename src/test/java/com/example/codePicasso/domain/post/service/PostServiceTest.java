@@ -36,7 +36,7 @@ class PostServiceTest {
     private UserConnector userConnector;
 
     @Mock
-    private CategoriesConnector categoriesConnector;
+    private CategoryConnector categoriesConnector;
 
     private Post mockPost;
     private User mockUser;
