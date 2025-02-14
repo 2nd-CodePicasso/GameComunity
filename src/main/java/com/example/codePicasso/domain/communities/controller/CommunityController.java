@@ -11,9 +11,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/communities")
 public class CommunityController {
-
-    @GetMapping
-    public ResponseEntity<ApiResponse<Void>> findAll() {
-        return ApiResponse.noContent();
-    }
 }

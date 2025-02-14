@@ -2,10 +2,7 @@ package com.example.codePicasso.domain.users.entity;
 
 import com.example.codePicasso.domain.users.dto.response.AdminResponse;
 import com.example.codePicasso.global.common.TimeStamp;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +20,14 @@ public class Admin extends TimeStamp {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
     @Builder
     public Admin(String loginId, String password) {
         this.loginId = loginId;
         this.password = password;
+        this.userStatus = UserStatus.ADMIN;
     }
 
     public AdminResponse toDto() {

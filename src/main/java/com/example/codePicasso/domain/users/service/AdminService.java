@@ -10,6 +10,7 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class AdminService {
     private final AdminConnector adminConnector;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public AdminResponse addAdmin(AdminRequest adminRequest) {
         if (adminConnector.existsByLoginId(adminRequest.loginId())) {
             throw new DuplicateException(ErrorCode.ID_ALREADY_EXISTS);

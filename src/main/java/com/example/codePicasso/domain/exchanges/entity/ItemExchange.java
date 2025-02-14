@@ -33,10 +33,4 @@ public class ItemExchange extends TimeStamp {
     private int price;
     private String description;
     private int quantity;
-
-    @CreationTimestamp
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    private LocalDateTime updated_at;
 }

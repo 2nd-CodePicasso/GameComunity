@@ -10,6 +10,7 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -22,6 +23,7 @@ public class UserService {
     public void exception(){
     }
 
+    @Transactional
     public UserResponse addUser(UserRequest userRequest) {
         if (userConnector.existsByLoginId(userRequest.loginId())) {
             throw new DuplicateException(ErrorCode.ID_ALREADY_EXISTS);

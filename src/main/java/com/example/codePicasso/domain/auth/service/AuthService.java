@@ -27,7 +27,7 @@ public class AuthService {
         if (!passwordEncoder.matches(signinRequest.password(), user.getPassword())) {
             throw new InvalidRequestException(ErrorCode.PW_ERROR);
         }
-        String token = jwtUtil.createToken(user.getId());
+        String token = jwtUtil.createToken(user.getId(),user.getUserStatus());
 
         return JwtTokenResponse.builder().token(token).build();
     }
@@ -38,7 +38,7 @@ public class AuthService {
         if (!passwordEncoder.matches(signinRequest.password(), admin.getPassword())) {
             throw new InvalidRequestException(ErrorCode.PW_ERROR);
         }
-        String token = jwtUtil.createToken(admin.getId());
+        String token = jwtUtil.createToken(admin.getId(), admin.getUserStatus());
         return JwtTokenResponse.builder().token(token).build();
     }
 }

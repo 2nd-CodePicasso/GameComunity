@@ -31,4 +31,10 @@ public class UserConnectorImpl implements UserConnector {
     public User findByLoginId(String s) {
         return userRepository.findByLoginId(s).orElseThrow(()->new NotFoundException(ErrorCode.NOT_FOUND_ID));
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    }
 }

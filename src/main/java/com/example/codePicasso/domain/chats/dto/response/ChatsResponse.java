@@ -1,5 +1,11 @@
 package com.example.codePicasso.domain.chats.dto.response;
 
-public record ChatsResponse(String nickname,String content) {
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Builder
+public record ChatsResponse(Long chatsId, String sender, String message, LocalDateTime createdAt) {
 
 }

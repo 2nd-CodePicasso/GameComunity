@@ -3,10 +3,7 @@ package com.example.codePicasso.domain.users.entity;
 import com.example.codePicasso.domain.users.dto.request.UserRequest;
 import com.example.codePicasso.domain.users.dto.response.UserResponse;
 import com.example.codePicasso.global.common.TimeStamp;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +24,10 @@ public class User extends TimeStamp {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+
+    private UserStatus userStatus;
+
     private boolean isDeleted;
 
     @Builder
@@ -34,6 +35,7 @@ public class User extends TimeStamp {
         this.loginId = loginId;
         this.nickname = nickname;
         this.password = password;
+        this.userStatus = UserStatus.USER;
         this.isDeleted = false;
     }
 

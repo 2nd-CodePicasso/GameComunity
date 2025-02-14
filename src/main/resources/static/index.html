@@ -1,0 +1,125 @@
+<!-- src/main/resources/static/index.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring Boot 채팅 어플리케이션</title>
+    <!-- SockJS와 STOMP.js 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        /* 간단한 스타일 */
+        #chat {
+            width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #eee;
+            padding: 5px;
+        }
+        #messageInput {
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+<div id="chat">
+    <h2>채팅 어플리케이션</h2>
+    <div id="messages"></div>
+    <br>
+    <input type="text" id="messageInput" placeholder="메시지를 입력하세요." />
+    <button onclick="sendMessage()">전송</button>
+</div>
+
+<script>
+    var stompClient = null;
+    var token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwicm9sZXMiOiJVU0VSIiwiZXhwIjoxNzM5NDk3Mzc0LCJpYXQiOjE3Mzk0OTM3NzR9.oI3qxDKFcSLYrvSiEWVffEIf2TOspqnEOMclxEfYT5c"
+
+    // 페이지가 로드되면, 메타 태그에서 토큰을 가져와 HTTP 요청에 포
+    // WebSocket 연결 및 STOMP 클라이언트 생성
+    function connect() {
+        var socket = new SockJS('/ws'); // 서버의 WebSocket 엔드포인트
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({'Authorization': token}, function (frame) {
+            console.log('Connected: ' + frame);
+
+            // "/topic/public" 주제를 구독하여 메시지를 수신
+            stompClient.subscribe('/topic/hi', function (messageOutput) {
+                console.log("메시지수신 ", messageOutput.body)
+                showMessage(JSON.parse(messageOutput.body));
+            },{'Authorization': token});
+        });
+        loadChatHistory();
+    }
+
+        // 채팅 메시지 기록 불러오는 함수
+    function loadChatHistory() {
+        fetch('/chats/history', {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("서버 응답:", data);
+                // 서버 응답에서 'data' 객체 내의 'chatsResponseList' 접근
+                if (data && data.data && Array.isArray(data.data.chatsResponseList)) {
+                    data.data.chatsResponseList.forEach(message => {
+                        showMessage(message); // 각 메시지를 화면에 추가
+                    });
+                } else {
+                    console.error("서버 응답이 예상한 형식이 아닙니다.");
+                }
+            })
+            .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
+    }
+    function sendMessage() {
+            var messageContent = document.getElementById('messageInput').value.trim();
+            if (messageContent && stompClient) {
+                // 메시지 객체 생성 (필요에 따라 sender 값을 설정)
+                var chatMessage = {
+                    sender: "익명",
+                    message: messageContent
+                };
+
+                // "/app/chat.sendMessage" 엔드포인트로 메시지 전송
+                stompClient.send("/app/send",
+                    {'Authorization' : token},
+                    JSON.stringify(chatMessage));
+                document.getElementById('messageInput').value = '';
+            }
+
+        }
+        // 수신한 메시지를 화면에 표시하는 함수
+        function showMessage(message) {
+            console.log(message)
+            var messagesDiv = document.getElementById('messages');
+            var messageElement = document.createElement('p');
+            const createdAt = new Date(message.createdAt);
+            const realTime = createdAt.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).replace(',', '');
+            messageElement.textContent = "User" + message.sender + ": " + message.message+"  "+ realTime;
+
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // 페이지 로드 시 WebSocket 연결 실행
+        window.onload = function () {
+            connect();
+        };
+</script>
+</body>
+</html>

@@ -33,10 +33,10 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail(HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
-        log.error("예상 못한 예외 발생", e);
-        return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+//        log.error("예상 못한 예외 발생", e);
+//        return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+//    }
 }
 
