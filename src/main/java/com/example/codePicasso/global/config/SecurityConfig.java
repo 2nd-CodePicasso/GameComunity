@@ -1,6 +1,6 @@
 package com.example.codePicasso.global.config;
 
-import com.example.codePicasso.domain.users.entity.UserStatus;
+import com.example.codePicasso.domain.user.entity.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/*/admin/**").hasRole(UserStatus.ADMIN.name())
-                                .requestMatchers("/*/hi/**").permitAll()//hi는 나중에 대체예정
+                                .requestMatchers("/*/hi/**").permitAll() //hi는 나중에 대체예정
                                 .requestMatchers("/index.html").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated()

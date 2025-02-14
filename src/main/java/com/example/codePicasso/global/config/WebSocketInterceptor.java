@@ -58,6 +58,7 @@ public class WebSocketInterceptor implements ChannelInterceptor {
                 log.info(Thread.currentThread().getName(),Thread.currentThread().getId());
             } catch (Exception e) {
                 log.warn("WebSocket JWT 검증 실패", e);
+
             }
         }
         return message;

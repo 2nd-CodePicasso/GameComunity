@@ -4,7 +4,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-import com.example.codePicasso.domain.users.entity.UserStatus;
+import com.example.codePicasso.domain.user.entity.UserStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
