@@ -10,16 +10,19 @@ import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryService {
     private final CategoryConnector categoryConnector;
     private final GameConnector gameConnector;
     private final PostConnector postConnector;
 
+    @Transactional
     public CategoryResponse createCategory(Long gameId, String categoryName) {
         Game game = gameConnector.findById(gameId);
         Category createCategory = Category.toEntity(game, categoryName);
@@ -31,7 +34,7 @@ public class CategoryService {
         return categoryConnector.findCategoryByGameId(gameId).stream()
                 .map(GetAllCategoryByGameIdResponse::toDto).toList();
     }
-
+    @Transactional
     public CategoryResponse updateCategory(Long categoryId, String categoryName) {
         Category foundCategory = categoryConnector.findByCategoryId(categoryId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -40,7 +43,7 @@ public class CategoryService {
 
         return CategoryResponse.toDto(foundCategory);
     }
-
+    @Transactional
     public void deleteCategory(Long categoryId) {
         Category deleteCategory = categoryConnector.findByCategoryId(categoryId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
