@@ -4,8 +4,6 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.post.dto.request.PostCreateRequest;
-import com.example.codePicasso.domain.post.dto.request.PostUpdateRequest;
 import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
@@ -23,6 +21,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostService {
 
     private final PostConnector postConnector;
@@ -31,48 +30,45 @@ public class PostService {
     private final UserConnector userConnector;
 
     @Transactional
-    public PostResponse createPost(Long userId, Long gameId, PostCreateRequest request) {
+    public PostResponse createPost(Long userId, Long gameId, Long categoryId, String title, String description) {
         Game game = gameConnector.findById(gameId);
         User user = userConnector.findById(userId);
-        Category category = categoryConnector.findById(request.categoryId());
-        Post createPost = request.toEntity(user, game, category);
+        Category category = categoryConnector.findById(categoryId);
+        Post createPost = Post.toEntity(user, game, category, title, description);
         postConnector.save(createPost);
-        return createPost.toDto();
+        return PostResponse.toDto(createPost);
     }
 
-    @Transactional(readOnly = true)
     public List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId) {
-        List<GetGameIdAllPostsResponse> findpostsByGameId = postConnector.findPostByGameId(gameId);
-        return findpostsByGameId;
+        return postConnector.findPostByGameId(gameId);
     }
 
-    @Transactional(readOnly = true)
     public List<PostResponse> findPostByCategoryId(Long categoryId) {
         List<Post> findPostsByCategoryId = postConnector.findPostByCategoryId(categoryId);
         return findPostsByCategoryId.stream()
-                .map(Post::toDto).toList();
+                .map(PostResponse::toDto).toList();
     }
 
     @Transactional
-    public PostResponse findById(Long postId) {
+    public PostResponse findPostById(Long postId) {
         Post getPost = postConnector.findById(postId).
                 orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
-        return getPost.toDto();
+        return PostResponse.toDto(getPost);
     }
 
     @Transactional
-    public PostResponse updatePost(Long postId, PostUpdateRequest request, Long userId) {
+    public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description ) {
         Post foundPost = postConnector.findByUserIdAndPostId(postId, userId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
 
-        if (!foundPost.getCategory().getId().equals(request.categoryId())) {
-            Category category = categoryConnector.findById(request.categoryId());
+        if (!foundPost.getCategory().getId().equals(categoryId)) {
+            Category category = categoryConnector.findById(categoryId);
             foundPost.updateCategories(category);
         }
 
-        foundPost.updatePost(request.title(), request.description());
+        foundPost.updatePost(title, description);
 
-        return foundPost.toDto();
+        return PostResponse.toDto(foundPost);
     }
 
     @Transactional

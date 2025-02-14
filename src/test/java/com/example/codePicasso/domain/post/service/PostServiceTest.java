@@ -4,7 +4,7 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.post.dto.request.PostCreateRequest;
+import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.users.entity.Admin;
@@ -84,13 +84,13 @@ class PostServiceTest {
         Long userId = 1L;
         Long gameId = 1L;
         Long categoryId = 1L;
-        PostCreateRequest request = new PostCreateRequest(1L, "testTitle", "This is a test post.");
+        PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
         when(gameConnector.findById(gameId)).thenReturn(mockGame);
         when(userConnector.findById(userId)).thenReturn(mockUser);
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
 
         // When
-        PostResponse response = postService.createPost(userId, gameId, request);
+        PostResponse response = postService.createPost(userId, gameId, categoryId, request.title(), request.description());
 
         // Then
         verify(postConnector, times(1)).save(any());
