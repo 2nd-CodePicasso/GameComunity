@@ -4,6 +4,7 @@ import com.example.codePicasso.domain.games.dto.request.UpdateGameRequest;
 import com.example.codePicasso.domain.games.dto.response.GameResponse;
 import com.example.codePicasso.domain.games.dto.response.GetAllGameResponse;
 import com.example.codePicasso.domain.games.entity.Games;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,6 +67,19 @@ class GameServiceTest {
     }
 
     @Test
+    void 삭제된_게임_삭제_시도() {
+        // Given
+        Long gameId = 1L;
+        gameService.deleteGame(1L);
+
+        // When & Then
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> gameService.deleteGame(gameId));
+        assertEquals(ErrorCode.GAME_ALREADY_DELETED, exception.getErrorCode());
+        verify(gameConnector, times(1)).save(mockGame);
+    }
+
+    @Test
     void 게임_복구() {
         // Given
         Long gameId = 1L;
@@ -77,5 +91,17 @@ class GameServiceTest {
         // Then
         assertFalse(mockGame.isDeleted());
         verify(gameConnector, times(2)).save(mockGame);
+    }
+
+    @Test
+    void 활성_상태인_게임_복구_시도() {
+        // Given
+        Long gameId = 1L;
+
+        // When & Then
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class,
+                () -> gameService.restoreGame(gameId));
+        assertEquals(ErrorCode.GAME_ALREADY_ACTIVATED, exception.getErrorCode());
+        verify(gameConnector, times(0)).save(mockGame);
     }
 }
