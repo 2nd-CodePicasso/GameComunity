@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RepositoryConnectorImpl implements CategoryConnector {
+    @Override
+    public void save(Category createCategory) {
+
+    }
 
     private final CategoryRepository mCategoryRepository;
 

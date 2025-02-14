@@ -7,4 +7,6 @@ import org.springframework.stereotype.Component;
 public interface CategoryConnector {
 
     Category findById(Long aLong);
+
+    void save(Category createCategory);
 }
