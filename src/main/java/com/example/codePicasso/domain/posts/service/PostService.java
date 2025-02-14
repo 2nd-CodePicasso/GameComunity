@@ -1,13 +1,15 @@
 package com.example.codePicasso.domain.posts.service;
 
 import com.example.codePicasso.domain.games.entity.Games;
-import com.example.codePicasso.domain.games.service.GamesConnector;
+import com.example.codePicasso.domain.games.service.GameConnector;
 import com.example.codePicasso.domain.posts.dto.request.PostCreateRequest;
 import com.example.codePicasso.domain.posts.dto.request.UpdateRequest;
 import com.example.codePicasso.domain.posts.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.posts.dto.response.PostResponse;
 import com.example.codePicasso.domain.posts.entity.Categories;
 import com.example.codePicasso.domain.posts.entity.Post;
+import com.example.codePicasso.domain.users.entity.User;
+import com.example.codePicasso.domain.users.service.UserConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +25,16 @@ import java.util.List;
 public class PostService {
 
     private final PostConnector postConnector;
-    private final GamesConnector gamesConnector;
+    private final GameConnector gameConnector;
     private final CategoriesConnector categoriesConnector;
+    private final UserConnector userConnector;
 
     @Transactional
-    public PostResponse createPost(PostCreateRequest request) {
-        Games games = gamesConnector.findById(request.gameId());
+    public PostResponse createPost(Long userId, Long gameId, PostCreateRequest request) {
+        Games games = gameConnector.findById(gameId);
+        User user = userConnector.findById(userId);
         Categories categories = categoriesConnector.findById(request.categoryId());
-        Post createPost = request.toEntity(games, categories);
+        Post createPost = request.toEntity(user, games, categories);
         postConnector.save(createPost);
         return createPost.toDto();
     }
