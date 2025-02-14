@@ -3,12 +3,16 @@ package com.example.codePicasso.domain.posts.entity;
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Categories extends TimeStamp {
 
     @Id
