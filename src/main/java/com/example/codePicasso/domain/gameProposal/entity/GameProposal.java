@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -47,6 +46,7 @@ public class GameProposal extends TimeStamp {
                 .userId(user.getId())
                 .adminId(admin == null ? null : admin.getId())
                 .gameTitle(gameTitle)
+                .description(description)
                 .status(status)
                 .build();
     }
