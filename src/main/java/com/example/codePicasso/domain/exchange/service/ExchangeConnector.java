@@ -11,8 +11,6 @@ public interface ExchangeConnector {
 
     Exchange save(Exchange exchange);
 
-//    List<Exchange> findAll();
-
     Page<Exchange> findByTradeType(TradeType tradeType, Pageable pageable);
 
     Page<Exchange> findByGameIdAndTradeType(Long gameId, TradeType tradeType, Pageable pageable);
@@ -20,4 +18,6 @@ public interface ExchangeConnector {
     Exchange findById(Long id);
 
     void deleteById(Long id);
+
+//    List<Exchange> findAll();
 }
