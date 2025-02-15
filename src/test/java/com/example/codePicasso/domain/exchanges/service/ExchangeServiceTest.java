@@ -4,6 +4,7 @@ import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
+import com.example.codePicasso.domain.exchange.repository.ExchangeRepository;
 import com.example.codePicasso.domain.exchange.service.ExchangeConnector;
 import com.example.codePicasso.domain.exchange.service.ExchangeService;
 import com.example.codePicasso.domain.games.entity.Games;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -98,7 +100,7 @@ class ExchangeServiceTest {
         when(exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.BUY, pageable)).thenReturn(exchanges);
 
         // when
-        Page<ExchangeResponse> responses = exchangeService.getBuyExchangesByGameId(gameId, page, size);
+        Page<ExchangeResponse> responses = exchangeService.getBuyExchanges(gameId, page, size);
 
         // then
         verify(exchangeConnector).findByGameIdAndTradeType(gameId, TradeType.BUY, pageable);
@@ -112,7 +114,7 @@ class ExchangeServiceTest {
         when(exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.SELL, pageable)).thenReturn(exchanges);
 
         // when
-        Page<ExchangeResponse> responses = exchangeService.getSellExchangesByGameId(gameId, page, size);
+        Page<ExchangeResponse> responses = exchangeService.getSellExchanges(gameId, page, size);
 
         // then
         verify(exchangeConnector).findByGameIdAndTradeType(gameId, TradeType.SELL, pageable);
@@ -170,7 +172,7 @@ class ExchangeServiceTest {
         when(exchangeConnector.findByTradeType(TradeType.BUY, pageable)).thenReturn(exchanges);
 
         // when
-        Page<ExchangeResponse> responses = exchangeService.getBuyExchangesByGameId(null, page, size);
+        Page<ExchangeResponse> responses = exchangeService.getBuyExchanges(null, page, size);
 
         // then
         verify(exchangeConnector).findByTradeType(TradeType.BUY, pageable);
@@ -179,16 +181,29 @@ class ExchangeServiceTest {
     }
 
     @Test
-    void 거래소_게시글_삭제_유저_예외처리() {
+    void 거래소_게시글_USER_NOT_FOUND() {
         // given
-        when(exchange.getUser().getId()).thenReturn(userId);
         Long wrongUserId = 2L;
+        when(exchange.getUser().getId()).thenReturn(userId);
 
         // when & then
         NotFoundException exception = assertThrows(NotFoundException.class, () -> {
             exchangeService.deleteExchange(exchangeId, wrongUserId);
         });
         assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    void 거래소_게시글_EXCHANGE_NOT_FOUND() {
+        // given
+        Long wrongExchangeId = 2L;
+        when(exchangeConnector.findById(wrongExchangeId)).thenThrow(new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND));
+
+        // when & then
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            exchangeService.deleteExchange(wrongExchangeId, userId);
+        });
+        assertEquals(ErrorCode.EXCHANGE_NOT_FOUND, exception.getErrorCode());
     }
 }
 
