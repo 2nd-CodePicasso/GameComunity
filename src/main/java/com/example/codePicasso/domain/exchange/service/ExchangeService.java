@@ -36,30 +36,35 @@ public class ExchangeService {
 
         Exchange exchange = request.toEntity(user, games, tradeType);
         Exchange savedExchange = exchangeConnector.save(exchange);
-        return ExchangeResponse.fromEntity(savedExchange);
+
+        return savedExchange.toDto();
     }
 
     // 거래소 아이템 조회_구매 (페이지네이션 적용)
-    public Page<ExchangeResponse> getBuyExchangesByGameId(Long gameId, int page, int size) {
+    public Page<ExchangeResponse> getBuyExchanges(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+
         Page<Exchange> exchanges = (gameId == null)
                 ? exchangeConnector.findByTradeType(TradeType.BUY, pageable)
                 : exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.BUY, pageable);
-        return exchanges.map(ExchangeResponse::fromEntity);
+
+        return exchanges.map(Exchange::toDto);
     }
 
     // 거래소 아이템 조회_판매 (페이지네이션 적용)
-    public Page<ExchangeResponse> getSellExchangesByGameId(Long gameId, int page, int size) {
+    public Page<ExchangeResponse> getSellExchanges(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+
         Page<Exchange> exchanges = (gameId == null)
                 ? exchangeConnector.findByTradeType(TradeType.SELL, pageable)
                 : exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.SELL, pageable);
-        return exchanges.map(ExchangeResponse::fromEntity);
+
+        return exchanges.map(Exchange::toDto);
     }
 
     // 거래소 아이템 조회_특정 아이템
     public ExchangeResponse getExchangeById(Long exchangesId) {
-        return ExchangeResponse.fromEntity(exchangeConnector.findById(exchangesId));
+        return exchangeConnector.findById(exchangesId).toDto();
     }
 
     // 거래소 아이템 수정
@@ -73,7 +78,8 @@ public class ExchangeService {
 
         exchange.update(request.title(), request.price());
         Exchange updatedExchange = exchangeConnector.save(exchange);
-        return ExchangeResponse.fromEntity(updatedExchange);
+
+        return updatedExchange.toDto();
     }
 
     // 거래소 아이템 삭제
