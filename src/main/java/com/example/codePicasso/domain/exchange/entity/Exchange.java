@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.exchange.entity;
 
+import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.games.entity.Games;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
