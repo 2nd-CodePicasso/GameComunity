@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -20,12 +21,8 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
         return exchangeRepository.save(exchange);
     }
 
-//    @Override
-//    public List<Exchange> findAll() {
-//        return exchangeRepository.findAll();
-//    }
-
     @Override
+    @Transactional(readOnly = true)
     public Page<Exchange> findByTradeType(TradeType tradeType, Pageable pageable) {
         return exchangeRepository.findAllByTradeType(tradeType, pageable);
     }
@@ -45,5 +42,8 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
         exchangeRepository.deleteById(id);
     }
 
-
+//    @Override
+//    public List<Exchange> findAll() {
+//        return exchangeRepository.findAll();
+//    }
 }
