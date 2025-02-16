@@ -42,9 +42,8 @@ public class GameProposal extends TimeStamp {
 
     public GameProposalResponse toDto(){
         return GameProposalResponse.builder()
-                .id(id)
-                .userId(user.getId())
-                .adminId(admin == null ? null : admin.getId())
+                .userLoginId(user.getLoginId())
+                .adminLoginId(admin == null ? null : admin.getLoginId())
                 .gameTitle(gameTitle)
                 .description(description)
                 .status(status)

@@ -35,7 +35,6 @@ public class Game extends TimeStamp {
 
     public GameResponse toDto() {
         return GameResponse.builder()
-                .id(id)
                 .gameTitle(gameTitle)
                 .gameDescription(gameDescription)
                 .created_at(getCreatedAt())
