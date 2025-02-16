@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/games")
@@ -19,8 +17,8 @@ public class GameController {
     private final GameService gameService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GameGetAllResponse>>> getAllGames() {
-        List<GameGetAllResponse> response = gameService.getAllGames();
+    public ResponseEntity<ApiResponse<GameGetAllResponse>> getAllGames() {
+        GameGetAllResponse response = gameService.getAllGames();
 
         return ApiResponse.success(response);
     }

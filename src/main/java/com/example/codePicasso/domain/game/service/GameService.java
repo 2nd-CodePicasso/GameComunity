@@ -1,19 +1,17 @@
 package com.example.codePicasso.domain.game.service;
 
-import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector;
 import com.example.codePicasso.domain.game.dto.request.GameRequest;
 import com.example.codePicasso.domain.game.dto.request.GameUpdateRequest;
-import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.dto.response.GameGetAllResponse;
+import com.example.codePicasso.domain.game.dto.response.GameResponse;
+import com.example.codePicasso.domain.game.entity.Game;
+import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -31,8 +29,9 @@ public class GameService {
         gameConnector.save(game);
     }
 
-    public List<GameGetAllResponse> getAllGames() {
-        return gameConnector.findAll();
+    public GameGetAllResponse getAllGames() {
+        return new GameGetAllResponse(gameConnector.findAll().stream()
+                .map(Game::toDto).toList());
     }
 
     @Transactional
