@@ -2,6 +2,7 @@ package com.example.codePicasso.domain.gameProposal.controller;
 
 import com.example.codePicasso.domain.gameProposal.dto.request.CreateGameProposalRequest;
 import com.example.codePicasso.domain.gameProposal.dto.request.ReviewGameProposalRequest;
+import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalGetManyResponse;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalService;
@@ -9,8 +10,6 @@ import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,24 +29,24 @@ public class GameProposalController {
     }
 
     @GetMapping("/all/admin")
-    public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getAllProposalsApi() {
-        List<GameProposalResponse> response = gameProposalService.getAllProposals();
+    public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getAllProposalsApi() {
+        GameProposalGetManyResponse response = gameProposalService.getAllProposals();
         return ApiResponse.success(response);
     }
 
     @GetMapping("/status/admin")
-    public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getProposalsByStatusApi(
+    public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getProposalsByStatusApi(
             @RequestParam ProposalStatus status
     ) {
-        List<GameProposalResponse> response = gameProposalService.getProposalsByStatus(status);
+        GameProposalGetManyResponse response = gameProposalService.getProposalsByStatus(status);
         return ApiResponse.success(response);
     }
 
     @GetMapping("/my-proposals")
-    public ResponseEntity<ApiResponse<List<GameProposalResponse>>> getMyProposalsApi(
+    public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getMyProposalsApi(
             @RequestAttribute Long userId
     ) {
-        List<GameProposalResponse> response = gameProposalService.getMyProposals(userId);
+        GameProposalGetManyResponse response = gameProposalService.getMyProposals(userId);
         return ApiResponse.success(response);
     }
 

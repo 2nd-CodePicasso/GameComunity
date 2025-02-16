@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.gameProposal.repository;
 
-import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector;
@@ -33,17 +32,17 @@ public class GameProposalConnectorImpl implements GameProposalConnector {
     }
 
     @Override
-    public List<GameProposalResponse> findAll() {
-        return repository.findAllProposals();
+    public List<GameProposal> findAll() {
+        return repository.findAll();
     }
 
     @Override
-    public List<GameProposalResponse> findByStatus(ProposalStatus status) {
+    public List<GameProposal> findByStatus(ProposalStatus status) {
         return repository.findByStatus(status);
     }
 
     @Override
-    public List<GameProposalResponse> findByUserId(Long userId) {
+    public List<GameProposal> findByUserId(Long userId) {
         return repository.findByUserId(userId);
     }
 }
