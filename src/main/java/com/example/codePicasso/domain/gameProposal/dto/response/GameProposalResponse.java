@@ -5,6 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record GameProposalResponse(
+        Long id,
         String userLoginId,
         String adminLoginId,
         String gameTitle,
