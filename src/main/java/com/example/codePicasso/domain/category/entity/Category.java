@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "categories")
+@Builder
 public class Category extends TimeStamp {
 
     @Id
@@ -27,10 +27,14 @@ public class Category extends TimeStamp {
 
     private String categoryName;
 
-    public CategoryResponse toDto() {
-        return CategoryResponse.builder()
-                .categoryId(id)
+    public static Category toEntity(Game game, String categoryName) {
+        return Category.builder()
+                .game(game)
                 .categoryName(categoryName)
                 .build();
+    }
+
+    public void updateCategory(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

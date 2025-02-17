@@ -2,7 +2,6 @@ package com.example.codePicasso.domain.post.entity;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
@@ -46,18 +45,6 @@ public class Post extends TimeStamp {
         this.description = description;
     }
 
-    public PostResponse toDto() {
-        return PostResponse.builder().
-                postId(id).
-                gameId(game.getId()).
-                categoryName(category.getCategoryName()).
-                title(title).
-                description(description).
-                createdAt(getCreatedAt()).
-                updatedAt(getUpdatedAt()).
-                build();
-    }
-
     public void updateCategories(Category category) {
         this.category = category;
     }
@@ -65,5 +52,15 @@ public class Post extends TimeStamp {
     public void updatePost(String title, String description) {
         this.title = title;
         this.description = description;
+    }
+
+    public static Post toEntity(User user, Game game, Category category, String title, String description) {
+        return Post.builder()
+                .user(user)
+                .game(game)
+                .category(category)
+                .title(title)
+                .description(description)
+                .build();
     }
 }
