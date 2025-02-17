@@ -18,9 +18,11 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GameProposalService {
 
@@ -29,6 +31,7 @@ public class GameProposalService {
     private final AdminConnector adminConnector;
     private final GameService gameService;
 
+    @Transactional
     public GameProposalResponse createProposal(CreateGameProposalRequest request, Long userId) {
         User foundUser = userConnector.findById(userId);
 
@@ -62,6 +65,7 @@ public class GameProposalService {
                 .map(GameProposal::toDto).toList());
     }
 
+    @Transactional
     public GameProposalResponse cancelProposal(Long proposalId, Long userId) {
         GameProposal foundProposal = gameProposalConnector.findById(proposalId);
         if (foundProposal.getStatus() != ProposalStatus.WAITING) {
@@ -75,6 +79,7 @@ public class GameProposalService {
         return foundProposal.toDto();
     }
 
+    @Transactional
     public GameProposalResponse reviewProposal(Long proposalId, ReviewGameProposalRequest request, Long adminId) {
         GameProposal proposal = gameProposalConnector.findById(proposalId);
         Admin foundAdmin = adminConnector.findById(adminId);
