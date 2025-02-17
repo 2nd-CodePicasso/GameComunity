@@ -13,5 +13,7 @@ public interface RoomConnector {
 
     ChatRoom findByName(String roomName);
 
-    ChatRoom findByIdAndUserId(Long aLong, Long userId);
+    ChatRoom findByIdAndUserId(Long roomId, Long userId);
+
+    void deleteRoom(ChatRoom chatRoom);
 }

@@ -45,7 +45,16 @@ public class RoomService {
         if (!chatRoom.getName().equals(updateRoomRequest.name())) {
             chatRoom.updateName(updateRoomRequest.name());
         }
+        if (!chatRoom.getUser().getNickname().equals(updateRoomRequest.username())) {
+            User user = userConnector.findByNickname(updateRoomRequest.name());
+            chatRoom.updateUser(user);
+        }
 
         return chatRoom.toDto();
+    }
+
+    public void deleteRoom(Long roomId, Long userId) {
+        ChatRoom chatRoom = roomConnector.findByIdAndUserId(roomId, userId);
+        roomConnector.deleteRoom(chatRoom);
     }
 }

@@ -36,4 +36,8 @@ public class ChatRoom {
     public void updateName(String name) {
         this.name = name;
     }
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
 }
