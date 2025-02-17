@@ -1,7 +1,12 @@
 package com.example.codePicasso.domain.exchanges.repository;
 
-import com.example.codePicasso.domain.exchanges.entity.ItemExchange;
+import com.example.codePicasso.domain.exchanges.entity.Exchange;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ExchangeRepository extends JpaRepository<ItemExchange, Long> {
+import java.util.List;
+
+public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
+
+    List<Exchange> findByGameId(Long gameId);
+
 }

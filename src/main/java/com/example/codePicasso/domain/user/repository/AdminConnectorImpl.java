@@ -29,4 +29,9 @@ public class AdminConnectorImpl implements AdminConnector {
     public Admin findByLoginId(String s) {
         return adminRepository.findByLoginId(s);
     }
+
+    @Override
+    public Admin findById(Long id) {
+        return adminRepository.findById(id).orElseThrow();
+    }
 }
