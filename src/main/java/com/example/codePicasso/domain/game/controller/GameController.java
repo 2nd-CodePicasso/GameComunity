@@ -1,0 +1,52 @@
+package com.example.codePicasso.domain.game.controller;
+
+import com.example.codePicasso.domain.game.dto.request.GameUpdateRequest;
+import com.example.codePicasso.domain.game.dto.response.GameGetAllResponse;
+import com.example.codePicasso.domain.game.dto.response.GameResponse;
+import com.example.codePicasso.domain.game.service.GameService;
+import com.example.codePicasso.global.common.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/games")
+public class GameController {
+
+    private final GameService gameService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<GameGetAllResponse>> getAllGames() {
+        GameGetAllResponse response = gameService.getAllGames();
+
+        return ApiResponse.success(response);
+    }
+
+    @PatchMapping("{gameId}/admin")
+    public ResponseEntity<ApiResponse<GameResponse>> updateGame(
+            @PathVariable Long gameId,
+            @RequestBody GameUpdateRequest request
+    ) {
+        GameResponse response = gameService.updateGame(gameId, request);
+        return ApiResponse.success(response);
+    }
+
+    @DeleteMapping("{gameId}")
+    public ResponseEntity<ApiResponse<Void>> deleteGame(
+            @PathVariable Long gameId
+    ) {
+        gameService.deleteGame(gameId);
+
+        return ApiResponse.noContentAndSendMessage("게임이 삭제되었습니다.");
+    }
+
+    @PatchMapping("/{gameId}/restore")
+    public ResponseEntity<ApiResponse<Void>> restoreGame(
+            @PathVariable Long gameId
+    ) {
+        gameService.restoreGame(gameId);
+
+        return ApiResponse.noContentAndSendMessage("게임이 복구되었습니다.");
+    }
+}

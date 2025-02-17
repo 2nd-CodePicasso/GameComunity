@@ -10,4 +10,6 @@ public interface UserConnector {
     boolean existsByLoginId(String s);
 
     User findByLoginId(String s);
+
+    User findById(Long id);
 }
