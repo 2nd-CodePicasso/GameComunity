@@ -42,7 +42,7 @@ public class RoomController {
         return ApiResponse.success(room);
     }
 
-    @PostMapping
+    @PatchMapping
     public ResponseEntity<ApiResponse<RoomResponse>> updateRoom(
             @RequestAttribute Long userId,
             @RequestBody UpdateRoomRequest updateRoomRequest

@@ -12,4 +12,6 @@ public interface RoomConnector {
     List<ChatRoom> findAll();
 
     ChatRoom findByName(String roomName);
+
+    ChatRoom findByIdAndUserId(Long aLong, Long userId);
 }

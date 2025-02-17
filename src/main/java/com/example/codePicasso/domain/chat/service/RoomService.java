@@ -39,7 +39,13 @@ public class RoomService {
         return chatRoom.toDto();
     }
 
+    @Transactional
     public RoomResponse updateRoom(UpdateRoomRequest updateRoomRequest, Long userId) {
-        return null;
+        ChatRoom chatRoom = roomConnector.findByIdAndUserId(updateRoomRequest.roomId(), userId);
+        if (!chatRoom.getName().equals(updateRoomRequest.name())) {
+            chatRoom.updateName(updateRoomRequest.name());
+        }
+
+        return chatRoom.toDto();
     }
 }

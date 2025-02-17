@@ -2,7 +2,6 @@ package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
-import com.example.codePicasso.domain.games.dto.response.GameResponse;
 
 
 public class ToDto {

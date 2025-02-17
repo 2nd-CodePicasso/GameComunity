@@ -5,8 +5,10 @@ import com.example.codePicasso.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -29,5 +31,9 @@ public class ChatRoom {
                 .username(user.getNickname())
                 .roomName(name)
                 .build();
+    }
+
+    public void updateName(String name) {
+        this.name = name;
     }
 }

@@ -49,7 +49,6 @@ dependencies {
     //스프링시큐리티
    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 tasks.named('test') {
