@@ -2,7 +2,7 @@ package com.example.codePicasso.domain.post.entity;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.users.entity.User;
+import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
 import lombok.Builder;
