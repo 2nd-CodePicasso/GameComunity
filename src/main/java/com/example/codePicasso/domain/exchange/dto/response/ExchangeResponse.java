@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.exchange.dto.response;
 
 import com.example.codePicasso.domain.exchange.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import lombok.Builder;
 
@@ -13,6 +14,8 @@ public record ExchangeResponse(
         int price,
         String description,
         int quantity,
-        TradeType tradeType
+        int contact,
+        TradeType tradeType,
+        StatusType statustype
 ) {
 }

@@ -30,10 +30,10 @@ public class Exchange extends TimeStamp {
     private Game game;
 
     private String title;
-
     private int price;
-    private String description;
     private int quantity;
+    private String description;
+    private int contact;
 
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
@@ -46,6 +46,10 @@ public class Exchange extends TimeStamp {
         this.price = price;
     }
 
+    public void changeStatus(StatusType statusType){
+        this.statusType = statusType;
+    }
+
     public ExchangeResponse toDto(){
         return ExchangeResponse.builder()
                 .id(id)
@@ -55,7 +59,9 @@ public class Exchange extends TimeStamp {
                 .price(price)
                 .description(description)
                 .quantity(quantity)
+                .contact(contact)
                 .tradeType(tradeType)
+                .statustype(statusType)
                 .build();
     }
 }
