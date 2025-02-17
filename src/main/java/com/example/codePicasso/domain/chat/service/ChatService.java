@@ -21,6 +21,7 @@ public class ChatService {
     public ChatResponse addMessage(ChatRequest chatsRequest, Long userId) {
         Chat chats = chatsRequest.toEntity(userId);
         chatConnector.save(chats);
+
         return chats.toDto();
     }
 

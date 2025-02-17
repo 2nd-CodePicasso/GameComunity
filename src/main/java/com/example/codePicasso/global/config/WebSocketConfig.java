@@ -13,14 +13,14 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-   private final WebSocketInterceptor webSocketInterceptor;
+    private final MessageInterceptor messageInterceptor;
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:8080/")
-                .withSockJS();
-    }
+        @Override
+        public void registerStompEndpoints(StompEndpointRegistry registry) {
+            registry.addEndpoint("/ws")
+                    .setAllowedOrigins("http://localhost:8080/")
+                    .withSockJS();
+        }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -30,7 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration channelRegistration) {
-        channelRegistration.interceptors(webSocketInterceptor);
+        channelRegistration.interceptors(messageInterceptor);
     }
 
 

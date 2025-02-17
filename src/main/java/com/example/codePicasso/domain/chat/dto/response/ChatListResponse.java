@@ -5,5 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ChatListResponse(List<ChatResponse> chatsResponseList) {
+public record ChatListResponse(
+        List<ChatResponse> chatsResponseList
+) {
 }
