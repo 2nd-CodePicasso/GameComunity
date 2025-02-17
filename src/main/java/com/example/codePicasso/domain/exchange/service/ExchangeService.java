@@ -1,8 +1,13 @@
 package com.example.codePicasso.domain.exchange.service;
 
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.PutExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.MyExchange;
+import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
@@ -13,10 +18,14 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExchangeService {
 
     private final ExchangeConnector exchangeConnector;
+    private final MyExchangeConnector myExchangeConnector;
     private final GameConnector gameConnector;
     private final UserConnector userConnector;
 
@@ -94,7 +104,50 @@ public class ExchangeService {
         exchangeConnector.deleteById(exchangeId);
     }
 
-      // V2
+    // 판매하기 & 구매하기
+    @Transactional
+    public MyExchangeResponse doExchange(Long exchangeId, Long userId, MyExchangeRequest request) {
+        Exchange exchange = exchangeConnector.findById(exchangeId);
+        User user = userConnector.findById(userId);
+
+        exchange.changeStatus(StatusType.PROGRESS);
+        exchangeConnector.save(exchange);
+
+        MyExchange myExchange = request.toEntity(exchange, user);
+        MyExchange savedMyExchange = myExchangeConnector.save(myExchange);
+
+        return savedMyExchange.toDto();
+    }
+
+    //내 구매하기 목록
+    public Page<MyExchangeResponse> getMyBuyExchanges(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable);
+
+        return myExchanges.map(MyExchange::toDto);
+    }
+
+    //내 판매하기 목록
+    public Page<MyExchangeResponse> getMySellExchanges(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable);
+
+        return myExchanges.map(MyExchange::toDto);
+    }
+
+    //거래 상태 변경 및 처리 로직.
+    public void putExchange(Long myExchangeId, Long userId, PutExchangeRequest putExchangeRequest) {
+        MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
+
+        if (!myExchange.getUser().getId().equals(userId)) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        myExchange.getExchange().changeStatus(putExchangeRequest.statusType());
+        myExchangeConnector.save(myExchange);
+    }
+
+    // V2
 //    //전체 게임의 게시글 목록 조회
 //    @Transactional(readOnly = true)
 //    public List<ExchangeResponse> getExchanges() {
