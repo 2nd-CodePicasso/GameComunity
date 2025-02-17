@@ -27,22 +27,32 @@ public class Exchange extends TimeStamp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
-    private Games games;
+    private Game game;
 
     private String title;
 
-    private int quantity;
     private int price;
     private String description;
+    private int quantity;
 
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
 
-    @Enumerated(EnumType.STRING)
-    private StatusType statusType;
-
     public void update(String title, int price) {
         this.title = title;
         this.price = price;
+    }
+
+    public ExchangeResponse toDto(){
+        return ExchangeResponse.builder()
+                .id(id)
+                .userId(user.getId())
+                .gameId(game.getId())
+                .title(title)
+                .price(price)
+                .description(description)
+                .quantity(quantity)
+                .tradeType(tradeType)
+                .build();
     }
 }

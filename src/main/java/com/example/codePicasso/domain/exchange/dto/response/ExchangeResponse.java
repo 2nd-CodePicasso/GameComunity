@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.exchange.dto.response;
 
 import com.example.codePicasso.domain.exchange.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.TradeType;
 import lombok.Builder;
 
 @Builder
@@ -11,17 +12,7 @@ public record ExchangeResponse(
         String title,
         int price,
         String description,
-        int quantity
+        int quantity,
+        TradeType tradeType
 ) {
-    public static ExchangeResponse fromEntity(Exchange exchange) {
-        return ExchangeResponse.builder()
-                .id(exchange.getId())
-                .userId(exchange.getUser().getId())
-                .gameId(exchange.getGames().getId())
-                .title(exchange.getTitle())
-                .price(exchange.getPrice())
-                .description(exchange.getDescription())
-                .quantity(exchange.getQuantity())
-                .build();
-    }
 }

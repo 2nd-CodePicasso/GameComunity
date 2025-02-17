@@ -4,8 +4,8 @@ import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
-import com.example.codePicasso.domain.games.entity.Games;
-import com.example.codePicasso.domain.games.service.GamesConnector;
+import com.example.codePicasso.domain.game.entity.Game;
+import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.users.entity.User;
 import com.example.codePicasso.domain.users.service.UserConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
@@ -25,16 +25,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExchangeService {
 
     private final ExchangeConnector exchangeConnector;
-    private final GamesConnector gamesConnector;
+    private final GameConnector gameConnector;
     private final UserConnector userConnector;
 
     // 거래소 아이템 생성
     @Transactional
     public ExchangeResponse createExchange(ExchangeRequest request, TradeType tradeType, Long userId) {
         User user = userConnector.findById(userId);
-        Games games = gamesConnector.findById(request.gameId());
+        Game game = gameConnector.findById(request.gameId());
 
-        Exchange exchange = request.toEntity(user, games, tradeType);
+        Exchange exchange = request.toEntity(user, game, tradeType);
         Exchange savedExchange = exchangeConnector.save(exchange);
 
         return savedExchange.toDto();

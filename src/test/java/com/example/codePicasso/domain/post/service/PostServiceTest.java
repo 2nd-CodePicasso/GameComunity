@@ -17,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -87,7 +89,7 @@ class PostServiceTest {
         PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
         when(gameConnector.findById(gameId)).thenReturn(mockGame);
         when(userConnector.findById(userId)).thenReturn(mockUser);
-        when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
+        when(categoriesConnector.findById(categoryId)).thenReturn(Optional.ofNullable(mockCategory));
 
         // When
         PostResponse response = postService.createPost(userId, gameId, categoryId, request.title(), request.description());
