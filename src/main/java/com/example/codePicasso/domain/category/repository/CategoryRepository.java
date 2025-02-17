@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Optional<Category> findByCategoryId(Long categoryId);
 
     List<Category> findByGameId(Long gameId);
 }

@@ -14,10 +14,9 @@ public class CategoryConnectorImpl implements CategoryConnector {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Optional<Category> findByCategoryId(Long categoryId) {
-        return categoryRepository.findByCategoryId(categoryId);
+    public Optional<Category> findById(Long categoryId) {
+        return categoryRepository.findById(categoryId);
     }
-
 
     @Override
     public Category save(Category createCategory) {

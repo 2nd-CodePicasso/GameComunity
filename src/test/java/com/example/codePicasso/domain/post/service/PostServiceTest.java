@@ -87,7 +87,7 @@ class PostServiceTest {
         PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
         when(gameConnector.findById(gameId)).thenReturn(mockGame);
         when(userConnector.findById(userId)).thenReturn(mockUser);
-        when(categoriesConnector.findByCategoryId(categoryId)).thenReturn(mockCategory);
+        when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
 
         // When
         PostResponse response = postService.createPost(userId, gameId, categoryId, request.title(), request.description());

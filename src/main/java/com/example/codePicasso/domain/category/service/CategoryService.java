@@ -5,7 +5,6 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.post.dto.response.GetAllCategoryByGameIdResponse;
-import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import java.util.List;
 public class CategoryService {
     private final CategoryConnector categoryConnector;
     private final GameConnector gameConnector;
-    private final PostConnector postConnector;
 
     @Transactional
     public CategoryResponse createCategory(Long gameId, String categoryName) {
@@ -36,7 +34,7 @@ public class CategoryService {
     }
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, String categoryName) {
-        Category foundCategory = categoryConnector.findByCategoryId(categoryId)
+        Category foundCategory = categoryConnector.findById(categoryId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
 
         foundCategory.updateCategory(categoryName);
@@ -45,7 +43,7 @@ public class CategoryService {
     }
     @Transactional
     public void deleteCategory(Long categoryId) {
-        Category deleteCategory = categoryConnector.findByCategoryId(categoryId)
+        Category deleteCategory = categoryConnector.findById(categoryId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
 
         categoryConnector.delete(deleteCategory);

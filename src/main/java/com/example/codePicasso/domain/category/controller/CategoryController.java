@@ -32,7 +32,7 @@ public class CategoryController {
         return ApiResponse.success(categoryService.getAllCategory(gameId));
     }
 
-    @PatchMapping("/{categoryId")
+    @PatchMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(
             @PathVariable("categoryId") Long categoryId,
             CategoryRequest request

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Builder
 public class Post extends TimeStamp {
 
     @Id
