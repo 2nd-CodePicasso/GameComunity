@@ -38,4 +38,9 @@ public class RoomConnectorImpl implements RoomConnector {
     public void deleteRoom(ChatRoom chatRoom) {
         roomRepository.delete(chatRoom);
     }
+
+    @Override
+    public ChatRoom findById(Long roomId) {
+        return roomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
+    }
 }

@@ -16,4 +16,6 @@ public interface RoomConnector {
     ChatRoom findByIdAndUserId(Long roomId, Long userId);
 
     void deleteRoom(ChatRoom chatRoom);
+
+    ChatRoom findById(Long roomId);
 }

@@ -22,4 +22,9 @@ public class ChatConnectorImpl implements ChatConnector {
     public List<Chat> findAll() {
         return chatsRepository.findAll();
     }
+
+    @Override
+    public List<Chat> findAllByRoomId(Long roomId) {
+        return chatsRepository.findAllByChatRoomId(roomId);
+    }
 }

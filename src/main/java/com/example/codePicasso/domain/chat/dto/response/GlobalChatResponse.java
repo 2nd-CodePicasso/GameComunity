@@ -5,11 +5,11 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record ChatResponse(
+public record GlobalChatResponse(
         Long chatsId,
-        Long roomId,
         String username,
         String message,
         LocalDateTime createdAt
 ) {
+
 }

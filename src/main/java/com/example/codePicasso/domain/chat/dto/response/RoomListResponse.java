@@ -6,5 +6,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record RoomListResponse(List<RoomResponse> roomResponses) {
+public record RoomListResponse(
+        List<RoomResponse> roomResponses
+) {
 }

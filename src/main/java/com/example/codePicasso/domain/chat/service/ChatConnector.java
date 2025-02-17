@@ -10,4 +10,6 @@ public interface ChatConnector {
     Chat save(Chat chats);
 
     List<Chat> findAll();
+
+    List<Chat> findAllByRoomId(Long roomId);
 }
