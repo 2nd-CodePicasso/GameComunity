@@ -18,15 +18,21 @@ public class ChatService {
     private final ChatConnector chatConnector;
 
     @Transactional
-    public ChatResponse addMessage(ChatRequest chatsRequest, Long userId) {
+    public ChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId) {
         Chat chats = chatsRequest.toEntity(userId);
         chatConnector.save(chats);
 
         return chats.toDto();
     }
 
+    @Transactional(readOnly = true)
     public List<ChatResponse> getChatsHistory() {
         List<Chat> chats = chatConnector.findAll();
         return chats.stream().map(Chat::toDto).toList();
+    }
+
+    @Transactional
+    public ChatResponse addForRoomToMessage(ChatRequest chatsRequest, String roomId) {
+        return null;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.chat.entity;
 
-import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,12 +9,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Getter
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Entity
 @NoArgsConstructor
-@Table(name = "chats")
-public class Chat {
+@Table(name = "global_chats")
+public class GlobalChat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,26 +26,14 @@ public class Chat {
 
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_room_id")
-    private ChatRoom chatRoom;
-
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
-    public Chat(Long userId, String username, String content) {
+    public GlobalChat(Long userId, String username, String content) {
         this.userId = userId;
         this.username = username;
         this.content = content;
     }
 
-    public ChatResponse toDto() {
-        return ChatResponse.builder()
-                .chatsId(id)
-                .message(content)
-                .sender(username)
-                .createdAt(createdAt)
-                .build();
-    }
 }

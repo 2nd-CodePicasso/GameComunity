@@ -27,7 +27,7 @@ public class Exchange extends TimeStamp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
-    private Game games;
+    private Game game;
 
     private String title;
 
@@ -44,5 +44,9 @@ public class Exchange extends TimeStamp {
     public void update(String title, int price) {
         this.title = title;
         this.price = price;
+    }
+
+    public ExchangeResponse toDto() {
+        return null;
     }
 }

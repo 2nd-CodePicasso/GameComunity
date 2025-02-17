@@ -17,7 +17,7 @@ public record ExchangeResponse(
         return ExchangeResponse.builder()
                 .id(exchange.getId())
                 .userId(exchange.getUser().getId())
-                .gameId(exchange.getGames().getId())
+                .gameId(exchange.getGame().getId())
                 .title(exchange.getTitle())
                 .price(exchange.getPrice())
                 .description(exchange.getDescription())

@@ -1,0 +1,54 @@
+package com.example.codePicasso.domain.chat.controller;
+
+import com.example.codePicasso.domain.chat.dto.request.UpdateRoomRequest;
+import com.example.codePicasso.domain.chat.dto.response.RoomListResponse;
+import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
+import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
+import com.example.codePicasso.domain.chat.service.RoomService;
+import com.example.codePicasso.global.common.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping
+@RequiredArgsConstructor
+public class RoomController {
+
+    private final RoomService roomService;
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<RoomResponse>> addRoom(
+            @RequestBody RoomRequest roomRequest,
+            @RequestAttribute Long userId
+    ) {
+        RoomResponse room = roomService.addRoom(roomRequest, userId);
+        return ApiResponse.created(room);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<RoomListResponse>> getAllRoom() {
+        List<RoomResponse> allRoom = roomService.getAllRoom();
+        return ApiResponse.success(RoomListResponse.builder().roomResponses(allRoom).build());
+    }
+
+    @GetMapping("/{roomName}")
+    public ResponseEntity<ApiResponse<RoomResponse>> getByRoomName(
+            @PathVariable String roomName
+    ) {
+        RoomResponse room = roomService.getByRoomName(roomName);
+        return ApiResponse.success(room);
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<RoomResponse>> updateRoom(
+            @RequestAttribute Long userId,
+            @RequestBody UpdateRoomRequest updateRoomRequest
+    ) {
+
+        RoomResponse roomResponse = roomService.updateRoom(updateRoomRequest, userId);
+        return ApiResponse.success(roomResponse);
+    }
+}
