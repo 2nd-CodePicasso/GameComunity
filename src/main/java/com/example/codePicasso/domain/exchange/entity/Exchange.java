@@ -38,6 +38,9 @@ public class Exchange extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
 
+    @Enumerated(EnumType.STRING)
+    private StatusType statusType;
+
     public void update(String title, int price) {
         this.title = title;
         this.price = price;
