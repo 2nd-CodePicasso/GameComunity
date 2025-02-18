@@ -30,7 +30,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             LEFT JOIN p.game g
             WHERE c.id = :categoryId AND g.id = :gameId
             """)
-    List<Post> findPostByGameIdAndCategoryId(Long gameId, Long categoryId);
+    List<Post> findPostByCategoryId(Long categoryId);
 
     @Query("""
             SELECT new com.example.codePicasso.domain.post.dto.response.PostResponse
@@ -41,15 +41,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             LEFT JOIN p.user u
             WHERE p.game.id = :gameId AND p.id = :postId
             """)
-    Optional<Post> findByGameIdAndPostId(Long gameId, Long postId);
+    Optional<Post> findByGameIdAndPostId(Long postId);
 
     @Query("""
-            SELECT p 
+            SELECT p
             FROM Post p
             LEFT JOIN p.category c
             LEFT JOIN p.user u
             LEFT JOIN p.game g
             WHERE p.id = :postId AND g.id = :gameId AND u.id = :userId
             """)
-    Optional<Post> findByUserIdAndPostId(Long gameId, Long postId, Long userId);
+    Optional<Post> findByUserIdAndPostId(Long postId, Long userId);
 }

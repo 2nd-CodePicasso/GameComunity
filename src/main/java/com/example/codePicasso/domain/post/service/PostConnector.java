@@ -14,11 +14,11 @@ public interface PostConnector {
 
     List<PostResponse> findPostByGameId(Long gameId);
 
-    List<Post> findPostByCategoryId(Long gameId, Long categoryId);
+    List<Post> findPostByCategoryId(Long categoryId);
 
-    Optional<Post> findByPostId(Long gameId, Long postId);
+    Optional<Post> findById(Long postId);
 
-    Optional<Post> findByUserIdAndPostId(Long gameId, Long postId, Long userId);
+    Optional<Post> findByUserIdAndPostId(Long postId, Long userId);
 
     void delete(Post deletePost);
 

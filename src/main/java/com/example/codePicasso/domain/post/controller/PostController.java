@@ -15,23 +15,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/games/{gameId}/posts")
 public class PostController {
-
     private final PostService postService;
 
     /**
      * 게시글 생성
      * @param userId
-     * @param gameId
      * @param request (categoryId, title, description)
      * @return 생성된 게시글
      */
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
             @RequestAttribute Long userId,
-            @PathVariable("gameId") Long gameId,
-            PostRequest request
+            @RequestBody PostRequest request
     ) {
-        PostResponse response = postService.createPost(userId, gameId, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.createPost(userId, request.categoryId(), request.title(), request.description());
         return ApiResponse.created(response);
     }
 
@@ -53,12 +50,11 @@ public class PostController {
      * @param categoryId
      * @return categoryId 내 모든 게시글 조회
      */
-    @GetMapping("/categories/{categoryId}")
+    @GetMapping("{categoryId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
-            @PathVariable("gameId") Long gameId,
             @PathVariable("categoryId") Long categoryId
     ) {
-        List<PostResponse> response = postService.findPostByCategoryId(gameId, categoryId);
+        List<PostResponse> response = postService.findPostByCategoryId(categoryId);
         return ApiResponse.success(PostListResponse.builder().response(response).build());
     }
 
@@ -69,10 +65,9 @@ public class PostController {
      */
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> findPostById(
-            @PathVariable("gameId") Long gameId,
             @PathVariable("postId") Long postId
     ) {
-        PostResponse response = postService.findPostById(gameId, postId);
+        PostResponse response = postService.findPostById(postId);
         return ApiResponse.success(response);
     }
 
@@ -85,11 +80,11 @@ public class PostController {
      */
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
-            @PathVariable("gameId") Long gameId,
             @PathVariable("postId") Long postId,
-            @RequestAttribute Long userid, PostRequest request
+            @RequestAttribute Long userid,
+            @RequestBody PostRequest request
     ) {
-        PostResponse response = postService.updatePost(gameId, postId, userid, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.updatePost(postId, userid, request.categoryId(), request.title(), request.description());
         return ApiResponse.success(response);
     }
 
@@ -101,11 +96,10 @@ public class PostController {
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
-            @PathVariable("gameId") Long gameId,
             @PathVariable("postId") Long postId,
             @RequestAttribute Long userId
     ) {
-        postService.deletePost(gameId, postId, userId);
+        postService.deletePost(postId, userId);
         return ApiResponse.noContent();
     }
 }

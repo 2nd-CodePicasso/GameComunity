@@ -28,20 +28,20 @@ public class PostConnectorImpl implements PostConnector {
 
     // categoryId로 게시글 전체 조회
     @Override
-    public List<Post> findPostByCategoryId(Long gameId, Long categoryId) {
-        return postRepository.findPostByGameIdAndCategoryId(gameId, categoryId);
+    public List<Post> findPostByCategoryId(Long categoryId) {
+        return postRepository.findPostByCategoryId(categoryId);
     }
 
     // 게시글 개별 조회
     @Override
-    public Optional<Post> findByPostId(Long gameId, Long postId) {
-        return postRepository.findByGameIdAndPostId(gameId, postId);
+    public Optional<Post> findById(Long postId) {
+        return postRepository.findById(postId);
     }
 
     // 게시글 수정
     @Override
-    public Optional<Post> findByUserIdAndPostId(Long gameId, Long postId, Long userId) {
-        return postRepository.findByUserIdAndPostId(gameId, postId, userId);
+    public Optional<Post> findByUserIdAndPostId(Long postId, Long userId) {
+        return postRepository.findByUserIdAndPostId(postId, userId);
     }
 
     // 게시글 삭제

@@ -20,7 +20,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(
             @PathVariable("gameId") Long gameId,
-            CategoryRequest request
+            @RequestBody CategoryRequest request
     ) {
         return ApiResponse.created(categoryService.createCategory(gameId, request.categoryName()));
     }
@@ -37,7 +37,7 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(
             @PathVariable("gameId") Long gameId,
             @PathVariable("categoryId") Long categoryId,
-            CategoryRequest request
+            @RequestBody CategoryRequest request
     ) {
         return ApiResponse.success(categoryService.updateCategory(categoryId, request.categoryName()));
     }
