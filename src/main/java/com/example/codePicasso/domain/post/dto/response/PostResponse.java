@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 public record PostResponse(
         Long postId,
         Long gameId,
+        Long categoryId,
         String categoryName,
+        String nickname,
         String title,
         String description,
         LocalDateTime createdAt,
@@ -20,7 +22,9 @@ public record PostResponse(
         return PostResponse.builder().
                 postId(post.getId()).
                 gameId(post.getGame().getId()).
+                categoryId(post.getCategory().getId()).
                 categoryName(post.getCategory().getCategoryName()).
+                nickname(post.getUser().getNickname()).
                 title(post.getTitle()).
                 description(post.getDescription()).
                 createdAt(post.getCreatedAt()).

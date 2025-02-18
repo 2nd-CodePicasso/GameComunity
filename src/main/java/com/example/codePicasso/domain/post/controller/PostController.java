@@ -1,7 +1,7 @@
 package com.example.codePicasso.domain.post.controller;
 
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
+import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
@@ -41,11 +41,11 @@ public class PostController {
      * @return gameId 내 모든 게시글 조회
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GetGameIdAllPostsResponse>>> findPostByGameId(
+    public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
-        List<GetGameIdAllPostsResponse> response = postService.findPostByGameId(gameId);
-        return ApiResponse.success(response);
+        List<PostResponse> response = postService.findPostByGameId(gameId);
+        return ApiResponse.success(PostListResponse.builder().response(response).build());
     }
 
     /**
@@ -54,11 +54,12 @@ public class PostController {
      * @return categoryId 내 모든 게시글 조회
      */
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> findPostsByCategoryId(
+    public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
+            @PathVariable("gameId") Long gameId,
             @PathVariable("categoryId") Long categoryId
     ) {
-        List<PostResponse> response = postService.findPostByCategoryId(categoryId);
-        return ApiResponse.success(response);
+        List<PostResponse> response = postService.findPostByCategoryId(gameId, categoryId);
+        return ApiResponse.success(PostListResponse.builder().response(response).build());
     }
 
     /**
@@ -68,9 +69,10 @@ public class PostController {
      */
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> findPostById(
+            @PathVariable("gameId") Long gameId,
             @PathVariable("postId") Long postId
     ) {
-        PostResponse response = postService.findPostById(postId);
+        PostResponse response = postService.findPostById(gameId, postId);
         return ApiResponse.success(response);
     }
 
@@ -83,9 +85,11 @@ public class PostController {
      */
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
-            @PathVariable("postId") Long postId, @RequestAttribute Long userid, PostRequest request
+            @PathVariable("gameId") Long gameId,
+            @PathVariable("postId") Long postId,
+            @RequestAttribute Long userid, PostRequest request
     ) {
-        PostResponse response = postService.updatePost(postId, userid, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.updatePost(gameId, postId, userid, request.categoryId(), request.title(), request.description());
         return ApiResponse.success(response);
     }
 
@@ -97,10 +101,11 @@ public class PostController {
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
+            @PathVariable("gameId") Long gameId,
             @PathVariable("postId") Long postId,
             @RequestAttribute Long userId
     ) {
-        postService.deletePost(postId, userId);
+        postService.deletePost(gameId, postId, userId);
         return ApiResponse.noContent();
     }
 }

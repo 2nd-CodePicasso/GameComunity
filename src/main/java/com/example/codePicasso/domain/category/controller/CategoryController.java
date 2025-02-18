@@ -1,9 +1,9 @@
 package com.example.codePicasso.domain.category.controller;
 
 import com.example.codePicasso.domain.category.dto.request.CategoryRequest;
+import com.example.codePicasso.domain.category.dto.response.CategoryListResponse;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.service.CategoryService;
-import com.example.codePicasso.domain.post.dto.response.GetAllCategoryByGameIdResponse;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +26,16 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GetAllCategoryByGameIdResponse>>> getCategory(
+    public ResponseEntity<ApiResponse<CategoryListResponse>> getCategory(
             @PathVariable("gameId") Long gameId
     ) {
-        return ApiResponse.success(categoryService.getAllCategory(gameId));
+        List<CategoryResponse> response = categoryService.getAllCategory(gameId);
+        return ApiResponse.success(CategoryListResponse.builder().response(response).build());
     }
 
     @PatchMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(
+            @PathVariable("gameId") Long gameId,
             @PathVariable("categoryId") Long categoryId,
             CategoryRequest request
     ) {
@@ -42,6 +44,7 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<Void>> deleteCategory(
+            @PathVariable("gameId") Long gameId,
             @PathVariable("categoryId") Long categoryId
     ) {
         categoryService.deleteCategory(categoryId);

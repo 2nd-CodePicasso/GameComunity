@@ -1,6 +1,6 @@
 package com.example.codePicasso.domain.post.service;
 
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
+import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import org.springframework.stereotype.Component;
 
@@ -12,13 +12,13 @@ public interface PostConnector {
 
     Post save(Post post);
 
-    List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId);
+    List<PostResponse> findPostByGameId(Long gameId);
 
-    List<Post> findPostByCategoryId(Long categoryId);
+    List<Post> findPostByCategoryId(Long gameId, Long categoryId);
 
-    Optional<Post> findById(Long postId);
+    Optional<Post> findByPostId(Long gameId, Long postId);
 
-    Optional<Post> findByUserIdAndPostId(Long postId, Long userId);
+    Optional<Post> findByUserIdAndPostId(Long gameId, Long postId, Long userId);
 
     void delete(Post deletePost);
 

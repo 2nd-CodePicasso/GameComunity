@@ -4,7 +4,6 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.users.entity.User;
@@ -29,6 +28,7 @@ public class PostService {
     private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
 
+    // 게시글 생성
     @Transactional
     public PostResponse createPost(Long userId, Long gameId, Long categoryId, String title, String description) {
         Game game = gameConnector.findById(gameId);
@@ -40,24 +40,28 @@ public class PostService {
         return PostResponse.toDto(createPost);
     }
 
-    public List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId) {
+    // gameId로 게시글 전체 조회
+    public List<PostResponse> findPostByGameId(Long gameId) {
         return postConnector.findPostByGameId(gameId);
     }
 
-    public List<PostResponse> findPostByCategoryId(Long categoryId) {
-        return postConnector.findPostByCategoryId(categoryId).stream()
+    // categoryId로 게시글 전체 조회
+    public List<PostResponse> findPostByCategoryId(Long gameId, Long categoryId) {
+        return postConnector.findPostByCategoryId(gameId, categoryId).stream()
                 .map(PostResponse::toDto).toList();
     }
 
-    public PostResponse findPostById(Long postId) {
-        Post getPost = postConnector.findById(postId)
+    // 게시글 개별 조회
+    public PostResponse findPostById(Long gameId, Long postId) {
+        Post getPost = postConnector.findByPostId(gameId, postId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
         return PostResponse.toDto(getPost);
     }
 
+    // 게시글 수정
     @Transactional
-    public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description ) {
-        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId)
+    public PostResponse updatePost(Long gameId, Long postId, Long userId, Long categoryId, String title, String description ) {
+        Post foundPost = postConnector.findByUserIdAndPostId(gameId, postId, userId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
 
         if (!foundPost.getCategory().getId().equals(categoryId)) {
@@ -71,9 +75,10 @@ public class PostService {
         return PostResponse.toDto(foundPost);
     }
 
+    // 게시글 삭제
     @Transactional
-    public void deletePost(Long postId, Long userId) {
-        Post deletePost = postConnector.findByUserIdAndPostId(postId, userId)
+    public void deletePost(Long gameId, Long postId, Long userId) {
+        Post deletePost = postConnector.findByUserIdAndPostId(gameId, postId, userId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
 
         postConnector.delete(deletePost);

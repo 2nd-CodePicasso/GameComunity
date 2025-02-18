@@ -1,6 +1,6 @@
 package com.example.codePicasso.domain.post.repository;
 
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
+import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,21 +11,45 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("""
-            SELECT new com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse
-                        (p.id, u.nickname, p.game.id, c.categoryName, p.title, p.createdAt)
-                        FROM Post p
-                        LEFT JOIN Category c on p.category.id = c.id
-                        LEFT JOIN User u on p.user.id = u.id
-                        WHERE p.game.id = :gameId
+            SELECT new com.example.codePicasso.domain.post.dto.response.PostResponse
+                (p.id, g.id, c.id, c.categoryName, u.nickname, p.title, p.description, p.createdAt, p.updatedAt)
+            FROM Post p
+            LEFT JOIN p.category c
+            LEFT JOIN p.user u
+            LEFT JOIN p.game g
+            WHERE g.id = :gameId
             """)
-    List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId);
-
-    List<Post> findPostByCategoryId(Long categoryId);
+    List<PostResponse> findPostByGameId(Long gameId);
 
     @Query("""
-            SELECT p
-            FROM Post p 
-            WHERE p.user.id = :userId AND p.id = :postId
+            SELECT new com.example.codePicasso.domain.post.dto.response.PostResponse
+                (p.id, g.id, c.id, c.categoryName, u.nickname, p.title, p.description, p.createdAt, p.updatedAt)
+            FROM Post p
+            LEFT JOIN p.category c
+            LEFT JOIN p.user u
+            LEFT JOIN p.game g
+            WHERE c.id = :categoryId AND g.id = :gameId
             """)
-    Optional<Post> findByUserIdAndPostId(Long postId, Long userId);
+    List<Post> findPostByGameIdAndCategoryId(Long gameId, Long categoryId);
+
+    @Query("""
+            SELECT new com.example.codePicasso.domain.post.dto.response.PostResponse
+                    (p.id, g.id, c.id, c.categoryName, u.nickname, p.title, p.description, p.createdAt, p.updatedAt)
+            FROM Post p
+            LEFT JOIN p.category c
+            LEFT JOIN p.game g
+            LEFT JOIN p.user u
+            WHERE p.game.id = :gameId AND p.id = :postId
+            """)
+    Optional<Post> findByGameIdAndPostId(Long gameId, Long postId);
+
+    @Query("""
+            SELECT p 
+            FROM Post p
+            LEFT JOIN p.category c
+            LEFT JOIN p.user u
+            LEFT JOIN p.game g
+            WHERE p.id = :postId AND g.id = :gameId AND u.id = :userId
+            """)
+    Optional<Post> findByUserIdAndPostId(Long gameId, Long postId, Long userId);
 }

@@ -4,7 +4,6 @@ import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.post.dto.response.GetAllCategoryByGameIdResponse;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +27,9 @@ public class CategoryService {
         return CategoryResponse.toDto(createCategory);
     }
 
-    public List<GetAllCategoryByGameIdResponse> getAllCategory(Long gameId) {
+    public List<CategoryResponse> getAllCategory(Long gameId) {
         return categoryConnector.findCategoryByGameId(gameId).stream()
-                .map(GetAllCategoryByGameIdResponse::toDto).toList();
+                .map(CategoryResponse::toDto).toList();
     }
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, String categoryName) {
