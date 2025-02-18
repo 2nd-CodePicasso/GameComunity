@@ -2,7 +2,7 @@ package com.example.codePicasso.domain.exchange.entity;
 
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.users.entity.User;
+import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,6 +37,9 @@ public class Exchange extends TimeStamp {
 
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
+
+    @Enumerated(EnumType.STRING)
+    private StatusType statusType;
 
     public void update(String title, int price) {
         this.title = title;

@@ -10,28 +10,24 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.util.Collections;
 import java.util.List;
 
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
-
-    private final List<String> allowedPrefix = List.of(
-            "/auth"
-            //게시판 조회는 로그인 안해도 가능하게 하려면 리퀘스트파람을 써서 "/board?game-id=" 을 추가해서 통과시키기
-    );
-
-    @Autowired
-    public JwtFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -43,9 +39,10 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+
         String url = httpRequest.getRequestURI();
 
-        if (allowedPrefix.stream().anyMatch(url::startsWith)) {
+        if (url.matches(".*/hi/.*")||url.matches("/index.html")||url.startsWith("/ws")) {
             chain.doFilter(request, response);
             return;
         }
@@ -57,14 +54,21 @@ public class JwtFilter implements Filter {
             return;
         }
 
+
         String jwt = jwtUtil.substringToken(bearerJwt);
 
         try {
             Claims claims = jwtUtil.extractClaims(jwt);
+
             String username = claims.getSubject();
+            String roles = claims.get("roles", String.class);
 
-            request.setAttribute("userId", username);
+            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(roles));
 
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
 
             chain.doFilter(request,response);
