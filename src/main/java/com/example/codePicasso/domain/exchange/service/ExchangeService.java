@@ -9,6 +9,7 @@ import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
 import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
+import com.example.codePicasso.domain.exchange.redis.RedisLockService;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.user.entity.User;
@@ -18,14 +19,10 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,6 +34,8 @@ public class ExchangeService {
     private final MyExchangeConnector myExchangeConnector;
     private final GameConnector gameConnector;
     private final UserConnector userConnector;
+    private final ExchangeRankingService exchangeRankingService;
+    private final RedisLockService redisLockService;
 
     // 거래소 아이템 생성
     @Transactional
@@ -136,6 +135,7 @@ public class ExchangeService {
     }
 
     //거래 상태 변경 및 처리 로직.
+    @Transactional
     public void putExchange(Long myExchangeId, Long userId, PutExchangeRequest putExchangeRequest) {
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
 
@@ -143,10 +143,44 @@ public class ExchangeService {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
+        // 거래가 이미 완료된 경우 중복 요청 방지
+        if (myExchange.getExchange().getStatusType() == StatusType.COMPLETED) {
+            throw new IllegalStateException("이미 완료된 거래입니다.");
+        }
+
         myExchange.getExchange().changeStatus(putExchangeRequest.statusType());
         myExchangeConnector.save(myExchange);
+
+        if (putExchangeRequest.statusType() == StatusType.COMPLETED) {
+            completeExchange(myExchange.getExchange().getId());
+        }
     }
 
+
+    @Transactional
+    public void completeExchange(Long exchangeId) {
+        // Redis NX 기반 락 획득 시도
+        if (!redisLockService.acquireLock(exchangeId)) {
+            throw new IllegalStateException("거래 완료 처리가 이미 진행 중입니다.");
+        }
+
+        Exchange exchange = exchangeConnector.findById(exchangeId);
+
+        exchange.changeStatus(StatusType.COMPLETED);
+        exchangeConnector.save(exchange);
+
+        //Redis 랭킹 처리 (buy, sell)
+        boolean isBuy = exchange.getTradeType() == TradeType.BUY;
+
+        try {
+            exchangeRankingService.increaseTradeCount(exchange.getGame().getId(), isBuy);
+        } catch (Exception e) {
+            log.error("Redis 업데이트 실패: gameId={}, isBuy={}", exchange.getGame().getId(), isBuy, e);
+            throw new RuntimeException("거래 랭킹 업데이트 중 문제가 발생했습니다.");
+        } finally {
+            redisLockService.releaseLock(exchangeId);
+        }
+    }
     // V2
 //    //전체 게임의 게시글 목록 조회
 //    @Transactional(readOnly = true)
