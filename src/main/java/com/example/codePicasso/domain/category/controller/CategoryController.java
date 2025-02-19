@@ -26,7 +26,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GetAllCategoryByGameIdResponse>>> getCategory(
+    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getCategory(
             @PathVariable("gameId") Long gameId
     ) {
         return ApiResponse.success(categoryService.getAllCategory(gameId));

@@ -28,9 +28,9 @@ public class CategoryService {
         return CategoryResponse.toDto(createCategory);
     }
 
-    public List<GetAllCategoryByGameIdResponse> getAllCategory(Long gameId) {
+    public List<CategoryResponse> getAllCategory(Long gameId) {
         return categoryConnector.findCategoryByGameId(gameId).stream()
-                .map(GetAllCategoryByGameIdResponse::toDto).toList();
+                .map(CategoryResponse::toDto).toList();
     }
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, String categoryName) {
