@@ -17,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,6 +48,7 @@ class PostServiceTest {
     private Admin mockAdmin;
     private Game mockGame;
     private Category mockCategory;
+    private List<Post> posts = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -68,6 +72,7 @@ class PostServiceTest {
                 .title("test Title")
                 .description("This is a test post.")
                 .build();
+        posts.add(mockPost);
     }
 
     @Test
@@ -87,18 +92,116 @@ class PostServiceTest {
         Long gameId = 1L;
         Long categoryId = 1L;
         PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
-        when(gameConnector.findById(gameId)).thenReturn(mockGame);
-        when(userConnector.findById(userId)).thenReturn(mockUser);
-        when(categoriesConnector.findById(categoryId)).thenReturn(Optional.ofNullable(mockCategory));
 
         // When
+
+        when(gameConnector.findById(gameId)).thenReturn(mockGame);
+        when(userConnector.findById(userId)).thenReturn(mockUser);
+        when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
+
         PostResponse response = postService.createPost(userId, gameId, categoryId, request.title(), request.description());
 
         // Then
         verify(postConnector, times(1)).save(any());
+        verify(gameConnector).findById(gameId);
+        verify(userConnector).findById(userId);
+        verify(categoriesConnector).findById(categoryId);
         assertEquals(mockGame.getId(),response.gameId());
         assertEquals(mockCategory.getCategoryName(), response.categoryName());
         assertEquals(request.title(), response.title());
         assertEquals(request.description(), response.description());
+    }
+
+    @Test
+    void 게시물_찾기_게임아이디() {
+        //given
+        Long gameId = 1L;
+
+        //when
+
+        when(postConnector.findPostByGameId(gameId)).thenReturn(posts);
+        List<PostResponse> postResponses = postService.findPostByGameId(gameId);
+
+        //then
+        verify(postConnector).findPostByGameId(gameId);
+        assertEquals(posts.get(0).getId(),postResponses.get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(),postResponses.get(0).gameId());
+        assertEquals(posts.get(0).getTitle(),postResponses.get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(),postResponses.get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(),postResponses.get(0).description());
+    }
+
+    @Test
+    void 게시물_찾기_카테고리아이디() {
+        //given
+        Long categoryId = 1L;
+
+        //when
+        when(postConnector.findPostByCategoryId(categoryId)).thenReturn(posts);
+        List<PostResponse> postResponses = postService.findPostByCategoryId(categoryId);
+
+        //then
+        verify(postConnector).findPostByGameId(categoryId);
+        assertEquals(posts.get(0).getId(),postResponses.get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(),postResponses.get(0).gameId());
+        assertEquals(posts.get(0).getTitle(),postResponses.get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(),postResponses.get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(),postResponses.get(0).description());
+    }
+
+    @Test
+    void 게시물_찾기_게시물아이디() {
+        //given
+        Long postId = 1L;
+        //when
+
+        when(postConnector.findById(postId)).thenReturn(mockPost);
+        PostResponse postResponse = postService.findPostById(postId);
+
+        //then
+        verify(postConnector).findById(postId);
+        assertEquals(mockPost.getId(), postResponse.postId());
+        assertEquals(mockPost.getGame().getId(), postResponse.gameId());
+        assertEquals(mockPost.getTitle(), postResponse.title());
+        assertEquals(mockPost.getCategory().getCategoryName(), postResponse.categoryName());
+        assertEquals(mockPost.getDescription(), postResponse.description());
+    }
+
+    @Test
+    void 게시물_수정() {
+        //given
+        Long postId = 1L;
+        Long userId = 1L;
+        Long categoryId = 2L;
+        String title = "꾸에엑";
+        String description = "끼요옷";
+
+        //when
+        when(postConnector.findByUserIdAndPostId(postId, userId)).thenReturn(mockPost);
+        when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
+
+        PostResponse postResponse = postService.updatePost(postId, userId, categoryId, title, description);
+        //then
+        verify(postConnector).findByUserIdAndPostId(postId, userId);
+        verify(categoriesConnector).findById(categoryId);
+        assertEquals(title, postResponse.title());
+        assertEquals(description, postResponse.description());
+        assertEquals(mockCategory.getCategoryName(), postResponse.categoryName());
+    }
+
+    @Test
+    void 게시물_삭제() {
+        //given
+        Long postId = 1L;
+        Long userId = 1L;
+
+        //when
+        when(postConnector.findByUserIdAndPostId(postId, userId)).thenReturn(mockPost);
+        postService.deletePost(postId,userId);
+
+        //then
+        verify(postConnector).findByUserIdAndPostId(postId, userId);
+        verify(postConnector).delete(mockPost);
+
     }
 }

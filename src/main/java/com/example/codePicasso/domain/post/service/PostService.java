@@ -32,8 +32,7 @@ public class PostService {
     public PostResponse createPost(Long userId, Long gameId, Long categoryId, String title, String description) {
         Game game = gameConnector.findById(gameId);
         User user = userConnector.findById(userId);
-        Category category = categoryConnector.findById(categoryId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+        Category category = categoryConnector.findById(categoryId);
         Post createPost = Post.toEntity(user, game, category, title, description);
         postConnector.save(createPost);
         return PostResponse.toDto(createPost);
@@ -50,19 +49,16 @@ public class PostService {
     }
 
     public PostResponse findPostById(Long postId) {
-        Post getPost = postConnector.findById(postId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post getPost = postConnector.findById(postId);
         return PostResponse.toDto(getPost);
     }
 
     @Transactional
     public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description ) {
-        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId);
 
         if (!foundPost.getCategory().getId().equals(categoryId)) {
-            Category category = categoryConnector.findById(categoryId)
-                    .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+            Category category = categoryConnector.findById(categoryId);
             foundPost.updateCategories(category);
         }
 
@@ -73,8 +69,7 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId, Long userId) {
-        Post deletePost = postConnector.findByUserIdAndPostId(postId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post deletePost = postConnector.findByUserIdAndPostId(postId, userId);
 
         postConnector.delete(deletePost);
     }

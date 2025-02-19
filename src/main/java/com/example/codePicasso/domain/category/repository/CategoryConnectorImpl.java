@@ -2,6 +2,8 @@ package com.example.codePicasso.domain.category.repository;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +16,8 @@ public class CategoryConnectorImpl implements CategoryConnector {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Optional<Category> findById(Long categoryId) {
-        return categoryRepository.findById(categoryId);
+    public Category findById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override
