@@ -5,9 +5,11 @@ import com.example.codePicasso.domain.chat.dto.response.RoomListResponse;
 import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
 import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
 import com.example.codePicasso.domain.chat.service.RoomService;
+import com.example.codePicasso.global.common.CustomUser;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +24,9 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<ApiResponse<RoomResponse>> addRoom(
             @RequestBody RoomRequest roomRequest,
-            @RequestAttribute Long userId
-    ) {
-        RoomResponse room = roomService.addRoom(roomRequest, userId);
+            @AuthenticationPrincipal CustomUser user
+            ) {
+        RoomResponse room = roomService.addRoom(roomRequest, user.getUserId());
         return ApiResponse.created(room);
     }
 

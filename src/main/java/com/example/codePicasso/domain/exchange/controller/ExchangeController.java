@@ -6,11 +6,12 @@ import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.exchange.service.ExchangeService;
 import com.example.codePicasso.global.common.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.codePicasso.global.common.CustomUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,21 +25,18 @@ public class ExchangeController {
     @PostMapping("/buy")
     public ResponseEntity<ApiResponse<ExchangeResponse>> createBuyExchange(
             @Valid @RequestBody ExchangeRequest exchangeRequest,
-            //authenti ~~~ 성우님 코드를 받은 이후에 진행.
-            HttpServletRequest request
-    ) {
-        Long userId = (Long) request.getAttribute("userId");
-        return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.BUY, userId));
+            @AuthenticationPrincipal CustomUser user
+            ) {
+        return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.BUY, user.getUserId()));
     }
 
     // 판매 거래소 게시글 생성 (201 Created)
     @PostMapping("/sell")
     public ResponseEntity<ApiResponse<ExchangeResponse>> createSellExchange(
             @Valid @RequestBody ExchangeRequest exchangeRequest,
-            HttpServletRequest request
+            @AuthenticationPrincipal CustomUser user
     ) {
-        Long userId = (Long) request.getAttribute("userId");
-        return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.SELL, userId));
+        return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.SELL, user.getUserId()));
     }
 
     // 구매 거래소 게시글 목록 조회 (200 OK)
@@ -84,10 +82,9 @@ public class ExchangeController {
     public ResponseEntity<ApiResponse<ExchangeResponse>> updateExchange(
             @PathVariable Long exchangeId,
             @Valid @RequestBody ExchangeRequest request,
-            HttpServletRequest httprequest
+            @AuthenticationPrincipal CustomUser user
     ) {
-        Long userId = (Long) httprequest.getAttribute("userId");
-        ExchangeResponse response = exchangeService.updateExchange(exchangeId, request, userId);
+        ExchangeResponse response = exchangeService.updateExchange(exchangeId, request, user.getUserId());
         return ApiResponse.success(response);
     }
 
@@ -95,10 +92,9 @@ public class ExchangeController {
     @DeleteMapping("/{exchangeId}")
     public ResponseEntity<ApiResponse<Void>> deleteExchange(
             @PathVariable Long exchangeId,
-            HttpServletRequest httprequest
+            @AuthenticationPrincipal CustomUser user
     ) {
-        Long userId = (Long) httprequest.getAttribute("userId");
-        exchangeService.deleteExchange(exchangeId, userId);
+        exchangeService.deleteExchange(exchangeId, user.getUserId());
         return ApiResponse.noContent();
     }
 }

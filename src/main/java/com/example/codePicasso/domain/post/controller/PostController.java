@@ -5,8 +5,10 @@ import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsRespons
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
+import com.example.codePicasso.global.common.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,18 +22,18 @@ public class PostController {
 
     /**
      * 게시글 생성
-     * @param userId
+     * @param user
      * @param gameId
      * @param request (categoryId, title, description)
      * @return 생성된 게시글
      */
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
-            @RequestAttribute Long userId,
-            @PathVariable("gameId") Long gameId,
+            @AuthenticationPrincipal CustomUser user
+,            @PathVariable("gameId") Long gameId,
             PostRequest request
     ) {
-        PostResponse response = postService.createPost(userId, gameId, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.createPost(user.getUserId(), gameId, request.categoryId(), request.title(), request.description());
         return ApiResponse.created(response);
     }
 
@@ -77,30 +79,32 @@ public class PostController {
     /**
      * 게시글 수정
      * @param postId
-     * @param userid
+     * @param user
      * @param request (categoryId, title, description)
      * @return 수정된 게시물
      */
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
-            @PathVariable("postId") Long postId, @RequestAttribute Long userid, PostRequest request
+            @PathVariable("postId") Long postId,
+            @AuthenticationPrincipal CustomUser user,
+            PostRequest request
     ) {
-        PostResponse response = postService.updatePost(postId, userid, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.updatePost(postId, user.getUserId(), request.categoryId(), request.title(), request.description());
         return ApiResponse.success(response);
     }
 
     /**
      * 게시물 삭제
      * @param postId
-     * @param userId
+     * @param user
      * @return return 없음
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable("postId") Long postId,
-            @RequestAttribute Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        postService.deletePost(postId, userId);
+        postService.deletePost(postId, user.getUserId());
         return ApiResponse.noContent();
     }
 }
