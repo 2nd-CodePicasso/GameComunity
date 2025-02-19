@@ -39,8 +39,8 @@ public class PostService {
         return PostResponse.toDto(createPost);
     }
 
-    public List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId) {
-        return postConnector.findPostByGameId(gameId);
+    public List<PostResponse> findPostByGameId(Long gameId) {
+        return postConnector.findPostByGameId(gameId).stream().map(PostResponse::toDto).toList();
     }
 
     public List<PostResponse> findPostByCategoryId(Long categoryId) {

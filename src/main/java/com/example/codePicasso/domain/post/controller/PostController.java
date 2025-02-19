@@ -41,10 +41,10 @@ public class PostController {
      * @return gameId 내 모든 게시글 조회
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GetGameIdAllPostsResponse>>> findPostByGameId(
+    public ResponseEntity<ApiResponse<List<PostResponse>>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
-        List<GetGameIdAllPostsResponse> response = postService.findPostByGameId(gameId);
+        List<PostResponse> response = postService.findPostByGameId(gameId);
         return ApiResponse.success(response);
     }
 

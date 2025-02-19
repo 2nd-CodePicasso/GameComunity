@@ -12,7 +12,7 @@ public interface PostConnector {
 
     Post save(Post post);
 
-    List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId);
+    List<Post> findPostByGameId(Long gameId);
 
     List<Post> findPostByCategoryId(Long categoryId);
 

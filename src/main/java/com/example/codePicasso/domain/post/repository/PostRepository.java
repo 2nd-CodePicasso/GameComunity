@@ -10,17 +10,9 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("""
-            SELECT new com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse
-                        (p.id, u.nickname, p.game.id, c.categoryName, p.title, p.createdAt)
-                        FROM Post p
-                        LEFT JOIN Category c on p.category.id = c.id
-                        LEFT JOIN User u on p.user.id = u.id
-                        WHERE p.game.id = :gameId
-            """)
-    List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId);
+    List<Post> findAllByGameId(Long gameId);
 
-    List<Post> findPostByCategoryId(Long categoryId);
+    List<Post> findAllByCategoryId(Long categoryId);
 
     @Query("""
             SELECT p
