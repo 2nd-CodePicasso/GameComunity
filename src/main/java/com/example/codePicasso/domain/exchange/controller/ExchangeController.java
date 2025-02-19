@@ -101,11 +101,4 @@ public class ExchangeController {
         exchangeService.deleteExchange(exchangeId, userId);
         return ApiResponse.noContent();
     }
-
-//    // 전체 게임의 거래소 게시글 목록 조회 (200 OK)
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<List<ExchangeResponse>>> getExchanges() {
-//        List<ExchangeResponse> responses = exchangeService.getExchanges();
-//        return ApiResponse.created(responses);
-//    }
 }
