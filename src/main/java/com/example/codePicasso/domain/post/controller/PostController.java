@@ -1,7 +1,6 @@
 package com.example.codePicasso.domain.post.controller;
 
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
@@ -43,10 +42,10 @@ public class PostController {
      * @return gameId 내 모든 게시글 조회
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GetGameIdAllPostsResponse>>> findPostByGameId(
+    public ResponseEntity<ApiResponse<List<PostResponse>>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
-        List<GetGameIdAllPostsResponse> response = postService.findPostByGameId(gameId);
+        List<PostResponse> response = postService.findPostByGameId(gameId);
         return ApiResponse.success(response);
     }
 

@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.post.service;
 
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +11,7 @@ public interface PostConnector {
 
     Post save(Post post);
 
-    List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId);
+    List<Post> findPostByGameId(Long gameId);
 
     List<Post> findPostByCategoryId(Long categoryId);
 
