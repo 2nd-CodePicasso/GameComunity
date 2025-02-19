@@ -7,10 +7,10 @@ import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.exchange.repository.ExchangeRepository;
 import com.example.codePicasso.domain.exchange.service.ExchangeConnector;
 import com.example.codePicasso.domain.exchange.service.ExchangeService;
-import com.example.codePicasso.domain.games.entity.Games;
-import com.example.codePicasso.domain.games.service.GamesConnector;
-import com.example.codePicasso.domain.users.entity.User;
-import com.example.codePicasso.domain.users.service.UserConnector;
+import com.example.codePicasso.domain.game.entity.Game;
+import com.example.codePicasso.domain.game.service.GameConnector;
+import com.example.codePicasso.domain.user.entity.User;
+import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import org.assertj.core.api.Assertions;
@@ -41,7 +41,7 @@ class ExchangeServiceTest {
     private ExchangeConnector exchangeConnector;
 
     @Mock
-    private GamesConnector gamesConnector;
+    private GameConnector gamesConnector;
 
     @Mock
     private UserConnector userConnector;
@@ -53,7 +53,7 @@ class ExchangeServiceTest {
     private Exchange exchange;
     private Page<Exchange> exchanges;
     private User user;
-    private Games games;
+    private Game games;
     private Long exchangeId = 1L;
     private Long userId = 1L;
     private Long gameId = 1L;
@@ -66,7 +66,7 @@ class ExchangeServiceTest {
         // spy 는 실제 작동하는 실제 객체 만듦
         // mock 은 작동하지 않는 가짜 객체 만듦
         user = mock(User.class);
-        games = mock(Games.class);
+        games = mock(Game.class);
         exchangeRequest = new ExchangeRequest(1L, "거래소", 100, "거래소", 100);
         exchange = exchangeRequest.toEntity(user, games, TradeType.BUY);
         exchanges = new PageImpl<>(List.of(exchange));

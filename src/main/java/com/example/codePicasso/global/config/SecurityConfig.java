@@ -25,7 +25,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/*/admin/**").hasRole(UserStatus.ADMIN.name())
+                        auth
+                                .requestMatchers("/*/admin/**").hasRole(UserStatus.ADMIN.name())
                                 .requestMatchers("/*/hi/**").permitAll() //hi는 나중에 대체예정
                                 .requestMatchers("/index.html").permitAll()
                                 .requestMatchers("/ws/**").permitAll()

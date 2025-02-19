@@ -31,7 +31,7 @@ public class RoomConnectorImpl implements RoomConnector {
 
     @Override
     public ChatRoom findByIdAndUserId(Long roomId, Long userId) {
-        return roomRepository.findByIdAndName(roomId, userId).orElseThrow(() -> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
+        return roomRepository.findByIdAndUserId(roomId, userId).orElseThrow(() -> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
     }
 
     @Override

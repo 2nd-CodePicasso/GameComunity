@@ -34,8 +34,7 @@ public class CategoryService {
     }
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, String categoryName) {
-        Category foundCategory = categoryConnector.findById(categoryId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+        Category foundCategory = categoryConnector.findById(categoryId);
 
         foundCategory.updateCategory(categoryName);
 
@@ -43,8 +42,7 @@ public class CategoryService {
     }
     @Transactional
     public void deleteCategory(Long categoryId) {
-        Category deleteCategory = categoryConnector.findById(categoryId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+        Category deleteCategory = categoryConnector.findById(categoryId);
 
         categoryConnector.delete(deleteCategory);
 

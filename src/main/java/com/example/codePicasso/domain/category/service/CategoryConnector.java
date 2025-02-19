@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Component
 public interface CategoryConnector {
-    Optional<Category> findById(Long categoryId);
+    Category findById(Long categoryId);
 
     Category save(Category createCategory);
 

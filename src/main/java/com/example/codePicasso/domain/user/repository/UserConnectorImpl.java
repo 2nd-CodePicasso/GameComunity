@@ -33,4 +33,9 @@ public class UserConnectorImpl implements UserConnector {
     public User findById(Long userId) {
         return userRepository.findById(userId).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
+
+    @Override
+    public User findByNickname(String name) {
+        return null;
+    }
 }

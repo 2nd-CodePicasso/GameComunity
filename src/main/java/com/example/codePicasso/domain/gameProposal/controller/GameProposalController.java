@@ -7,8 +7,14 @@ import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResp
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalService;
 import com.example.codePicasso.global.common.ApiResponse;
+import com.example.codePicasso.global.common.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,9 +27,10 @@ public class GameProposalController {
     @PostMapping
     public ResponseEntity<ApiResponse<GameProposalResponse>> createGameProposal(
             @RequestBody CreateGameProposalRequest request,
-            @RequestAttribute Long userId
-    ) {
-        GameProposalResponse response = gameProposalService.createProposal(request, userId);
+            @AuthenticationPrincipal CustomUser user
+            ) {
+
+        GameProposalResponse response = gameProposalService.createProposal(request, user.getUserId());
 
         return ApiResponse.created(response);
     }

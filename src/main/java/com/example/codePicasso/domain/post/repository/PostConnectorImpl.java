@@ -3,6 +3,8 @@ package com.example.codePicasso.domain.post.repository;
 import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.service.PostConnector;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,13 +33,14 @@ public class PostConnectorImpl implements PostConnector {
     }
 
     @Override
-    public Optional<Post> findById(Long postId) {
-        return postRepository.findById(postId);
+    public Post findById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     @Override
-    public Optional<Post> findByUserIdAndPostId(Long postId, Long userId) {
-        return postRepository.findByUserIdAndPostId(postId, userId);
+    public Post findByUserIdAndPostId(Long postId, Long userId) {
+        return postRepository.findByUserIdAndPostId(postId, userId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     @Override

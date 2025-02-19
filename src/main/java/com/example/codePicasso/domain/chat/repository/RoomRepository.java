@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<ChatRoom,Long> {
     Optional<ChatRoom> findByName(String roomName);
 
-    Optional<ChatRoom> findByIdAndName(Long roomId, Long userId);
+    Optional<ChatRoom> findByIdAndUserId(Long roomId, Long userId);
 }

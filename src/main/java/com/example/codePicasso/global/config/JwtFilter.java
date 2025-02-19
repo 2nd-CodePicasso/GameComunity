@@ -1,4 +1,5 @@
 package com.example.codePicasso.global.config;
+import com.example.codePicasso.global.common.CustomUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -65,8 +66,10 @@ public class JwtFilter implements Filter {
 
             List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(roles));
 
+            CustomUser customUser = new CustomUser(username, authorities);
+
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    new UsernamePasswordAuthenticationToken(customUser, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
