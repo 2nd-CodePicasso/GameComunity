@@ -8,8 +8,8 @@ import com.example.codePicasso.domain.exchange.service.ExchangeConnector;
 import com.example.codePicasso.domain.exchange.service.ExchangeService;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.users.entity.User;
-import com.example.codePicasso.domain.users.service.UserConnector;
+import com.example.codePicasso.domain.user.entity.User;
+import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import org.assertj.core.api.Assertions;
@@ -27,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -89,7 +88,7 @@ class ExchangeServiceTest {
         // then
         Assertions.assertThat(response)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "userId")
+                .ignoringFields("id", "userId","tradeType")
                 .isEqualTo(exchangeRequest);
     }
 
@@ -147,7 +146,7 @@ class ExchangeServiceTest {
         // then
         Assertions.assertThat(response)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "userId", "gameId", "description", "quantity")
+                .ignoringFields("id", "userId", "gameId", "description", "quantity", "tradeType")
                 .isEqualTo(newReq);
 
     }

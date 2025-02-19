@@ -33,15 +33,18 @@ public class CommentController {
         return ApiResponse.created(commentResponse);
     }
 
-    @PostMapping("/{postId}/reply/{parentCommentId}")
-    public ResponseEntity<ApiResponse<CommentResponse>> createReply(
-            @PathVariable("postId") Long postId,
-            @PathVariable("parentCommentId") Long parentCommentId,
-            @RequestAttribute Long userId,
-            @RequestBody
-    ) {
-
-    }
+    /**
+     * 대댓글 생성
+     */
+//    @PostMapping("/{postId}/reply/{parentCommentId}")
+//    public ResponseEntity<ApiResponse<CommentResponse>> createReply(
+//            @PathVariable("postId") Long postId,
+//            @PathVariable("parentCommentId") Long parentCommentId,
+//            @RequestAttribute Long userId,
+//            @RequestBody
+//    ) {
+//
+//    }
 
 
     /**

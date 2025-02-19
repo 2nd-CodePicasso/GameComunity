@@ -12,6 +12,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class PostConnectorImpl implements PostConnector {
+
     private final PostRepository postRepository;
 
     // 게시글 생성
