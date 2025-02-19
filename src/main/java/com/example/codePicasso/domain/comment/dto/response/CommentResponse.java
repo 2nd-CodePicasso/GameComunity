@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record CommentResponse(
         Long commentId,
         Long postId,
+        Long userId,
         String nickname,
         String text,
         LocalDateTime createdAt,
@@ -17,6 +18,7 @@ public record CommentResponse(
         return CommentResponse.builder().
                 commentId(comment.getId()).
                 postId(comment.getPost().getId()).
+                userId(comment.getUser().getId()).
                 nickname(comment.getUser().getNickname()).
                 text(comment.getText()).
                 createdAt(comment.getCreatedAt()).

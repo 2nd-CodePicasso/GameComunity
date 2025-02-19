@@ -4,9 +4,8 @@ import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.service.PostConnector;
+import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
-import com.example.codePicasso.global.exception.base.InvalidRequestException;
-import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +21,11 @@ public class CommentService {
     private final UserConnector userConnector;
 
     // 댓글 생성
-    public CommentResponse createComment(Long postId, String text) {
-        Post post = postConnector.findById(postId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
-        Comment createComment = Comment.toEntity(post, text);
+    public CommentResponse createComment(Long postId, Long userId, String text) {
+        Post post = postConnector.findById(postId);
+        User user = userConnector.findById(userId);
+        Comment createComment = Comment.toEntity(post, user, text);
+
         commentConnector.save(createComment);
         return CommentResponse.toDto(createComment);
     }
@@ -38,8 +38,7 @@ public class CommentService {
 
     // 댓글 수정
     public CommentResponse updateComment(Long commentId, Long userId, String text) {
-        Comment foundComment = commentConnector.findByCommentIdAndUserId(commentId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND));
+        Comment foundComment = commentConnector.findByCommentIdAndUserId(commentId, userId);
 
         foundComment.updateComment(text);
         return CommentResponse.toDto(foundComment);
@@ -47,9 +46,7 @@ public class CommentService {
 
     // 댓글 삭제
     public void deleteComment(Long commentId, Long userId) {
-        Comment deleteComment = commentConnector.findByCommentIdAndUserId(commentId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND));
-
+        Comment deleteComment = commentConnector.findByCommentIdAndUserId(commentId, userId);
         commentConnector.delete(deleteComment);
     }
 }

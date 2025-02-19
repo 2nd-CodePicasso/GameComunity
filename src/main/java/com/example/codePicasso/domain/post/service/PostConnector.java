@@ -16,9 +16,9 @@ public interface PostConnector {
 
     List<Post> findPostByCategoryId(Long categoryId);
 
-    Optional<Post> findById(Long postId);
+    Post findById(Long postId);
 
-    Optional<Post> findByUserIdAndPostId(Long postId, Long userId);
+    Post findByUserIdAndPostId(Long postId, Long userId);
 
     void delete(Post deletePost);
 

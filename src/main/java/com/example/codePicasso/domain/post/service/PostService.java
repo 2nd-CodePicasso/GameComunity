@@ -7,8 +7,6 @@ import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
-import com.example.codePicasso.global.exception.base.InvalidRequestException;
-import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,8 +29,7 @@ public class PostService {
     @Transactional
     public PostResponse createPost(Long userId, Long categoryId, String title, String description) {
         User user = userConnector.findById(userId);
-        Category category = categoryConnector.findById(categoryId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+        Category category = categoryConnector.findById(categoryId);
         Post createPost = Post.toEntity(user, category, title, description);
         postConnector.save(createPost);
         return PostResponse.toDto(createPost);
@@ -51,20 +48,17 @@ public class PostService {
 
     // 게시글 개별 조회
     public PostResponse findPostById(Long postId) {
-        Post getPost = postConnector.findById(postId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post getPost = postConnector.findById(postId);
         return PostResponse.toDto(getPost);
     }
 
     // 게시글 수정
     @Transactional
     public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description ) {
-        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId);
 
         if (!foundPost.getCategory().getId().equals(categoryId)) {
-            Category category = categoryConnector.findById(categoryId)
-                    .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+            Category category = categoryConnector.findById(categoryId);
             foundPost.updateCategories(category);
         }
 
@@ -76,8 +70,7 @@ public class PostService {
     // 게시글 삭제
     @Transactional
     public void deletePost(Long postId, Long userId) {
-        Post deletePost = postConnector.findByUserIdAndPostId(postId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post deletePost = postConnector.findByUserIdAndPostId(postId, userId);
 
         postConnector.delete(deletePost);
     }

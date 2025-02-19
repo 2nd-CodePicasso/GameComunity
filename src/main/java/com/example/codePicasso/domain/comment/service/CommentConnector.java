@@ -13,7 +13,7 @@ public interface CommentConnector {
 
     List<Comment> findCommentByPostId(Long postId);
 
-    Optional<Comment> findByCommentIdAndUserId(Long commentId, Long userId);
+    Comment findByCommentIdAndUserId(Long commentId, Long userId);
 
     void delete(Comment deleteComment);
 }
