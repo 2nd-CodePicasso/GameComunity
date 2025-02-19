@@ -53,6 +53,7 @@ public class RoomService {
         return chatRoom.toDto();
     }
 
+    @Transactional
     public void deleteRoom(Long roomId, Long userId) {
         ChatRoom chatRoom = roomConnector.findByIdAndUserId(roomId, userId);
         roomConnector.deleteRoom(chatRoom);

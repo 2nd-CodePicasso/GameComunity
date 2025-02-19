@@ -44,7 +44,7 @@ public class CategoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        mockUser = new User("user", "testUser", "user123");  // 예시: User 객체 생성
+        mockUser = new User("user", "testUser", "user123");
         mockAdmin = new Admin("admin", "testAdmin");
         mockGame = Game.builder()
                 .id(1L)

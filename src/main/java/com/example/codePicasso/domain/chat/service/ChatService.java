@@ -4,6 +4,7 @@ import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import lombok.RequiredArgsConstructor;

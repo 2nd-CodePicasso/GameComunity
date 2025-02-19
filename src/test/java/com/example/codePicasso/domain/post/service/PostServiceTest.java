@@ -141,7 +141,7 @@ class PostServiceTest {
         List<PostResponse> postResponses = postService.findPostByCategoryId(categoryId);
 
         //then
-        verify(postConnector).findPostByGameId(categoryId);
+        verify(postConnector).findPostByCategoryId(categoryId);
         assertEquals(posts.get(0).getId(),postResponses.get(0).postId());
         assertEquals(posts.get(0).getGame().getId(),postResponses.get(0).gameId());
         assertEquals(posts.get(0).getTitle(),postResponses.get(0).title());
