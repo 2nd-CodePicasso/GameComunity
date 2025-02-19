@@ -6,28 +6,24 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record CommentResponse(
+public record ReplyResponse(
         Long commentId,
         Long postId,
         Long userId,
+        Long parentId,
         String nickname,
         String text,
-        ReplyListResponse replyListResponse,
         LocalDateTime createdAt,
         LocalDateTime updatedAp
 ) {
-    public static CommentResponse toDto(Comment comment) {
-        return CommentResponse.builder().
+    public static ReplyResponse toDto(Comment comment) {
+        return ReplyResponse.builder().
                 commentId(comment.getId()).
                 postId(comment.getPost().getId()).
                 userId(comment.getUser().getId()).
+                parentId(comment.getParent().getId()).
                 nickname(comment.getUser().getNickname()).
                 text(comment.getText()).
-                replyListResponse(ReplyListResponse.builder()
-                        .responses(comment.getReplies().stream()
-                                .map(ReplyResponse::toDto)
-                                .toList())
-                        .build()).
                 createdAt(comment.getCreatedAt()).
                 updatedAp(comment.getUpdatedAt()).
                 build();

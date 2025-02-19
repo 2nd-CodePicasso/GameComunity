@@ -21,16 +21,16 @@ public class PostController {
 
     /**
      * 게시글 생성
-     * @param userId
+     * @param user
      * @param request (categoryId, title, description)
      * @return 생성된 게시글
      */
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestBody PostRequest request
     ) {
-        PostResponse response = postService.createPost(userId, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.createPost(user.getUserId(), request.categoryId(), request.title(), request.description());
         return ApiResponse.created(response);
     }
 

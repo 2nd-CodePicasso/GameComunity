@@ -15,7 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 //                    LEFT JOIN c.post p
 //                    WHERE p.id = :postId
 //            """)
-    List<Comment> findCommentByPostId(Long postId);
+    List<Comment> findAllByPostId(Long postId);
 
 //    @Query("""
 //            SELECT c
@@ -24,4 +24,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 //            WHERE c.id = :commentId AND u.id = :userId
 //            """)
     Optional<Comment> findByIdAndUserId(Long commentId, Long userId);
+
 }

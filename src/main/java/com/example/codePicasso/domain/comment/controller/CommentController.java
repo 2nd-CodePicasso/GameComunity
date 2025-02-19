@@ -3,10 +3,14 @@ package com.example.codePicasso.domain.comment.controller;
 import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
 import com.example.codePicasso.domain.comment.dto.response.CommentListResponse;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
+import com.example.codePicasso.domain.comment.dto.response.ReplyListResponse;
+import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.service.CommentService;
 import com.example.codePicasso.global.common.ApiResponse;
+import com.example.codePicasso.global.common.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,25 +30,26 @@ public class CommentController {
     @PostMapping("/{postId}")
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @PathVariable("postId") Long postId,
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestBody CommentRequest request
     ) {
-        CommentResponse commentResponse = commentService.createComment(postId, userId, request.text());
+        CommentResponse commentResponse = commentService.createComment(postId, user.getUserId(), request.text());
         return ApiResponse.created(commentResponse);
     }
 
     /**
      * 대댓글 생성
      */
-//    @PostMapping("/{postId}/reply/{parentCommentId}")
-//    public ResponseEntity<ApiResponse<CommentResponse>> createReply(
-//            @PathVariable("postId") Long postId,
-//            @PathVariable("parentCommentId") Long parentCommentId,
-//            @RequestAttribute Long userId,
-//            @RequestBody
-//    ) {
-//
-//    }
+    @PostMapping("/{postId}/reply/{parentId}")
+    public ResponseEntity<ApiResponse<ReplyResponse>> createReply(
+            @PathVariable("postId") Long postId,
+            @PathVariable("parentId") Long parentId,
+            @AuthenticationPrincipal CustomUser user,
+            @RequestBody CommentRequest request
+    ) {
+        ReplyResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request.text());
+        return ApiResponse.created(replyResponse);
+    }
 
 
     /**
@@ -56,43 +61,41 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentListResponse>> findComment(
             @PathVariable("postId") Long postId
     ) {
-        List<CommentResponse> response = commentService.findCommentByPostId(postId);
-        return ApiResponse.success(CommentListResponse.builder().responses(response).build());
+        List<CommentResponse> responses = commentService.findAllByPostId(postId);
+        return ApiResponse.success(CommentListResponse.builder().responses(responses).build());
     }
-
 
 
     /**
      * 댓글 수정
      * @param commentId
-     * @param userId (유저검증용)
+     * @param user (유저검증용)
      * @param request (text)
      * @return
      */
     @PatchMapping("/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponse>> updateComment(
             @PathVariable("commentId") Long commentId,
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestBody CommentRequest request
     ) {
-        CommentResponse commentResponse = commentService.updateComment(commentId, userId, request.text());
+        CommentResponse commentResponse = commentService.updateComment(commentId, user.getUserId(), request.text());
         return ApiResponse.success(commentResponse);
     }
-
 
 
     /**
      * 댓글 삭제
      * @param commentId
-     * @param userId
+     * @param user
      * @return
      */
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
             @PathVariable("commentId") Long commentId,
-            @RequestAttribute Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        commentService.deleteComment(commentId, userId);
+        commentService.deleteComment(commentId, user.getUserId());
         return ApiResponse.noContent();
     }
 

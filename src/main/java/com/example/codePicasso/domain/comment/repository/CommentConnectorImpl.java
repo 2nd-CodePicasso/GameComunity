@@ -20,8 +20,8 @@ public class CommentConnectorImpl implements CommentConnector {
     }
 
     @Override
-    public List<Comment> findCommentByPostId(Long postId) {
-        return commentRepository.findCommentByPostId(postId);
+    public List<Comment> findAllByPostId(Long postId) {
+        return commentRepository.findAllByPostId(postId);
     }
 
     @Override
@@ -34,4 +34,11 @@ public class CommentConnectorImpl implements CommentConnector {
     public void delete(Comment deleteComment) {
         commentRepository.delete(deleteComment);
     }
+
+    @Override
+    public Comment findById(Long parentId) {
+        return commentRepository.findById(parentId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
 }
