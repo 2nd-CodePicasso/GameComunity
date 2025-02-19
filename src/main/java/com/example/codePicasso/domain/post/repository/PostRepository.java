@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.post.repository;
 
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

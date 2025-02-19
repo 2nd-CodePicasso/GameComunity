@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.post.service;
 
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import org.springframework.stereotype.Component;
 

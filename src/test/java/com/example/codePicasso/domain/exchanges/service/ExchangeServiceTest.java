@@ -4,7 +4,6 @@ import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
-import com.example.codePicasso.domain.exchange.repository.ExchangeRepository;
 import com.example.codePicasso.domain.exchange.service.ExchangeConnector;
 import com.example.codePicasso.domain.exchange.service.ExchangeService;
 import com.example.codePicasso.domain.game.entity.Game;
@@ -28,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +39,7 @@ class ExchangeServiceTest {
     private ExchangeConnector exchangeConnector;
 
     @Mock
-    private GameConnector gamesConnector;
+    private GameConnector gameConnector;
 
     @Mock
     private UserConnector userConnector;
@@ -53,7 +51,7 @@ class ExchangeServiceTest {
     private Exchange exchange;
     private Page<Exchange> exchanges;
     private User user;
-    private Game games;
+    private Game game;
     private Long exchangeId = 1L;
     private Long userId = 1L;
     private Long gameId = 1L;
@@ -66,17 +64,17 @@ class ExchangeServiceTest {
         // spy 는 실제 작동하는 실제 객체 만듦
         // mock 은 작동하지 않는 가짜 객체 만듦
         user = mock(User.class);
-        games = mock(Game.class);
+        game = mock(Game.class);
         exchangeRequest = new ExchangeRequest(1L, "거래소", 100, "거래소", 100);
-        exchange = exchangeRequest.toEntity(user, games, TradeType.BUY);
+        exchange = exchangeRequest.toEntity(user, game, TradeType.BUY);
         exchanges = new PageImpl<>(List.of(exchange));
 
         when(userConnector.findById(userId)).thenReturn(user);
-        when(gamesConnector.findById(gameId)).thenReturn(games);
+        when(gameConnector.findById(gameId)).thenReturn(game);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
 
         when(user.getId()).thenReturn(userId);
-        when(games.getId()).thenReturn(userId);
+        when(game.getId()).thenReturn(userId);
     }
 
     @Test
@@ -90,7 +88,7 @@ class ExchangeServiceTest {
         // then
         Assertions.assertThat(response)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "userId")
+                .ignoringFields("id", "userId","tradeType")
                 .isEqualTo(exchangeRequest);
     }
 
@@ -148,7 +146,7 @@ class ExchangeServiceTest {
         // then
         Assertions.assertThat(response)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "userId", "gameId", "description", "quantity")
+                .ignoringFields("id", "userId", "gameId", "description", "quantity", "tradeType")
                 .isEqualTo(newReq);
 
     }

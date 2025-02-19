@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.post.repository;
 
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
@@ -9,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor

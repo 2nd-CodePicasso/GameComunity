@@ -26,7 +26,6 @@ public class User extends TimeStamp {
     private String password;
 
     @Enumerated(EnumType.STRING)
-
     private UserStatus userStatus;
 
     private boolean isDeleted;
@@ -39,8 +38,6 @@ public class User extends TimeStamp {
         this.userStatus = UserStatus.USER;
         this.isDeleted = false;
     }
-
-
 
     public UserResponse toDto() {
         return UserResponse.builder().

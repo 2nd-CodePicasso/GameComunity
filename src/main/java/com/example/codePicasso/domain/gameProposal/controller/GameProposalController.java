@@ -10,6 +10,7 @@ import com.example.codePicasso.global.common.ApiResponse;
 import com.example.codePicasso.global.common.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +30,6 @@ public class GameProposalController {
             @RequestBody CreateGameProposalRequest request,
             @AuthenticationPrincipal CustomUser user
             ) {
-
         GameProposalResponse response = gameProposalService.createProposal(request, user.getUserId());
 
         return ApiResponse.created(response);
@@ -51,18 +51,18 @@ public class GameProposalController {
 
     @GetMapping("/my-proposals")
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getMyProposalsApi(
-            @RequestAttribute Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalGetManyResponse response = gameProposalService.getMyProposals(userId);
+        GameProposalGetManyResponse response = gameProposalService.getMyProposals(user.getUserId());
         return ApiResponse.success(response);
     }
 
     @PatchMapping("/{proposalId}")
     public ResponseEntity<ApiResponse<GameProposalResponse>> cancelMyProposal(
             @PathVariable Long proposalId,
-            @RequestAttribute Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalResponse response = gameProposalService.cancelProposal(proposalId, userId);
+        GameProposalResponse response = gameProposalService.cancelProposal(proposalId, user.getUserId());
 
         return ApiResponse.success(response);
     }

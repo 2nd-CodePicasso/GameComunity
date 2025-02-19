@@ -11,6 +11,7 @@ public record PostResponse(
         Long gameId,
         String categoryName,
         String title,
+        String nickname,
         String description,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
@@ -22,6 +23,7 @@ public record PostResponse(
                 gameId(post.getGame().getId()).
                 categoryName(post.getCategory().getCategoryName()).
                 title(post.getTitle()).
+                nickname(post.getUser().getNickname()).
                 description(post.getDescription()).
                 createdAt(post.getCreatedAt()).
                 updatedAt(post.getUpdatedAt()).
