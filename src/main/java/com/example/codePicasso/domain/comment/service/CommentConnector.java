@@ -4,7 +4,6 @@ import com.example.codePicasso.domain.comment.entity.Comment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public interface CommentConnector {
@@ -13,7 +12,7 @@ public interface CommentConnector {
 
     List<Comment> findCommentByPostId(Long postId);
 
-    Comment findByCommentIdAndUserId(Long commentId, Long userId);
+    Comment findByIdAndUserId(Long commentId, Long userId);
 
     void delete(Comment deleteComment);
 }

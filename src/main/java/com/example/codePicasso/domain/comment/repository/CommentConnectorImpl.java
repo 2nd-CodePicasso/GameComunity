@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -26,8 +25,8 @@ public class CommentConnectorImpl implements CommentConnector {
     }
 
     @Override
-    public Comment findByCommentIdAndUserId(Long commentId, Long userId) {
-        return commentRepository.findByCommentIdAndUserId(commentId, userId)
+    public Comment findByIdAndUserId(Long commentId, Long userId) {
+        return commentRepository.findByIdAndUserId(commentId, userId)
                 .orElseThrow(() -> new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND));
     }
 

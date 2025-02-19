@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    @Query("""
-    SELECT new com.example.codePicasso.domain.category.dto.response.CategoryResponse
-            (g.id, c.id, c.categoryName)
-    FROM Category c
-        LEFT JOIN c.game g
-    WHERE c.game.id = :gameId
-    """)
+//    @Query("""
+//    SELECT new com.example.codePicasso.domain.category.dto.response.CategoryResponse
+//            (g.id, c.id, c.categoryName)
+//    FROM Category c
+//        LEFT JOIN c.game g
+//    WHERE c.game.id = :gameId
+//    """)
     List<Category> findByGameId(Long gameId);
 }

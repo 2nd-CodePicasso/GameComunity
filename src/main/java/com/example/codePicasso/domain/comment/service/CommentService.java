@@ -24,7 +24,7 @@ public class CommentService {
     public CommentResponse createComment(Long postId, Long userId, String text) {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
-        Comment createComment = Comment.toEntity(post, user, text);
+        Comment createComment = Comment.toEntityForComment(post, user, text);
 
         commentConnector.save(createComment);
         return CommentResponse.toDto(createComment);
@@ -38,7 +38,7 @@ public class CommentService {
 
     // 댓글 수정
     public CommentResponse updateComment(Long commentId, Long userId, String text) {
-        Comment foundComment = commentConnector.findByCommentIdAndUserId(commentId, userId);
+        Comment foundComment = commentConnector.findByIdAndUserId(commentId, userId);
 
         foundComment.updateComment(text);
         return CommentResponse.toDto(foundComment);
@@ -46,7 +46,7 @@ public class CommentService {
 
     // 댓글 삭제
     public void deleteComment(Long commentId, Long userId) {
-        Comment deleteComment = commentConnector.findByCommentIdAndUserId(commentId, userId);
+        Comment deleteComment = commentConnector.findByIdAndUserId(commentId, userId);
         commentConnector.delete(deleteComment);
     }
 }

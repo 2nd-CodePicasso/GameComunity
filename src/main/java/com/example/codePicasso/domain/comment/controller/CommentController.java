@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts/{postId}/comments")
+@RequestMapping("/comments")
 public class CommentController {
     private final CommentService commentService;
 
@@ -23,7 +23,7 @@ public class CommentController {
      * @param request (text)
      * @return 생성된 댓글
      */
-    @PostMapping
+    @PostMapping("/{postId}")
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @PathVariable("postId") Long postId,
             @RequestAttribute Long userId,
@@ -33,18 +33,31 @@ public class CommentController {
         return ApiResponse.created(commentResponse);
     }
 
+    @PostMapping("/{postId}/reply/{parentCommentId}")
+    public ResponseEntity<ApiResponse<CommentResponse>> createReply(
+            @PathVariable("postId") Long postId,
+            @PathVariable("parentCommentId") Long parentCommentId,
+            @RequestAttribute Long userId,
+            @RequestBody
+    ) {
+
+    }
+
+
     /**
      * 댓글 조회
      * @param postId
      * @return
      */
-    @GetMapping
+    @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<CommentListResponse>> findComment(
             @PathVariable("postId") Long postId
     ) {
         List<CommentResponse> response = commentService.findCommentByPostId(postId);
         return ApiResponse.success(CommentListResponse.builder().responses(response).build());
     }
+
+
 
     /**
      * 댓글 수정
@@ -63,6 +76,14 @@ public class CommentController {
         return ApiResponse.success(commentResponse);
     }
 
+
+
+    /**
+     * 댓글 삭제
+     * @param commentId
+     * @param userId
+     * @return
+     */
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
             @PathVariable("commentId") Long commentId,
@@ -71,4 +92,6 @@ public class CommentController {
         commentService.deleteComment(commentId, userId);
         return ApiResponse.noContent();
     }
+
+
 }

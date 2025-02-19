@@ -36,18 +36,19 @@ public class PostService {
     }
 
     // gameId로 게시글 전체 조회
-    public List<PostResponse> findPostByGameId(Long gameId) {
-        return postConnector.findPostByGameId(gameId);
+    public List<PostResponse> findAllByGameId(Long gameId) {
+        return postConnector.findAllByGameId(gameId).stream()
+                .map(PostResponse::toDto).toList();
     }
 
     // categoryId로 게시글 전체 조회
-    public List<PostResponse> findPostByCategoryId(Long categoryId) {
-        return postConnector.findPostByCategoryId(categoryId).stream()
+    public List<PostResponse> findAllByCategoryId(Long categoryId) {
+        return postConnector.findAllByCategoryId(categoryId).stream()
                 .map(PostResponse::toDto).toList();
     }
 
     // 게시글 개별 조회
-    public PostResponse findPostById(Long postId) {
+    public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
         return PostResponse.toDto(getPost);
     }
@@ -55,7 +56,7 @@ public class PostService {
     // 게시글 수정
     @Transactional
     public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description ) {
-        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId);
+        Post foundPost = postConnector.findByIdAndUserId(postId, userId);
 
         if (!foundPost.getCategory().getId().equals(categoryId)) {
             Category category = categoryConnector.findById(categoryId);
@@ -70,7 +71,7 @@ public class PostService {
     // 게시글 삭제
     @Transactional
     public void deletePost(Long postId, Long userId) {
-        Post deletePost = postConnector.findByUserIdAndPostId(postId, userId);
+        Post deletePost = postConnector.findByIdAndUserId(postId, userId);
 
         postConnector.delete(deletePost);
     }

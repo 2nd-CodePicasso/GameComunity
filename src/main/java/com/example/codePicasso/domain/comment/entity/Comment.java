@@ -46,11 +46,21 @@ public class Comment extends TimeStamp {
     @JsonIgnore
     private List<Comment> replies = new ArrayList<>();
 
-
-    public static Comment toEntity(Post post, User user, String text) {
+    // 댓글 생성 메서드
+    public static Comment toEntityForComment(Post post, User user, String text) {
         return Comment.builder()
                 .post(post)
                 .user(user)
+                .text(text)
+                .build();
+    }
+
+    // 대댓글 생성 메서드
+    public static Comment toEntityForReply(Post post, User user, Comment parent, String text) {
+        return Comment.builder()
+                .post(post)
+                .user(user)
+                .parent(parent)
                 .text(text)
                 .build();
     }

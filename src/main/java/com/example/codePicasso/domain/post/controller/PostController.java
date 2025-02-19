@@ -41,7 +41,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
-        List<PostResponse> response = postService.findPostByGameId(gameId);
+        List<PostResponse> response = postService.findAllByGameId(gameId);
         return ApiResponse.success(PostListResponse.builder().response(response).build());
     }
 
@@ -54,7 +54,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
             @PathVariable("categoryId") Long categoryId
     ) {
-        List<PostResponse> response = postService.findPostByCategoryId(categoryId);
+        List<PostResponse> response = postService.findAllByCategoryId(categoryId);
         return ApiResponse.success(PostListResponse.builder().response(response).build());
     }
 
@@ -64,10 +64,10 @@ public class PostController {
      * @return 개별 게시물
      */
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse>> findPostById(
+    public ResponseEntity<ApiResponse<PostResponse>> findById(
             @PathVariable("postId") Long postId
     ) {
-        PostResponse response = postService.findPostById(postId);
+        PostResponse response = postService.findById(postId);
         return ApiResponse.success(response);
     }
 
