@@ -1,7 +1,7 @@
 package com.example.codePicasso.domain.game.entity;
 
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
-import com.example.codePicasso.domain.users.entity.Admin;
+import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

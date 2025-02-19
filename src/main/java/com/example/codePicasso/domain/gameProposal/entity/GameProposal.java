@@ -2,8 +2,8 @@ package com.example.codePicasso.domain.gameProposal.entity;
 
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
-import com.example.codePicasso.domain.users.entity.Admin;
-import com.example.codePicasso.domain.users.entity.User;
+import com.example.codePicasso.domain.user.entity.Admin;
+import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
