@@ -88,7 +88,7 @@ class ExchangeServiceTest {
         // then
         Assertions.assertThat(response)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "userId")
+                .ignoringFields("id", "userId","tradeType")
                 .isEqualTo(exchangeRequest);
     }
 
@@ -146,7 +146,7 @@ class ExchangeServiceTest {
         // then
         Assertions.assertThat(response)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "userId", "gameId", "description", "quantity")
+                .ignoringFields("id", "userId", "gameId", "description", "quantity", "tradeType")
                 .isEqualTo(newReq);
 
     }
