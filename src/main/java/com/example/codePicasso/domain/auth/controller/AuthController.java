@@ -3,12 +3,12 @@ package com.example.codePicasso.domain.auth.controller;
 import com.example.codePicasso.domain.auth.dto.request.SigninRequest;
 import com.example.codePicasso.domain.auth.dto.response.JwtTokenResponse;
 import com.example.codePicasso.domain.auth.service.AuthService;
-import com.example.codePicasso.domain.users.dto.response.AdminResponse;
-import com.example.codePicasso.domain.users.dto.request.AdminRequest;
-import com.example.codePicasso.domain.users.dto.request.UserRequest;
-import com.example.codePicasso.domain.users.dto.response.UserResponse;
-import com.example.codePicasso.domain.users.service.AdminService;
-import com.example.codePicasso.domain.users.service.UserService;
+import com.example.codePicasso.domain.user.dto.response.AdminResponse;
+import com.example.codePicasso.domain.user.dto.request.AdminRequest;
+import com.example.codePicasso.domain.user.dto.request.UserRequest;
+import com.example.codePicasso.domain.user.dto.response.UserResponse;
+import com.example.codePicasso.domain.user.service.AdminService;
+import com.example.codePicasso.domain.user.service.UserService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/auth/hi")
 public class AuthController {
     private final UserService userService;
     private final AdminService adminService;

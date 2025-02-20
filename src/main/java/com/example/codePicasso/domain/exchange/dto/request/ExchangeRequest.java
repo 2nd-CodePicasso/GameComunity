@@ -4,7 +4,7 @@ import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.users.entity.User;
+import com.example.codePicasso.domain.user.entity.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
