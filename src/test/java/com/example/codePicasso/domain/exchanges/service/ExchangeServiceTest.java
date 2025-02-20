@@ -1,5 +1,18 @@
 package com.example.codePicasso.domain.exchanges.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
@@ -14,6 +27,7 @@ import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +41,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
