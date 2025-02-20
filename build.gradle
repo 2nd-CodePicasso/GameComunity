@@ -51,6 +51,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     //Redis - Redisson
     implementation 'org.redisson:redisson-spring-boot-starter:3.21.1'
+
+    //스프링시큐리티
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {
