@@ -33,7 +33,7 @@ public class Exchange extends TimeStamp {
     private int price;
     private int quantity;
     private String description;
-    private int contact;
+    private String contact;
 
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;

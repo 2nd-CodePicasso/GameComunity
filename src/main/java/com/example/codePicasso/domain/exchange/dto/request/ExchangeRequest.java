@@ -20,7 +20,7 @@ public record ExchangeRequest(
         @NotNull(message = "수량을 입력하세요.")
         int quantity,
         @NotNull(message = "연락처를 입력하세요.")
-        int contact
+        String contact
 ) {
     public Exchange toEntity(User user, Game game, TradeType tradeType) {
         return Exchange.builder()
