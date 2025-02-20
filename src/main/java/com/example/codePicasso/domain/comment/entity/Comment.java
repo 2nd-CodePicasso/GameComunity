@@ -65,6 +65,10 @@ public class Comment extends TimeStamp {
                 .build();
     }
 
+    public void addReplies(Comment comment) {
+        this.replies.add(comment);
+    }
+
     // 댓글 수정
     public void updateComment(String text) {
         this.text = text;

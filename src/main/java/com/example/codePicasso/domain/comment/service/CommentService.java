@@ -26,6 +26,7 @@ public class CommentService {
     public CommentResponse createComment(Long postId, Long userId, String text) {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
+
         Comment createComment = Comment.toEntityForComment(post, user, text);
 
         commentConnector.save(createComment);
@@ -39,6 +40,9 @@ public class CommentService {
         Comment parentComment = commentConnector.findById(parentId);
 
         Comment createReply = Comment.toEntityForReply(post, user, parentComment, text);
+        parentComment.addReplies(createReply);
+
+        commentConnector.save(createReply);
         return ReplyResponse.toDto(createReply);
     }
 

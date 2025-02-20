@@ -12,8 +12,8 @@ public record PostResponse(
         Long categoryId,
         String categoryName,
         String title,
-        String nickname,
         String description,
+        String nickname,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -25,8 +25,8 @@ public record PostResponse(
                 categoryId(post.getCategory().getId()).
                 categoryName(post.getCategory().getCategoryName()).
                 title(post.getTitle()).
-                nickname(post.getUser().getNickname()).
                 description(post.getDescription()).
+                nickname(post.getUser().getNickname()).
                 createdAt(post.getCreatedAt()).
                 updatedAt(post.getUpdatedAt()).
                 build();

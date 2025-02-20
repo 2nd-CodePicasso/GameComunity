@@ -33,7 +33,7 @@ public class PostService {
     public PostResponse createPost(Long userId, Long categoryId, String title, String description) {
         User user = userConnector.findById(userId);
         Category category = categoryConnector.findById(categoryId);
-        Post createPost = Post.toEntity(user, category, title, description);
+        Post createPost = Post.toEntity(user, category.getGame(), category, title, description);
         postConnector.save(createPost);
         return PostResponse.toDto(createPost);
     }
@@ -58,7 +58,7 @@ public class PostService {
 
     // 게시글 수정
     @Transactional
-    public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description ) {
+    public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description) {
         Post foundPost = postConnector.findByIdAndUserId(postId, userId);
 
         if (!foundPost.getCategory().getId().equals(categoryId)) {

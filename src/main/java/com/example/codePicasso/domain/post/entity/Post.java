@@ -37,6 +37,7 @@ public class Post extends TimeStamp {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comment = new ArrayList<>();
 
@@ -55,9 +56,10 @@ public class Post extends TimeStamp {
         this.description = description;
     }
 
-    public static Post toEntity(User user, Category category, String title, String description) {
+    public static Post toEntity(User user, Game game, Category category, String title, String description) {
         return Post.builder()
                 .user(user)
+                .game(game)
                 .category(category)
                 .title(title)
                 .description(description)
