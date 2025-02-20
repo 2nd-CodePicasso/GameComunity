@@ -32,7 +32,7 @@ public class GameController {
         return ApiResponse.success(response);
     }
 
-    @DeleteMapping("{gameId}")
+    @DeleteMapping("{gameId}/delete/admin")
     public ResponseEntity<ApiResponse<Void>> deleteGame(
             @PathVariable Long gameId
     ) {
@@ -41,7 +41,7 @@ public class GameController {
         return ApiResponse.noContentAndSendMessage("게임이 삭제되었습니다.");
     }
 
-    @PatchMapping("/{gameId}/restore")
+    @PatchMapping("/{gameId}/restore/admin")
     public ResponseEntity<ApiResponse<Void>> restoreGame(
             @PathVariable Long gameId
     ) {
