@@ -7,7 +7,6 @@ import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
-import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.exchange.service.ExchangeService;
 import com.example.codePicasso.global.common.ApiResponse;
@@ -167,12 +166,4 @@ public class ExchangeController {
         exchangeService.putExchange(myExchangeId, userId, putExchangeRequest);
         return ApiResponse.noContent();
     }
-
-
-//    // 전체 게임의 거래소 게시글 목록 조회 (200 OK)
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<List<ExchangeResponse>>> getExchanges() {
-//        List<ExchangeResponse> responses = exchangeService.getExchanges();
-//        return ApiResponse.created(responses);
-//    }
 }
