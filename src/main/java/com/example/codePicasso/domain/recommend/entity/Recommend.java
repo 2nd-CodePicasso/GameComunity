@@ -3,6 +3,8 @@ package com.example.codePicasso.domain.recommend.entity;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,7 +13,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Recommend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -13,6 +13,8 @@ import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResp
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.recommend.dto.response.RecommendResponse;
+import com.example.codePicasso.domain.recommend.entity.Recommend;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
@@ -51,6 +53,14 @@ public class DtoFactory {
                 createdAt(post.getCreatedAt()).
                 updatedAt(post.getUpdatedAt()).
                 build();
+    }
+
+    public static RecommendResponse toRecommendDto(Recommend recommend) {
+        return RecommendResponse.builder()
+                .id(recommend.getId())
+                .userId(recommend.getUser().getId())
+                .postId(recommend.getPost().getId())
+                .build();
     }
 
     public static GameProposalResponse toGameProposalDto(GameProposal gameProposal){
