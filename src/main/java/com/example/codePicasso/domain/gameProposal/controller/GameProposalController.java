@@ -66,9 +66,9 @@ public class GameProposalController {
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(
             @PathVariable Long proposalId,
             @RequestBody ReviewGameProposalRequest request,
-            @RequestAttribute Long adminId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
+        GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, user.getUserId());
 
         return ApiResponse.success(response);
     }
