@@ -8,6 +8,7 @@ import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalService;
 import com.example.codePicasso.global.common.ApiResponse;
 import com.example.codePicasso.global.common.CustomUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,7 @@ public class GameProposalController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<GameProposalResponse>> createGameProposal(
-            @RequestBody CreateGameProposalRequest request,
+            @Valid @RequestBody CreateGameProposalRequest request,
             @AuthenticationPrincipal CustomUser user
             ) {
         GameProposalResponse response = gameProposalService.createProposal(request, user.getUserId());
@@ -65,10 +66,10 @@ public class GameProposalController {
     @PatchMapping("/{proposalId}/admin")
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(
             @PathVariable Long proposalId,
-            @RequestBody ReviewGameProposalRequest request,
-            @RequestAttribute Long adminId
+            @Valid @RequestBody ReviewGameProposalRequest request,
+            @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
+        GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, user.getUserId());
 
         return ApiResponse.success(response);
     }

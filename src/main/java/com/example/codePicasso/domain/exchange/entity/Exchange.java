@@ -43,16 +43,5 @@ public class Exchange extends TimeStamp {
         this.price = price;
     }
 
-    public ExchangeResponse toDto(){
-        return ExchangeResponse.builder()
-                .id(id)
-                .userId(user.getId())
-                .gameId(game.getId())
-                .title(title)
-                .price(price)
-                .description(description)
-                .quantity(quantity)
-                .tradeType(tradeType)
-                .build();
-    }
+
 }

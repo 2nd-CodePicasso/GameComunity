@@ -24,13 +24,4 @@
             return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId));
         }
 
-
-        @MessageMapping("/send/room")
-        @SendTo("/topic/{roomId}}")
-        public ChatResponse testMessage(
-                @Payload ChatRequest chatsRequest,
-                @DestinationVariable String roomId) {
-            return chatService.addForRoomToMessage(chatsRequest, roomId);
-        }
-
     }

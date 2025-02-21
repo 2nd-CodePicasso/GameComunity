@@ -4,12 +4,12 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
+import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
-import com.example.codePicasso.global.exception.base.InvalidRequestException;
-import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.example.codePicasso.global.common.DtoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,30 +30,29 @@ public class PostService {
 
     // 게시글 생성
     @Transactional
-    public PostResponse createPost(Long userId, Long categoryId, String title, String description) {
+    public PostResponse createPost(Long userId, Long gameId, PostRequest postRequest) {
+        Game game = gameConnector.findById(gameId);
         User user = userConnector.findById(userId);
-        Category category = categoryConnector.findById(categoryId);
-        Post createPost = Post.toEntity(user, category.getGame(), category, title, description);
-        postConnector.save(createPost);
-        return PostResponse.toDto(createPost);
+        Category category = categoryConnector.findById(postRequest.categoryId());
+        Post createPost = postRequest.toEntity(user, game,category);
+        Post save = postConnector.save(createPost);
+        return DtoFactory.toPostDto(save);
     }
 
-    // gameId로 게시글 전체 조회
-    public List<PostResponse> findAllByGameId(Long gameId) {
-        return postConnector.findAllByGameId(gameId).stream()
-                .map(PostResponse::toDto).toList();
+    public List<PostResponse> findPostByGameId(Long gameId) {
+        return postConnector.findPostByGameId(gameId).stream()
+                .map(DtoFactory::toPostDto).toList();
     }
 
-    // categoryId로 게시글 전체 조회
-    public List<PostResponse> findAllByCategoryId(Long categoryId) {
-        return postConnector.findAllByCategoryId(categoryId).stream()
-                .map(PostResponse::toDto).toList();
+    public List<PostResponse> findPostByCategoryId(Long categoryId) {
+        return postConnector.findPostByCategoryId(categoryId).stream()
+                .map(DtoFactory::toPostDto).toList();
     }
 
     // 게시글 개별 조회
     public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
-        return PostResponse.toDto(getPost);
+        return DtoFactory.toPostDto(getPost);
     }
 
     // 게시글 수정
@@ -68,7 +67,7 @@ public class PostService {
 
         foundPost.updatePost(title, description);
 
-        return PostResponse.toDto(foundPost);
+        return DtoFactory.toPostDto(foundPost);
     }
 
     // 게시글 삭제

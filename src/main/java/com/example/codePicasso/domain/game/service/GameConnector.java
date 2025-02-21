@@ -7,7 +7,7 @@ import java.util.List;
 
 @Component
 public interface GameConnector {
-    public void save(Game game);
+    public Game save(Game game);
 
     public List<Game> findAll();
 

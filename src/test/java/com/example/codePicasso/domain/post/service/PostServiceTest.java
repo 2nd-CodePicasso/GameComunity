@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -47,11 +48,12 @@ class PostServiceTest {
     private Admin mockAdmin;
     private Game mockGame;
     private Category mockCategory;
+    private PostRequest postRequest;
     private List<Post> posts = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
-        mockUser = new User("user", "testUser", "user123");  // 예시: User 객체 생성
+        mockUser = new User("user", "testUser","user123");  // 예시: User 객체 생성
         mockAdmin = new Admin("admin", "testAdmin");
         mockGame = Game.builder()
                 .id(1L)
@@ -88,24 +90,24 @@ class PostServiceTest {
     void 게시글_생성() {
         // Given
         Long userId = 1L;
-//        Long gameId = 1L;
+        Long gameId = 1L;
         Long categoryId = 1L;
         PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
 
         // When
 
-//        when(gameConnector.findById(gameId)).thenReturn(mockGame);
+        when(gameConnector.findById(gameId)).thenReturn(mockGame);
         when(userConnector.findById(userId)).thenReturn(mockUser);
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
 
-        PostResponse response = postService.createPost(userId, categoryId, request.title(), request.description());
+        PostResponse response = postService.createPost(userId, gameId, postRequest);
 
         // Then
         verify(postConnector, times(1)).save(any());
-//        verify(gameConnector).findById(gameId);
+        verify(gameConnector).findById(gameId);
         verify(userConnector).findById(userId);
         verify(categoriesConnector).findById(categoryId);
-        assertEquals(mockCategory.getGame().getId(), response.gameId());
+        assertEquals(mockGame.getId(),response.gameId());
         assertEquals(mockCategory.getCategoryName(), response.categoryName());
         assertEquals(request.title(), response.title());
         assertEquals(request.description(), response.description());
@@ -119,17 +121,15 @@ class PostServiceTest {
         //when
 
         when(postConnector.findAllByGameId(gameId)).thenReturn(posts);
-        List<PostResponse> postResponses = postService.findAllByGameId(gameId);
+        List<PostResponse> postResponses = postService.findPostByGameId(gameId);
 
         //then
         verify(postConnector).findAllByGameId(gameId);
-        assertEquals(posts.get(0).getId(), postResponses.get(0).postId());
-        assertEquals(posts.get(0).getGame().getId(), postResponses.get(0).gameId());
-        assertEquals(posts.get(0).getCategory().getId(), postResponses.get(0).categoryId());
-        assertEquals(posts.get(0).getCategory().getCategoryName(), postResponses.get(0).categoryName());
-        assertEquals(posts.get(0).getTitle(), postResponses.get(0).title());
-        assertEquals(posts.get(0).getDescription(), postResponses.get(0).description());
-        assertEquals(posts.get(0).getUser().getNickname(), postResponses.get(0).nickname());
+        assertEquals(posts.get(0).getId(),postResponses.get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(),postResponses.get(0).gameId());
+        assertEquals(posts.get(0).getTitle(),postResponses.get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(),postResponses.get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(),postResponses.get(0).description());
     }
 
     @Test
@@ -139,17 +139,15 @@ class PostServiceTest {
 
         //when
         when(postConnector.findAllByCategoryId(categoryId)).thenReturn(posts);
-        List<PostResponse> postResponses = postService.findAllByCategoryId(categoryId);
+        List<PostResponse> postResponses = postService.findPostByCategoryId(categoryId);
 
         //then
         verify(postConnector).findAllByCategoryId(categoryId);
-        assertEquals(posts.get(0).getId(), postResponses.get(0).postId());
-        assertEquals(posts.get(0).getGame().getId(), postResponses.get(0).gameId());
-        assertEquals(posts.get(0).getCategory().getId(), postResponses.get(0).categoryId());
-        assertEquals(posts.get(0).getCategory().getCategoryName(), postResponses.get(0).categoryName());
-        assertEquals(posts.get(0).getTitle(), postResponses.get(0).title());
-        assertEquals(posts.get(0).getDescription(), postResponses.get(0).description());
-        assertEquals(posts.get(0).getUser().getNickname(), postResponses.get(0).nickname());
+        assertEquals(posts.get(0).getId(),postResponses.get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(),postResponses.get(0).gameId());
+        assertEquals(posts.get(0).getTitle(),postResponses.get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(),postResponses.get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(),postResponses.get(0).description());
     }
 
     @Test
@@ -163,13 +161,11 @@ class PostServiceTest {
 
         //then
         verify(postConnector).findById(postId);
-        assertEquals(posts.get(0).getId(), postResponse.postId());
-        assertEquals(posts.get(0).getGame().getId(), postResponse.gameId());
-        assertEquals(posts.get(0).getCategory().getId(), postResponse.categoryId());
-        assertEquals(posts.get(0).getCategory().getCategoryName(), postResponse.categoryName());
-        assertEquals(posts.get(0).getTitle(), postResponse.title());
-        assertEquals(posts.get(0).getDescription(), postResponse.description());
-        assertEquals(posts.get(0).getUser().getNickname(), postResponse.nickname());
+        assertEquals(mockPost.getId(), postResponse.postId());
+        assertEquals(mockPost.getGame().getId(), postResponse.gameId());
+        assertEquals(mockPost.getTitle(), postResponse.title());
+        assertEquals(mockPost.getCategory().getCategoryName(), postResponse.categoryName());
+        assertEquals(mockPost.getDescription(), postResponse.description());
     }
 
     @Test
