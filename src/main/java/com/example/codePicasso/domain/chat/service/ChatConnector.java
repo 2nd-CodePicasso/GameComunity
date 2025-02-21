@@ -12,4 +12,6 @@ public interface ChatConnector {
     List<Chat> findAll();
 
     List<Chat> findAllByRoomId(Long roomId);
+
+    Chat findById(Long aLong);
 }
