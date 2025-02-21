@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.recommend.controller;
 
-import com.example.codePicasso.domain.recommend.dto.response.RecommendResponse;
 import com.example.codePicasso.domain.recommend.service.RecommendService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +14,11 @@ public class RecommendController {
     private final RecommendService recommendService;
 
     @PostMapping("/posts/{postId}")
-    public ResponseEntity<ApiResponse<RecommendResponse>> createRecommend(
+    public ResponseEntity<ApiResponse<Integer>> createRecommend(
             @PathVariable Long postId,
             @AuthenticationPrincipal Long userId
     ) {
-        RecommendResponse response = recommendService.doRecommend(postId, userId);
+        Integer response = recommendService.doRecommend(postId, userId);
         return ApiResponse.success(response);
     }
 
