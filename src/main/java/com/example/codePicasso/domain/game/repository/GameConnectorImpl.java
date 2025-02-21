@@ -16,8 +16,8 @@ public class GameConnectorImpl implements GameConnector {
     private final GameRepository gameRepository;
 
     @Override
-    public void save(Game game) {
-        gameRepository.save(game);
+    public Game save(Game game) {
+        return gameRepository.save(game);
     }
 
     @Override

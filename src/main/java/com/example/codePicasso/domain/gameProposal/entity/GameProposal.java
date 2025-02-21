@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.gameProposal.entity;
 
-import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
@@ -40,10 +39,12 @@ public class GameProposal extends TimeStamp {
     @Column(nullable = false)
     private ProposalStatus status;
 
-
-
     public void update(Admin admin, ProposalStatus status){
         this.admin = admin;
+        this.status = status;
+    }
+
+    public void updateStatus(ProposalStatus status){
         this.status = status;
     }
 }

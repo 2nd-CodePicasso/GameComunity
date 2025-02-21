@@ -39,16 +39,11 @@ public class GameProposalService {
         ProposalStatus status = gameProposalConnector.existsByGameTitle(request.gameTitle())
                 ? ProposalStatus.REJECTED : ProposalStatus.WAITING;
 
-        GameProposal proposal = GameProposal.builder()
-                .user(foundUser)
-                .gameTitle(request.gameTitle())
-                .description(request.description())
-                .status(status)
-                .build();
+        GameProposal proposal = request.toEntity(foundUser,status);
 
-        gameProposalConnector.save(proposal);
+        GameProposal save = gameProposalConnector.save(proposal);
 
-        return DtoFactory.toGameProposalDto(proposal);
+        return DtoFactory.toGameProposalDto(save);
     }
 
     public GameProposalGetManyResponse getAllProposals() {
@@ -57,12 +52,12 @@ public class GameProposalService {
     }
 
     public GameProposalGetManyResponse getProposalsByStatus(ProposalStatus status) {
-        return new GameProposalGetManyResponse(gameProposalConnector.findByStatus(status).stream()
+        return new GameProposalGetManyResponse(gameProposalConnector.findAllByStatus(status).stream()
                 .map(DtoFactory::toGameProposalDto).toList());
     }
 
     public GameProposalGetManyResponse getMyProposals(Long userId) {
-        return new GameProposalGetManyResponse(gameProposalConnector.findByUserId(userId).stream()
+        return new GameProposalGetManyResponse(gameProposalConnector.findAllByUserId(userId).stream()
                 .map(DtoFactory::toGameProposalDto).toList());
     }
 
@@ -75,8 +70,7 @@ public class GameProposalService {
         if (!foundProposal.getUser().getId().equals(userId)) {
             throw new AccessDeniedException(ErrorCode.NOT_YOUR_PROPOSAL);
         }
-        foundProposal.update(null, ProposalStatus.CANCELED);
-        gameProposalConnector.save(foundProposal);
+        foundProposal.updateStatus(ProposalStatus.CANCELED);
         return DtoFactory.toGameProposalDto(foundProposal);
     }
 
@@ -86,8 +80,6 @@ public class GameProposalService {
         Admin foundAdmin = adminConnector.findById(adminId);
 
         proposal.update(foundAdmin, request.status());
-
-        gameProposalConnector.save(proposal);
 
         if (proposal.getStatus() == ProposalStatus.APPROVED) {
             gameService.createGame(new GameRequest(proposal));
