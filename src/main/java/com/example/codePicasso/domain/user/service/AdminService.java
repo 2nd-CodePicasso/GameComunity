@@ -3,6 +3,7 @@ package com.example.codePicasso.domain.user.service;
 import com.example.codePicasso.domain.user.dto.request.AdminRequest;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.config.PasswordEncoder;
 import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -27,6 +28,6 @@ public class AdminService {
 
         Admin admin = adminRequest.toEntity(encodedPassword);
         adminConnector.save(admin);
-        return admin.toDto();
+        return DtoFactory.toAdminDto(admin);
     }
 }

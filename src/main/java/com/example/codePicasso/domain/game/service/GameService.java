@@ -6,6 +6,7 @@ import com.example.codePicasso.domain.game.dto.response.GameGetAllResponse;
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class GameService {
 
     public GameGetAllResponse getAllGames() {
         return new GameGetAllResponse(gameConnector.findAll().stream()
-                .map(Game::toDto).toList());
+                .map(DtoFactory::toGameDto).toList());
     }
 
     @Transactional
@@ -39,7 +40,7 @@ public class GameService {
         Game foundGame = gameConnector.findById(gameId);
         foundGame.updateDetails(request.gameDescription());
         gameConnector.save(foundGame);
-        return foundGame.toDto();
+        return DtoFactory.toGameDto(foundGame);
     }
 
     @Transactional

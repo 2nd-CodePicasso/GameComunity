@@ -48,6 +48,7 @@ class PostServiceTest {
     private Admin mockAdmin;
     private Game mockGame;
     private Category mockCategory;
+    private PostRequest postRequest;
     private List<Post> posts = new ArrayList<>();
 
     @BeforeEach
@@ -73,6 +74,7 @@ class PostServiceTest {
                 .description("This is a test post.")
                 .build();
         posts.add(mockPost);
+        postRequest = new PostRequest(1L, "he", "is gay");
     }
 
     @Test
@@ -99,7 +101,7 @@ class PostServiceTest {
         when(userConnector.findById(userId)).thenReturn(mockUser);
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
 
-        PostResponse response = postService.createPost(userId, gameId, categoryId, request.title(), request.description());
+        PostResponse response = postService.createPost(userId, gameId, postRequest);
 
         // Then
         verify(postConnector, times(1)).save(any());

@@ -17,16 +17,5 @@ public record PostResponse(
         LocalDateTime updatedAt
 ) {
     // Post Entity > PostResponse 메서드 경로 이동
-    public static PostResponse toDto(Post post) {
-        return PostResponse.builder().
-                postId(post.getId()).
-                gameId(post.getGame().getId()).
-                categoryName(post.getCategory().getCategoryName()).
-                title(post.getTitle()).
-                nickname(post.getUser().getNickname()).
-                description(post.getDescription()).
-                createdAt(post.getCreatedAt()).
-                updatedAt(post.getUpdatedAt()).
-                build();
-    }
+
 }

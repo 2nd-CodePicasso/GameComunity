@@ -1,12 +1,11 @@
 package com.example.codePicasso.domain.category.service;
 
+import com.example.codePicasso.domain.category.dto.request.CategoryRequest;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.post.dto.response.GetAllCategoryByGameIdResponse;
-import com.example.codePicasso.global.exception.base.InvalidRequestException;
-import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.example.codePicasso.global.common.DtoFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +20,11 @@ public class CategoryService {
     private final GameConnector gameConnector;
 
     @Transactional
-    public CategoryResponse createCategory(Long gameId, String categoryName) {
+    public CategoryResponse createCategory(Long gameId, CategoryRequest category) {
         Game game = gameConnector.findById(gameId);
-        Category createCategory = Category.toEntity(game, categoryName);
+        Category createCategory = category.toEntity(game);
         categoryConnector.save(createCategory);
-        return CategoryResponse.toDto(createCategory);
+        return DtoFactory.toCategoryDto(createCategory);
     }
 
     public List<CategoryResponse> getAllCategory(Long gameId) {

@@ -32,7 +32,7 @@ public class PostController {
 ,            @PathVariable("gameId") Long gameId,
             PostRequest request
     ) {
-        PostResponse response = postService.createPost(user.getUserId(), gameId, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.createPost(user.getUserId(), gameId, request);
         return ApiResponse.created(response);
     }
 

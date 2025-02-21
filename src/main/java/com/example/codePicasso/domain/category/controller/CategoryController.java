@@ -22,7 +22,7 @@ public class CategoryController {
             @PathVariable("gameId") Long gameId,
             CategoryRequest request
     ) {
-        return ApiResponse.created(categoryService.createCategory(gameId, request.categoryName()));
+        return ApiResponse.created(categoryService.createCategory(gameId, request));
     }
 
     @GetMapping

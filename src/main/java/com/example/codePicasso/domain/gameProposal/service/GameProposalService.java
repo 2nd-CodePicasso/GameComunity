@@ -12,6 +12,7 @@ import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.AdminConnector;
 import com.example.codePicasso.domain.user.service.UserConnector;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.AccessDeniedException;
 import com.example.codePicasso.global.exception.base.ConflictException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -47,22 +48,22 @@ public class GameProposalService {
 
         gameProposalConnector.save(proposal);
 
-        return proposal.toDto();
+        return DtoFactory.toGameProposalDto(proposal);
     }
 
     public GameProposalGetManyResponse getAllProposals() {
         return new GameProposalGetManyResponse(gameProposalConnector.findAll().stream()
-                .map(GameProposal::toDto).toList());
+                .map(DtoFactory::toGameProposalDto).toList());
     }
 
     public GameProposalGetManyResponse getProposalsByStatus(ProposalStatus status) {
         return new GameProposalGetManyResponse(gameProposalConnector.findByStatus(status).stream()
-                .map(GameProposal::toDto).toList());
+                .map(DtoFactory::toGameProposalDto).toList());
     }
 
     public GameProposalGetManyResponse getMyProposals(Long userId) {
         return new GameProposalGetManyResponse(gameProposalConnector.findByUserId(userId).stream()
-                .map(GameProposal::toDto).toList());
+                .map(DtoFactory::toGameProposalDto).toList());
     }
 
     @Transactional
@@ -76,7 +77,7 @@ public class GameProposalService {
         }
         foundProposal.update(null, ProposalStatus.CANCELED);
         gameProposalConnector.save(foundProposal);
-        return foundProposal.toDto();
+        return DtoFactory.toGameProposalDto(foundProposal);
     }
 
     @Transactional
@@ -92,6 +93,6 @@ public class GameProposalService {
             gameService.createGame(new GameRequest(proposal));
         }
 
-        return proposal.toDto();
+        return DtoFactory.toGameProposalDto(proposal);
     }
 }

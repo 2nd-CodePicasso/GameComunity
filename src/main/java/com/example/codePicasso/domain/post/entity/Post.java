@@ -54,13 +54,5 @@ public class Post extends TimeStamp {
         this.description = description;
     }
 
-    public static Post toEntity(User user, Game game, Category category, String title, String description) {
-        return Post.builder()
-                .user(user)
-                .game(game)
-                .category(category)
-                .title(title)
-                .description(description)
-                .build();
-    }
+
 }

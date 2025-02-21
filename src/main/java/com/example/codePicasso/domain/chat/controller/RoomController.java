@@ -19,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomController {
 
+
+    // v2임
     private final RoomService roomService;
 
     @PostMapping

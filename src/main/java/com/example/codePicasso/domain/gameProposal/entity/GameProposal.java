@@ -40,16 +40,7 @@ public class GameProposal extends TimeStamp {
     @Column(nullable = false)
     private ProposalStatus status;
 
-    public GameProposalResponse toDto(){
-        return GameProposalResponse.builder()
-                .id(id)
-                .userLoginId(user.getLoginId())
-                .adminLoginId(admin == null ? null : admin.getLoginId())
-                .gameTitle(gameTitle)
-                .description(description)
-                .status(status)
-                .build();
-    }
+
 
     public void update(Admin admin, ProposalStatus status){
         this.admin = admin;
