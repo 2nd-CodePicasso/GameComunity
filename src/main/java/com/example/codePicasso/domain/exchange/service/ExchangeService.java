@@ -79,9 +79,8 @@ public class ExchangeService {
         }
 
         exchange.update(request.title(), request.price());
-        Exchange updatedExchange = exchangeConnector.save(exchange);
 
-        return DtoFactory.toExchangeDto(updatedExchange);
+        return DtoFactory.toExchangeDto(exchange);
     }
 
     // 거래소 아이템 삭제
