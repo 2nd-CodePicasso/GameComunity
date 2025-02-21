@@ -56,5 +56,4 @@ public class Post extends TimeStamp {
         this.description = description;
     }
 
-
 }

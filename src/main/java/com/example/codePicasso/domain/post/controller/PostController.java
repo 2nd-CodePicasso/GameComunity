@@ -11,16 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/posts")
 public class PostController {
+
     private final PostService postService;
 
     /**
      * 게시글 생성
+     *
      * @param user
      * @param request (categoryId, title, description)
      * @return 생성된 게시글
@@ -36,6 +36,7 @@ public class PostController {
 
     /**
      * gameId로 게시글 전체 조회
+     *
      * @param gameId
      * @return gameId 내 모든 게시글 조회
      */
@@ -43,12 +44,13 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
-        List<PostResponse> response = postService.findAllByGameId(gameId);
-        return ApiResponse.success(PostListResponse.builder().response(response).build());
+        PostListResponse postListResponse = postService.findAllByGameId(gameId);
+        return ApiResponse.success(postListResponse);
     }
 
     /**
      * 카테고리별 게시글 전체 조회
+     *
      * @param categoryId
      * @return categoryId 내 모든 게시글 조회
      */
@@ -56,12 +58,13 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
             @PathVariable("categoryId") Long categoryId
     ) {
-        List<PostResponse> response = postService.findAllByCategoryId(categoryId);
-        return ApiResponse.success(PostListResponse.builder().response(response).build());
+        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId);
+        return ApiResponse.success(postListResponse);
     }
 
     /**
      * 개별 게시글 조회
+     *
      * @param postId
      * @return 개별 게시물
      */
@@ -75,6 +78,7 @@ public class PostController {
 
     /**
      * 게시글 수정
+     *
      * @param postId
      * @param user
      * @param request (categoryId, title, description)
@@ -92,6 +96,7 @@ public class PostController {
 
     /**
      * 게시물 삭제
+     *
      * @param postId
      * @param user
      * @return return 없음

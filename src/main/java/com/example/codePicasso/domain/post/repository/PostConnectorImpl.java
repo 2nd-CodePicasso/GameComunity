@@ -12,7 +12,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class PostConnectorImpl implements PostConnector {
-
     private final PostRepository postRepository;
 
     // 게시글 생성
@@ -36,15 +35,13 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 개별 조회
     @Override
     public Post findById(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        return postRepository.findById(postId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     // 게시글 수정
     @Override
     public Post findByIdAndUserId(Long postId, Long userId) {
-        return postRepository.findByIdAndUserId(postId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        return postRepository.findByIdAndUserId(postId, userId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     // 게시글 삭제

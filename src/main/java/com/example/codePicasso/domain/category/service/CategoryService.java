@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.category.service;
 
 import com.example.codePicasso.domain.category.dto.request.CategoryRequest;
+import com.example.codePicasso.domain.category.dto.response.CategoryListResponse;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
@@ -23,14 +24,18 @@ public class CategoryService {
     public CategoryResponse createCategory(Long gameId, CategoryRequest request) {
         Game game = gameConnector.findById(gameId);
         Category createCategory = request.toEntity(game);
-        categoryConnector.save(createCategory);
-        return DtoFactory.toCategoryDto(createCategory);
+        Category saveCategory = categoryConnector.save(createCategory);
+        return DtoFactory.toCategoryDto(saveCategory);
     }
 
-    public List<CategoryResponse> getAllCategory(Long gameId) {
-        return categoryConnector.findCategoryByGameId(gameId).stream()
+    public CategoryListResponse getAllCategory(Long gameId) {
+        List<CategoryResponse> categoryResponses = categoryConnector.findCategoryByGameId(gameId).stream()
                 .map(CategoryResponse::toDto).toList();
+        return CategoryListResponse.builder()
+                .categoryResponses(categoryResponses)
+                .build();
     }
+
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, CategoryRequest request) {
         Category foundCategory = categoryConnector.findById(categoryId);
@@ -39,6 +44,7 @@ public class CategoryService {
 
         return CategoryResponse.toDto(foundCategory);
     }
+
     @Transactional
     public void deleteCategory(Long categoryId) {
         Category deleteCategory = categoryConnector.findById(categoryId);

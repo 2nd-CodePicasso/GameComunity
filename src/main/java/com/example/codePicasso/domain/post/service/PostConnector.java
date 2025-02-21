@@ -7,7 +7,6 @@ import java.util.List;
 
 @Component
 public interface PostConnector {
-
     Post save(Post post);
 
     List<Post> findAllByGameId(Long gameId);

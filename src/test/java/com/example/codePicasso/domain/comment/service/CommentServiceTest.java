@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.awt.SystemColor.text;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -102,7 +103,7 @@ class CommentServiceTest {
         when(postConnector.findById(postId)).thenReturn(mockPost);
         when(userConnector.findById(userId)).thenReturn(mockUser);
 
-        CommentResponse response = commentService.createComment(postId, userId, request.text());
+        CommentResponse response = commentService.createComment(postId, userId, request);
 
         // Then
         verify(commentConnector, times(1)).save(any());
@@ -128,7 +129,7 @@ class CommentServiceTest {
         when(userConnector.findById(userId)).thenReturn(mockUser);
         when(commentConnector.findById(parentId)).thenReturn(mockComment);
 
-        ReplyResponse response = commentService.createReply(postId, parentId, userId, request.text());
+        ReplyResponse response = commentService.createReply(postId, parentId, userId, request);
 
         // Then
         verify(commentConnector, times(1)).save(any());
@@ -182,17 +183,17 @@ class CommentServiceTest {
         // Given
         Long commentId = 1L;
         Long userId = 1L;
-        String text = "update text";
+        CommentRequest request = new CommentRequest("update Comment");
 
         // When
         when(commentConnector.findByIdAndUserId(commentId, userId)).thenReturn(mockComment);
 
-        CommentResponse commentResponse = commentService.updateComment(commentId, userId, text);
+        CommentResponse commentResponse = commentService.updateComment(commentId, userId, request);
 
         // Then
         verify(commentConnector).findByIdAndUserId(commentId, userId);
 
-        assertEquals(text, commentResponse.text());
+        assertEquals(request.text(), commentResponse.text());
     }
 
     @Test

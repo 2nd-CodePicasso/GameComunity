@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
+import com.example.codePicasso.domain.chat.dto.response.ChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -27,9 +28,12 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatResponse> getChatsHistory() {
+    public ChatListResponse getChatsHistory() {
         List<Chat> chats = chatConnector.findAll();
-        return chats.stream().map(DtoFactory::toChatDto).toList();
+        List<ChatResponse> chatResponses = chats.stream().map(DtoFactory::toChatDto).toList();
+        return ChatListResponse.builder()
+                .chatsResponseList(chatResponses)
+                .build();
     }
 
     @Transactional

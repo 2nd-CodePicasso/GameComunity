@@ -24,6 +24,7 @@ public class CommentService {
     private final UserConnector userConnector;
 
     // 댓글 생성
+    @Transactional
     public CommentResponse createComment(Long postId, Long userId, CommentRequest request) {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
@@ -35,6 +36,7 @@ public class CommentService {
     }
 
     // 대댓글 생성
+    @Transactional
     public ReplyResponse createReply(Long postId, Long parentId, Long userId, CommentRequest request) {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
@@ -54,6 +56,7 @@ public class CommentService {
     }
 
     // 댓글, 대댓글 수정
+    @Transactional
     public CommentResponse updateComment(Long commentId, Long userId, CommentRequest request) {
         Comment foundComment = commentConnector.findByIdAndUserId(commentId, userId);
 
@@ -62,6 +65,7 @@ public class CommentService {
     }
 
     // 댓글 삭제
+    @Transactional
     public void deleteComment(Long commentId, Long userId) {
         Comment deleteComment = commentConnector.findByIdAndUserId(commentId, userId);
         commentConnector.delete(deleteComment);
