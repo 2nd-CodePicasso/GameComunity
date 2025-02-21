@@ -43,7 +43,7 @@ public enum ErrorCode {
     //Chatting
     CHATTING_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅 기록을 찾을 수 없습니다."),
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅방을 찾을 수 없습니다."),
-
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "", "공지를 찾을수 없습니다."),
     //ItemExchange
     EXCHANGE_NOT_FOUND(HttpStatus.NOT_FOUND, "", "거래내역을 찾을 수 없습니다.");
 

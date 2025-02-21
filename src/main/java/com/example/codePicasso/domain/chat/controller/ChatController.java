@@ -46,7 +46,7 @@
                 @Payload NotificationRequest notificationRequest,
                 @Header("userId") String userId
         ) {
-            notificationService.addNotification(notificationRequest, Long.valueOf(userId));
+            return notificationService.addNotification(notificationRequest, Long.valueOf(userId));
         }
 
     }

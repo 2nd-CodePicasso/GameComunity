@@ -4,7 +4,9 @@ package com.example.codePicasso.global.common;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
@@ -93,9 +95,21 @@ public class DtoFactory {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
                 .message(chats.getContent())
-                .sender(chats.getContent())
+                .username(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
                 .build();
     }
 
+    public static NotificationResponse toNotificationDto(Notification notification) {
+        return NotificationResponse.builder()
+                .notificationId(notification.getId())
+                .chatRoomId(notification.getChatRoom().getId())
+                .authorName(notification.getAuthorName())
+                .content(notification.getContent())
+                .writtenTime(notification.getWrittenTime())
+                .createdTime(notification.getCreatedTime())
+                .messageId(notification.getChat().getId())
+                .proposerName(notification.getUser().getNickname())
+                .build();
+    }
 }
