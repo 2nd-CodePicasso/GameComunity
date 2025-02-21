@@ -34,8 +34,8 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<RoomListResponse>> getAllRoom() {
-        List<RoomResponse> allRoom = roomService.getAllRoom();
-        return ApiResponse.success(RoomListResponse.builder().roomResponses(allRoom).build());
+        RoomListResponse allRoom = roomService.getAllRoom();
+        return ApiResponse.success(allRoom);
     }
 
     @GetMapping("/{roomName}")

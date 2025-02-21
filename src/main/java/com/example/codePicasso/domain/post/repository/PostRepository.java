@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    List<Post> findPostByGameId(Long gameId);
+    List<Post> findAllByGameId(Long gameId);
 
-    List<Post> findPostByCategoryId(Long categoryId);
+    List<Post> findAllByCategoryId(Long categoryId);
 
     @Query("""
             SELECT p

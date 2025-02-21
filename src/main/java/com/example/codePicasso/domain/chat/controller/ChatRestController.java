@@ -21,7 +21,7 @@ public class ChatRestController {
 
     @GetMapping("/history")
     public ResponseEntity<ApiResponse<ChatListResponse>> getChatsHistory() {
-        List<ChatResponse> chatsHistory = chatsService.getChatsHistory();
-        return ApiResponse.success(ChatListResponse.builder().chatsResponseList(chatsHistory).build());
+        ChatListResponse chatsHistory = chatsService.getChatsHistory();
+        return ApiResponse.success(chatsHistory);
     }
 }

@@ -5,6 +5,7 @@ import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
+import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.user.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -38,14 +40,20 @@ public class PostService {
         return DtoFactory.toPostDto(save);
     }
 
-    public List<PostResponse> findPostByGameId(Long gameId) {
-        return postConnector.findPostByGameId(gameId).stream()
+    public PostListResponse findPostByGameId(Long gameId) {
+        List<PostResponse> postResponses = postConnector.findPostByGameId(gameId).stream()
                 .map(DtoFactory::toPostDto).toList();
+        return PostListResponse.builder()
+                .postResponses(postResponses)
+                .build();
     }
 
-    public List<PostResponse> findPostByCategoryId(Long categoryId) {
-        return postConnector.findPostByCategoryId(categoryId).stream()
+    public PostListResponse findPostByCategoryId(Long categoryId) {
+        List<PostResponse> postResponses = postConnector.findPostByCategoryId(categoryId).stream()
                 .map(DtoFactory::toPostDto).toList();
+        return PostListResponse.builder()
+                .postResponses(postResponses)
+                .build();
     }
 
     public PostResponse findPostById(Long postId) {

@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,17 +22,17 @@ public class PostConnectorImpl implements PostConnector {
 
     @Override
     public List<Post> findPostByGameId(Long gameId) {
-        return postRepository.findPostByGameId(gameId);
+        return postRepository.findAllByGameId(gameId);
     }
 
     @Override
     public List<Post> findPostByCategoryId(Long categoryId) {
-        return postRepository.findPostByCategoryId(categoryId);
+        return postRepository.findAllByCategoryId(categoryId);
     }
 
     @Override
     public Post findById(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+        return postRepository.findById(postId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     @Override
