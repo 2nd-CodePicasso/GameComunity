@@ -2,6 +2,8 @@ package com.example.codePicasso.domain.recommend.repository;
 
 import com.example.codePicasso.domain.recommend.entity.Recommend;
 import com.example.codePicasso.domain.recommend.service.RecommendConnector;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +24,8 @@ public class RecommendConnectorImpl implements RecommendConnector {
 
     @Override
     public Recommend findByPostIdAndUserId(Long postId, Long userId) {
-        return recommendRepository.findByPostIdAndUserId(postId, userId);
+        return recommendRepository.findByPostIdAndUserId(postId, userId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.RECOMMEND_NOT_FOUND));
     }
 
     @Override

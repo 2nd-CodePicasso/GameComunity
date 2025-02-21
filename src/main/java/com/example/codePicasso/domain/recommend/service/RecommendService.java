@@ -17,32 +17,32 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RecommendService {
-        private final PostConnector postConnector;
-        private final UserConnector userConnector;
-        private final RecommendConnector recommendConnector;
+    private final PostConnector postConnector;
+    private final UserConnector userConnector;
+    private final RecommendConnector recommendConnector;
 
-        @Transactional
-        public RecommendResponse doRecommend(Long postId, Long userId) {
-            User foundUser = userConnector.findById(userId);
-            Post foundPost = postConnector.findById(postId);
+    @Transactional
+    public RecommendResponse doRecommend(Long postId, Long userId) {
+        User foundUser = userConnector.findById(userId);
+        Post foundPost = postConnector.findById(postId);
 
-            Recommend recommend = Recommend.builder()
-                    .user(foundUser)
-                    .post(foundPost)
-                    .build();
+        Recommend recommend = Recommend.builder()
+                .user(foundUser)
+                .post(foundPost)
+                .build();
 
-            Recommend save = recommendConnector.save(recommend);
-            return DtoFactory.toRecommendDto(save);
-        }
+        Recommend save = recommendConnector.save(recommend);
+        return DtoFactory.toRecommendDto(save);
+    }
 
-        public Integer countRecommendOfPost(Long postId) {
-            return recommendConnector.countByPostId(postId);
-        }
+    public Integer countRecommendOfPost(Long postId) {
+        return recommendConnector.countByPostId(postId);
+    }
 
-        public void undoRecommend(Long postId, Long userId) {
-            Recommend recommend = recommendConnector.findByPostIdAndUserId(postId, userId);
+    public void undoRecommend(Long postId, Long userId) {
+        Recommend recommend = recommendConnector.findByPostIdAndUserId(postId, userId);
 
-            recommendConnector.delete(recommend);
-        }
+        recommendConnector.delete(recommend);
+    }
 
 }

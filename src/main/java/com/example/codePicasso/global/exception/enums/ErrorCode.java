@@ -40,6 +40,9 @@ public enum ErrorCode {
     //Category
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "", "카테고리를 찾을 수 없습니다."),
 
+    //Recommend
+    RECOMMEND_NOT_FOUND(HttpStatus.NOT_FOUND, "", "존재하지 않는 추천입니다."),
+
     //Chatting
     CHATTING_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅 기록을 찾을 수 없습니다."),
 
