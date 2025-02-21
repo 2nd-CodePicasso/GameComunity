@@ -33,7 +33,7 @@ public class CommentController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody CommentRequest request
     ) {
-        CommentResponse commentResponse = commentService.createComment(postId, user.getUserId(), request.text());
+        CommentResponse commentResponse = commentService.createComment(postId, user.getUserId(), request);
         return ApiResponse.created(commentResponse);
     }
 
@@ -47,7 +47,7 @@ public class CommentController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody CommentRequest request
     ) {
-        ReplyResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request.text());
+        ReplyResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request);
         return ApiResponse.created(replyResponse);
     }
 
@@ -79,7 +79,7 @@ public class CommentController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody CommentRequest request
     ) {
-        CommentResponse commentResponse = commentService.updateComment(commentId, user.getUserId(), request.text());
+        CommentResponse commentResponse = commentService.updateComment(commentId, user.getUserId(), request);
         return ApiResponse.success(commentResponse);
     }
 

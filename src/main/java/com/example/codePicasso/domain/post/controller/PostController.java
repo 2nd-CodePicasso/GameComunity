@@ -15,14 +15,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/games/{gameId}/posts")
+@RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
 
     /**
      * 게시글 생성
      * @param user
-     * @param gameId
      * @param request (categoryId, title, description)
      * @return 생성된 게시글
      */
@@ -31,8 +30,7 @@ public class PostController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody PostRequest request
     ) {
-//        PostResponse response = postService.createPost(user.getUserId(), gameId, request);
-        PostResponse response = postService.createPost(user.getUserId(), request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.createPost(user.getUserId(), request);
         return ApiResponse.created(response);
     }
 
@@ -41,7 +39,7 @@ public class PostController {
      * @param gameId
      * @return gameId 내 모든 게시글 조회
      */
-    @GetMapping
+    @GetMapping("/{gameId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
@@ -88,7 +86,7 @@ public class PostController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody PostRequest request
     ) {
-        PostResponse response = postService.updatePost(postId, user.getUserId(), request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.updatePost(postId, user.getUserId(), request);
         return ApiResponse.success(response);
     }
 

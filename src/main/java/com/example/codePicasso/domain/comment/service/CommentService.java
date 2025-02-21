@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.comment.service;
 
+import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
@@ -23,23 +24,23 @@ public class CommentService {
     private final UserConnector userConnector;
 
     // 댓글 생성
-    public CommentResponse createComment(Long postId, Long userId, String text) {
+    public CommentResponse createComment(Long postId, Long userId, CommentRequest request) {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
 
-        Comment createComment = Comment.toEntityForComment(post, user, text);
+        Comment createComment = Comment.toEntityForComment(post, user, request.text());
 
         commentConnector.save(createComment);
         return CommentResponse.toDto(createComment);
     }
 
     // 대댓글 생성
-    public ReplyResponse createReply(Long postId, Long parentId, Long userId, String text) {
+    public ReplyResponse createReply(Long postId, Long parentId, Long userId, CommentRequest request) {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
         Comment parentComment = commentConnector.findById(parentId);
 
-        Comment createReply = Comment.toEntityForReply(post, user, parentComment, text);
+        Comment createReply = Comment.toEntityForReply(post, user, parentComment, request.text());
         parentComment.addReplies(createReply);
 
         commentConnector.save(createReply);
@@ -53,10 +54,10 @@ public class CommentService {
     }
 
     // 댓글, 대댓글 수정
-    public CommentResponse updateComment(Long commentId, Long userId, String text) {
+    public CommentResponse updateComment(Long commentId, Long userId, CommentRequest request) {
         Comment foundComment = commentConnector.findByIdAndUserId(commentId, userId);
 
-        foundComment.updateComment(text);
+        foundComment.updateComment(request.text());
         return CommentResponse.toDto(foundComment);
     }
 

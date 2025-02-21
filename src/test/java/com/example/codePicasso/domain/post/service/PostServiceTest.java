@@ -20,8 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -121,7 +119,7 @@ class PostServiceTest {
         //when
 
         when(postConnector.findAllByGameId(gameId)).thenReturn(posts);
-        List<PostResponse> postResponses = postService.findPostByGameId(gameId);
+        List<PostResponse> postResponses = postService.findAllByGameId(gameId);
 
         //then
         verify(postConnector).findAllByGameId(gameId);

@@ -35,16 +35,14 @@ public class CategoryController {
 
     @PatchMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(
-            @PathVariable("gameId") Long gameId,
             @PathVariable("categoryId") Long categoryId,
             @RequestBody CategoryRequest request
     ) {
-        return ApiResponse.success(categoryService.updateCategory(categoryId, request.categoryName()));
+        return ApiResponse.success(categoryService.updateCategory(categoryId, request));
     }
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<Void>> deleteCategory(
-            @PathVariable("gameId") Long gameId,
             @PathVariable("categoryId") Long categoryId
     ) {
         categoryService.deleteCategory(categoryId);

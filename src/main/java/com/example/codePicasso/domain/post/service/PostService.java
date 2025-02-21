@@ -2,7 +2,6 @@ package com.example.codePicasso.domain.post.service;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
-import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
@@ -30,22 +29,23 @@ public class PostService {
 
     // 게시글 생성
     @Transactional
-    public PostResponse createPost(Long userId, Long gameId, PostRequest postRequest) {
-        Game game = gameConnector.findById(gameId);
+    public PostResponse createPost(Long userId, PostRequest request) {
         User user = userConnector.findById(userId);
-        Category category = categoryConnector.findById(postRequest.categoryId());
-        Post createPost = postRequest.toEntity(user, game,category);
+        Category category = categoryConnector.findById(request.categoryId());
+        Post createPost = request.toEntity(user, category.getGame(), category);
         Post save = postConnector.save(createPost);
         return DtoFactory.toPostDto(save);
     }
 
-    public List<PostResponse> findPostByGameId(Long gameId) {
-        return postConnector.findPostByGameId(gameId).stream()
+    // gameId 내 게시글 조회
+    public List<PostResponse> findAllByGameId(Long gameId) {
+        return postConnector.findAllByGameId(gameId).stream()
                 .map(DtoFactory::toPostDto).toList();
     }
 
-    public List<PostResponse> findPostByCategoryId(Long categoryId) {
-        return postConnector.findPostByCategoryId(categoryId).stream()
+    // categoryId 내 게시글 조회
+    public List<PostResponse> findAllByCategoryId(Long categoryId) {
+        return postConnector.findAllByCategoryId(categoryId).stream()
                 .map(DtoFactory::toPostDto).toList();
     }
 
@@ -57,15 +57,15 @@ public class PostService {
 
     // 게시글 수정
     @Transactional
-    public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description) {
+    public PostResponse updatePost(Long postId, Long userId, PostRequest request) {
         Post foundPost = postConnector.findByIdAndUserId(postId, userId);
 
-        if (!foundPost.getCategory().getId().equals(categoryId)) {
-            Category category = categoryConnector.findById(categoryId);
+        if (!foundPost.getCategory().getId().equals(request.categoryId())) {
+            Category category = categoryConnector.findById(request.categoryId());
             foundPost.updateCategories(category);
         }
 
-        foundPost.updatePost(title, description);
+        foundPost.updatePost(request.title(), request.description());
 
         return DtoFactory.toPostDto(foundPost);
     }
