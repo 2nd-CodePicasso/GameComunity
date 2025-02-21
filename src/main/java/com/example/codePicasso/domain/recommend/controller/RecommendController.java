@@ -30,4 +30,13 @@ public class RecommendController {
         Integer count = recommendService.countRecommendOfPost(postId);
         return ApiResponse.success(count);
     }
+
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deleteRecommend(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal Long userId
+    ) {
+        recommendService.undoRecommend(postId, userId);
+        return ApiResponse.noContentAndSendMessage("추천이 취소되었습니다.");
+    }
 }

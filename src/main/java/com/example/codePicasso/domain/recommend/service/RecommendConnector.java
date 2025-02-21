@@ -8,4 +8,8 @@ public interface RecommendConnector {
     Recommend save(Recommend recommend);
 
     Integer countByPostId(Long postId);
+
+    Recommend findByPostIdAndUserId(Long postId, Long userId);
+
+    void delete(Recommend recommend);
 }

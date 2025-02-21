@@ -19,4 +19,14 @@ public class RecommendConnectorImpl implements RecommendConnector {
     public Integer countByPostId(Long postId) {
         return recommendRepository.countByPostId(postId);
     }
+
+    @Override
+    public Recommend findByPostIdAndUserId(Long postId, Long userId) {
+        return recommendRepository.findByPostIdAndUserId(postId, userId);
+    }
+
+    @Override
+    public void delete(Recommend recommend) {
+        recommendRepository.delete(recommend);
+    }
 }

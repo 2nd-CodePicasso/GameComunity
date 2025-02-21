@@ -39,4 +39,10 @@ public class RecommendService {
             return recommendConnector.countByPostId(postId);
         }
 
+        public void undoRecommend(Long postId, Long userId) {
+            Recommend recommend = recommendConnector.findByPostIdAndUserId(postId, userId);
+
+            recommendConnector.delete(recommend);
+        }
+
 }
