@@ -11,11 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/games/{gameId}/categories")
+@RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @PostMapping
+    /**
+     * 카테고리 생성
+     * @param gameId
+     * @param request
+     * @return
+     */
+    @PostMapping("/{gameId}")
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(
             @PathVariable("gameId") Long gameId,
             CategoryRequest request
@@ -23,7 +29,12 @@ public class CategoryController {
         return ApiResponse.created(categoryService.createCategory(gameId, request));
     }
 
-    @GetMapping
+    /**
+     * gameId 내 카테고리 조회
+     * @param gameId
+     * @return
+     */
+    @GetMapping("/{gameId}")
     public ResponseEntity<ApiResponse<CategoryListResponse>> getCategory(
             @PathVariable("gameId") Long gameId
     ) {
@@ -31,14 +42,25 @@ public class CategoryController {
         return ApiResponse.success(categoryListResponse);
     }
 
+    /**
+     * 카테고리 수정 (이름)
+     * @param categoryId
+     * @param request
+     * @return
+     */
     @PatchMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(
             @PathVariable("categoryId") Long categoryId,
             CategoryRequest request
     ) {
-        return ApiResponse.success(categoryService.updateCategory(categoryId, request.categoryName()));
+        return ApiResponse.success(categoryService.updateCategory(categoryId, request));
     }
 
+    /**
+     * 카테고리 삭제
+     * @param categoryId
+     * @return
+     */
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<Void>> deleteCategory(
             @PathVariable("categoryId") Long categoryId

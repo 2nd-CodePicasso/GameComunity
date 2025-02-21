@@ -21,8 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -75,7 +73,7 @@ class PostServiceTest {
                 .description("This is a test post.")
                 .build();
         posts.add(mockPost);
-        postRequest = new PostRequest(1L, "he", "is gay");
+        postRequest = new PostRequest(1L, "testTitle", "This is a test post.");
     }
 
     @Test
@@ -92,27 +90,25 @@ class PostServiceTest {
     void 게시글_생성() {
         // Given
         Long userId = 1L;
-        Long gameId = 1L;
         Long categoryId = 1L;
         PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
 
         // When
 
-        when(gameConnector.findById(gameId)).thenReturn(mockGame);
         when(userConnector.findById(userId)).thenReturn(mockUser);
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
+        when(postConnector.save(any(Post.class))).thenReturn(mockPost);
 
-        PostResponse response = postService.createPost(userId, gameId, postRequest);
+        PostResponse response = postService.createPost(userId, postRequest);
 
         // Then
         verify(postConnector, times(1)).save(any());
-        verify(gameConnector).findById(gameId);
         verify(userConnector).findById(userId);
         verify(categoriesConnector).findById(categoryId);
         assertEquals(mockGame.getId(),response.gameId());
         assertEquals(mockCategory.getCategoryName(), response.categoryName());
-        assertEquals(request.title(), response.title());
-        assertEquals(request.description(), response.description());
+        assertEquals(mockPost.getTitle(), response.title());
+        assertEquals(mockPost.getDescription(), response.description());
     }
 
     @Test
@@ -176,19 +172,20 @@ class PostServiceTest {
         Long postId = 1L;
         Long userId = 1L;
         Long categoryId = 2L;
-        String title = "꾸에엑";
-        String description = "끼요옷";
+
+        Category newCategory = Category.builder().id(categoryId).categoryName("update Category name").build();
 
         //when
-        when(postConnector.findByUserIdAndPostId(postId, userId)).thenReturn(mockPost);
+        when(postConnector.findByIdAndUserId(postId, userId)).thenReturn(mockPost);
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
 
         PostResponse postResponse = postService.updatePost(postId, userId, postRequest);
+
         //then
-        verify(postConnector).findByUserIdAndPostId(postId, userId);
+        verify(postConnector).findByIdAndUserId(postId, userId);
         verify(categoriesConnector).findById(categoryId);
-        assertEquals(title, postResponse.title());
-        assertEquals(description, postResponse.description());
+        assertEquals(postRequest.title(), postResponse.title());
+        assertEquals(postRequest.description(), postResponse.description());
         assertEquals(mockCategory.getCategoryName(), postResponse.categoryName());
     }
 
@@ -199,11 +196,11 @@ class PostServiceTest {
         Long userId = 1L;
 
         //when
-        when(postConnector.findByUserIdAndPostId(postId, userId)).thenReturn(mockPost);
+        when(postConnector.findByIdAndUserId(postId, userId)).thenReturn(mockPost);
         postService.deletePost(postId,userId);
 
         //then
-        verify(postConnector).findByUserIdAndPostId(postId, userId);
+        verify(postConnector).findByIdAndUserId(postId, userId);
         verify(postConnector).delete(mockPost);
 
     }

@@ -26,7 +26,6 @@ public class Category extends TimeStamp {
 
     private String categoryName;
 
-
     public void updateCategory(String categoryName) {
         this.categoryName = categoryName;
     }
