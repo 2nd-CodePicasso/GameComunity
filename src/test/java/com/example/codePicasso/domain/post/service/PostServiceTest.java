@@ -5,6 +5,7 @@ import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
+import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.user.entity.Admin;
@@ -122,15 +123,15 @@ class PostServiceTest {
         //when
 
         when(postConnector.findPostByGameId(gameId)).thenReturn(posts);
-        List<PostResponse> postResponses = postService.findPostByGameId(gameId);
+        PostListResponse postListResponse = postService.findPostByGameId(gameId);
 
         //then
         verify(postConnector).findPostByGameId(gameId);
-        assertEquals(posts.get(0).getId(),postResponses.get(0).postId());
-        assertEquals(posts.get(0).getGame().getId(),postResponses.get(0).gameId());
-        assertEquals(posts.get(0).getTitle(),postResponses.get(0).title());
-        assertEquals(posts.get(0).getCategory().getCategoryName(),postResponses.get(0).categoryName());
-        assertEquals(posts.get(0).getDescription(),postResponses.get(0).description());
+        assertEquals(posts.get(0).getId(),postListResponse.postResponses().get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(),postListResponse.postResponses().get(0).gameId());
+        assertEquals(posts.get(0).getTitle(),postListResponse.postResponses().get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(),postListResponse.postResponses().get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(),postListResponse.postResponses().get(0).description());
     }
 
     @Test
@@ -140,15 +141,15 @@ class PostServiceTest {
 
         //when
         when(postConnector.findPostByCategoryId(categoryId)).thenReturn(posts);
-        List<PostResponse> postResponses = postService.findPostByCategoryId(categoryId);
+        PostListResponse postListResponse = postService.findPostByCategoryId(categoryId);
 
         //then
         verify(postConnector).findPostByCategoryId(categoryId);
-        assertEquals(posts.get(0).getId(),postResponses.get(0).postId());
-        assertEquals(posts.get(0).getGame().getId(),postResponses.get(0).gameId());
-        assertEquals(posts.get(0).getTitle(),postResponses.get(0).title());
-        assertEquals(posts.get(0).getCategory().getCategoryName(),postResponses.get(0).categoryName());
-        assertEquals(posts.get(0).getDescription(),postResponses.get(0).description());
+        assertEquals(posts.get(0).getId(),postListResponse.postResponses().get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(),postListResponse.postResponses().get(0).gameId());
+        assertEquals(posts.get(0).getTitle(),postListResponse.postResponses().get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(),postListResponse.postResponses().get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(),postListResponse.postResponses().get(0).description());
     }
 
     @Test
