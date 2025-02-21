@@ -6,10 +6,7 @@ import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +21,13 @@ public class RecommendController {
     ) {
         RecommendResponse response = recommendService.doRecommend(postId, userId);
         return ApiResponse.success(response);
+    }
+
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<ApiResponse<Integer>> getRecommendCount(
+            @PathVariable Long postId
+    ) {
+        Integer count = recommendService.countRecommendOfPost(postId);
+        return ApiResponse.success(count);
     }
 }

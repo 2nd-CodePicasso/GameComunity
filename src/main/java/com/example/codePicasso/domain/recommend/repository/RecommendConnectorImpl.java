@@ -14,4 +14,9 @@ public class RecommendConnectorImpl implements RecommendConnector {
     public Recommend save(Recommend recommend) {
         return recommendRepository.save(recommend);
     }
+
+    @Override
+    public Integer countByPostId(Long postId) {
+        return recommendRepository.countByPostId(postId);
+    }
 }

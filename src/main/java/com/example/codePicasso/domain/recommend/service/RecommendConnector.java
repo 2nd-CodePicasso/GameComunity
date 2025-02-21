@@ -6,4 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface RecommendConnector {
     Recommend save(Recommend recommend);
+
+    Integer countByPostId(Long postId);
 }

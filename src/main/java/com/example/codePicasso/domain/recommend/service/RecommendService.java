@@ -32,7 +32,11 @@ public class RecommendService {
                     .build();
 
             Recommend save = recommendConnector.save(recommend);
-            return DtoFactory.toRecommendDto(recommend);
+            return DtoFactory.toRecommendDto(save);
+        }
+
+        public Integer countRecommendOfPost(Long postId) {
+            return recommendConnector.countByPostId(postId);
         }
 
 }
