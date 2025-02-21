@@ -87,7 +87,7 @@ public class PostController {
             @AuthenticationPrincipal CustomUser user,
             PostRequest request
     ) {
-        PostResponse response = postService.updatePost(postId, user.getUserId(), request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.updatePost(postId, user.getUserId(), request);
         return ApiResponse.success(response);
     }
 

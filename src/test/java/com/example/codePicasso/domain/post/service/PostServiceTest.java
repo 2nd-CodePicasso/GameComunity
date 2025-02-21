@@ -183,7 +183,7 @@ class PostServiceTest {
         when(postConnector.findByUserIdAndPostId(postId, userId)).thenReturn(mockPost);
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
 
-        PostResponse postResponse = postService.updatePost(postId, userId, categoryId, title, description);
+        PostResponse postResponse = postService.updatePost(postId, userId, postRequest);
         //then
         verify(postConnector).findByUserIdAndPostId(postId, userId);
         verify(categoriesConnector).findById(categoryId);

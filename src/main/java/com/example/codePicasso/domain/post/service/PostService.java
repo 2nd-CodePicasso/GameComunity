@@ -62,15 +62,15 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse updatePost(Long postId, Long userId, Long categoryId, String title, String description ) {
+    public PostResponse updatePost(Long postId, Long userId, PostRequest postRequest ) {
         Post foundPost = postConnector.findByUserIdAndPostId(postId, userId);
 
-        if (!foundPost.getCategory().getId().equals(categoryId)) {
-            Category category = categoryConnector.findById(categoryId);
+        if (!foundPost.getCategory().getId().equals(postRequest.categoryId())) {
+            Category category = categoryConnector.findById(postRequest.categoryId());
             foundPost.updateCategories(category);
         }
 
-        foundPost.updatePost(title, description);
+        foundPost.updatePost(postRequest.title(), postRequest.description());
 
         return DtoFactory.toPostDto(foundPost);
     }
