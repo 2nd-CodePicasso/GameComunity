@@ -66,4 +66,8 @@ public class Post extends TimeStamp {
     public void changeStatusToRecommended() {
         this.status = PostStatus.RECOMMENDED;
     }
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
 }

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -56,8 +55,10 @@ public class PostService {
                 .build();
     }
 
+    @Transactional
     public PostResponse findPostById(Long postId) {
         Post getPost = postConnector.findById(postId);
+        getPost.increaseViewCount();
         return DtoFactory.toPostDto(getPost);
     }
 
