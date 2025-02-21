@@ -35,10 +35,6 @@ public class Notification {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
-    private String content;
-    private String authorName;
-    private LocalDateTime writtenTime;
-
     @CreatedDate
     private LocalDateTime createdTime;
 
