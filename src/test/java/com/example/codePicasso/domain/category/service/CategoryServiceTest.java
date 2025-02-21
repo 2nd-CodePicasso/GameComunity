@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.category.service;
 
+import com.example.codePicasso.domain.category.dto.request.CategoryRequest;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
@@ -44,7 +45,7 @@ public class CategoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        mockUser = new User("user", "testUser", "user123");
+        mockUser = new User("user", "testUser", "user123");  // 예시: User 객체 생성
         mockAdmin = new Admin("admin", "testAdmin");
         mockGame = Game.builder()
                 .id(1L)
@@ -78,7 +79,7 @@ public class CategoryServiceTest {
         when(categoryConnector.save(any(Category.class))).thenReturn(mockCategory);
 
 
-        CategoryResponse categoryResponse = categoryService.createCategory(gameId, categoryName);
+        CategoryResponse categoryResponse = categoryService.createCategory(gameId, new CategoryRequest("걹"));
 
         //then
         verify(gameConnector).findById(gameId);

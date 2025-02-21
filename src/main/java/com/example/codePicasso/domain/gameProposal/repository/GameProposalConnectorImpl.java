@@ -15,8 +15,8 @@ import java.util.List;
 public class GameProposalConnectorImpl implements GameProposalConnector {
     private final GameProposalRepository repository;
 
-    public void save(GameProposal proposal){
-        repository.save(proposal);
+    public GameProposal save(GameProposal proposal){
+        return repository.save(proposal);
     }
 
     @Override
@@ -37,12 +37,12 @@ public class GameProposalConnectorImpl implements GameProposalConnector {
     }
 
     @Override
-    public List<GameProposal> findByStatus(ProposalStatus status) {
-        return repository.findByStatus(status);
+    public List<GameProposal> findAllByStatus(ProposalStatus status) {
+        return repository.findAllByStatus(status);
     }
 
     @Override
-    public List<GameProposal> findByUserId(Long userId) {
-        return repository.findByUserId(userId);
+    public List<GameProposal> findAllByUserId(Long userId) {
+        return repository.findAllByUserId(userId);
     }
 }

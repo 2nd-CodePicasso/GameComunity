@@ -1,15 +1,13 @@
 package com.example.codePicasso.domain.category.controller;
 
 import com.example.codePicasso.domain.category.dto.request.CategoryRequest;
+import com.example.codePicasso.domain.category.dto.response.CategoryListResponse;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.service.CategoryService;
-import com.example.codePicasso.domain.post.dto.response.GetAllCategoryByGameIdResponse;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,14 +20,15 @@ public class CategoryController {
             @PathVariable("gameId") Long gameId,
             CategoryRequest request
     ) {
-        return ApiResponse.created(categoryService.createCategory(gameId, request.categoryName()));
+        return ApiResponse.created(categoryService.createCategory(gameId, request));
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getCategory(
+    public ResponseEntity<ApiResponse<CategoryListResponse>> getCategory(
             @PathVariable("gameId") Long gameId
     ) {
-        return ApiResponse.success(categoryService.getAllCategory(gameId));
+        CategoryListResponse categoryListResponse = categoryService.getAllCategory(gameId);
+        return ApiResponse.success(categoryListResponse);
     }
 
     @PatchMapping("/{categoryId}")

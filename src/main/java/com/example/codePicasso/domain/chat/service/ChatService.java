@@ -1,9 +1,11 @@
 package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
+import com.example.codePicasso.domain.chat.dto.response.ChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
@@ -28,7 +30,7 @@ public class ChatService {
         GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId);
         globalChatConnector.save(globalChat);
 
-        return globalChat.toDto();
+        return DtoFactory.toChatDto(chats);
     }
 
     @Transactional(readOnly = true)

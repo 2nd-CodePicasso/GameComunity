@@ -20,6 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomController {
 
+
+    // v2임
     private final RoomService roomService;
 
     @PostMapping
@@ -33,8 +35,8 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<RoomListResponse>> getAllRoom() {
-        List<RoomResponse> allRoom = roomService.getAllRoom();
-        return ApiResponse.success(RoomListResponse.builder().roomResponses(allRoom).build());
+        RoomListResponse allRoom = roomService.getAllRoom();
+        return ApiResponse.success(allRoom);
     }
 
     @GetMapping("/{roomName}")

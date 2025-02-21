@@ -30,9 +30,5 @@ public class Admin extends TimeStamp {
         this.userStatus = UserStatus.ADMIN;
     }
 
-    public AdminResponse toDto() {
-        return AdminResponse.builder()
-                .loginId(loginId)
-                .build();
-    }
+
 }

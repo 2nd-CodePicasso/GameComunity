@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.UpdateRoomRequest;
+import com.example.codePicasso.domain.chat.dto.response.RoomListResponse;
 import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
 import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
@@ -28,9 +29,12 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoomResponse> getAllRoom() {
+    public RoomListResponse getAllRoom() {
         List<ChatRoom> chatRooms = roomConnector.findAll();
-        return chatRooms.stream().map(ChatRoom::toDto).toList();
+        List<RoomResponse> roomResponses = chatRooms.stream().map(ChatRoom::toDto).toList();
+        return RoomListResponse.builder()
+                .roomResponses(roomResponses)
+                .build();
     }
 
     @Transactional(readOnly = true)

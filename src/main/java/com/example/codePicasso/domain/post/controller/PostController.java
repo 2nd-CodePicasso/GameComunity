@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.post.controller;
 
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
+import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
@@ -9,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class PostController {
 ,            @PathVariable("gameId") Long gameId,
             PostRequest request
     ) {
-        PostResponse response = postService.createPost(user.getUserId(), gameId, request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.createPost(user.getUserId(), gameId, request);
         return ApiResponse.created(response);
     }
 
@@ -42,11 +41,11 @@ public class PostController {
      * @return gameId 내 모든 게시글 조회
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> findPostByGameId(
+    public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
-        List<PostResponse> response = postService.findPostByGameId(gameId);
-        return ApiResponse.success(response);
+        PostListResponse postListResponse = postService.findPostByGameId(gameId);
+        return ApiResponse.success(postListResponse);
     }
 
     /**
@@ -55,11 +54,11 @@ public class PostController {
      * @return categoryId 내 모든 게시글 조회
      */
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> findPostsByCategoryId(
+    public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
             @PathVariable("categoryId") Long categoryId
     ) {
-        List<PostResponse> response = postService.findPostByCategoryId(categoryId);
-        return ApiResponse.success(response);
+        PostListResponse postListResponse = postService.findPostByCategoryId(categoryId);
+        return ApiResponse.success(postListResponse);
     }
 
     /**
