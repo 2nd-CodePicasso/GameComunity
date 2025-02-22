@@ -40,7 +40,7 @@ public class PostController {
      * @param gameId
      * @return gameId 내 모든 게시글 조회
      */
-    @GetMapping("/{gameId}")
+    @GetMapping("/games/{gameId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
@@ -54,7 +54,7 @@ public class PostController {
      * @param categoryId
      * @return categoryId 내 모든 게시글 조회
      */
-    @GetMapping("{categoryId}")
+    @GetMapping("/categories/{categoryId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
             @PathVariable("categoryId") Long categoryId
     ) {
