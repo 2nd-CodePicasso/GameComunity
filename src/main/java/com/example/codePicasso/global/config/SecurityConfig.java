@@ -30,8 +30,8 @@ public class SecurityConfig {
                 // Todo url 맵핑 바꿔야됨
                 // Spring의 패턴 매칭 규칙에 따르면, “” 와일드카드는 패턴의 마지막에만 위치할 수 있습니다.
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(".*/admin/.*").hasRole(UserStatus.ADMIN.name()) //todo admin 검증 로직이 없어서 접근 불가
-                                .requestMatchers(".*/hi/.*").permitAll()
+                        auth.requestMatchers("'/*/admin/**").hasRole(UserStatus.ADMIN.name()) //todo admin 검증 로직이 없어서 접근 불가
+                                .requestMatchers("/*/hi/**").permitAll()
                                 .requestMatchers("/index.html").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated()
