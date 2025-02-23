@@ -63,6 +63,7 @@ public class GameProposalController {
         return ApiResponse.success(response);
     }
 
+    //Todo admin 검증 로직이 없어서 접근 불가
     @PatchMapping("/{proposalId}/admin")
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(
             @PathVariable Long proposalId,
