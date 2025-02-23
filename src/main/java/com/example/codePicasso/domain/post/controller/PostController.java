@@ -27,7 +27,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
             @AuthenticationPrincipal CustomUser user,
-            PostRequest request
+            @RequestBody PostRequest request
     ) {
         PostResponse response = postService.createPost(user.getUserId(), request);
         return ApiResponse.created(response);
@@ -39,7 +39,7 @@ public class PostController {
      * @param gameId
      * @return gameId 내 모든 게시글 조회
      */
-    @GetMapping("/{gameId}")
+    @GetMapping("/games/{gameId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
@@ -53,7 +53,7 @@ public class PostController {
      * @param categoryId
      * @return categoryId 내 모든 게시글 조회
      */
-    @GetMapping("{categoryId}")
+    @GetMapping("/categories/{categoryId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
             @PathVariable("categoryId") Long categoryId
     ) {
@@ -87,7 +87,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable("postId") Long postId,
             @AuthenticationPrincipal CustomUser user,
-            PostRequest request
+            @RequestBody PostRequest request
     ) {
         PostResponse response = postService.updatePost(postId, user.getUserId(), request);
         return ApiResponse.success(response);
