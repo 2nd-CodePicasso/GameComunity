@@ -38,14 +38,4 @@ public class Chat {
     @CreatedDate
     private LocalDateTime createdAt;
 
-
-    public ChatResponse toDto() {
-        return ChatResponse.builder()
-                .chatsId(id)
-                .roomId(chatRoom.getId())
-                .message(content)
-                .username(username)
-                .createdAt(createdAt)
-                .build();
-    }
 }

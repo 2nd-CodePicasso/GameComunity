@@ -9,20 +9,21 @@ public record ChatRequest(
         String message
 ) {
 
-    public GlobalChat toEntityFromGlobalChat(Long userId) {
+    public GlobalChat toEntityFromGlobalChat(Long userId,String emoji) {
         return GlobalChat.builder()
                 .userId(userId)
                 .username(username)
-                .content(message)
+                .content(emoji)
                 .build();
     }
 
-    public Chat toEntityFromChat(Long userId, ChatRoom chatRoom) {
+    public Chat toEntityFromChat(Long userId, ChatRoom chatRoom, String emoji) {
         return Chat.builder()
                 .userId(userId)
                 .username(username)
-                .content(message)
+                .content(emoji)
                 .chatRoom(chatRoom)
                 .build();
     }
+
 }

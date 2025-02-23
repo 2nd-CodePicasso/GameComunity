@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.chat.service;
 
-import com.example.codePicasso.domain.chat.controller.ChatController;
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
 import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
@@ -8,17 +7,14 @@ import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
-import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
-import com.example.codePicasso.domain.exchange.entity.TradeType;
-import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.user.entity.User;
+import com.vdurmont.emoji.EmojiParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +55,8 @@ public class ChatServiceTest {
         roomRequest = new RoomRequest("집에가고싶은방");
         chatRequest = new ChatRequest("나야", "집에가고싶다");
         chatRoom = roomRequest.toEntity(user);
-        chat = chatRequest.toEntityFromChat(userId, chatRoom);
-        globalChat = chatRequest.toEntityFromGlobalChat(userId);
+        chat = chatRequest.toEntityFromChat(userId, chatRoom, EmojiParser.parseToUnicode(":smile:"));
+        globalChat = chatRequest.toEntityFromGlobalChat(userId, EmojiParser.parseToUnicode(":smile:"));
 
         globalChats.add(globalChat);
         chats.add(chat);

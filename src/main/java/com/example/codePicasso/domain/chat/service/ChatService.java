@@ -9,6 +9,7 @@ import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
+import com.vdurmont.emoji.EmojiParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,10 @@ public class ChatService {
 
     @Transactional
     public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId) {
-        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId);
-        globalChatConnector.save(globalChat);
-
-        return DtoFactory.toChatDto(chats);
+        String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
+        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId,emoji);
+        GlobalChat chats = globalChatConnector.save(globalChat);
+        return DtoFactory.toGlobalChatDto(chats);
     }
 
     @Transactional(readOnly = true)
@@ -42,13 +43,15 @@ public class ChatService {
     @Transactional
     public ChatResponse addForRoomToMessage(ChatRequest chatsRequest, Long roomId, Long userId) {
         ChatRoom chatRoom = roomConnector.findById(roomId);
-        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom);
-        chatConnector.save(chat);
-        return chat.toDto();
+        String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
+        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji);
+        Chat saveChat = chatConnector.save(chat);
+        return DtoFactory.toChatDto(saveChat);
     }
 
+    @Transactional(readOnly = true)
     public List<ChatResponse> getByRoomId(Long roomId) {
         List<Chat> chats = chatConnector.findAllByRoomId(roomId);
-        return chats.stream().map(Chat::toDto).toList();
+        return chats.stream().map(DtoFactory::toChatDto).toList();
     }
 }

@@ -32,11 +32,13 @@ public class NotificationService {
         return DtoFactory.toNotificationDto(saveNotification);
     }
 
+    @Transactional(readOnly = true)
     public NotificationResponse findLastNotification(Long roomId) {
         Notification notification = notificationConnector.findLastByRoomId(roomId);
         return DtoFactory.toNotificationDto(notification);
     }
 
+    @Transactional(readOnly = true)
     public NotificationListResponse findAllNotification(Long roomId) {
         List<Notification> notifications = notificationConnector.findAllByRoomId(roomId);
         return NotificationListResponse.builder()

@@ -4,8 +4,10 @@ package com.example.codePicasso.global.common;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
@@ -110,6 +112,15 @@ public class DtoFactory {
                 .createdTime(notification.getCreatedTime())
                 .messageId(notification.getChat().getId())
                 .proposerName(notification.getUser().getNickname())
+                .build();
+    }
+
+    public static GlobalChatResponse toGlobalChatDto(GlobalChat chats) {
+        return GlobalChatResponse.builder()
+                .username(chats.getUsername())
+                .chatsId(chats.getId())
+                .message(chats.getContent())
+                .createdAt(chats.getCreatedAt())
                 .build();
     }
 }
