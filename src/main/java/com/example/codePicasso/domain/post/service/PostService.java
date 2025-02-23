@@ -17,25 +17,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
-
     private final PostConnector postConnector;
-    private final GameConnector gameConnector;
     private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
 
     @Transactional
-    public PostResponse createPost(Long userId, Long gameId, PostRequest postRequest) {
-        Game game = gameConnector.findById(gameId);
+    public PostResponse createPost(Long userId, PostRequest request) {
         User user = userConnector.findById(userId);
-        Category category = categoryConnector.findById(postRequest.categoryId());
-        Post createPost = postRequest.toEntity(user, game,category);
+        Category category = categoryConnector.findById(request.categoryId());
+        Post createPost = request.toEntity(user, category.getGame(), category);
         Post save = postConnector.save(createPost);
         return DtoFactory.toPostDto(save);
     }
@@ -62,8 +58,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse updatePost(Long postId, Long userId, PostRequest postRequest ) {
-        Post foundPost = postConnector.findByUserIdAndPostId(postId, userId);
+    public PostResponse updatePost(Long postId, Long userId, PostRequest postRequest) {
+        Post foundPost = postConnector.findByIdAndUserId(postId, userId);
 
         if (!foundPost.getCategory().getId().equals(postRequest.categoryId())) {
             Category category = categoryConnector.findById(postRequest.categoryId());
@@ -77,7 +73,7 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId, Long userId) {
-        Post deletePost = postConnector.findByUserIdAndPostId(postId, userId);
+        Post deletePost = postConnector.findByIdAndUserId(postId, userId);
 
         postConnector.delete(deletePost);
     }

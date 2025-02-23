@@ -21,9 +21,9 @@ public class CategoryService {
     private final GameConnector gameConnector;
 
     @Transactional
-    public CategoryResponse createCategory(Long gameId, CategoryRequest category) {
+    public CategoryResponse createCategory(Long gameId, CategoryRequest request) {
         Game game = gameConnector.findById(gameId);
-        Category createCategory = category.toEntity(game);
+        Category createCategory = request.toEntity(game);
         Category saveCategory = categoryConnector.save(createCategory);
         return DtoFactory.toCategoryDto(saveCategory);
     }
@@ -35,14 +35,16 @@ public class CategoryService {
                 .categoryResponses(categoryResponses)
                 .build();
     }
+
     @Transactional
-    public CategoryResponse updateCategory(Long categoryId, String categoryName) {
+    public CategoryResponse updateCategory(Long categoryId, CategoryRequest request) {
         Category foundCategory = categoryConnector.findById(categoryId);
 
-        foundCategory.updateCategory(categoryName);
+        foundCategory.updateCategory(request.categoryName());
 
         return CategoryResponse.toDto(foundCategory);
     }
+
     @Transactional
     public void deleteCategory(Long categoryId) {
         Category deleteCategory = categoryConnector.findById(categoryId);

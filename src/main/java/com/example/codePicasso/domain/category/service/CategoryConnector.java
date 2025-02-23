@@ -4,7 +4,6 @@ import com.example.codePicasso.domain.category.entity.Category;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public interface CategoryConnector {

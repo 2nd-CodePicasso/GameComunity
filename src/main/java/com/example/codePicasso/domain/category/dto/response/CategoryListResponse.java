@@ -5,9 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record CategoryListResponse (
+public record CategoryListResponse(
         List<CategoryResponse> categoryResponses
-){
-
-
+) {
 }
