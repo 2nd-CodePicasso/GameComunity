@@ -173,17 +173,17 @@ class PostServiceTest {
         Long userId = 1L;
         Long categoryId = 2L;
 
-        Category newCategory = Category.builder().id(categoryId).categoryName("update Category name").build();
+        PostRequest updateRequest = new PostRequest(2L, "testTitle", "This is a test post.");
 
         //when
         when(postConnector.findByIdAndUserId(postId, userId)).thenReturn(mockPost);
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
 
-        PostResponse postResponse = postService.updatePost(postId, userId, postRequest);
+        PostResponse postResponse = postService.updatePost(postId, userId, updateRequest);
 
         //then
         verify(postConnector).findByIdAndUserId(postId, userId);
-        verify(categoriesConnector).findById(categoryId);
+        verify(categoriesConnector).findById(2L);
         assertEquals(postRequest.title(), postResponse.title());
         assertEquals(postRequest.description(), postResponse.description());
         assertEquals(mockCategory.getCategoryName(), postResponse.categoryName());
