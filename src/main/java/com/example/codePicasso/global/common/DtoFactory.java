@@ -100,6 +100,7 @@ public class DtoFactory {
                 .chatsId(chats.getId())
                 .message(chats.getContent())
                 .username(chats.getUsername())
+                .username(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
                 .build();
     }
