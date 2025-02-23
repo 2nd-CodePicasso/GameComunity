@@ -6,7 +6,9 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
+import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
@@ -123,4 +125,14 @@ public class DtoFactory {
                 .createdAt(chats.getCreatedAt())
                 .build();
     }
+
+    public static RoomResponse toChatRoomDto(ChatRoom chatRoom) {
+        return RoomResponse.builder()
+                .roomId(chatRoom.getId())
+                .username(chatRoom.getUser().getNickname())
+                .roomName(chatRoom.getName())
+                .isSecurity(chatRoom.isSecurity())
+                .build();
+    }
+
 }

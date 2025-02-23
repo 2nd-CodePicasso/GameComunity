@@ -1,16 +1,9 @@
 package com.example.codePicasso.domain.chat.service;
 
-import com.example.codePicasso.domain.category.entity.Category;
-import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
 import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
 import com.example.codePicasso.domain.chat.dto.request.UpdateRoomRequest;
 import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
-import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
-import com.example.codePicasso.domain.chat.entity.GlobalChat;
-import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.post.entity.Post;
-import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +46,7 @@ public class RoomServiceTest {
         user = new User("user", "testUser", "user123");  // 예시: User 객체 생성
         roomRequest = new RoomRequest("집에가고싶은방");
         updateRoomRequest = new UpdateRoomRequest(roomId, "쀅", "박씨");
-        chatRoom = roomRequest.toEntity(user);
+        chatRoom = roomRequest.toEntity(user, encodedPassword);
 
         chatRooms.add(chatRoom);
     }

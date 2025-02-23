@@ -1,14 +1,19 @@
 package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
+import com.example.codePicasso.domain.chat.dto.request.SecurityChatRequest;
 import com.example.codePicasso.domain.chat.dto.response.ChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.global.common.DtoFactory;
-import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
+import com.example.codePicasso.global.config.PasswordEncoder;
+import com.example.codePicasso.global.exception.base.DuplicateException;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +30,7 @@ public class ChatService {
     private final GlobalChatConnector globalChatConnector;
     private final ChatConnector chatConnector;
     private final RoomConnector roomConnector;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId) {
@@ -35,9 +41,11 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<GlobalChatResponse> getChatsHistory() {
+    public GlobalChatListResponse getChatsHistory() {
         List<GlobalChat> chats = globalChatConnector.findAll();
-        return chats.stream().map(GlobalChat::toDto).toList();
+        return GlobalChatListResponse.builder()
+                .chatsResponseList(chats.stream().map(GlobalChat::toDto).toList())
+                .build();
     }
 
     @Transactional
@@ -50,8 +58,25 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatResponse> getByRoomId(Long roomId) {
+    public ChatListResponse getByRoomId(Long roomId) {
+        if (roomConnector.isSecurityById(roomId)) {
+            throw new DuplicateException(ErrorCode.UNAUTHORIZED_CHAT_ROOM);
+        }
         List<Chat> chats = chatConnector.findAllByRoomId(roomId);
-        return chats.stream().map(DtoFactory::toChatDto).toList();
+        return ChatListResponse.builder()
+                .chatResponses(chats.stream().map(DtoFactory::toChatDto).toList())
+                .build();
+    }
+
+    public ChatListResponse getSecurityChatsHistory(SecurityChatRequest securityChatRequest) {
+        ChatRoom chatRoom = roomConnector.findById(securityChatRequest.roomId());
+        if (!passwordEncoder.matches(securityChatRequest.password(), chatRoom.getPassword())) {
+            throw new InvalidRequestException(ErrorCode.PW_ERROR);
+        }
+        List<Chat> chats = chatConnector.findAllByRoomId(securityChatRequest.roomId());
+
+        return ChatListResponse.builder()
+                .chatResponses(chats.stream().map(DtoFactory::toChatDto).toList())
+                .build();
     }
 }

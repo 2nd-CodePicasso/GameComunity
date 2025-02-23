@@ -2,12 +2,15 @@ package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
 import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
+import com.example.codePicasso.domain.chat.dto.response.ChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.user.entity.User;
+import com.example.codePicasso.global.config.PasswordEncoder;
 import com.vdurmont.emoji.EmojiParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,9 +55,9 @@ public class ChatServiceTest {
     @BeforeEach
     void 설정() {
         user = new User("user", "testUser", "user123");  // 예시: User 객체 생성
-        roomRequest = new RoomRequest("집에가고싶은방");
+        roomRequest = new RoomRequest("집에가고싶은방",true,"12345");
         chatRequest = new ChatRequest("나야", "집에가고싶다");
-        chatRoom = roomRequest.toEntity(user);
+        chatRoom = roomRequest.toEntity(user, "12345");
         chat = chatRequest.toEntityFromChat(userId, chatRoom, EmojiParser.parseToUnicode(":smile:"));
         globalChat = chatRequest.toEntityFromGlobalChat(userId, EmojiParser.parseToUnicode(":smile:"));
 
@@ -81,12 +84,12 @@ public class ChatServiceTest {
         //given
         //when
         when(globalChatConnector.findAll()).thenReturn(globalChats);
-        List<GlobalChatResponse> chatsHistory = chatService.getChatsHistory();
+        GlobalChatListResponse chatsHistory = chatService.getChatsHistory();
 
         //then
         verify(globalChatConnector).findAll();
-        assertEquals(globalChats.get(0).getUsername(), chatsHistory.get(0).username());
-        assertEquals(globalChats.get(0).getContent(), chatsHistory.get(0).message());
+        assertEquals(globalChats.get(0).getUsername(), chatsHistory.chatsResponseList().get(0).username());
+        assertEquals(globalChats.get(0).getContent(), chatsHistory.chatsResponseList().get(0).message());
     }
 
     @Test
@@ -110,12 +113,12 @@ public class ChatServiceTest {
         //given
         //when
         when(chatConnector.findAllByRoomId(roomId)).thenReturn(chats);
-        List<ChatResponse> chatResponses = chatService.getByRoomId(roomId);
+        ChatListResponse chatResponses = chatService.getByRoomId(roomId);
 
         //then
         verify(chatConnector).findAllByRoomId(roomId);
-        assertEquals(chats.get(0).getContent(), chatResponses.get(0).message());
-        assertEquals(chats.get(0).getUsername(), chatResponses.get(0).username());
-        assertEquals(chats.get(0).getCreatedAt(), chatResponses.get(0).createdAt());
+        assertEquals(chats.get(0).getContent(), chatResponses.chatResponses().get(0).message());
+        assertEquals(chats.get(0).getUsername(), chatResponses.chatResponses().get(0).username());
+        assertEquals(chats.get(0).getCreatedAt(), chatResponses.chatResponses().get(0).createdAt());
     }
 }

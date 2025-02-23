@@ -18,4 +18,6 @@ public interface RoomConnector {
     void deleteRoom(ChatRoom chatRoom);
 
     ChatRoom findById(Long roomId);
+
+    boolean isSecurityById(Long roomId);
 }
