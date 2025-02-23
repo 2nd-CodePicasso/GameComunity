@@ -1,10 +1,8 @@
-<!-- src/main/resources/static/index.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>Spring Boot 채팅 어플리케이션</title>
-    <!-- SockJS와 STOMP.js 라이브러리 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
@@ -21,24 +19,33 @@
             border: 1px solid #eee;
             padding: 5px;
         }
-        #messageInput {
+        #messageInput, #usernameInput {
             width: 80%;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 <div id="chat">
     <h2>채팅 어플리케이션</h2>
+
+    <input type="text" id="usernameInput" placeholder="유저 이름을 입력하세요." />
     <div id="messages"></div>
     <br>
     <input type="text" id="messageInput" placeholder="메시지를 입력하세요." />
     <button onclick="sendMessage()">전송</button>
+
+    <div id="responseTime">
+        <h3>응답 시간</h3>
+        <p id="responseTimeText">메시지 응답 대기 중...</p>
+    </div>
 </div>
 
-<script>
-    var stompClient = null;
-    var token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwicm9sZXMiOiJVU0VSIiwiZXhwIjoxNzM5NzY0MzYxLCJpYXQiOjE3Mzk3NjA3NjF9.ijBXeux-nZNo_1LHIVBzcmNB7M8Lq-Bxzgk6BMbfMH8"
 
+<script>
+    const token = localStorage.getItem('authToken');
+    var stompClient = null;
+    var messageSendTime = null;
     // 페이지가 로드되면, 메타 태그에서 토큰을 가져와 HTTP 요청에 포
     // WebSocket 연결 및 STOMP 클라이언트 생성
     function connect() {
@@ -57,7 +64,7 @@
         loadChatHistory();
     }
 
-        // 채팅 메시지 기록 불러오는 함수
+    // 채팅 메시지 기록 불러오는 함수
     function loadChatHistory() {
         fetch('/chats/history', {
             method: 'GET',
@@ -80,46 +87,58 @@
             .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
     }
     function sendMessage() {
-            var messageContent = document.getElementById('messageInput').value.trim();
-            if (messageContent && stompClient) {
-                // 메시지 객체 생성 (필요에 따라 sender 값을 설정)
-                var chatMessage = {
-                    sender: "익명",
-                    message: messageContent
-                };
+        var messageContent = document.getElementById('messageInput').value.trim();
+        var username = document.getElementById('usernameInput').value.trim();
+        if (messageContent && stompClient) {
+            // 메시지 객체 생성 (필요에 따라 sender 값을 설정)
+            var chatMessage = {
+                sender: username,
+                message: messageContent
+            };
 
-                // "/app/chat.sendMessage" 엔드포인트로 메시지 전송
-                stompClient.send("/app/send",
-                    {'Authorization' : token},
-                    JSON.stringify(chatMessage));
-                document.getElementById('messageInput').value = '';
-            }
+            messageSendTime = new Date();
 
-        }
-        // 수신한 메시지를 화면에 표시하는 함수
-        function showMessage(message) {
-            console.log(message)
-            var messagesDiv = document.getElementById('messages');
-            var messageElement = document.createElement('p');
-            const createdAt = new Date(message.createdAt);
-            const realTime = createdAt.toLocaleString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }).replace(',', '');
-            messageElement.textContent = "User" + message.sender + ": " + message.message+"  "+ realTime;
-
-            messagesDiv.appendChild(messageElement);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            // "/app/chat.sendMessage" 엔드포인트로 메시지 전송
+            stompClient.send("/app/send/all",
+                {'Authorization' : token},
+                JSON.stringify(chatMessage));
+            document.getElementById('messageInput').value = '';
         }
 
-        // 페이지 로드 시 WebSocket 연결 실행
-        window.onload = function () {
-            connect();
-        };
+    }
+    // 응답받은 시간 차이를 계산하여 화면에 표시
+    function showResponseTime() {
+        if (messageSendTime) {
+            var responseTime = new Date() - messageSendTime;  // 전송 시간과 응답 시간 차이
+            var responseTimeText = `응답 시간: ${responseTime}ms`;
+            document.getElementById('responseTimeText').textContent = responseTimeText;
+        }
+    }
+    // 수신한 메시지를 화면에 표시하는 함수
+    function showMessage(message) {
+        console.log(message)
+        var messagesDiv = document.getElementById('messages');
+        var messageElement = document.createElement('p');
+        const createdAt = new Date(message.createdAt);
+        const realTime = createdAt.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }).replace(',', '');
+        messageElement.textContent = "User" + message.sender + ": " + message.message+"  "+ realTime;
+
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        showResponseTime();
+    }
+
+    // 페이지 로드 시 WebSocket 연결 실행
+    window.onload = function () {
+        connect();
+    };
 </script>
 </body>
 </html>
