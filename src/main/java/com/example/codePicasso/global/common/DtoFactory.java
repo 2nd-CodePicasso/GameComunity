@@ -48,6 +48,8 @@ public class DtoFactory {
                 title(post.getTitle()).
                 nickname(post.getUser().getNickname()).
                 description(post.getDescription()).
+                viewCount(post.getViewCount()).
+                status(post.getStatus()).
                 createdAt(post.getCreatedAt()).
                 updatedAt(post.getUpdatedAt()).
                 build();
@@ -93,7 +95,7 @@ public class DtoFactory {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
                 .message(chats.getContent())
-                .sender(chats.getContent())
+                .sender(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
                 .build();
     }

@@ -29,6 +29,4 @@ public class Admin extends TimeStamp {
         this.password = password;
         this.userStatus = UserStatus.ADMIN;
     }
-
-
 }

@@ -77,21 +77,11 @@ class PostServiceTest {
     }
 
     @Test
-    void 깡통_테스트1() {
-
-    }
-
-    @Test
-    void 깡통_테스트2() {
-
-    }
-
-    @Test
     void 게시글_생성() {
         // Given
         Long userId = 1L;
         Long categoryId = 1L;
-//        PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
+        PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
 
         // When
 
@@ -118,6 +108,7 @@ class PostServiceTest {
 
         //when
 
+
         when(postConnector.findAllByGameId(gameId)).thenReturn(posts);
         PostListResponse postListResponse = postService.findAllByGameId(gameId);
 
@@ -128,12 +119,6 @@ class PostServiceTest {
         assertEquals(posts.get(0).getTitle(),postListResponse.postResponses().get(0).title());
         assertEquals(posts.get(0).getCategory().getCategoryName(),postListResponse.postResponses().get(0).categoryName());
         assertEquals(posts.get(0).getDescription(),postListResponse.postResponses().get(0).description());
-//        verify(postConnector).findAllByGameId(gameId);
-//        assertEquals(posts.get(0).getId(), postResponses.get(0).postId());
-//        assertEquals(posts.get(0).getGame().getId(), postResponses.get(0).gameId());
-//        assertEquals(posts.get(0).getTitle(), postResponses.get(0).title());
-//        assertEquals(posts.get(0).getCategory().getCategoryName(), postResponses.get(0).categoryName());
-//        assertEquals(posts.get(0).getDescription(), postResponses.get(0).description());
     }
 
     @Test
@@ -208,6 +193,5 @@ class PostServiceTest {
         //then
         verify(postConnector).findByIdAndUserId(postId, userId);
         verify(postConnector).delete(mockPost);
-
     }
 }

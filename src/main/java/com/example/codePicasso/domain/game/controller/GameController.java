@@ -24,7 +24,31 @@ public class GameController {
         return ApiResponse.success(response);
     }
 
-    @PatchMapping("/{gameId}/admin")
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponse<GameGetAllResponse>> getGamesIgnoreStatus() {
+        GameGetAllResponse response = gameService.getAllGamesIgnoreStatus();
+
+        return ApiResponse.success(response);
+    }
+
+    @GetMapping("/{gameId}")
+    public ResponseEntity<ApiResponse<GameResponse>> getGameById(
+            @PathVariable("gameId") Long gameId) {
+        GameResponse response = gameService.getGame(gameId);
+
+        return ApiResponse.success(response);
+    }
+
+    @GetMapping("/admin/{gameId}")
+    public ResponseEntity<ApiResponse<GameResponse>> getGameByIdIgnoreStatus(
+            @PathVariable Long gameId
+    ) {
+        GameResponse response = gameService.getGameIgnoreStatus(gameId);
+
+        return ApiResponse.success(response);
+    }
+
+    @PatchMapping("/admin/{gameId}")
     public ResponseEntity<ApiResponse<GameResponse>> updateGame(
             @PathVariable Long gameId,
             @Valid @RequestBody GameUpdateRequest request
@@ -33,21 +57,30 @@ public class GameController {
         return ApiResponse.success(response);
     }
 
-    @DeleteMapping("/{gameId}/delete/admin")
+    @PatchMapping("/admin/{gameId}/delete")
     public ResponseEntity<ApiResponse<Void>> deleteGame(
             @PathVariable Long gameId
     ) {
-        gameService.deleteGame(gameId);
+        gameService.softDeleteGame(gameId);
 
         return ApiResponse.noContentAndSendMessage("게임이 삭제되었습니다.");
     }
 
-    @PatchMapping("/{gameId}/restore/admin")
+    @PatchMapping("/admin/{gameId}/restore")
     public ResponseEntity<ApiResponse<Void>> restoreGame(
             @PathVariable Long gameId
     ) {
         gameService.restoreGame(gameId);
 
         return ApiResponse.noContentAndSendMessage("게임이 복구되었습니다.");
+    }
+
+    @DeleteMapping("/admin/{gameId}/delete")
+    public ResponseEntity<ApiResponse<Void>> hardDeleteGame(
+            @PathVariable Long gameId
+    ) {
+        gameService.hardDeleteGame(gameId);
+
+        return ApiResponse.noContentAndSendMessage("게임이 완전히 삭제되었습니다.");
     }
 }

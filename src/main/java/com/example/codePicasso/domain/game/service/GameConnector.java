@@ -9,7 +9,13 @@ import java.util.List;
 public interface GameConnector {
     public Game save(Game game);
 
-    public List<Game> findAll();
+    public List<Game> findAllForUser();
 
-    public Game findById(Long gameId);
+    public List<Game> findAllForAdmin();
+
+    public Game findByIdForUser(Long id);
+
+    public Game findByIdForAdmin(Long gameId);
+
+    public void deleteGameById(Long gameId);
 }

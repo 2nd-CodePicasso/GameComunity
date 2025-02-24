@@ -3,6 +3,7 @@ package com.example.codePicasso.domain.post.entity;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.game.entity.Game;
+import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
@@ -47,6 +48,12 @@ public class Post extends TimeStamp {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private Integer viewCount;
+
+    @Column(nullable = false)
+    private PostStatus status;
+
     public void updateCategories(Category category) {
         this.category = category;
     }
@@ -56,4 +63,11 @@ public class Post extends TimeStamp {
         this.description = description;
     }
 
+    public void changeStatusToRecommended() {
+        this.status = PostStatus.RECOMMENDED;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
 }
