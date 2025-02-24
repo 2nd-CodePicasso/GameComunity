@@ -93,7 +93,7 @@ class ExchangeServiceTest {
         putCanceledExchangeRequest = new PutExchangeRequest(StatusType.CANCELED);
 
         when(userConnector.findById(userId)).thenReturn(user);
-        when(gameConnector.findById(gameId)).thenReturn(game);
+        when(gameConnector.findByIdForAdmin(gameId)).thenReturn(game);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
 
         when(user.getId()).thenReturn(userId);
@@ -349,7 +349,7 @@ class ExchangeServiceTest {
     void 거래소_아이템_생성_게임_없음() {
         // given
         Long wrongGameId = 999L;
-        when(gameConnector.findById(wrongGameId)).thenThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+        when(gameConnector.findByIdForUser(wrongGameId)).thenThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         ExchangeRequest requestWithWrongGameId = new ExchangeRequest(wrongGameId, "거래소", 100, "거래소", 100, "010-1234-5678");
 
