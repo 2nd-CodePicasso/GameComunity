@@ -55,7 +55,7 @@ public class CommentService {
         List<CommentResponse> commentResponses = commentConnector.findAllByPostId(postId).stream()
                 .map(DtoFactory::toCommentDto).toList();
         return CommentListResponse.builder()
-                .commentresponses(commentResponses)
+                .commentResponses(commentResponses)
                 .build();
     }
 
