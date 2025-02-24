@@ -33,7 +33,7 @@ public class ExchangeService {
     @Transactional
     public ExchangeResponse createExchange(ExchangeRequest request, TradeType tradeType, Long userId) {
         User user = userConnector.findById(userId);
-        Game game = gameConnector.findById(request.gameId());
+        Game game = gameConnector.findByIdForUser(request.gameId());
 
         Exchange exchange = request.toEntity(user, game, tradeType);
         Exchange savedExchange = exchangeConnector.save(exchange);

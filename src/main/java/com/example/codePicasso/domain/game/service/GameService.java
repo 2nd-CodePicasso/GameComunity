@@ -5,7 +5,7 @@ import com.example.codePicasso.domain.game.dto.request.GameUpdateRequest;
 import com.example.codePicasso.domain.game.dto.response.GameGetAllResponse;
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.global.common.DtoFactory;
+import com.example.codePicasso.domain.gameProposal.service.GameProposalConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GameService {
 
+    private final GameProposalConnector gameProposalConnector;
     private final GameConnector gameConnector;
 
     @Transactional
@@ -30,30 +31,50 @@ public class GameService {
 
     public GameGetAllResponse getAllGames() {
         return GameGetAllResponse.builder()
-                .responses(gameConnector.findAll().stream()
+                .responses(gameConnector.findAllForUser().stream()
                         .map(DtoFactory::toGameDto).toList())
                 .build();
     }
 
+    public GameGetAllResponse getAllGamesIgnoreStatus() {
+        return GameGetAllResponse.builder()
+                .responses(gameConnector.findAllForAdmin().stream()
+                        .map(DtoFactory::toGameDto).toList())
+                .build();
+    }
+
+    public GameResponse getGame(Long gameId) {
+        return DtoFactory.toGameDto(gameConnector.findByIdForUser(gameId));
+    }
+
+    public GameResponse getGameIgnoreStatus(Long gameId) {
+        return DtoFactory.toGameDto(gameConnector.findByIdForAdmin(gameId));
+    }
+
     @Transactional
     public GameResponse updateGame(Long gameId, GameUpdateRequest request) {
-        Game foundGame = gameConnector.findById(gameId);
+        Game foundGame = gameConnector.findByIdForUser(gameId);
         foundGame.updateDetails(request.gameDescription());
         return DtoFactory.toGameDto(foundGame);
     }
 
     @Transactional
-    public void deleteGame(Long gameId) {
-        Game foundGame = gameConnector.findById(gameId);
+    public void softDeleteGame(Long gameId) {
+        Game foundGame = gameConnector.findByIdForUser(gameId);
         validateIsDeleted(foundGame, false, ErrorCode.GAME_ALREADY_DELETED);
         foundGame.deleteGame();
     }
 
     @Transactional
     public void restoreGame(Long gameId) {
-        Game foundGame = gameConnector.findById(gameId);
+        Game foundGame = gameConnector.findByIdForUser(gameId);
         validateIsDeleted(foundGame, true, ErrorCode.GAME_ALREADY_ACTIVATED);
         foundGame.restore();
+    }
+
+    @Transactional
+    public void hardDeleteGame(Long gameId) {
+        gameConnector.deleteGameById(gameId);
     }
 
     private void validateIsDeleted(Game game, boolean status, ErrorCode errorCode) {

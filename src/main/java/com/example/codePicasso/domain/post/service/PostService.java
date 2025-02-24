@@ -6,6 +6,7 @@ import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -51,9 +52,18 @@ public class PostService {
                 .build();
     }
 
+    public PostListResponse findRecommendedPost(){
+        List<PostResponse> postResponses = postConnector.findAllByStatus(PostStatus.RECOMMENDED).stream()
+                .map(DtoFactory::toPostDto).toList();
+        return PostListResponse.builder()
+                .postResponses(postResponses)
+                .build();
+    }
+
     // 게시글 개별 조회
     public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
+          getPost.increaseViewCount();
         return DtoFactory.toPostDto(getPost);
     }
 

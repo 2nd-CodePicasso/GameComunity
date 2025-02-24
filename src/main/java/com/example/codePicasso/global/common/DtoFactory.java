@@ -48,6 +48,8 @@ public class DtoFactory {
                 title(post.getTitle()).
                 nickname(post.getUser().getNickname()).
                 description(post.getDescription()).
+                viewCount(post.getViewCount()).
+                status(post.getStatus()).
                 createdAt(post.getCreatedAt()).
                 updatedAt(post.getUpdatedAt()).
                 build();

@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.post.dto.response;
 
+import com.example.codePicasso.domain.post.enums.PostStatus;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,8 @@ public record PostResponse(
         String title,
         String nickname,
         String description,
+        Integer viewCount,
+        PostStatus status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

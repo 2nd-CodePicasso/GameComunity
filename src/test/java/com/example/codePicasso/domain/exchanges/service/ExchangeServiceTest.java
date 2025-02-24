@@ -70,7 +70,7 @@ class ExchangeServiceTest {
         exchanges = new PageImpl<>(List.of(exchange));
 
         when(userConnector.findById(userId)).thenReturn(user);
-        when(gameConnector.findById(gameId)).thenReturn(game);
+        when(gameConnector.findByIdForUser(gameId)).thenReturn(game);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
 
         when(user.getId()).thenReturn(userId);

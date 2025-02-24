@@ -77,21 +77,11 @@ class PostServiceTest {
     }
 
     @Test
-    void 깡통_테스트1() {
-
-    }
-
-    @Test
-    void 깡통_테스트2() {
-
-    }
-
-    @Test
     void 게시글_생성() {
         // Given
         Long userId = 1L;
         Long categoryId = 1L;
-//        PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
+        PostRequest request = new PostRequest(1L, "testTitle", "This is a test post.");
 
         // When
 
@@ -117,6 +107,7 @@ class PostServiceTest {
         Long gameId = 1L;
 
         //when
+
 
         when(postConnector.findAllByGameId(gameId)).thenReturn(posts);
         PostListResponse postListResponse = postService.findAllByGameId(gameId);
@@ -202,6 +193,5 @@ class PostServiceTest {
         //then
         verify(postConnector).findByIdAndUserId(postId, userId);
         verify(postConnector).delete(mockPost);
-
     }
 }

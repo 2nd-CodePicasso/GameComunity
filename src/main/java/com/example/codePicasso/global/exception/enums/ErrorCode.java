@@ -23,6 +23,7 @@ public enum ErrorCode {
     ID_ERROR(HttpStatus.UNAUTHORIZED,"1","아이디가 올바르지 않습니다."),
     PW_ERROR(HttpStatus.UNAUTHORIZED,"2","비밀번호가 올바르지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "", "유저를 찾을 수 없습니다."),
+    GAME_DELETED(HttpStatus.BAD_REQUEST, "", "삭제된 게임입니다."),
 
     // GameProposal
     PROPOSAL_NOT_FOUND(HttpStatus.NOT_FOUND, "", "요청을 찾을 수 없습니다."),
@@ -42,6 +43,10 @@ public enum ErrorCode {
 
     //Category
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "", "카테고리를 찾을 수 없습니다."),
+
+    //Recommend
+    RECOMMEND_NOT_FOUND(HttpStatus.NOT_FOUND, "", "존재하지 않는 추천입니다."),
+    ALREADY_RECOMMENDED_POST(HttpStatus.BAD_REQUEST, "", "이미 추천한 게시글입니다."),
 
     //Chatting
     CHATTING_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅 기록을 찾을 수 없습니다."),

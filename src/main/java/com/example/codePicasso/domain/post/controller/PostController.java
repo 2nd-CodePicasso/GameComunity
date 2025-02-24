@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/posts")
 public class PostController {
-
     private final PostService postService;
 
     /**
@@ -59,6 +58,16 @@ public class PostController {
             @PathVariable("categoryId") Long categoryId
     ) {
         PostListResponse postListResponse = postService.findAllByCategoryId(categoryId);
+        return ApiResponse.success(postListResponse);
+    }
+
+    /**
+     * 추천글만 조회하기
+     * @return
+     */
+    @GetMapping("/recommended")
+    public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost() {
+        PostListResponse postListResponse = postService.findRecommendedPost();
         return ApiResponse.success(postListResponse);
     }
 
