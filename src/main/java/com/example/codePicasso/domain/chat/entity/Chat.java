@@ -41,12 +41,4 @@ public class Chat {
         this.content = content;
     }
 
-    public ChatResponse toDto() {
-        return ChatResponse.builder()
-                .chatsId(id)
-                .message(content)
-                .sender(username)
-                .createdAt(createdAt)
-                .build();
-    }
 }

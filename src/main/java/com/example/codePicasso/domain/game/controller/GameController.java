@@ -5,6 +5,7 @@ import com.example.codePicasso.domain.game.dto.response.GameGetAllResponse;
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.service.GameService;
 import com.example.codePicasso.global.common.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,16 +24,16 @@ public class GameController {
         return ApiResponse.success(response);
     }
 
-    @PatchMapping("{gameId}/admin")
+    @PatchMapping("/admin/{gameId}")
     public ResponseEntity<ApiResponse<GameResponse>> updateGame(
             @PathVariable Long gameId,
-            @RequestBody GameUpdateRequest request
+            @Valid @RequestBody GameUpdateRequest request
     ) {
         GameResponse response = gameService.updateGame(gameId, request);
         return ApiResponse.success(response);
     }
 
-    @DeleteMapping("{gameId}")
+    @DeleteMapping("/admin/{gameId}/delete")
     public ResponseEntity<ApiResponse<Void>> deleteGame(
             @PathVariable Long gameId
     ) {
@@ -41,7 +42,7 @@ public class GameController {
         return ApiResponse.noContentAndSendMessage("게임이 삭제되었습니다.");
     }
 
-    @PatchMapping("/{gameId}/restore")
+    @PatchMapping("/admin/{gameId}/restore")
     public ResponseEntity<ApiResponse<Void>> restoreGame(
             @PathVariable Long gameId
     ) {

@@ -8,6 +8,7 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class ExchangeService {
         Exchange exchange = request.toEntity(user, game, tradeType);
         Exchange savedExchange = exchangeConnector.save(exchange);
 
-        return savedExchange.toDto();
+        return DtoFactory.toExchangeDto(savedExchange);
     }
 
     // 거래소 아이템 조회_구매 (페이지네이션 적용)
@@ -48,7 +49,7 @@ public class ExchangeService {
                 ? exchangeConnector.findByTradeType(TradeType.BUY, pageable)
                 : exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.BUY, pageable);
 
-        return exchanges.map(Exchange::toDto);
+        return exchanges.map(DtoFactory::toExchangeDto);
     }
 
     // 거래소 아이템 조회_판매 (페이지네이션 적용)
@@ -59,12 +60,13 @@ public class ExchangeService {
                 ? exchangeConnector.findByTradeType(TradeType.SELL, pageable)
                 : exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.SELL, pageable);
 
-        return exchanges.map(Exchange::toDto);
+        return exchanges.map(DtoFactory::toExchangeDto);
     }
 
     // 거래소 아이템 조회_특정 아이템
     public ExchangeResponse getExchangeById(Long exchangesId) {
-        return exchangeConnector.findById(exchangesId).toDto();
+        Exchange exchange = exchangeConnector.findById(exchangesId);
+        return DtoFactory.toExchangeDto(exchange);
     }
 
     // 거래소 아이템 수정
@@ -77,9 +79,8 @@ public class ExchangeService {
         }
 
         exchange.update(request.title(), request.price());
-        Exchange updatedExchange = exchangeConnector.save(exchange);
 
-        return updatedExchange.toDto();
+        return DtoFactory.toExchangeDto(exchange);
     }
 
     // 거래소 아이템 삭제

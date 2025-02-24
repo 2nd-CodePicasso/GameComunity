@@ -47,8 +47,8 @@ class GameServiceTest {
         GameResponse response = gameService.updateGame(gameId, request);
 
         // Then
+        verify(gameConnector).findById(1L);
         assertEquals(newDescription, response.gameDescription());
-        verify(gameConnector, times(1)).save(mockGame);
     }
 
     @Test
@@ -61,7 +61,6 @@ class GameServiceTest {
 
         // Then
         assertTrue(mockGame.isDeleted());
-        verify(gameConnector, times(1)).save(mockGame);
     }
 
     @Test
@@ -75,7 +74,6 @@ class GameServiceTest {
 
         // Then
         assertFalse(mockGame.isDeleted());
-        verify(gameConnector, times(2)).save(mockGame);
     }
 
 
@@ -104,7 +102,6 @@ class GameServiceTest {
         InvalidRequestException exception = assertThrows(InvalidRequestException.class,
                 () -> gameService.deleteGame(gameId));
         assertEquals(ErrorCode.GAME_ALREADY_DELETED, exception.getErrorCode());
-        verify(gameConnector, times(1)).save(mockGame);
     }
 
     @Test

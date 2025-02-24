@@ -38,24 +38,10 @@ public class Exchange extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
 
-    @Enumerated(EnumType.STRING)
-    private StatusType statusType;
-
     public void update(String title, int price) {
         this.title = title;
         this.price = price;
     }
 
-    public ExchangeResponse toDto(){
-        return ExchangeResponse.builder()
-                .id(id)
-                .userId(user.getId())
-                .gameId(game.getId())
-                .title(title)
-                .price(price)
-                .description(description)
-                .quantity(quantity)
-                .tradeType(tradeType)
-                .build();
-    }
+
 }
