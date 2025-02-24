@@ -6,7 +6,9 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.MyExchange;
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
@@ -83,11 +85,20 @@ public class DtoFactory {
                 .title(exchange.getTitle())
                 .price(exchange.getPrice())
                 .description(exchange.getDescription())
+                .contact(exchange.getContact())
                 .quantity(exchange.getQuantity())
                 .tradeType(exchange.getTradeType())
+                .statustype(exchange.getStatusType())
                 .build();
     }
 
+    public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange){
+        return MyExchangeResponse.builder()
+                .exchange(myExchange.getExchange())
+                .user(myExchange.getUser())
+                .contact(myExchange.getContact())
+                .build();
+    }
 
     public static ChatResponse toChatDto(Chat chats) {
         return ChatResponse.builder()

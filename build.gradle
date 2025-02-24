@@ -46,12 +46,17 @@ dependencies {
 
     implementation 'at.favre.lib:bcrypt:0.10.2'
 
+    //Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    //Redis - Redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.21.1'
+
     //타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     //스프링시큐리티
-   implementation 'org.springframework.boot:spring-boot-starter-security'
-
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {

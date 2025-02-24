@@ -2,8 +2,6 @@ package com.example.codePicasso.domain.post.service;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
-import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
