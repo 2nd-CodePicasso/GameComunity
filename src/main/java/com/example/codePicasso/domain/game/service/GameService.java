@@ -58,7 +58,7 @@ public class GameService {
     }
 
     @Transactional
-    public void deleteGame(Long gameId) {
+    public void softDeleteGame(Long gameId) {
         Game foundGame = gameConnector.findByIdForUser(gameId);
         validateIsDeleted(foundGame, false, ErrorCode.GAME_ALREADY_DELETED);
         foundGame.deleteGame();
@@ -69,6 +69,11 @@ public class GameService {
         Game foundGame = gameConnector.findByIdForUser(gameId);
         validateIsDeleted(foundGame, true, ErrorCode.GAME_ALREADY_ACTIVATED);
         foundGame.restore();
+    }
+
+    @Transactional
+    public void hardDeleteGame(Long gameId) {
+        gameConnector.deleteGameById(gameId);
     }
 
     private void validateIsDeleted(Game game, boolean status, ErrorCode errorCode) {

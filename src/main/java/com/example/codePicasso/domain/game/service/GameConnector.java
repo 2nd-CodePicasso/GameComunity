@@ -16,4 +16,6 @@ public interface GameConnector {
     public Game findByIdForUser(Long id);
 
     public Game findByIdForAdmin(Long gameId);
+
+    public void deleteGameById(Long gameId);
 }

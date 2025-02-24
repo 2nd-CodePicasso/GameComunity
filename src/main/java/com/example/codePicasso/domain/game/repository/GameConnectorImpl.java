@@ -47,4 +47,9 @@ public class GameConnectorImpl implements GameConnector {
                 () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND)
         );
     }
+
+    @Override
+    public void deleteGameById(Long gameId) {
+        gameRepository.deleteById(gameId);
+    }
 }

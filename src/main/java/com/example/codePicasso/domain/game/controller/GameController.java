@@ -57,11 +57,11 @@ public class GameController {
         return ApiResponse.success(response);
     }
 
-    @DeleteMapping("/admin/{gameId}/delete")
+    @PatchMapping("/admin/{gameId}/delete")
     public ResponseEntity<ApiResponse<Void>> deleteGame(
             @PathVariable Long gameId
     ) {
-        gameService.deleteGame(gameId);
+        gameService.softDeleteGame(gameId);
 
         return ApiResponse.noContentAndSendMessage("게임이 삭제되었습니다.");
     }
@@ -73,5 +73,14 @@ public class GameController {
         gameService.restoreGame(gameId);
 
         return ApiResponse.noContentAndSendMessage("게임이 복구되었습니다.");
+    }
+
+    @DeleteMapping("/admin/{gameId}/delete")
+    public ResponseEntity<ApiResponse<Void>> hardDeleteGame(
+            @PathVariable Long gameId
+    ) {
+        gameService.hardDeleteGame(gameId);
+
+        return ApiResponse.noContentAndSendMessage("게임이 완전히 삭제되었습니다.");
     }
 }
