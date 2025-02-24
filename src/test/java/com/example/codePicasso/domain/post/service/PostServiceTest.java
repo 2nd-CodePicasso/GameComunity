@@ -107,8 +107,6 @@ class PostServiceTest {
         Long gameId = 1L;
 
         //when
-
-
         when(postConnector.findAllByGameId(gameId)).thenReturn(posts);
         PostListResponse postListResponse = postService.findAllByGameId(gameId);
 
