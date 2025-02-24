@@ -32,4 +32,11 @@ public class RecommendConnectorImpl implements RecommendConnector {
     public void delete(Recommend recommend) {
         recommendRepository.delete(recommend);
     }
+
+    @Override
+    public void checkExist(Long postId, Long userId) {
+        if (recommendRepository.existsByPostIdAndUserId(postId, userId)) {
+            throw new InvalidRequestException(ErrorCode.ALREADY_RECOMMENDED_POST);
+        }
+    }
 }

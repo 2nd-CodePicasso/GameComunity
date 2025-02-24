@@ -10,4 +10,6 @@ public interface RecommendRepository extends JpaRepository<Recommend, Long> {
     Integer countByPostId(Long postId);
 
     Optional<Recommend> findByPostIdAndUserId(Long postId, Long userId);
+
+    boolean existsByPostIdAndUserId(Long postId, Long userId);
 }

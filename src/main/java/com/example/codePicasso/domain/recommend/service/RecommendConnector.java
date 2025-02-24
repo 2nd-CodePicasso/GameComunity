@@ -12,4 +12,6 @@ public interface RecommendConnector {
     Recommend findByPostIdAndUserId(Long postId, Long userId);
 
     void delete(Recommend recommend);
+
+    void checkExist(Long postId, Long userId);
 }

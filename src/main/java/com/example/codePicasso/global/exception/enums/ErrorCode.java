@@ -42,6 +42,7 @@ public enum ErrorCode {
 
     //Recommend
     RECOMMEND_NOT_FOUND(HttpStatus.NOT_FOUND, "", "존재하지 않는 추천입니다."),
+    ALREADY_RECOMMENDED_POST(HttpStatus.BAD_REQUEST, "", "이미 추천한 게시글입니다."),
 
     //Chatting
     CHATTING_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅 기록을 찾을 수 없습니다."),

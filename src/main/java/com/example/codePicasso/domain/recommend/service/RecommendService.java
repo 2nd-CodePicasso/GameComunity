@@ -21,6 +21,8 @@ public class RecommendService {
 
     @Transactional
     public Integer doRecommend(Long postId, Long userId) {
+        recommendConnector.checkExist(postId, userId);
+
         User foundUser = userConnector.findById(userId);
         Post foundPost = postConnector.findById(postId);
 
