@@ -45,6 +45,6 @@ public class RoomConnectorImpl implements RoomConnector {
     }
 
     public boolean isSecurityById(Long roomId) {
-        return roomRepository.isSecurityById(roomId);
+        return roomRepository.findIsSecurityById(roomId);
     }
 }

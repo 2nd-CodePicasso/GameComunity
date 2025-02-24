@@ -10,5 +10,5 @@ public interface RoomRepository extends JpaRepository<ChatRoom,Long> {
 
     Optional<ChatRoom> findByIdAndUserId(Long roomId, Long userId);
 
-    boolean isSecurityById(Long roomId);
+    boolean findIsSecurityById(Long roomId);
 }
