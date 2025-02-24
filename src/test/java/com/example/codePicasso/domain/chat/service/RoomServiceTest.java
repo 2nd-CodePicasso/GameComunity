@@ -2,10 +2,12 @@ package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
 import com.example.codePicasso.domain.chat.dto.request.UpdateRoomRequest;
+import com.example.codePicasso.domain.chat.dto.response.RoomListResponse;
 import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
+import com.example.codePicasso.global.config.PasswordEncoder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +35,10 @@ public class RoomServiceTest {
     @Mock
     private RoomConnector roomConnector;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+
     private UpdateRoomRequest updateRoomRequest;
     private Long userId = 1L;
     private Long roomId = 1L;
@@ -44,9 +50,10 @@ public class RoomServiceTest {
     @BeforeEach
     void 설정() {
         user = new User("user", "testUser", "user123");  // 예시: User 객체 생성
-        roomRequest = new RoomRequest("집에가고싶은방");
-        updateRoomRequest = new UpdateRoomRequest(roomId, "쀅", "박씨");
-        chatRoom = roomRequest.toEntity(user, encodedPassword);
+        roomRequest = new RoomRequest("집에가고싶은방",false,"1234567");
+        updateRoomRequest = new UpdateRoomRequest(roomId, "쀅", "박씨", false, "1234567");
+        String encode = passwordEncoder.encode(updateRoomRequest.password());
+        chatRoom = roomRequest.toEntity(user,encode);
 
         chatRooms.add(chatRoom);
     }
@@ -71,11 +78,11 @@ public class RoomServiceTest {
         //given
         //when
         when(roomConnector.findAll()).thenReturn(chatRooms);
-        List<RoomResponse> roomResponses = roomService.getAllRoom();
+        RoomListResponse allRoom = roomService.getAllRoom();
 
         //then
         verify(roomConnector).findAll();
-        assertEquals(chatRooms.get(0).getName(), roomResponses.get(0).roomName());
+        assertEquals(chatRooms.get(0).getName(), allRoom.roomResponses().get(0).roomName());
     }
 
     @Test
