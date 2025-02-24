@@ -122,7 +122,7 @@ public class ExchangeService {
         MyExchange myExchange = request.toEntity(savedExchange, user);
         MyExchange savedMyExchange = myExchangeConnector.save(myExchange);
 
-        return savedMyExchange.toDto();
+        return DtoFactory.toMyExchangeDto(savedMyExchange);
     }
 
     //내 구매하기 목록
@@ -130,7 +130,7 @@ public class ExchangeService {
         Pageable pageable = PageRequest.of(page, size);
         Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable);
 
-        return myExchanges.map(MyExchange::toDto);
+        return myExchanges.map(DtoFactory::toMyExchangeDto);
     }
 
     //내 판매하기 목록
@@ -138,7 +138,7 @@ public class ExchangeService {
         Pageable pageable = PageRequest.of(page, size);
         Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable);
 
-        return myExchanges.map(MyExchange::toDto);
+        return myExchanges.map(DtoFactory::toMyExchangeDto);
     }
 
     //거래 상태 변경 및 처리 로직.

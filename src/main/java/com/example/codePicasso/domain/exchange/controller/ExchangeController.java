@@ -106,10 +106,10 @@ public class ExchangeController {
     @PostMapping("/buy/{exchangeId}")
     public ResponseEntity<ApiResponse<MyExchangeResponse>> buyExchange(
             @PathVariable Long exchangeId,
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestBody MyExchangeRequest request
     ) {
-        MyExchangeResponse response = exchangeService.doExchange(exchangeId, userId, request);
+        MyExchangeResponse response = exchangeService.doExchange(exchangeId, user.getUserId(), request);
         return ApiResponse.success(response);
     }
 
@@ -117,32 +117,32 @@ public class ExchangeController {
     @PostMapping("/sell/{exchangeId}")
     public ResponseEntity<ApiResponse<MyExchangeResponse>> sellExchange(
             @PathVariable Long exchangeId,
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestBody MyExchangeRequest request
     ) {
-        MyExchangeResponse response =  exchangeService.doExchange(exchangeId, userId, request);
+        MyExchangeResponse response =  exchangeService.doExchange(exchangeId, user.getUserId(), request);
         return ApiResponse.success(response);
     }
 
     //내 구매 거래 목록 조회 (200 OK)
     @GetMapping("/myList/buy")
     public ResponseEntity<ApiResponse<MyExchangeListResponse>> getMyBuy(
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<MyExchangeResponse> responses =  exchangeService.getMyBuyExchanges(userId, page, size);
+        Page<MyExchangeResponse> responses =  exchangeService.getMyBuyExchanges(user.getUserId(), page, size);
         return ApiResponse.success(MyExchangeListResponse.builder().myExchangePageResponse(responses).build());
     }
 
     //내 판매 거래 목록 조회 (200 OK)
     @GetMapping("/myList/sell")
     public ResponseEntity<ApiResponse<MyExchangeListResponse>> getMySell(
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<MyExchangeResponse> responses =  exchangeService.getMySellExchanges(userId, page, size);
+        Page<MyExchangeResponse> responses =  exchangeService.getMySellExchanges(user.getUserId(), page, size);
         return ApiResponse.success(MyExchangeListResponse.builder().myExchangePageResponse(responses).build());
     }
 
@@ -150,10 +150,10 @@ public class ExchangeController {
     @PutMapping("/list/buy/{myExchangeId}")
     public ResponseEntity<ApiResponse<Void>> cancelBuyExchange(
             @PathVariable Long myExchangeId,
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestBody PutExchangeRequest putExchangeRequest
     ) {
-        exchangeService.putExchange(myExchangeId, userId, putExchangeRequest);
+        exchangeService.putExchange(myExchangeId, user.getUserId(), putExchangeRequest);
         return ApiResponse.noContent();
     }
 
@@ -161,10 +161,10 @@ public class ExchangeController {
     @PutMapping("/list/sell/{myExchangeId}")
     public ResponseEntity<ApiResponse<Void>> approveSellExchange(
             @PathVariable Long myExchangeId,
-            @RequestAttribute Long userId,
+            @AuthenticationPrincipal CustomUser user,
             @RequestBody PutExchangeRequest putExchangeRequest
     ) {
-        exchangeService.putExchange(myExchangeId, userId, putExchangeRequest);
+        exchangeService.putExchange(myExchangeId, user.getUserId(), putExchangeRequest);
         return ApiResponse.noContent();
     }
 }

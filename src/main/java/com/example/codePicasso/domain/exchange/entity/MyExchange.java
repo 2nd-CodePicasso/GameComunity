@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.exchange.entity;
 
-import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
@@ -29,12 +28,4 @@ public class MyExchange extends TimeStamp {
     private User user;
 
     private String contact;
-
-    public MyExchangeResponse toDto(){
-        return MyExchangeResponse.builder()
-                .exchange(exchange)
-                .user(user)
-                .contact(contact)
-                .build();
-    }
 }
