@@ -9,7 +9,9 @@
     import com.example.codePicasso.domain.chat.service.NotificationService;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
-    import org.springframework.messaging.handler.annotation.*;
+    import org.springframework.messaging.handler.annotation.Header;
+    import org.springframework.messaging.handler.annotation.MessageMapping;
+    import org.springframework.messaging.handler.annotation.SendTo;
     import org.springframework.stereotype.Controller;
 
     @Slf4j
@@ -29,7 +31,6 @@
             return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId));
         }
 
-
         @MessageMapping("/send/room")
         @SendTo("/topic/{roomId}}")
         public ChatResponse testMessage(
@@ -48,5 +49,4 @@
         ) {
             return notificationService.addNotification(notificationRequest, Long.valueOf(userId));
         }
-
     }

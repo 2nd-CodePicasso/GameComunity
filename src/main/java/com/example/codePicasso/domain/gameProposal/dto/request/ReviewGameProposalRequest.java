@@ -1,10 +1,10 @@
 package com.example.codePicasso.domain.gameProposal.dto.request;
 
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ReviewGameProposalRequest(
-        @NotBlank
+        @NotNull
         ProposalStatus status
 ) {
 }

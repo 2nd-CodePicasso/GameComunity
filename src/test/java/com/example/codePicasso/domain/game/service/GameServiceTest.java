@@ -31,7 +31,7 @@ class GameServiceTest {
     @BeforeEach
     void setUp() {
         mockGame = spy(new Game(1L, null, "Test Game", "Initial Description", false));
-        lenient().when(gameConnector.findById(1L)).thenReturn(mockGame);
+        lenient().when(gameConnector.findByIdForUser(1L)).thenReturn(mockGame);
 //        when(gameConnector.findAll()).thenReturn(List.of(new GameGetAllResponse(1L, "Test Game")));
     }
 
@@ -47,8 +47,8 @@ class GameServiceTest {
         GameResponse response = gameService.updateGame(gameId, request);
 
         // Then
+        verify(gameConnector).findByIdForUser(1L);
         assertEquals(newDescription, response.gameDescription());
-        verify(gameConnector, times(1)).save(mockGame);
     }
 
     @Test
@@ -57,25 +57,23 @@ class GameServiceTest {
         Long gameId = 1L;
 
         // When
-        gameService. deleteGame(gameId);
+        gameService.softDeleteGame(gameId);
 
         // Then
         assertTrue(mockGame.isDeleted());
-        verify(gameConnector, times(1)).save(mockGame);
     }
 
     @Test
     void 게임_복구() {
         // Given
         Long gameId = 1L;
-        gameService. deleteGame(gameId);
+        gameService.softDeleteGame(gameId);
 
         // When
         gameService.restoreGame(gameId);
 
         // Then
         assertFalse(mockGame.isDeleted());
-        verify(gameConnector, times(2)).save(mockGame);
     }
 
 
@@ -84,7 +82,7 @@ class GameServiceTest {
     void 존재하지_않는_게임아이디로_조회() {
         // Given
         Long gameId = 999L;
-        when(gameConnector.findById(gameId))
+        when(gameConnector.findByIdForUser(gameId))
                 .thenThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         // When & Then
@@ -98,13 +96,12 @@ class GameServiceTest {
     void 삭제된_게임_삭제_시도() {
         // Given
         Long gameId = 1L;
-        gameService.deleteGame(1L);
+        gameService.softDeleteGame(1L);
 
         // When & Then
         InvalidRequestException exception = assertThrows(InvalidRequestException.class,
-                () -> gameService.deleteGame(gameId));
+                () -> gameService.softDeleteGame(gameId));
         assertEquals(ErrorCode.GAME_ALREADY_DELETED, exception.getErrorCode());
-        verify(gameConnector, times(1)).save(mockGame);
     }
 
     @Test

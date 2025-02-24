@@ -1,7 +1,5 @@
 package com.example.codePicasso.domain.chat.entity;
 
-import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,5 +35,4 @@ public class Chat {
 
     @CreatedDate
     private LocalDateTime createdAt;
-
 }

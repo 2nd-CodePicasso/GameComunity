@@ -1,9 +1,9 @@
 package com.example.codePicasso.domain.chat.service;
 
+import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
 import com.example.codePicasso.domain.chat.dto.request.UpdateRoomRequest;
 import com.example.codePicasso.domain.chat.dto.response.RoomListResponse;
 import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
-import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
