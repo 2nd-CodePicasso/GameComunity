@@ -10,11 +10,15 @@ import java.util.List;
 public interface PostConnector {
     Post save(Post post);
 
-    List<Post> findPostByGameId(Long gameId);
+    List<Post> findAllByGameId(Long gameId);
 
-    List<Post> findPostByCategoryId(Long categoryId);
+    List<Post> findAllByCategoryId(Long categoryId);
 
     List<Post> findAllByStatus(PostStatus postStatus);
+  
+    Post findById(Long postId);
+
+    Post findByIdAndUserId(Long postId, Long userId);
 
     Post findById(Long postId);
 

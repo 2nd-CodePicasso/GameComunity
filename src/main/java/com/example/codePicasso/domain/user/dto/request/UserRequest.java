@@ -7,7 +7,8 @@ import lombok.Builder;
 public record UserRequest(
         String loginId,
         String password,
-        String nickname) {
+        String nickname
+        ) {
 
     public User toEntity(String encodedPassword) {
         return User.builder()
