@@ -1,11 +1,11 @@
 package com.example.codePicasso.domain.user.entity;
 
-import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @Getter
@@ -16,8 +16,10 @@ public class User extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String loginId;
 
+    @Column(unique = true)
     private String nickname;
 
     private String password;
@@ -36,11 +38,6 @@ public class User extends TimeStamp {
         this.isDeleted = false;
     }
 
-    public UserResponse toDto() {
-        return UserResponse.builder().
-                loginId(loginId).
-                nickname(nickname).
-                build();
-    }
+
 
 }

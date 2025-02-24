@@ -12,4 +12,6 @@ public interface UserConnector {
     User findByLoginId(String s);
 
     User findById(Long userId);
+
+    User findByNickname(String name);
 }

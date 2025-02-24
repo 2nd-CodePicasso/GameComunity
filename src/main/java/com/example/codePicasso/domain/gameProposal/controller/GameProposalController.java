@@ -7,8 +7,16 @@ import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResp
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
 import com.example.codePicasso.domain.gameProposal.service.GameProposalService;
 import com.example.codePicasso.global.common.ApiResponse;
+import com.example.codePicasso.global.common.CustomUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,21 +28,21 @@ public class GameProposalController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<GameProposalResponse>> createGameProposal(
-            @RequestBody CreateGameProposalRequest request,
-            @RequestAttribute Long userId
-    ) {
-        GameProposalResponse response = gameProposalService.createProposal(request, userId);
+            @Valid @RequestBody CreateGameProposalRequest request,
+            @AuthenticationPrincipal CustomUser user
+            ) {
+        GameProposalResponse response = gameProposalService.createProposal(request, user.getUserId());
 
         return ApiResponse.created(response);
     }
 
-    @GetMapping("/all/admin")
+    @GetMapping("/admin/all")
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getAllProposalsApi() {
         GameProposalGetManyResponse response = gameProposalService.getAllProposals();
         return ApiResponse.success(response);
     }
 
-    @GetMapping("/status/admin")
+    @GetMapping("/admin/status")
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getProposalsByStatusApi(
             @RequestParam ProposalStatus status
     ) {
@@ -44,29 +52,29 @@ public class GameProposalController {
 
     @GetMapping("/my-proposals")
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getMyProposalsApi(
-            @RequestAttribute Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalGetManyResponse response = gameProposalService.getMyProposals(userId);
+        GameProposalGetManyResponse response = gameProposalService.getMyProposals(user.getUserId());
         return ApiResponse.success(response);
     }
 
     @PatchMapping("/{proposalId}")
     public ResponseEntity<ApiResponse<GameProposalResponse>> cancelMyProposal(
             @PathVariable Long proposalId,
-            @RequestAttribute Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalResponse response = gameProposalService.cancelProposal(proposalId, userId);
+        GameProposalResponse response = gameProposalService.cancelProposal(proposalId, user.getUserId());
 
         return ApiResponse.success(response);
     }
 
-    @PatchMapping("/{proposalId}/admin")
+    @PatchMapping("/admin/{proposalId}")
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(
             @PathVariable Long proposalId,
-            @RequestBody ReviewGameProposalRequest request,
-            @RequestAttribute Long adminId
+            @Valid @RequestBody ReviewGameProposalRequest request,
+            @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
+        GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, user.getUserId());
 
         return ApiResponse.success(response);
     }

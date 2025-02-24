@@ -1,9 +1,5 @@
 package com.example.codePicasso.global.config;
 
-import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-
 import com.example.codePicasso.domain.user.entity.UserStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
 
 @Slf4j(topic = "JwtUtil")
 @Component
@@ -44,7 +44,7 @@ public class JwtUtil {
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
-                        .claim("roles",userStatus.name())
+                        .claim("roles",userStatus.getRoles())
                         .setExpiration(new Date(date.getTime() + tokenTime))
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘

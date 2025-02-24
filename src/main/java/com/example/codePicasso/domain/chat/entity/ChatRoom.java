@@ -25,15 +25,24 @@ public class ChatRoom {
 
     private String name;
 
-    public RoomResponse toDto() {
-        return RoomResponse.builder()
-                .roomId(id)
-                .username(user.getNickname())
-                .roomName(name)
-                .build();
-    }
+    private boolean isSecurity;
+
+    private String password = "";
+
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateSecurity(boolean security) {
+        this.isSecurity = security;
     }
 }

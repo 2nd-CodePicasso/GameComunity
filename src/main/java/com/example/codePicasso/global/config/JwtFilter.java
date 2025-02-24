@@ -1,15 +1,15 @@
 package com.example.codePicasso.global.config;
+
+import com.example.codePicasso.global.common.CustomUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InvalidClassException;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,8 +64,10 @@ public class JwtFilter implements Filter {
 
             List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(roles));
 
+            CustomUser customUser = new CustomUser(username, authorities);
+
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    new UsernamePasswordAuthenticationToken(customUser, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 

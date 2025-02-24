@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.exchange.dto.request;
 
 import com.example.codePicasso.domain.exchange.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.user.entity.User;
@@ -17,7 +18,9 @@ public record ExchangeRequest(
         int price,
         String description,
         @NotNull(message = "수량을 입력하세요.")
-        int quantity
+        int quantity,
+        @NotNull(message = "연락처를 입력하세요.")
+        String contact
 ) {
     public Exchange toEntity(User user, Game game, TradeType tradeType) {
         return Exchange.builder()
@@ -27,7 +30,9 @@ public record ExchangeRequest(
                 .price(price)
                 .description(description)
                 .quantity(quantity)
+                .contact(contact)
                 .tradeType(tradeType)
+                .statusType(StatusType.BEFORE)
                 .build();
     }
 }
