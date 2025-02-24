@@ -6,6 +6,7 @@ import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -25,6 +26,7 @@ public class PostService {
     private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
 
+    // 게시글 생성
     @Transactional
     public PostResponse createPost(Long userId, PostRequest request) {
         User user = userConnector.findById(userId);
@@ -34,27 +36,38 @@ public class PostService {
         return DtoFactory.toPostDto(save);
     }
 
-    public PostListResponse findPostByGameId(Long gameId) {
-        List<PostResponse> postResponses = postConnector.findPostByGameId(gameId).stream()
+    public PostListResponse findAllByGameId(Long gameId) {
+        List<PostResponse> postResponses = postConnector.findAllByGameId(gameId).stream()
                 .map(DtoFactory::toPostDto).toList();
         return PostListResponse.builder()
                 .postResponses(postResponses)
                 .build();
     }
 
-    public PostListResponse findPostByCategoryId(Long categoryId) {
-        List<PostResponse> postResponses = postConnector.findPostByCategoryId(categoryId).stream()
+    public PostListResponse findAllByCategoryId(Long categoryId) {
+        List<PostResponse> postResponses = postConnector.findAllByCategoryId(categoryId).stream()
                 .map(DtoFactory::toPostDto).toList();
         return PostListResponse.builder()
                 .postResponses(postResponses)
                 .build();
     }
 
-    public PostResponse findPostById(Long postId) {
+    public PostListResponse findRecommendedPost(){
+        List<PostResponse> postResponses = postConnector.findAllByStatus(PostStatus.RECOMMENDED).stream()
+                .map(DtoFactory::toPostDto).toList();
+        return PostListResponse.builder()
+                .postResponses(postResponses)
+                .build();
+    }
+
+    // 게시글 개별 조회
+    public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
+          getPost.increaseViewCount();
         return DtoFactory.toPostDto(getPost);
     }
 
+    // 게시글 수정
     @Transactional
     public PostResponse updatePost(Long postId, Long userId, PostRequest postRequest) {
         Post foundPost = postConnector.findByIdAndUserId(postId, userId);
@@ -69,6 +82,7 @@ public class PostService {
         return DtoFactory.toPostDto(foundPost);
     }
 
+    // 게시글 삭제
     @Transactional
     public void deletePost(Long postId, Long userId) {
         Post deletePost = postConnector.findByIdAndUserId(postId, userId);

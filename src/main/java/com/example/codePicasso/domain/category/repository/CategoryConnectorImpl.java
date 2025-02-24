@@ -16,7 +16,8 @@ public class CategoryConnectorImpl implements CategoryConnector {
 
     @Override
     public Category findById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override

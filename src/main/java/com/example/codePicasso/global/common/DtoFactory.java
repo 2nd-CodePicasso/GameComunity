@@ -5,6 +5,10 @@ import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
+import com.example.codePicasso.domain.comment.dto.response.ReplyListResponse;
+import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
+import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
@@ -50,8 +54,40 @@ public class DtoFactory {
                 title(post.getTitle()).
                 nickname(post.getUser().getNickname()).
                 description(post.getDescription()).
+                viewCount(post.getViewCount()).
+                status(post.getStatus()).
                 createdAt(post.getCreatedAt()).
                 updatedAt(post.getUpdatedAt()).
+                build();
+    }
+
+    public static CommentResponse toCommentDto(Comment comment) {
+        return CommentResponse.builder().
+                commentId(comment.getId()).
+                postId(comment.getPost().getId()).
+                userId(comment.getUser().getId()).
+                nickname(comment.getUser().getNickname()).
+                text(comment.getText()).
+                replyListResponse(ReplyListResponse.builder()
+                        .responses(comment.getReplies().stream()
+                                .map(DtoFactory::toReplyDto)
+                                .toList())
+                        .build()).
+                createdAt(comment.getCreatedAt()).
+                updatedAp(comment.getUpdatedAt()).
+                build();
+    }
+
+    public static ReplyResponse toReplyDto(Comment comment) {
+        return ReplyResponse.builder().
+                commentId(comment.getId()).
+                postId(comment.getPost().getId()).
+                userId(comment.getUser().getId()).
+                parentId(comment.getParent().getId()).
+                nickname(comment.getUser().getNickname()).
+                text(comment.getText()).
+                createdAt(comment.getCreatedAt()).
+                updatedAp(comment.getUpdatedAt()).
                 build();
     }
 
