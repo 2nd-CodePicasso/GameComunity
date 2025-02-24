@@ -37,8 +37,6 @@ public class RoomServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
-
-
     private UpdateRoomRequest updateRoomRequest;
     private Long userId = 1L;
     private Long roomId = 1L;
@@ -54,7 +52,6 @@ public class RoomServiceTest {
         updateRoomRequest = new UpdateRoomRequest(roomId, "쀅", "박씨", false, "1234567");
         String encode = passwordEncoder.encode(updateRoomRequest.password());
         chatRoom = roomRequest.toEntity(user,encode);
-
         chatRooms.add(chatRoom);
     }
 
