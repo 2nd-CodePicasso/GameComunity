@@ -6,6 +6,7 @@ import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Post extends TimeStamp {
 
     @Id
@@ -42,17 +45,6 @@ public class Post extends TimeStamp {
 
     @Column(nullable = false)
     private PostStatus status;
-
-    @Builder
-    public Post(User user, Game game, Category category, String title, String description) {
-        this.user = user;
-        this.game = game;
-        this.category = category;
-        this.title = title;
-        this.description = description;
-        this.viewCount = 0;
-        this.status = PostStatus.NORMAL;
-    }
 
     public void updateCategories(Category category) {
         this.category = category;
