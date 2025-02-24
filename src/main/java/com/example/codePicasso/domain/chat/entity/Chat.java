@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.chat.entity;
 
-import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
