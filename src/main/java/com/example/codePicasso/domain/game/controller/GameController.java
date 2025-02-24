@@ -24,6 +24,30 @@ public class GameController {
         return ApiResponse.success(response);
     }
 
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponse<GameGetAllResponse>> getGamesIgnoreStatus() {
+        GameGetAllResponse response = gameService.getAllGamesIgnoreStatus();
+
+        return ApiResponse.success(response);
+    }
+
+    @GetMapping("/{gameId}")
+    public ResponseEntity<ApiResponse<GameResponse>> getGameById(
+            @PathVariable("gameId") Long gameId) {
+        GameResponse response = gameService.getGame(gameId);
+
+        return ApiResponse.success(response);
+    }
+
+    @GetMapping("/admin/{gameId}")
+    public ResponseEntity<ApiResponse<GameResponse>> getGameByIdIgnoreStatus(
+            @PathVariable Long gameId
+    ) {
+        GameResponse response = gameService.getGameIgnoreStatus(gameId);
+
+        return ApiResponse.success(response);
+    }
+
     @PatchMapping("/admin/{gameId}")
     public ResponseEntity<ApiResponse<GameResponse>> updateGame(
             @PathVariable Long gameId,
