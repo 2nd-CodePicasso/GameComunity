@@ -12,7 +12,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class GameConnectorImpl implements GameConnector {
-
     private final GameRepository gameRepository;
 
     @Override
@@ -21,14 +20,39 @@ public class GameConnectorImpl implements GameConnector {
     }
 
     @Override
-    public List<Game> findAll() {
+    public List<Game> findAllForUser() {
+        return gameRepository.findAllByIsDeleted(false);
+    }
+
+    @Override
+    public List<Game> findAllForAdmin() {
         return gameRepository.findAll();
     }
 
     @Override
-    public Game findById(Long gameId) {
+    public Game findByIdForUser(Long gameId) {
+        Game foundGame = gameRepository.findById(gameId).orElseThrow(
+                () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+
+        if (foundGame.isDeleted()) {
+            throw new NotFoundException(ErrorCode.GAME_ALREADY_DELETED);
+        }
+
+        return foundGame;
+    }
+
+    @Override
+    public Game findByIdForAdmin(Long gameId) {
         return gameRepository.findById(gameId).orElseThrow(
                 () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND)
         );
+    }
+
+    @Override
+    public void deleteGameById(Long gameId) {
+        Game foundGame = gameRepository.findById(gameId).orElseThrow(
+                () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND)
+        );
+        gameRepository.delete(foundGame);
     }
 }
