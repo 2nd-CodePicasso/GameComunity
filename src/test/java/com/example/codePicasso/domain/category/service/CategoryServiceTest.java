@@ -84,7 +84,7 @@ public class CategoryServiceTest {
         CategoryResponse expectedResponse = new CategoryResponse(1L, "Test Category");
 
         //when
-        when(gameConnector.findById(gameId)).thenReturn(mockGame);
+        when(gameConnector.findByIdForUser(gameId)).thenReturn(mockGame);
         when(categoryConnector.save(any(Category.class))).thenReturn(savedCategory);
         mockStatic(DtoFactory.class);
         when(DtoFactory.toCategoryDto(savedCategory)).thenReturn(expectedResponse);
@@ -92,7 +92,7 @@ public class CategoryServiceTest {
         CategoryResponse categoryResponse = categoryService.createCategory(gameId, request);
 
         //then
-        verify(gameConnector).findById(gameId);
+        verify(gameConnector).findByIdForUser(gameId);
         verify(categoryConnector).save(any(Category.class));
         assertEquals(request.categoryName(), categoryResponse.categoryName());
     }

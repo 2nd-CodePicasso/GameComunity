@@ -22,7 +22,7 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponse createCategory(Long gameId, CategoryRequest request) {
-        Game game = gameConnector.findById(gameId);
+        Game game = gameConnector.findByIdForUser(gameId);
         Category createCategory = request.toEntity(game);
         Category saveCategory = categoryConnector.save(createCategory);
         return DtoFactory.toCategoryDto(saveCategory);
