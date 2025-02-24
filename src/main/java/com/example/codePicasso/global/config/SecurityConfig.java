@@ -7,7 +7,6 @@
     import org.springframework.security.config.annotation.web.builders.HttpSecurity;
     import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
     import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-    import org.springframework.security.config.http.SessionCreationPolicy;
     import org.springframework.security.web.SecurityFilterChain;
     import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
     import org.springframework.web.cors.CorsConfiguration;
@@ -28,7 +27,7 @@
                     .formLogin(AbstractHttpConfigurer::disable)
                     .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                     .authorizeHttpRequests(auth ->
-                            auth.requestMatchers("/*/admin/**").hasRole(UserStatus.ADMIN.name()) //
+                            auth.requestMatchers("/*/admin/**").hasAuthority(UserStatus.ADMIN.getRoles()) //
                                     .requestMatchers("/*/hi/**").permitAll()
                                     .requestMatchers("/ws/**").permitAll()
                                     .anyRequest().authenticated()
