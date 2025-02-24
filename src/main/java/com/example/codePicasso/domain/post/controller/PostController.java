@@ -62,6 +62,16 @@ public class PostController {
     }
 
     /**
+     * 추천글만 조회하기
+     * @return
+     */
+    @GetMapping("/recommended")
+    public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost() {
+        PostListResponse postListResponse = postService.findRecommendedPost();
+        return ApiResponse.success(postListResponse);
+    }
+
+    /**
      * 개별 게시글 조회
      *
      * @param postId

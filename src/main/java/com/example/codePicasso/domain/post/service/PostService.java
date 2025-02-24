@@ -2,12 +2,11 @@ package com.example.codePicasso.domain.post.service;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
-import com.example.codePicasso.domain.game.entity.Game;
-import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -46,6 +45,14 @@ public class PostService {
 
     public PostListResponse findPostByCategoryId(Long categoryId) {
         List<PostResponse> postResponses = postConnector.findPostByCategoryId(categoryId).stream()
+                .map(DtoFactory::toPostDto).toList();
+        return PostListResponse.builder()
+                .postResponses(postResponses)
+                .build();
+    }
+
+    public PostListResponse findRecommendedPost(){
+        List<PostResponse> postResponses = postConnector.findAllByStatus(PostStatus.RECOMMENDED).stream()
                 .map(DtoFactory::toPostDto).toList();
         return PostListResponse.builder()
                 .postResponses(postResponses)

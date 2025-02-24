@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.post.repository;
 
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -27,6 +28,11 @@ public class PostConnectorImpl implements PostConnector {
     @Override
     public List<Post> findPostByCategoryId(Long categoryId) {
         return postRepository.findAllByCategoryId(categoryId);
+    }
+
+    @Override
+    public List<Post> findAllByStatus(PostStatus postStatus) {
+        return postRepository.findAllByStatus(postStatus);
     }
 
     @Override
