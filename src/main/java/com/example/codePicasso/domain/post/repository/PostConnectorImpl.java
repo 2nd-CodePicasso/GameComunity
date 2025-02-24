@@ -41,7 +41,8 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 개별 조회
     @Override
     public Post findById(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     // 게시글 수정

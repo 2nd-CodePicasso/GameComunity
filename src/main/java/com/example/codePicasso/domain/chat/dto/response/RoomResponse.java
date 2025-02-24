@@ -6,6 +6,7 @@ import lombok.Builder;
 public record RoomResponse(
         Long roomId,
         String username,
-        String roomName
+        String roomName,
+        boolean isSecurity
         ) {
 }

@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.chat.entity;
 
+import com.example.codePicasso.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,29 +11,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Entity
 @Getter
+@Builder
 @EntityListeners(AuditingEntityListener.class)
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "chats")
-public class Chat {
+@AllArgsConstructor
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private String username;
-
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdTime;
+
 }

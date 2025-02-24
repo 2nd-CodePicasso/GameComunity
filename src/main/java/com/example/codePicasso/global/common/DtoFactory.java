@@ -4,7 +4,13 @@ package com.example.codePicasso.global.common;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
+import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.chat.entity.ChatRoom;
+import com.example.codePicasso.domain.chat.entity.GlobalChat;
+import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.dto.response.ReplyListResponse;
 import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
@@ -140,9 +146,39 @@ public class DtoFactory {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
                 .message(chats.getContent())
-                .sender(chats.getUsername())
+                .username(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
                 .build();
     }
 
+    public static NotificationResponse toNotificationDto(Notification notification) {
+        return NotificationResponse.builder()
+                .notificationId(notification.getId())
+                .chatRoomId(notification.getChatRoom().getId())
+                .authorName(notification.getChat().getUsername())
+                .content(notification.getChat().getContent())
+                .writtenTime(notification.getChat().getCreatedAt())
+                .createdTime(notification.getCreatedTime())
+                .messageId(notification.getChat().getId())
+                .proposerName(notification.getUser().getNickname())
+                .build();
+    }
+
+    public static GlobalChatResponse toGlobalChatDto(GlobalChat chats) {
+        return GlobalChatResponse.builder()
+                .username(chats.getUsername())
+                .chatsId(chats.getId())
+                .message(chats.getContent())
+                .createdAt(chats.getCreatedAt())
+                .build();
+    }
+
+    public static RoomResponse toChatRoomDto(ChatRoom chatRoom) {
+        return RoomResponse.builder()
+                .roomId(chatRoom.getId())
+                .username(chatRoom.getUser().getNickname())
+                .roomName(chatRoom.getName())
+                .isSecurity(chatRoom.isSecurity())
+                .build();
+    }
 }

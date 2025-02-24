@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.chat.entity;
 
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,4 +37,12 @@ public class GlobalChat {
         this.content = content;
     }
 
+    public GlobalChatResponse toDto() {
+        return GlobalChatResponse.builder()
+                .chatsId(id)
+                .username(username)
+                .message(content)
+                .createdAt(createdAt)
+                .build();
+    }
 }
