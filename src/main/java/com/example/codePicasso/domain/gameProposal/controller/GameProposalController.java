@@ -31,13 +31,13 @@ public class GameProposalController {
         return ApiResponse.created(response);
     }
 
-    @GetMapping("/all/admin")
+    @GetMapping("/admin/all")
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getAllProposalsApi() {
         GameProposalGetManyResponse response = gameProposalService.getAllProposals();
         return ApiResponse.success(response);
     }
 
-    @GetMapping("/status/admin")
+    @GetMapping("/admin/status")
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getProposalsByStatusApi(
             @RequestParam ProposalStatus status
     ) {
@@ -63,7 +63,7 @@ public class GameProposalController {
         return ApiResponse.success(response);
     }
 
-    @PatchMapping("/{proposalId}/admin")
+    @PatchMapping("/admin/{proposalId}")
     public ResponseEntity<ApiResponse<GameProposalResponse>> updateGameProposal(
             @PathVariable Long proposalId,
             @Valid @RequestBody ReviewGameProposalRequest request,
