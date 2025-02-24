@@ -13,34 +13,33 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/games/{gameId}/posts")
+@RequestMapping("/posts")
 public class PostController {
-
     private final PostService postService;
 
     /**
      * 게시글 생성
+     *
      * @param user
-     * @param gameId
      * @param request (categoryId, title, description)
      * @return 생성된 게시글
      */
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
-            @AuthenticationPrincipal CustomUser user
-,            @PathVariable("gameId") Long gameId,
-            PostRequest request
+            @AuthenticationPrincipal CustomUser user,
+            @RequestBody PostRequest request
     ) {
-        PostResponse response = postService.createPost(user.getUserId(), gameId, request);
+        PostResponse response = postService.createPost(user.getUserId(), request);
         return ApiResponse.created(response);
     }
 
     /**
      * gameId로 게시글 전체 조회
+     *
      * @param gameId
      * @return gameId 내 모든 게시글 조회
      */
-    @GetMapping
+    @GetMapping("/games/{gameId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId
     ) {
@@ -50,6 +49,7 @@ public class PostController {
 
     /**
      * 카테고리별 게시글 전체 조회
+     *
      * @param categoryId
      * @return categoryId 내 모든 게시글 조회
      */
@@ -63,6 +63,7 @@ public class PostController {
 
     /**
      * 개별 게시글 조회
+     *
      * @param postId
      * @return 개별 게시물
      */
@@ -76,6 +77,7 @@ public class PostController {
 
     /**
      * 게시글 수정
+     *
      * @param postId
      * @param user
      * @param request (categoryId, title, description)
@@ -85,14 +87,15 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable("postId") Long postId,
             @AuthenticationPrincipal CustomUser user,
-            PostRequest request
+            @RequestBody PostRequest request
     ) {
-        PostResponse response = postService.updatePost(postId, user.getUserId(), request.categoryId(), request.title(), request.description());
+        PostResponse response = postService.updatePost(postId, user.getUserId(), request);
         return ApiResponse.success(response);
     }
 
     /**
      * 게시물 삭제
+     *
      * @param postId
      * @param user
      * @return return 없음

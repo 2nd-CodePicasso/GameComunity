@@ -7,7 +7,5 @@ import java.util.List;
 @Builder
 public record PostListResponse(
         List<PostResponse> postResponses
-
 ) {
-
 }

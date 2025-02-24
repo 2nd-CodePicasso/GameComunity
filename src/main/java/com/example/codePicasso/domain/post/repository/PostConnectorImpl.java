@@ -12,7 +12,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class PostConnectorImpl implements PostConnector {
-
     private final PostRepository postRepository;
 
     @Override
@@ -36,8 +35,8 @@ public class PostConnectorImpl implements PostConnector {
     }
 
     @Override
-    public Post findByUserIdAndPostId(Long postId, Long userId) {
-        return postRepository.findByUserIdAndPostId(postId, userId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+    public Post findByIdAndUserId(Long postId, Long userId) {
+        return postRepository.findByIdAndUserId(postId, userId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     @Override

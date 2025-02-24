@@ -95,7 +95,7 @@ public class DtoFactory {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
                 .message(chats.getContent())
-                .sender(chats.getContent())
+                .sender(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
                 .build();
     }

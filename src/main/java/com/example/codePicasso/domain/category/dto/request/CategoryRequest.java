@@ -10,10 +10,10 @@ public record CategoryRequest(
         @Length(max = 10)
         String categoryName
 ) {
-        public Category toEntity(Game game) {
-                return Category.builder()
-                        .categoryName(categoryName)
-                        .game(game)
-                        .build();
-        }
+    public Category toEntity(Game game) {
+        return Category.builder()
+                .categoryName(categoryName)
+                .game(game)
+                .build();
+    }
 }
