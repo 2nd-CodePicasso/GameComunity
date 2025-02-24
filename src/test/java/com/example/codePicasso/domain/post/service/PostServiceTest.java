@@ -128,12 +128,6 @@ class PostServiceTest {
         assertEquals(posts.get(0).getTitle(),postListResponse.postResponses().get(0).title());
         assertEquals(posts.get(0).getCategory().getCategoryName(),postListResponse.postResponses().get(0).categoryName());
         assertEquals(posts.get(0).getDescription(),postListResponse.postResponses().get(0).description());
-//        verify(postConnector).findAllByGameId(gameId);
-//        assertEquals(posts.get(0).getId(), postResponses.get(0).postId());
-//        assertEquals(posts.get(0).getGame().getId(), postResponses.get(0).gameId());
-//        assertEquals(posts.get(0).getTitle(), postResponses.get(0).title());
-//        assertEquals(posts.get(0).getCategory().getCategoryName(), postResponses.get(0).categoryName());
-//        assertEquals(posts.get(0).getDescription(), postResponses.get(0).description());
     }
 
     @Test
