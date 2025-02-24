@@ -50,6 +50,9 @@ public class GameConnectorImpl implements GameConnector {
 
     @Override
     public void deleteGameById(Long gameId) {
-        gameRepository.deleteById(gameId);
+        Game foundGame = gameRepository.findById(gameId).orElseThrow(
+                () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND)
+        );
+        gameRepository.delete(foundGame);
     }
 }
