@@ -6,7 +6,6 @@ import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -32,5 +31,10 @@ public class UserConnectorImpl implements UserConnector {
     @Override
     public User findById(Long userId) {
         return userRepository.findById(userId).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public User findByNickname(String name) {
+        return null;
     }
 }

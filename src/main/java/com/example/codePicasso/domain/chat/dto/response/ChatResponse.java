@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 @Builder
 public record ChatResponse(
         Long chatsId,
-        String sender,
+        Long roomId,
+        String username,
         String message,
         LocalDateTime createdAt
 ) {
-
 }

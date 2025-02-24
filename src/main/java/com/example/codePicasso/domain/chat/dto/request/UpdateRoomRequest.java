@@ -2,6 +2,9 @@ package com.example.codePicasso.domain.chat.dto.request;
 
 public record UpdateRoomRequest(
         Long roomId,
-        String name
+        String name,
+        String username,
+        boolean isSecurity,
+        String password
 ) {
 }

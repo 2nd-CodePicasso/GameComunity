@@ -92,7 +92,7 @@
         if (messageContent && stompClient) {
             // 메시지 객체 생성 (필요에 따라 sender 값을 설정)
             var chatMessage = {
-                sender: username,
+                username: username,
                 message: messageContent
             };
 
@@ -128,7 +128,7 @@
             minute: '2-digit',
             hour12: false
         }).replace(',', '');
-        messageElement.textContent = "User" + message.sender + ": " + message.message+"  "+ realTime;
+        messageElement.textContent = "User" + message.username + ": " + message.message+"  "+ realTime;
 
         messagesDiv.appendChild(messageElement);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;

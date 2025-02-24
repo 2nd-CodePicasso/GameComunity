@@ -50,9 +50,20 @@ public enum ErrorCode {
 
     //Chatting
     CHATTING_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅 기록을 찾을 수 없습니다."),
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"", "채팅방을 찾을 수 없습니다."),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "", "공지를 찾을수 없습니다."),
+    UNAUTHORIZED_CHAT_ROOM(HttpStatus.UNAUTHORIZED,"","해당 채팅방은 비밀방입니다."),
 
-    //ItemExchange
-    EXCHANGE_NOT_FOUND(HttpStatus.NOT_FOUND, "", "거래내역을 찾을 수 없습니다.");
+    //Exchange
+    EXCHANGE_NOT_FOUND(HttpStatus.NOT_FOUND, "", "거래내역을 찾을 수 없습니다."),
+
+    //MyExchange
+    MYEXCHANGE_NOT_FOUND(HttpStatus.NOT_FOUND, "", "내 거래내역을 찾을 수 없습니다."),
+    ALREADY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "", "거래 완료 처리가 이미 진행 중입니다."),
+    ALREADY_IN_COMPLETED(HttpStatus.BAD_REQUEST, "", "이미 완료된 거래입니다."),
+
+    //Redis
+    TRADE_RANKING_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "", "거래 랭킹 업데이트 중 문제가 발생했습니다.");
 
 
     private final HttpStatus status;

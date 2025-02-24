@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record ChatListResponse(
-        List<ChatResponse> chatsResponseList
+        List<ChatResponse> chatResponses
 ) {
 }
