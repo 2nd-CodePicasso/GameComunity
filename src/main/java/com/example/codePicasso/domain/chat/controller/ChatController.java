@@ -29,7 +29,6 @@
             return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId));
         }
 
-
         @MessageMapping("/send/room")
         @SendTo("/topic/{roomId}}")
         public ChatResponse testMessage(
@@ -48,5 +47,4 @@
         ) {
             return notificationService.addNotification(notificationRequest, Long.valueOf(userId));
         }
-
     }

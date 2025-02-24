@@ -37,5 +37,4 @@ public class Chat {
 
     @CreatedDate
     private LocalDateTime createdAt;
-
 }
