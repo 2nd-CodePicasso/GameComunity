@@ -36,11 +36,6 @@ public class User extends TimeStamp {
         this.isDeleted = false;
     }
 
-    public UserResponse toDto() {
-        return UserResponse.builder().
-                loginId(loginId).
-                nickname(nickname).
-                build();
-    }
+
 
 }

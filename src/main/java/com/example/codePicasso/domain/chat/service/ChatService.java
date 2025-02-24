@@ -1,8 +1,10 @@
 package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
+import com.example.codePicasso.domain.chat.dto.response.ChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.global.common.DtoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,16 @@ public class ChatService {
         Chat chats = chatsRequest.toEntity(userId);
         chatConnector.save(chats);
 
-        return chats.toDto();
+        return DtoFactory.toChatDto(chats);
     }
 
     @Transactional(readOnly = true)
-    public List<ChatResponse> getChatsHistory() {
+    public ChatListResponse getChatsHistory() {
         List<Chat> chats = chatConnector.findAll();
-        return chats.stream().map(Chat::toDto).toList();
+        List<ChatResponse> chatResponses = chats.stream().map(DtoFactory::toChatDto).toList();
+        return ChatListResponse.builder()
+                .chatsResponseList(chatResponses)
+                .build();
     }
 
     @Transactional

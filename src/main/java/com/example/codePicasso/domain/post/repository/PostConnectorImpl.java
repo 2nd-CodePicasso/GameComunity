@@ -1,18 +1,17 @@
 package com.example.codePicasso.domain.post.repository;
 
-import com.example.codePicasso.domain.post.dto.response.GetGameIdAllPostsResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.service.PostConnector;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class PostConnectorImpl implements PostConnector {
-
     private final PostRepository postRepository;
 
     @Override
@@ -21,23 +20,23 @@ public class PostConnectorImpl implements PostConnector {
     }
 
     @Override
-    public List<GetGameIdAllPostsResponse> findPostByGameId(Long gameId) {
-        return postRepository.findPostByGameId(gameId);
+    public List<Post> findPostByGameId(Long gameId) {
+        return postRepository.findAllByGameId(gameId);
     }
 
     @Override
     public List<Post> findPostByCategoryId(Long categoryId) {
-        return postRepository.findPostByCategoryId(categoryId);
+        return postRepository.findAllByCategoryId(categoryId);
     }
 
     @Override
-    public Optional<Post> findById(Long postId) {
-        return postRepository.findById(postId);
+    public Post findById(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     @Override
-    public Optional<Post> findByUserIdAndPostId(Long postId, Long userId) {
-        return postRepository.findByUserIdAndPostId(postId, userId);
+    public Post findByIdAndUserId(Long postId, Long userId) {
+        return postRepository.findByIdAndUserId(postId, userId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
     }
 
     @Override

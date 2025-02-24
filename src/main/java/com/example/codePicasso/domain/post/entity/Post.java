@@ -5,6 +5,7 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +13,15 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Post extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -36,15 +39,6 @@ public class Post extends TimeStamp {
     @Column(nullable = false)
     private String description;
 
-    @Builder
-    public Post(User user, Game game, Category category, String title, String description) {
-        this.user = user;
-        this.game = game;
-        this.category = category;
-        this.title = title;
-        this.description = description;
-    }
-
     public void updateCategories(Category category) {
         this.category = category;
     }
@@ -54,13 +48,4 @@ public class Post extends TimeStamp {
         this.description = description;
     }
 
-    public static Post toEntity(User user, Game game, Category category, String title, String description) {
-        return Post.builder()
-                .user(user)
-                .game(game)
-                .category(category)
-                .title(title)
-                .description(description)
-                .build();
-    }
 }

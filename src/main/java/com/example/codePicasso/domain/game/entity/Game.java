@@ -33,16 +33,6 @@ public class Game extends TimeStamp {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public GameResponse toDto() {
-        return GameResponse.builder()
-                .id(id)
-                .gameTitle(gameTitle)
-                .gameDescription(gameDescription)
-                .created_at(getCreatedAt())
-                .updated_at(getUpdatedAt())
-                .build();
-    }
-
     public void updateDetails(String gameDescription) {
         this.gameDescription = gameDescription;
     }

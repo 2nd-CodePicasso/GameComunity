@@ -30,7 +30,9 @@ public class Exchange extends TimeStamp {
     private Game game;
 
     private String title;
+
     private int price;
+    private String description;
     private int quantity;
     private String description;
     private String contact;
@@ -48,20 +50,5 @@ public class Exchange extends TimeStamp {
 
     public void changeStatus(StatusType statusType){
         this.statusType = statusType;
-    }
-
-    public ExchangeResponse toDto(){
-        return ExchangeResponse.builder()
-                .id(id)
-                .userId(user.getId())
-                .gameId(game.getId())
-                .title(title)
-                .price(price)
-                .description(description)
-                .quantity(quantity)
-                .contact(contact)
-                .tradeType(tradeType)
-                .statustype(statusType)
-                .build();
     }
 }

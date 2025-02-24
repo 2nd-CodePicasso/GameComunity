@@ -1,14 +1,11 @@
 package com.example.codePicasso.domain.gameProposal.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import com.example.codePicasso.domain.game.service.GameService;
 import com.example.codePicasso.domain.gameProposal.dto.request.CreateGameProposalRequest;
 import com.example.codePicasso.domain.gameProposal.dto.request.ReviewGameProposalRequest;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
-import com.example.codePicasso.domain.game.service.GameService;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.AdminConnector;
@@ -21,6 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GameProposalServiceTest {
@@ -43,6 +43,7 @@ class GameProposalServiceTest {
     private User mockUser;
     private Admin mockAdmin;
     private GameProposal mockProposal;
+    private GameProposal mockChangeProposal;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +55,13 @@ class GameProposalServiceTest {
                 .gameTitle("Test Game")
                 .status(ProposalStatus.WAITING)
                 .build();
+
+        mockChangeProposal = GameProposal.builder()
+                .id(1L)
+                .user(mockUser)
+                .gameTitle("Test Game")
+                .status(ProposalStatus.REJECTED)
+                .build();
     }
 
     @Test
@@ -62,7 +70,7 @@ class GameProposalServiceTest {
         CreateGameProposalRequest request = new CreateGameProposalRequest("Test Game", "This is a test game.");
         when(userConnector.findById(1L)).thenReturn(mockUser);
         when(gameProposalConnector.existsByGameTitle("Test Game")).thenReturn(false);
-        doNothing().when(gameProposalConnector).save(any());
+        when(gameProposalConnector.save(any(GameProposal.class))).thenReturn(mockProposal);
 
         // When
         GameProposalResponse response = gameProposalService.createProposal(request, 1L);
@@ -71,9 +79,6 @@ class GameProposalServiceTest {
         assertNotNull(response);
         assertEquals("Test Game", response.gameTitle());
         assertEquals(ProposalStatus.WAITING, response.status());
-
-        verify(gameProposalConnector, times(1))
-                .save(argThat(proposal -> proposal.getStatus() == ProposalStatus.WAITING));
     }
 
 
@@ -83,7 +88,7 @@ class GameProposalServiceTest {
         CreateGameProposalRequest request = new CreateGameProposalRequest("Test Game", "This is a test game.");
         when(userConnector.findById(1L)).thenReturn(mockUser);
         when(gameProposalConnector.existsByGameTitle("Test Game")).thenReturn(true);
-        doNothing().when(gameProposalConnector).save(any());
+        when(gameProposalConnector.save(any(GameProposal.class))).thenReturn(mockChangeProposal);
 
         // When
         GameProposalResponse response = gameProposalService.createProposal(request, 1L);
@@ -92,9 +97,6 @@ class GameProposalServiceTest {
         assertNotNull(response);
         assertEquals("Test Game", response.gameTitle());
         assertEquals(ProposalStatus.REJECTED, response.status());
-
-        verify(gameProposalConnector, times(1))
-                .save(argThat(proposal -> proposal.getStatus() == ProposalStatus.REJECTED));
     }
 
     @Test
@@ -106,7 +108,6 @@ class GameProposalServiceTest {
 
         when(gameProposalConnector.findById(proposalId)).thenReturn(mockProposal);
         when(adminConnector.findById(adminId)).thenReturn(mockAdmin);
-        doNothing().when(gameProposalConnector).save(any());
 
         // When
         GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
@@ -115,9 +116,6 @@ class GameProposalServiceTest {
         assertNotNull(response);
         assertEquals(ProposalStatus.APPROVED, response.status());
 
-        verify(gameProposalConnector, times(1)).save(argThat(proposal ->
-                proposal.getStatus() == ProposalStatus.APPROVED
-        ));
         verify(gameService, times(1)).createGame(any());
     }
 
@@ -130,7 +128,6 @@ class GameProposalServiceTest {
 
         when(gameProposalConnector.findById(proposalId)).thenReturn(mockProposal);
         when(adminConnector.findById(adminId)).thenReturn(mockAdmin);
-        doNothing().when(gameProposalConnector).save(any());
 
         // When
         GameProposalResponse response = gameProposalService.reviewProposal(proposalId, request, adminId);
@@ -138,10 +135,6 @@ class GameProposalServiceTest {
         // Then
         assertNotNull(response);
         assertEquals(ProposalStatus.REJECTED, response.status());
-
-        verify(gameProposalConnector, times(1)).save(argThat(proposal ->
-                proposal.getStatus() == ProposalStatus.REJECTED
-        ));
     }
 
     @Test

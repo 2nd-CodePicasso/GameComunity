@@ -3,6 +3,7 @@ package com.example.codePicasso.domain.user.service;
 import com.example.codePicasso.domain.user.dto.request.UserRequest;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.User;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.config.PasswordEncoder;
 import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -32,7 +33,7 @@ public class UserService {
 
         User user = userRequest.toEntity(encodePassword);
         userConnector.save(user);
-        return user.toDto();
+        return DtoFactory.toUserDto(user);
     }
 
     public UserResponse updateUser(UserRequest userRequest, long l) {
