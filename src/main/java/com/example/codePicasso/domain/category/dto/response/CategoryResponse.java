@@ -4,7 +4,7 @@ import com.example.codePicasso.domain.category.entity.Category;
 import lombok.Builder;
 
 @Builder
-public record CategoryResponse (
+public record CategoryResponse(
         Long categoryId,
         String categoryName
 ) {

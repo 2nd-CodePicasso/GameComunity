@@ -1,7 +1,7 @@
 package com.example.codePicasso.domain.game.entity;
 
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
-import com.example.codePicasso.domain.users.entity.Admin;
+import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,16 +32,6 @@ public class Game extends TimeStamp {
 
     @Column(nullable = false)
     private boolean isDeleted;
-
-    public GameResponse toDto() {
-        return GameResponse.builder()
-                .id(id)
-                .gameTitle(gameTitle)
-                .gameDescription(gameDescription)
-                .created_at(getCreatedAt())
-                .updated_at(getUpdatedAt())
-                .build();
-    }
 
     public void updateDetails(String gameDescription) {
         this.gameDescription = gameDescription;

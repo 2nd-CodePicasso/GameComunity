@@ -8,10 +8,11 @@ import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalGetM
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.gameProposal.enums.ProposalStatus;
-import com.example.codePicasso.domain.users.entity.Admin;
-import com.example.codePicasso.domain.users.entity.User;
-import com.example.codePicasso.domain.users.service.AdminConnector;
-import com.example.codePicasso.domain.users.service.UserConnector;
+import com.example.codePicasso.domain.user.entity.Admin;
+import com.example.codePicasso.domain.user.entity.User;
+import com.example.codePicasso.domain.user.service.AdminConnector;
+import com.example.codePicasso.domain.user.service.UserConnector;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.AccessDeniedException;
 import com.example.codePicasso.global.exception.base.ConflictException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -38,31 +39,26 @@ public class GameProposalService {
         ProposalStatus status = gameProposalConnector.existsByGameTitle(request.gameTitle())
                 ? ProposalStatus.REJECTED : ProposalStatus.WAITING;
 
-        GameProposal proposal = GameProposal.builder()
-                .user(foundUser)
-                .gameTitle(request.gameTitle())
-                .description(request.description())
-                .status(status)
-                .build();
+        GameProposal proposal = request.toEntity(foundUser,status);
 
-        gameProposalConnector.save(proposal);
+        GameProposal save = gameProposalConnector.save(proposal);
 
-        return proposal.toDto();
+        return DtoFactory.toGameProposalDto(save);
     }
 
     public GameProposalGetManyResponse getAllProposals() {
         return new GameProposalGetManyResponse(gameProposalConnector.findAll().stream()
-                .map(GameProposal::toDto).toList());
+                .map(DtoFactory::toGameProposalDto).toList());
     }
 
     public GameProposalGetManyResponse getProposalsByStatus(ProposalStatus status) {
-        return new GameProposalGetManyResponse(gameProposalConnector.findByStatus(status).stream()
-                .map(GameProposal::toDto).toList());
+        return new GameProposalGetManyResponse(gameProposalConnector.findAllByStatus(status).stream()
+                .map(DtoFactory::toGameProposalDto).toList());
     }
 
     public GameProposalGetManyResponse getMyProposals(Long userId) {
-        return new GameProposalGetManyResponse(gameProposalConnector.findByUserId(userId).stream()
-                .map(GameProposal::toDto).toList());
+        return new GameProposalGetManyResponse(gameProposalConnector.findAllByUserId(userId).stream()
+                .map(DtoFactory::toGameProposalDto).toList());
     }
 
     @Transactional
@@ -74,9 +70,8 @@ public class GameProposalService {
         if (!foundProposal.getUser().getId().equals(userId)) {
             throw new AccessDeniedException(ErrorCode.NOT_YOUR_PROPOSAL);
         }
-        foundProposal.update(null, ProposalStatus.CANCELED);
-        gameProposalConnector.save(foundProposal);
-        return foundProposal.toDto();
+        foundProposal.updateStatus(ProposalStatus.CANCELED);
+        return DtoFactory.toGameProposalDto(foundProposal);
     }
 
     @Transactional
@@ -86,12 +81,10 @@ public class GameProposalService {
 
         proposal.update(foundAdmin, request.status());
 
-        gameProposalConnector.save(proposal);
-
         if (proposal.getStatus() == ProposalStatus.APPROVED) {
             gameService.createGame(new GameRequest(proposal));
         }
 
-        return proposal.toDto();
+        return DtoFactory.toGameProposalDto(proposal);
     }
 }

@@ -4,8 +4,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-import com.example.codePicasso.global.exception.base.AccessDeniedException;
-import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.example.codePicasso.domain.user.entity.UserStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,12 +38,13 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId) {
+    public String createToken(Long userId, UserStatus userStatus) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
+                        .claim("roles",userStatus.name())
                         .setExpiration(new Date(date.getTime() + tokenTime))
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
@@ -64,5 +64,11 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String getString(String authorization) {
+        String jwt = substringToken(authorization);
+        Claims claims = extractClaims(jwt);
+        return claims.getSubject();
     }
 }

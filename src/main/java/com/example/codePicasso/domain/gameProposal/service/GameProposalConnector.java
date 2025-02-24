@@ -8,7 +8,7 @@ import java.util.List;
 
 @Component
 public interface GameProposalConnector {
-    void save(GameProposal proposal);
+    GameProposal save(GameProposal proposal);
 
     boolean existsByGameTitle(String gameTitle);
 
@@ -16,7 +16,7 @@ public interface GameProposalConnector {
 
     List<GameProposal> findAll();
 
-    List<GameProposal> findByStatus(ProposalStatus status);
+    List<GameProposal> findAllByStatus(ProposalStatus status);
 
-    List<GameProposal> findByUserId(Long userId);
+    List<GameProposal> findAllByUserId(Long userId);
 }
