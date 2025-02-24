@@ -8,6 +8,7 @@ import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.service.CommentService;
 import com.example.codePicasso.global.common.ApiResponse;
 import com.example.codePicasso.global.common.CustomUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +32,7 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @PathVariable("postId") Long postId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody CommentRequest request
+            @Valid @RequestBody CommentRequest request
     ) {
         CommentResponse commentResponse = commentService.createComment(postId, user.getUserId(), request);
         return ApiResponse.created(commentResponse);
@@ -61,8 +62,8 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentListResponse>> findComment(
             @PathVariable("postId") Long postId
     ) {
-        List<CommentResponse> responses = commentService.findAllByPostId(postId);
-        return ApiResponse.success(CommentListResponse.builder().responses(responses).build());
+        CommentListResponse responses = commentService.findAllByPostId(postId);
+        return ApiResponse.success(responses);
     }
 
 
@@ -77,7 +78,7 @@ public class CommentController {
     public ResponseEntity<ApiResponse<CommentResponse>> updateComment(
             @PathVariable("commentId") Long commentId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody CommentRequest request
+            @Valid @RequestBody CommentRequest request
     ) {
         CommentResponse commentResponse = commentService.updateComment(commentId, user.getUserId(), request);
         return ApiResponse.success(commentResponse);
