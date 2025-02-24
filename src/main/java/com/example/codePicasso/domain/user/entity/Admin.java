@@ -3,6 +3,7 @@ package com.example.codePicasso.domain.user.entity;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,4 @@ public class Admin extends TimeStamp {
         this.password = password;
         this.userStatus = UserStatus.ADMIN;
     }
-
-
 }
