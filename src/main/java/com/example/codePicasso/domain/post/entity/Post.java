@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.post.entity;
 
 import com.example.codePicasso.domain.category.entity.Category;
+import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
@@ -10,6 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +37,10 @@ public class Post extends TimeStamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comment = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;

@@ -52,7 +52,7 @@ class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        mockUser = new User("user", "testUser","user123");  // 예시: User 객체 생성
+        mockUser = new User("user", "testUser", "user123");  // 예시: User 객체 생성
         mockAdmin = new Admin("admin", "testAdmin");
         mockGame = Game.builder()
                 .id(1L)
@@ -77,16 +77,6 @@ class PostServiceTest {
     }
 
     @Test
-    void 깡통_테스트1() {
-
-    }
-
-    @Test
-    void 깡통_테스트2() {
-
-    }
-
-    @Test
     void 게시글_생성() {
         // Given
         Long userId = 1L;
@@ -105,7 +95,7 @@ class PostServiceTest {
         verify(postConnector, times(1)).save(any());
         verify(userConnector).findById(userId);
         verify(categoriesConnector).findById(categoryId);
-        assertEquals(mockGame.getId(),response.gameId());
+        assertEquals(mockGame.getId(), response.gameId());
         assertEquals(mockCategory.getCategoryName(), response.categoryName());
         assertEquals(mockPost.getTitle(), response.title());
         assertEquals(mockPost.getDescription(), response.description());
@@ -118,11 +108,12 @@ class PostServiceTest {
 
         //when
 
-        when(postConnector.findPostByGameId(gameId)).thenReturn(posts);
-        PostListResponse postListResponse = postService.findPostByGameId(gameId);
+
+        when(postConnector.findAllByGameId(gameId)).thenReturn(posts);
+        PostListResponse postListResponse = postService.findAllByGameId(gameId);
 
         //then
-        verify(postConnector).findPostByGameId(gameId);
+        verify(postConnector).findAllByGameId(gameId);
         assertEquals(posts.get(0).getId(),postListResponse.postResponses().get(0).postId());
         assertEquals(posts.get(0).getGame().getId(),postListResponse.postResponses().get(0).gameId());
         assertEquals(posts.get(0).getTitle(),postListResponse.postResponses().get(0).title());
@@ -136,16 +127,16 @@ class PostServiceTest {
         Long categoryId = 1L;
 
         //when
-        when(postConnector.findPostByCategoryId(categoryId)).thenReturn(posts);
-        PostListResponse postListResponse = postService.findPostByCategoryId(categoryId);
+        when(postConnector.findAllByCategoryId(categoryId)).thenReturn(posts);
+        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId);
 
         //then
-        verify(postConnector).findPostByCategoryId(categoryId);
-        assertEquals(posts.get(0).getId(),postListResponse.postResponses().get(0).postId());
-        assertEquals(posts.get(0).getGame().getId(),postListResponse.postResponses().get(0).gameId());
-        assertEquals(posts.get(0).getTitle(),postListResponse.postResponses().get(0).title());
-        assertEquals(posts.get(0).getCategory().getCategoryName(),postListResponse.postResponses().get(0).categoryName());
-        assertEquals(posts.get(0).getDescription(),postListResponse.postResponses().get(0).description());
+        verify(postConnector).findAllByCategoryId(categoryId);
+        assertEquals(posts.get(0).getId(), postListResponse.postResponses().get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(), postListResponse.postResponses().get(0).gameId());
+        assertEquals(posts.get(0).getTitle(), postListResponse.postResponses().get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(), postListResponse.postResponses().get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(), postListResponse.postResponses().get(0).description());
     }
 
     @Test
@@ -155,7 +146,7 @@ class PostServiceTest {
         //when
 
         when(postConnector.findById(postId)).thenReturn(mockPost);
-        PostResponse postResponse = postService.findPostById(postId);
+        PostResponse postResponse = postService.findById(postId);
 
         //then
         verify(postConnector).findById(postId);
@@ -197,11 +188,10 @@ class PostServiceTest {
 
         //when
         when(postConnector.findByIdAndUserId(postId, userId)).thenReturn(mockPost);
-        postService.deletePost(postId,userId);
+        postService.deletePost(postId, userId);
 
         //then
         verify(postConnector).findByIdAndUserId(postId, userId);
         verify(postConnector).delete(mockPost);
-
     }
 }
