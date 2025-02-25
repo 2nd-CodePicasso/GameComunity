@@ -32,8 +32,8 @@ public class CommentService {
 
         Comment createComment = CommentRequest.toEntityForComment(post, user, request.text());
 
-        commentConnector.save(createComment);
-        return DtoFactory.toCommentDto(createComment);
+        Comment saveCategory = commentConnector.save(createComment);
+        return DtoFactory.toCommentDto(saveCategory);
     }
 
     // 대댓글 생성

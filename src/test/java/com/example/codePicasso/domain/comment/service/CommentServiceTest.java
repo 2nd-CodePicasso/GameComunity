@@ -103,6 +103,7 @@ class CommentServiceTest {
         // When
         when(postConnector.findById(postId)).thenReturn(mockPost);
         when(userConnector.findById(userId)).thenReturn(mockUser);
+        when(commentConnector.save(any(Comment.class))).thenReturn(mockComment);
 
         CommentResponse response = commentService.createComment(postId, userId, request);
 
