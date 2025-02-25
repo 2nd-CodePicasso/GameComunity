@@ -107,6 +107,7 @@ class GameProposalServiceTest {
                 .build();
     }
 
+    // ✅성공 케이스
     @Test
     void 요청_생성_성공() {
         // Given
@@ -124,24 +125,7 @@ class GameProposalServiceTest {
         assertEquals(ProposalStatus.WAITING, response.status());
     }
 
-
-    @Test
-    void 이미_존재하는_게임요청이라_바로_거절() {
-        // Given
-        CreateGameProposalRequest request = new CreateGameProposalRequest("Test Game", "This is a test game.");
-        when(userConnector.findById(1L)).thenReturn(mockUser1);
-        when(gameProposalConnector.existsByGameTitle("Test Game")).thenReturn(true);
-        when(gameProposalConnector.save(any(GameProposal.class))).thenReturn(mockChangeProposal);
-
-        // When
-        GameProposalResponse response = gameProposalService.createProposal(request, 1L);
-
-        // Then
-        assertNotNull(response);
-        assertEquals("Test Game1", response.gameTitle());
-        assertEquals(ProposalStatus.REJECTED, response.status());
-    }
-
+    // ✅성공 케이스
     @Test
     void 모든_리뷰_조회() {
         // GIVEN
@@ -162,6 +146,7 @@ class GameProposalServiceTest {
         assertEquals(mockProposal5.getGameTitle(), response.proposals().get(4).gameTitle());
     }
 
+    // ✅성공 케이스
     @Test
     void 상태별_요청_조회() {
         // GIVEN
@@ -178,6 +163,7 @@ class GameProposalServiceTest {
         assertEquals(mockProposal5.getGameTitle(), response.proposals().get(2).gameTitle());
     }
 
+    // ✅성공 케이스
     @Test
     void 특정_사용자_요청_보기() {
         // GIVEN
@@ -193,6 +179,7 @@ class GameProposalServiceTest {
         assertEquals(mockProposal2.getUser().getLoginId(), response.proposals().get(1).userLoginId());
     }
 
+    // ✅성공 케이스
     @Test
     void 내_요청_취소하기() {
         // GIVEN
@@ -208,6 +195,7 @@ class GameProposalServiceTest {
         assertEquals(ProposalStatus.CANCELED, response.status());
     }
 
+    // ✅성공 케이스
     @Test
     void 관리자_리뷰_승인() {
         // Given
@@ -228,6 +216,7 @@ class GameProposalServiceTest {
         verify(gameService, times(1)).createGame(any());
     }
 
+    // ✅성공 케이스
     @Test
     void 관리자_리뷰_거절() {
         // Given
@@ -246,6 +235,25 @@ class GameProposalServiceTest {
         assertEquals(ProposalStatus.REJECTED, response.status());
     }
 
+    // ❌실패 케이스
+    @Test
+    void 이미_존재하는_게임요청이라_바로_거절() {
+        // Given
+        CreateGameProposalRequest request = new CreateGameProposalRequest("Test Game", "This is a test game.");
+        when(userConnector.findById(1L)).thenReturn(mockUser1);
+        when(gameProposalConnector.existsByGameTitle("Test Game")).thenReturn(true);
+        when(gameProposalConnector.save(any(GameProposal.class))).thenReturn(mockChangeProposal);
+
+        // When
+        GameProposalResponse response = gameProposalService.createProposal(request, 1L);
+
+        // Then
+        assertNotNull(response);
+        assertEquals("Test Game1", response.gameTitle());
+        assertEquals(ProposalStatus.REJECTED, response.status());
+    }
+
+    // ❌실패 케이스
     @Test
     void 요청_취소_시도_근데이제_내_요청이_아닌() {
         // GIVEN
@@ -259,6 +267,7 @@ class GameProposalServiceTest {
                 gameProposalService.cancelProposal(proposalId, userId));
     }
 
+    // ❌실패 케이스
     @Test
     void 이미_리뷰했는데_취소_시도() {
         // GIVEN
@@ -270,6 +279,7 @@ class GameProposalServiceTest {
                 gameProposalService.cancelProposal(proposalId, 2L));
     }
 
+    // ❌실패 케이스
     @Test
     void 존재하지_않는_관리자로_리뷰시_예외() {
         // Given
