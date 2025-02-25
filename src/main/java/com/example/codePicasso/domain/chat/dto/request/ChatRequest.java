@@ -5,11 +5,10 @@ import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 
 public record ChatRequest(
-        String username ,
         String message
 ) {
 
-    public GlobalChat toEntityFromGlobalChat(Long userId,String emoji) {
+    public GlobalChat toEntityFromGlobalChat(Long userId, String emoji, String username) {
         return GlobalChat.builder()
                 .userId(userId)
                 .username(username)
@@ -17,7 +16,7 @@ public record ChatRequest(
                 .build();
     }
 
-    public Chat toEntityFromChat(Long userId, ChatRoom chatRoom, String emoji) {
+    public Chat toEntityFromChat(Long userId, ChatRoom chatRoom, String emoji, String username) {
         return Chat.builder()
                 .userId(userId)
                 .username(username)
