@@ -30,7 +30,7 @@ public class CommentService {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
 
-        Comment createComment = Comment.toEntityForComment(post, user, request.text());
+        Comment createComment = CommentRequest.toEntityForComment(post, user, request.text());
 
         commentConnector.save(createComment);
         return DtoFactory.toCommentDto(createComment);
@@ -43,7 +43,7 @@ public class CommentService {
         User user = userConnector.findById(userId);
         Comment parentComment = commentConnector.findById(parentId);
 
-        Comment createReply = Comment.toEntityForReply(post, user, parentComment, request.text());
+        Comment createReply = CommentRequest.toEntityForReply(post, user, parentComment, request.text());
         parentComment.addReplies(createReply);
 
         commentConnector.save(createReply);
