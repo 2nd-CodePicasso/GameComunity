@@ -60,6 +60,8 @@ public class CommentService {
     // 댓글, 대댓글 전체 조회
     public CommentListResponse findAllByPostId(Long postId) {
         List<CommentResponse> commentResponses = commentConnector.findAllByPostId(postId).stream()
+                // 부모댓글 필터링 (자식 댓글 중복 조회 방지)
+                .filter(comment -> comment.getParent() == null)
                 .map(DtoFactory::toCommentDto)
                 .toList();
         return CommentListResponse.builder()
