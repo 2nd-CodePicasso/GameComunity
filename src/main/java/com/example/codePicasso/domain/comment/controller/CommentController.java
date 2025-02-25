@@ -46,7 +46,7 @@ public class CommentController {
             @PathVariable("postId") Long postId,
             @PathVariable("parentId") Long parentId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody CommentRequest request
+            @Valid @RequestBody CommentRequest request
     ) {
         ReplyResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request);
         return ApiResponse.created(replyResponse);

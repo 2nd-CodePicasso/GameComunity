@@ -17,14 +17,14 @@ public class ExchangeRankingController {
     private final ExchangeRankingService exchangeRankingService;
     private boolean isBuy;
 
-    @GetMapping
+    @GetMapping("/buy")
     public ResponseEntity<Set<String>> getBuyTopRanking() {
         isBuy = true;
         Set<String> topRanking = exchangeRankingService.getTopRanking(isBuy);
         return ResponseEntity.ok(topRanking);
     }
 
-    @GetMapping
+    @GetMapping("/sell")
     public ResponseEntity<Set<String>> getSellTopRanking() {
         isBuy = false;
         Set<String> topRanking = exchangeRankingService.getTopRanking(isBuy);
