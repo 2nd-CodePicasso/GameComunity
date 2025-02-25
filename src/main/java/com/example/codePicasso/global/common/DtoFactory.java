@@ -34,6 +34,7 @@ public class DtoFactory {
 
     public static CategoryResponse toCategoryDto(Category category) {
         return CategoryResponse.builder()
+                .gameId(category.getGame().getId())
                 .categoryId(category.getId())
                 .categoryName(category.getCategoryName())
                 .build();
