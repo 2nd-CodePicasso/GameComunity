@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoom {
 
@@ -27,22 +25,17 @@ public class ChatRoom {
 
     private boolean isSecurity;
 
-    private String password = "";
+    private String password;
 
+    @Builder
+    public ChatRoom(User user, String name, boolean isSecurity, String password) {
+        this.user = user;
+        this.name = name;
+        this.isSecurity = isSecurity;
+        this.password = password.isEmpty()? "" : password;
+    }
 
     public void updateName(String name) {
         this.name = name;
-    }
-
-    public void updateUser(User user) {
-        this.user = user;
-    }
-
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateSecurity(boolean security) {
-        this.isSecurity = security;
     }
 }

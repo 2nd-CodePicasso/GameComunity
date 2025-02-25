@@ -30,7 +30,7 @@ public class CategoryService {
 
     public CategoryListResponse getAllCategory(Long gameId) {
         List<CategoryResponse> categoryResponses = categoryConnector.findCategoryByGameId(gameId).stream()
-                .map(CategoryResponse::toDto).toList();
+                .map(DtoFactory::toCategoryDto).toList();
         return CategoryListResponse.builder()
                 .categoryResponses(categoryResponses)
                 .build();
@@ -42,7 +42,7 @@ public class CategoryService {
 
         foundCategory.updateCategory(request.categoryName());
 
-        return CategoryResponse.toDto(foundCategory);
+        return DtoFactory.toCategoryDto(foundCategory);
     }
 
     @Transactional

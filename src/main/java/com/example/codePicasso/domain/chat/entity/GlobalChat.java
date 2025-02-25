@@ -36,13 +36,4 @@ public class GlobalChat {
         this.username = username;
         this.content = content;
     }
-
-    public GlobalChatResponse toDto() {
-        return GlobalChatResponse.builder()
-                .chatsId(id)
-                .username(username)
-                .message(content)
-                .createdAt(createdAt)
-                .build();
-    }
 }

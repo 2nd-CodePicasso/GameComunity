@@ -2,6 +2,7 @@ package com.example.codePicasso.domain.comment.service;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
+import com.example.codePicasso.domain.comment.dto.response.CommentListResponse;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
@@ -149,19 +150,23 @@ class CommentServiceTest {
         // Given
         Long postId = 1L;
 
-        mockComment.getReplies().add(mockReply);
+        mockComment.getReplies().clear();
+        mockComment.addReplies(mockReply);
+
+        comments.clear();
         comments.add(mockComment);
 
         // When
         when(commentConnector.findAllByPostId(postId)).thenReturn(comments);
-        List<CommentResponse> commentResponses = commentService.findAllByPostId(postId);
+        CommentListResponse commentListResponse = commentService.findAllByPostId(postId);
 
         // Then
         verify(commentConnector).findAllByPostId(postId);
 
-        assertFalse(commentResponses.isEmpty(), "Not found comment List");
+        List<CommentResponse> responseList = commentListResponse.commentResponses();
+        assertFalse(responseList.isEmpty(), "Not found comment List");
 
-        CommentResponse getComment = commentResponses.get(0);
+        CommentResponse getComment = responseList.get(0);
         assertEquals(comments.get(0).getId(), getComment.commentId());
         assertEquals(comments.get(0).getPost().getId(), getComment.postId());
         assertEquals(comments.get(0).getUser().getId(), getComment.userId());

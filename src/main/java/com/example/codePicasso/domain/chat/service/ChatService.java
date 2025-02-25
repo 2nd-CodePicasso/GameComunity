@@ -44,7 +44,7 @@ public class ChatService {
     public GlobalChatListResponse getChatsHistory() {
         List<GlobalChat> chats = globalChatConnector.findAll();
         return GlobalChatListResponse.builder()
-                .chatsResponseList(chats.stream().map(GlobalChat::toDto).toList())
+                .chatsResponseList(chats.stream().map(DtoFactory::toGlobalChatDto).toList())
                 .build();
     }
 
@@ -68,6 +68,7 @@ public class ChatService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public ChatListResponse getSecurityChatsHistory(SecurityChatRequest securityChatRequest) {
         ChatRoom chatRoom = roomConnector.findById(securityChatRequest.roomId());
         if (!passwordEncoder.matches(securityChatRequest.password(), chatRoom.getPassword())) {
