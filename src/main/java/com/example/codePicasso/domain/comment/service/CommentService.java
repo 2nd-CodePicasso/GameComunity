@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.comment.service;
 
 import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
+import com.example.codePicasso.domain.comment.dto.response.CommentListResponse;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
@@ -8,11 +9,11 @@ import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
+import com.example.codePicasso.global.common.DtoFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.annotation.Retention;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class CommentService {
         Comment createComment = Comment.toEntityForComment(post, user, request.text());
 
         commentConnector.save(createComment);
-        return CommentResponse.toDto(createComment);
+        return DtoFactory.toCommentDto(createComment);
     }
 
     // 대댓글 생성
@@ -46,13 +47,16 @@ public class CommentService {
         parentComment.addReplies(createReply);
 
         commentConnector.save(createReply);
-        return ReplyResponse.toDto(createReply);
+        return DtoFactory.toReplyDto(createReply);
     }
 
     // 댓글, 대댓글 전체 조회
-    public List<CommentResponse> findAllByPostId(Long postId) {
-        return commentConnector.findAllByPostId(postId).stream()
-                .map(CommentResponse::toDto).toList();
+    public CommentListResponse findAllByPostId(Long postId) {
+        List<CommentResponse> commentResponses = commentConnector.findAllByPostId(postId).stream()
+                .map(DtoFactory::toCommentDto).toList();
+        return CommentListResponse.builder()
+                .commentresponses(commentResponses)
+                .build();
     }
 
     // 댓글, 대댓글 수정
@@ -61,7 +65,7 @@ public class CommentService {
         Comment foundComment = commentConnector.findByIdAndUserId(commentId, userId);
 
         foundComment.updateComment(request.text());
-        return CommentResponse.toDto(foundComment);
+        return DtoFactory.toCommentDto(foundComment);
     }
 
     // 댓글 삭제

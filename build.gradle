@@ -37,6 +37,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework:spring-messaging'
 
+    //이모티콘
+    implementation 'com.vdurmont:emoji-java:5.1.1'
+
     //jwt
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
@@ -46,12 +49,17 @@ dependencies {
 
     implementation 'at.favre.lib:bcrypt:0.10.2'
 
+    //Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    //Redis - Redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.21.1'
+
     //타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     //스프링시큐리티
-   implementation 'org.springframework.boot:spring-boot-starter-security'
-
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {

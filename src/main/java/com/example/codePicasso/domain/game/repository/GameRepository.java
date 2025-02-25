@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    List<Game> findAllByDeleted(boolean isDeleted);
+    List<Game> findAllByIsDeleted(boolean isDeleted);
 }

@@ -21,7 +21,7 @@ public class GameConnectorImpl implements GameConnector {
 
     @Override
     public List<Game> findAllForUser() {
-        return gameRepository.findAllByDeleted(false);
+        return gameRepository.findAllByIsDeleted(false);
     }
 
     @Override

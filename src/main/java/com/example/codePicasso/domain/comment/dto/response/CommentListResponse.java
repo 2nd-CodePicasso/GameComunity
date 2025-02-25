@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record CommentListResponse(
-        List<CommentResponse> responses
+        List<CommentResponse> commentresponses
 ) {
 }

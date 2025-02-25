@@ -34,14 +34,20 @@ public class Exchange extends TimeStamp {
     private int price;
     private String description;
     private int quantity;
+    private String contact;
 
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
+
+    @Enumerated(EnumType.STRING)
+    private StatusType statusType;
 
     public void update(String title, int price) {
         this.title = title;
         this.price = price;
     }
 
-
+    public void changeStatus(StatusType statusType){
+        this.statusType = statusType;
+    }
 }

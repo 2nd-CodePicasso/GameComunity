@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.comment.dto.response;
 
-import com.example.codePicasso.domain.comment.entity.Comment;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -16,16 +15,4 @@ public record ReplyResponse(
         LocalDateTime createdAt,
         LocalDateTime updatedAp
 ) {
-    public static ReplyResponse toDto(Comment comment) {
-        return ReplyResponse.builder().
-                commentId(comment.getId()).
-                postId(comment.getPost().getId()).
-                userId(comment.getUser().getId()).
-                parentId(comment.getParent().getId()).
-                nickname(comment.getUser().getNickname()).
-                text(comment.getText()).
-                createdAt(comment.getCreatedAt()).
-                updatedAp(comment.getUpdatedAt()).
-                build();
-    }
 }

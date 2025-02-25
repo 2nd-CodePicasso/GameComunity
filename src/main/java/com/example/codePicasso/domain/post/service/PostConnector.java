@@ -20,9 +20,5 @@ public interface PostConnector {
 
     Post findByIdAndUserId(Long postId, Long userId);
 
-    Post findById(Long postId);
-
-    Post findByIdAndUserId(Long postId, Long userId);
-
     void delete(Post deletePost);
 }
