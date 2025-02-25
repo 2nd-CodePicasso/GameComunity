@@ -33,9 +33,9 @@ public class ChatService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId) {
+    public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId, String username) {
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
-        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId,emoji);
+        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId,emoji,username);
         GlobalChat chats = globalChatConnector.save(globalChat);
         return DtoFactory.toGlobalChatDto(chats);
     }
@@ -49,10 +49,10 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatResponse addForRoomToMessage(ChatRequest chatsRequest, Long roomId, Long userId) {
+    public ChatResponse addForRoomToMessage(ChatRequest chatsRequest, Long roomId, Long userId, String username) {
         ChatRoom chatRoom = roomConnector.findById(roomId);
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
-        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji);
+        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji,username);
         Chat saveChat = chatConnector.save(chat);
         return DtoFactory.toChatDto(saveChat);
     }
