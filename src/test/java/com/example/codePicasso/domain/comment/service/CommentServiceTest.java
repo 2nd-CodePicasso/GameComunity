@@ -4,7 +4,6 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
 import com.example.codePicasso.domain.comment.dto.response.CommentListResponse;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
-import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.post.entity.Post;
@@ -130,8 +129,9 @@ class CommentServiceTest {
         when(postConnector.findById(postId)).thenReturn(mockPost);
         when(userConnector.findById(userId)).thenReturn(mockUser);
         when(commentConnector.findById(parentId)).thenReturn(mockComment);
+        when(commentConnector.save(any(Comment.class))).thenReturn(mockReply);
 
-        ReplyResponse response = commentService.createReply(postId, parentId, userId, request);
+        CommentResponse response = commentService.createReply(postId, parentId, userId, request);
 
         // Then
         verify(commentConnector, times(1)).save(any());
@@ -168,19 +168,23 @@ class CommentServiceTest {
         assertFalse(responseList.isEmpty(), "Not found comment List");
 
         CommentResponse getComment = responseList.get(0);
-        assertEquals(comments.get(0).getId(), getComment.commentId());
-        assertEquals(comments.get(0).getPost().getId(), getComment.postId());
-        assertEquals(comments.get(0).getUser().getId(), getComment.userId());
-        assertEquals(comments.get(0).getUser().getNickname(), getComment.nickname());
-        assertEquals(comments.get(0).getText(), getComment.text());
+        assertEquals(mockComment.getId(), getComment.commentId());
+        assertEquals(mockComment.getPost().getId(), getComment.postId());
+        assertEquals(mockComment.getUser().getId(), getComment.userId());
+        assertEquals(mockComment.getUser().getNickname(), getComment.nickname());
+        assertEquals(mockComment.getText(), getComment.text());
+        assertNull(getComment.parentId());
 
-        assertFalse(getComment.replyListResponse().responses().isEmpty(), "The list is empty");
-        ReplyResponse getReply = getComment.replyListResponse().responses().get(0);
+        List<CommentResponse> replies = getComment.replies();
+        assertFalse(replies.isEmpty(), "The replies list is empty");
 
+        CommentResponse getReply = replies.get(0);
         assertEquals(mockReply.getId(), getReply.commentId());
         assertEquals(mockReply.getPost().getId(), getReply.postId());
         assertEquals(mockReply.getUser().getId(), getReply.userId());
+        assertEquals(mockReply.getUser().getNickname(), getReply.nickname());
         assertEquals(mockReply.getText(), getReply.text());
+        assertEquals(mockComment.getId(), getReply.parentId());
     }
 
     @Test
