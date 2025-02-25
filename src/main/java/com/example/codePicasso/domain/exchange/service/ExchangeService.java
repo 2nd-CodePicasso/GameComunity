@@ -2,7 +2,7 @@ package com.example.codePicasso.domain.exchange.service;
 
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
-import com.example.codePicasso.domain.exchange.dto.request.PutExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
@@ -16,6 +16,7 @@ import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.DataAccessException;
+import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -76,14 +77,14 @@ public class ExchangeService {
 
     // 거래소 아이템 조회_특정 아이템
     public ExchangeResponse getExchangeById(Long exchangesId) {
-        Exchange exchange = exchangeConnector.findById(exchangesId);
+        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangesId);
         return DtoFactory.toExchangeDto(exchange);
     }
 
     // 거래소 아이템 수정
     @Transactional
     public ExchangeResponse updateExchange(Long exchangeId, ExchangeRequest request, Long userId) {
-        Exchange exchange = exchangeConnector.findById(exchangeId);
+        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangeId);
 
         if (!exchange.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
@@ -94,32 +95,33 @@ public class ExchangeService {
         return DtoFactory.toExchangeDto(exchange);
     }
 
-    // 거래소 아이템 삭제
+    // 거래소 아이템 삭제 (soft delete)
     @Transactional
     public void deleteExchange(Long exchangeId, Long userId) {
         Exchange exchange = exchangeConnector.findById(exchangeId);
+
+        if (exchange.isCompleted()) {
+            throw new InvalidRequestException(ErrorCode.ALREADY_IN_COMPLETED);
+        }
 
         if (!exchange.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
-        exchangeConnector.deleteById(exchangeId);
+        exchange.completed();
     }
 
     // 판매하기 & 구매하기
     @Transactional
     public MyExchangeResponse doExchange(Long exchangeId, Long userId, MyExchangeRequest request) {
-        Exchange exchange = exchangeConnector.findById(exchangeId);
+        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangeId);
         User user = userConnector.findById(userId);
 
-        if (exchange.getStatusType().equals(StatusType.PROGRESS)) {
-            throw new InvalidRequestException(ErrorCode.ALREADY_IN_PROGRESS);
+        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
+            throw new DuplicateException(ErrorCode.DUPLICATE);
         }
 
-        exchange.changeStatus(StatusType.PROGRESS);
-        Exchange savedExchange = exchangeConnector.save(exchange);
-
-        MyExchange myExchange = request.toEntity(savedExchange, user);
+        MyExchange myExchange = request.toEntity(exchange, user);
         MyExchange savedMyExchange = myExchangeConnector.save(myExchange);
 
         return DtoFactory.toMyExchangeDto(savedMyExchange);
@@ -143,22 +145,21 @@ public class ExchangeService {
 
     //거래 상태 변경 및 처리 로직.
     @Transactional
-    public void putExchange(Long myExchangeId, Long userId, PutExchangeRequest putExchangeRequest) {
+    public void putExchange(Long myExchangeId, Long userId, PutMyExchangeRequest putMyExchangeRequest) {
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
 
         if (!myExchange.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
-        // 거래가 이미 완료된 경우 중복 요청 방지
-        if (myExchange.getExchange().getStatusType() == StatusType.COMPLETED) {
+        if (myExchange.getStatusType() == StatusType.COMPLETED) {
             throw new InvalidRequestException(ErrorCode.ALREADY_IN_COMPLETED);
         }
 
-        myExchange.getExchange().changeStatus(putExchangeRequest.statusType());
+        myExchange.changeStatus(putMyExchangeRequest.statusType());
         myExchangeConnector.save(myExchange);
 
-        if (putExchangeRequest.statusType() == StatusType.COMPLETED) {
+        if (putMyExchangeRequest.statusType() == StatusType.COMPLETED) {
             completeExchange(myExchange.getExchange().getId());
         }
     }
@@ -171,7 +172,7 @@ public class ExchangeService {
             throw new InvalidRequestException(ErrorCode.ALREADY_IN_PROGRESS);
         }
 
-        Exchange exchange = exchangeConnector.findById(exchangeId);
+        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangeId);
 
         //Redis 랭킹 처리 (buy, sell)
         boolean isBuy = exchange.getTradeType() == TradeType.BUY;

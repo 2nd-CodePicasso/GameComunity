@@ -130,7 +130,7 @@ public class DtoFactory {
                 .contact(exchange.getContact())
                 .quantity(exchange.getQuantity())
                 .tradeType(exchange.getTradeType())
-                .statustype(exchange.getStatusType())
+                .isCompleted(exchange.isCompleted())
                 .build();
     }
 
@@ -139,6 +139,7 @@ public class DtoFactory {
                 .exchange(myExchange.getExchange())
                 .user(myExchange.getUser())
                 .contact(myExchange.getContact())
+                .statustype(myExchange.getStatusType())
                 .build();
     }
 

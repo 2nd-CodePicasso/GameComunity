@@ -36,4 +36,10 @@ public class MyExchangeConnectorImpl implements MyExchangeConnector {
     public MyExchange findById(Long myExchangeId) {
         return myExchangeRepository.findById(myExchangeId).orElseThrow(() -> new NotFoundException(ErrorCode.MYEXCHANGE_NOT_FOUND));
     }
+
+    @Override
+    public boolean existByExchangeIdAndUserId(Long exchangeId, Long userId) {
+        return myExchangeRepository.existsByExchangeIdAndUserId(exchangeId, userId);
+    }
+
 }

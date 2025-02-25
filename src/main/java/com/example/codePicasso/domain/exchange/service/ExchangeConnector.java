@@ -15,9 +15,7 @@ public interface ExchangeConnector {
 
     Page<Exchange> findByGameIdAndTradeType(Long gameId, TradeType tradeType, Pageable pageable);
 
-    Exchange findById(Long id);
+    Exchange findByIdAndCompleted(Long id);
 
-    void deleteById(Long id);
-
-//    List<Exchange> findAll();
+    Exchange findById(Long exchangeId);
 }

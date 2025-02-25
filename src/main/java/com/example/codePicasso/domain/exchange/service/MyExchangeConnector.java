@@ -18,4 +18,6 @@ public interface MyExchangeConnector {
     Page<MyExchange> findByUserIdAndTradeType(Long userId, TradeType tradeType, Pageable pageable);
 
     MyExchange findById(Long myExchangeId);
+
+    boolean existByExchangeIdAndUserId(Long exchangeId, Long userId);
 }

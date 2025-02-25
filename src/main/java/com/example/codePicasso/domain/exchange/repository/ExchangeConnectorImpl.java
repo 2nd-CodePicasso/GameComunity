@@ -24,26 +24,21 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
     @Override
     @Transactional(readOnly = true)
     public Page<Exchange> findByTradeType(TradeType tradeType, Pageable pageable) {
-        return exchangeRepository.findAllByTradeType(tradeType, pageable);
+        return exchangeRepository.findAllByTradeTypeAndCompleted(tradeType, false, pageable);
     }
 
     @Override
     public Page<Exchange> findByGameIdAndTradeType(Long gameId, TradeType tradeType, Pageable pageable) {
-        return exchangeRepository.findByGameIdAndTradeType(gameId, tradeType, pageable);
+        return exchangeRepository.findByGameIdAndTradeTypeAndCompleted(gameId, tradeType, false, pageable);
     }
 
     @Override
-    public Exchange findById(Long id) {
-        return exchangeRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND));
+    public Exchange findByIdAndCompleted(Long id) {
+        return exchangeRepository.findByIdAndCompleted(id, false);
     }
 
     @Override
-    public void deleteById(Long id) {
-        exchangeRepository.deleteById(id);
+    public Exchange findById(Long exchangeId) {
+        return exchangeRepository.findById(exchangeId).orElseThrow(() -> new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND));
     }
-
-//    @Override
-//    public List<Exchange> findAll() {
-//        return exchangeRepository.findAll();
-//    }
 }

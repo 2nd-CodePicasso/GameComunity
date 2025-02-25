@@ -2,7 +2,7 @@ package com.example.codePicasso.domain.exchange.controller;
 
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
-import com.example.codePicasso.domain.exchange.dto.request.PutExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
@@ -151,9 +151,9 @@ public class ExchangeController {
     public ResponseEntity<ApiResponse<Void>> cancelBuyExchange(
             @PathVariable Long myExchangeId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody PutExchangeRequest putExchangeRequest
+            @RequestBody PutMyExchangeRequest putMyExchangeRequest
     ) {
-        exchangeService.putExchange(myExchangeId, user.getUserId(), putExchangeRequest);
+        exchangeService.putExchange(myExchangeId, user.getUserId(), putMyExchangeRequest);
         return ApiResponse.noContent();
     }
 
@@ -162,9 +162,9 @@ public class ExchangeController {
     public ResponseEntity<ApiResponse<Void>> approveSellExchange(
             @PathVariable Long myExchangeId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody PutExchangeRequest putExchangeRequest
+            @RequestBody PutMyExchangeRequest putMyExchangeRequest
     ) {
-        exchangeService.putExchange(myExchangeId, user.getUserId(), putExchangeRequest);
+        exchangeService.putExchange(myExchangeId, user.getUserId(), putMyExchangeRequest);
         return ApiResponse.noContent();
     }
 }
