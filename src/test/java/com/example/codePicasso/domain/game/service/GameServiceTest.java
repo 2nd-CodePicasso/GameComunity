@@ -103,6 +103,7 @@ class GameServiceTest {
         verify(gameConnector, times(1)).save(any(Game.class));
     }
 
+    // ✅성공 케이스
     @Test
     void 유저가_모든_게임_조회() {
         // GIVEN
@@ -117,6 +118,7 @@ class GameServiceTest {
         assertEquals(mockGame3.getGameTitle(), response.responses().get(1).gameTitle());
     }
 
+    // ✅성공 케이스
     @Test
     void 관리자가_모든_게임_조회() {
         // GIVEN
@@ -132,6 +134,7 @@ class GameServiceTest {
         assertEquals(mockGame3.getGameTitle(), response.responses().get(2).gameTitle());
     }
 
+    // ✅성공 케이스
     @Test
     void 유저가_활성화된_게임_단건_조회() {
         // GIVEN
@@ -145,6 +148,7 @@ class GameServiceTest {
         assertEquals(mockGame1.getGameTitle(), response.gameTitle());
     }
 
+    // ✅성공 케이스
     @Test
     void 관리자가_삭제된_게임_단건_조회() {
         // GIVEN
@@ -155,9 +159,10 @@ class GameServiceTest {
         GameResponse response = gameService.getGameIgnoreStatus(gameId);
 
         // THEN
-        assertEquals(mockGame1.getGameTitle(), response.gameTitle());
+        assertEquals(mockGame2.getGameTitle(), response.gameTitle());
     }
 
+    // ✅성공 케이스
     @Test
     void 게임_설명_업데이트() {
         // Given
@@ -174,6 +179,7 @@ class GameServiceTest {
         assertEquals(newDescription, response.gameDescription());
     }
 
+    // ✅성공 케이스
     @Test
     void 게임_삭제() {
         // Given
@@ -187,6 +193,7 @@ class GameServiceTest {
         assertTrue(mockGame1.isDeleted());
     }
 
+    // ✅성공 케이스
     @Test
     void 게임_복구() {
         // Given
@@ -201,6 +208,7 @@ class GameServiceTest {
         assertFalse(mockGame1.isDeleted());
     }
 
+    // ✅성공 케이스
     @Test
     void 게임_하드_딜리트_성공() {
         // GIVEN
@@ -228,6 +236,7 @@ class GameServiceTest {
         assertEquals(ErrorCode.GAME_NOT_FOUND, exception.getErrorCode());
     }
 
+    // ❌실패 케이스
     @Test
     void 삭제된_게임_삭제_시도() {
         // Given
@@ -241,6 +250,7 @@ class GameServiceTest {
         assertEquals(ErrorCode.GAME_ALREADY_DELETED, exception.getErrorCode());
     }
 
+    // ❌실패 케이스
     @Test
     void 활성_상태인_게임_복구_시도() {
         // Given
@@ -254,6 +264,7 @@ class GameServiceTest {
         verify(gameConnector, times(0)).save(mockGame1);
     }
 
+    // ❌실패 케이스
     @Test
     void 존재하지_않는_게임_하드_딜리트_실패() {
         // GIVEN
