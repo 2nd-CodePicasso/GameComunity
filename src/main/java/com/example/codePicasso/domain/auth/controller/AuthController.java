@@ -31,7 +31,7 @@ public class AuthController {
         return ApiResponse.created(userResponse);
     }
 
-    @PostMapping("/management")
+    @PostMapping("/admin")
     public ResponseEntity<ApiResponse<AdminResponse>> addAdmin(@RequestBody AdminRequest adminRequest) {
         AdminResponse adminResponse = adminService.addAdmin(adminRequest);
         return ApiResponse.created(adminResponse);
@@ -43,7 +43,7 @@ public class AuthController {
         return ApiResponse.success(jwtTokenResponse);
     }
 
-    @PostMapping("/management/login")
+    @PostMapping("/admin/login")
     public ResponseEntity<ApiResponse<JwtTokenResponse>> loginAdmin(@RequestBody SigninRequest signinRequest) {
         JwtTokenResponse jwtTokenResponse = authService.loginAdmin(signinRequest);
         return ApiResponse.success(jwtTokenResponse);
