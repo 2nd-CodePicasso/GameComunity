@@ -11,8 +11,8 @@ public record CommentResponse(
         Long userId,
         String nickname,
         String text,
-        ReplyListResponse replyListResponse,
         LocalDateTime createdAt,
-        LocalDateTime updatedAp
+        LocalDateTime updatedAp,
+        ReplyListResponse replyListResponse
 ) {
 }
