@@ -56,7 +56,7 @@ public class GameProposalService {
                 .map(DtoFactory::toGameProposalDto).toList());
     }
 
-    public GameProposalGetManyResponse getMyProposals(Long userId) {
+    public GameProposalGetManyResponse getProposalsByUserId(Long userId) {
         return new GameProposalGetManyResponse(gameProposalConnector.findAllByUserId(userId).stream()
                 .map(DtoFactory::toGameProposalDto).toList());
     }
