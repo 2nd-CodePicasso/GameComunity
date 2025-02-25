@@ -71,6 +71,7 @@ class PostServiceTest {
                 .category(mockCategory)
                 .title("test Title")
                 .description("This is a test post.")
+                .viewCount(0)
                 .build();
         posts.add(mockPost);
         postRequest = new PostRequest(1L, "testTitle", "This is a test post.");
