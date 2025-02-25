@@ -10,7 +10,6 @@ import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.user.entity.User;
-import com.example.codePicasso.global.config.PasswordEncoder;
 import com.vdurmont.emoji.EmojiParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,6 +43,7 @@ public class ChatServiceTest {
     private ChatRequest chatRequest;
     private Long userId = 1L;
     private Long roomId = 1L;
+    String username = "한씨";
     private User user;
     private GlobalChat globalChat;
     private Chat chat;
@@ -56,10 +56,10 @@ public class ChatServiceTest {
     void 설정() {
         user = new User("user", "testUser", "user123");  // 예시: User 객체 생성
         roomRequest = new RoomRequest("집에가고싶은방",true,"12345");
-        chatRequest = new ChatRequest("나야", "집에가고싶다");
+        chatRequest = new ChatRequest("집에가고싶다");
         chatRoom = roomRequest.toEntity(user, "12345");
-        chat = chatRequest.toEntityFromChat(userId, chatRoom, EmojiParser.parseToUnicode(":smile:"));
-        globalChat = chatRequest.toEntityFromGlobalChat(userId, EmojiParser.parseToUnicode(":smile:"));
+        chat = chatRequest.toEntityFromChat(userId, chatRoom, EmojiParser.parseToUnicode(":smile:"),username);
+        globalChat = chatRequest.toEntityFromGlobalChat(userId, EmojiParser.parseToUnicode(":smile:"), username);
 
         globalChats.add(globalChat);
         chats.add(chat);
@@ -69,9 +69,10 @@ public class ChatServiceTest {
     void 글라발_채팅_생성() {
         //given설정에서 처리함
 
+
         //when
         when(globalChatConnector.save(any(GlobalChat.class))).thenReturn(globalChat);
-        GlobalChatResponse globalChatResponse = chatService.addForAllRoomToMessage(chatRequest, userId);
+        GlobalChatResponse globalChatResponse = chatService.addForAllRoomToMessage(chatRequest, userId, username);
 
         //then
         verify(globalChatConnector).save(any(GlobalChat.class));
@@ -98,7 +99,7 @@ public class ChatServiceTest {
         //when
         when(roomConnector.findById(roomId)).thenReturn(chatRoom);
         when(chatConnector.save(any(Chat.class))).thenReturn(chat);
-        ChatResponse chatResponse = chatService.addForRoomToMessage(chatRequest, roomId, userId);
+        ChatResponse chatResponse = chatService.addForRoomToMessage(chatRequest, roomId, userId,username);
 
         //then
         verify(roomConnector).findById(roomId);

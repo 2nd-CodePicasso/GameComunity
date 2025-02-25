@@ -30,9 +30,11 @@ public class MessageInterceptor implements ChannelInterceptor {
 
                 Claims claims = jwtUtil.extractClaims(token);
 
-                String username = claims.getSubject();
+                String userId = claims.getSubject();
+                String username = claims.get("username", String.class);
 
-                accessor.setNativeHeader("userId",username);
+                accessor.setNativeHeader("userId",userId);
+                accessor.setNativeHeader("username",username);
                 log.info("WebSocket 메시지 인증 성공: {}", username);
 
 
