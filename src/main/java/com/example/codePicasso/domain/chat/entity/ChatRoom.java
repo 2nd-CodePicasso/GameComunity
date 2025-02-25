@@ -32,10 +32,22 @@ public class ChatRoom {
         this.user = user;
         this.name = name;
         this.isSecurity = isSecurity;
-        this.password = password.isEmpty()? "" : password;
+        this.password = password == null ? "" : password;
     }
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void updateSecurity(boolean security) {
+        this.isSecurity = security;
     }
 }
