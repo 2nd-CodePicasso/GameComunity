@@ -60,6 +60,9 @@ dependencies {
 
     //스프링시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    //AWS S3
+    implementation 'software.amazon.awssdk:s3:2.20.20'
 }
 
 tasks.named('test') {

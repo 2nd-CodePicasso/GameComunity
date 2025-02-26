@@ -30,7 +30,7 @@
             return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
         }
 
-        @MessageMapping("/send/room")
+        @MessageMapping("/send/room/{roomId}")
         @SendTo("/topic/{roomId}}")
         public ChatResponse testMessage(
                 @Payload ChatRequest chatsRequest,
