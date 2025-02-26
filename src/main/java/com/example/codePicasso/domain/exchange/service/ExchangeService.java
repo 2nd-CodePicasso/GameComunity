@@ -13,6 +13,7 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
+import com.example.codePicasso.global.common.CustomUser;
 import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.DataAccessException;
 import com.example.codePicasso.global.exception.base.DuplicateException;
@@ -41,6 +42,8 @@ public class ExchangeService {
     private final ExchangeRankingService exchangeRankingService;
     private final RedisLockService redisLockService;
 
+    /// --- ↓ Exchange ---
+
     // 거래소 아이템 생성
     @Transactional
     public ExchangeResponse createExchange(ExchangeRequest request, TradeType tradeType, Long userId) {
@@ -53,7 +56,7 @@ public class ExchangeService {
         return DtoFactory.toExchangeDto(savedExchange);
     }
 
-    // 거래소 아이템 조회_구매 (페이지네이션 적용)
+/*    // 거래소 아이템 조회_구매 (페이지네이션 적용)
     public Page<ExchangeResponse> getBuyExchanges(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
@@ -71,6 +74,17 @@ public class ExchangeService {
         Page<Exchange> exchanges = (gameId == null)
                 ? exchangeConnector.findByTradeType(TradeType.SELL, pageable)
                 : exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.SELL, pageable);
+
+        return exchanges.map(DtoFactory::toExchangeDto);
+    }*/
+
+    // 거래소 아이템 조회 (페이지네이션 적용)
+    public Page<ExchangeResponse> getExchanges(TradeType tradeType, Long gameId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Exchange> exchanges = (gameId == null)
+                ? exchangeConnector.findByTradeType(tradeType, pageable)
+                : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
 
         return exchanges.map(DtoFactory::toExchangeDto);
     }
@@ -111,6 +125,10 @@ public class ExchangeService {
         exchange.completed();
     }
 
+    /// --- ↑ Exchange ---
+
+    ///  --- ↓ MyExchange ---
+
     // 판매하기 & 구매하기
     @Transactional
     public MyExchangeResponse doExchange(Long exchangeId, Long userId, MyExchangeRequest request) {
@@ -127,7 +145,7 @@ public class ExchangeService {
         return DtoFactory.toMyExchangeDto(savedMyExchange);
     }
 
-    //내 구매하기 목록
+/*    //내 구매하기 목록
     public Page<MyExchangeResponse> getMyBuyExchanges(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable);
@@ -141,11 +159,24 @@ public class ExchangeService {
         Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable);
 
         return myExchanges.map(DtoFactory::toMyExchangeDto);
+    }*/
+
+    // 내 거래 목록
+    public Page<MyExchangeResponse> getAllMyExchange(TradeType tradeType, Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, tradeType, pageable);
+
+        return myExchanges.map(DtoFactory::toMyExchangeDto);
+    }
+
+    public MyExchangeResponse getMyExchangeById(Long myExchangeId, CustomUser user) {
+        return null;
     }
 
     //거래 상태 변경 및 처리 로직.
     @Transactional
-    public void putExchange(Long myExchangeId, Long userId, PutMyExchangeRequest putMyExchangeRequest) {
+    public void decisionMyExchange(Long myExchangeId, Long userId, PutMyExchangeRequest putMyExchangeRequest) {
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
 
         if (!myExchange.getUser().getId().equals(userId)) {
@@ -164,6 +195,7 @@ public class ExchangeService {
         }
     }
 
+    /// --- ↑ MyExchange ---
 
     @Transactional
     public void completeExchange(Long exchangeId) {
@@ -188,7 +220,8 @@ public class ExchangeService {
         }
     }
 
-    // --- 후기글 ---
+    /// --- ↓ Review ---
+
     public ReviewResponse createReview(Long exchangeId, Long userId, ReviewRequest request) {
         MyExchange myExchange = myExchangeConnector.findByExchangeIdAndUserId(exchangeId, userId);
 
@@ -249,4 +282,6 @@ public class ExchangeService {
 
         reviewConnector.delete(review);
     }
+
+    /// --- ↑ Review ---
 }

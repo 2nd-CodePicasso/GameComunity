@@ -248,7 +248,7 @@ class ExchangeServiceTest {
         when(myExchangeConnector.findById(1L)).thenReturn(myExchange);
 
         // when
-        exchangeService.putExchange(1L, userId, putCanceledMyExchangeRequest);
+        exchangeService.decisionMyExchange(1L, userId, putCanceledMyExchangeRequest);
 
         // then
         Assertions.assertThat(myExchange.getStatusType()).isEqualTo(StatusType.CANCELED);
