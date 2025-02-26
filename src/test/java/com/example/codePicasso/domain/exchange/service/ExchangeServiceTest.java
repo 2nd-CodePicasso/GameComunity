@@ -261,14 +261,14 @@ class ExchangeServiceTest {
         // given
         when(redisLockService.acquireLock(exchangeId)).thenReturn(true); // 락 획득 성공
         when(exchangeConnector.findByIdAndCompleted(exchangeId)).thenReturn(exchange);
-        doNothing().when(exchangeRankingService).increaseTradeCount(anyString(), anyBoolean()); // 거래 랭킹 업데이트 목 처리
+        doNothing().when(exchangeRankingService).increaseTradeCount(anyLong(), anyString(), anyBoolean()); // 거래 랭킹 업데이트 목 처리
 
         // when
         exchangeService.completeExchange(exchangeId);
 
         // then
         verify(redisLockService).acquireLock(exchangeId); // 락 획득 검증
-        verify(exchangeRankingService).increaseTradeCount(exchange.getGame().getGameTitle(), exchange.getTradeType() == TradeType.BUY); // 거래 랭킹 업데이트 검증
+        verify(exchangeRankingService).increaseTradeCount(exchange.getGame().getId(), exchange.getGame().getGameTitle(), exchange.getTradeType() == TradeType.BUY); // 거래 랭킹 업데이트 검증
         verify(redisLockService).releaseLock(exchangeId); // 락 해제 검증
     }
 
@@ -426,12 +426,13 @@ class ExchangeServiceTest {
         when(redisLockService.acquireLock(exchangeId)).thenReturn(true);
         when(exchangeConnector.findByIdAndCompleted(exchangeId)).thenReturn(exchange);
         when(exchange.getGame()).thenReturn(game);
+        when(game.getId()).thenReturn(gameId);
         when(game.getGameTitle()).thenReturn("테스트 게임");
 
         // when
         doThrow(new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED))
                 .when(exchangeRankingService)
-                .increaseTradeCount("테스트 게임", true);
+                .increaseTradeCount(gameId, "테스트 게임", true);
 
         // when & then
         DataAccessException exception = assertThrows(DataAccessException.class, () -> {
@@ -441,7 +442,7 @@ class ExchangeServiceTest {
         // then
         assertEquals(ErrorCode.TRADE_RANKING_UPDATE_FAILED, exception.getErrorCode());
         verify(redisLockService).releaseLock(exchangeId);
-        verify(exchangeRankingService, times(1)).increaseTradeCount("테스트 게임", exchange.getTradeType() == TradeType.BUY);
+        verify(exchangeRankingService, times(1)).increaseTradeCount(gameId,"테스트 게임", exchange.getTradeType() == TradeType.BUY);
     }
 
     @Test

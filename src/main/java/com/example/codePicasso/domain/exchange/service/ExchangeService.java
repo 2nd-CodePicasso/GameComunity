@@ -178,7 +178,7 @@ public class ExchangeService {
         boolean isBuy = exchange.getTradeType() == TradeType.BUY;
 
         try {
-            exchangeRankingService.increaseTradeCount(exchange.getGame().getGameTitle(), isBuy);
+            exchangeRankingService.increaseTradeCount(exchange.getGame().getId() ,exchange.getGame().getGameTitle(), isBuy);
         } catch (Exception e) {
             log.error("Redis 업데이트 실패: gameTitle={}, isBuy={}", exchange.getGame().getGameTitle(), isBuy, e);
             throw new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED) {
