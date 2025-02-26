@@ -12,6 +12,9 @@ import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,28 +39,25 @@ public class PostService {
         return DtoFactory.toPostDto(save);
     }
 
-    public PostListResponse findAllByGameId(Long gameId) {
-        List<PostResponse> postResponses = postConnector.findAllByGameId(gameId).stream()
-                .map(DtoFactory::toPostDto).toList();
-        return PostListResponse.builder()
-                .postResponses(postResponses)
-                .build();
+    // 게시물 조회(gameId)
+    public PostListResponse findAllByGameId(Long gameId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postResponses = postConnector.findAllByGameId(gameId, pageable);
+        return DtoFactory.toPaginationPostDto(postResponses);
     }
 
-    public PostListResponse findAllByCategoryId(Long categoryId) {
-        List<PostResponse> postResponses = postConnector.findAllByCategoryId(categoryId).stream()
-                .map(DtoFactory::toPostDto).toList();
-        return PostListResponse.builder()
-                .postResponses(postResponses)
-                .build();
+    // 게시물 조회(categoryId)
+    public PostListResponse findAllByCategoryId(Long categoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
+        return DtoFactory.toPaginationPostDto(postResponses);
     }
 
-    public PostListResponse findRecommendedPost(){
-        List<PostResponse> postResponses = postConnector.findAllByStatus(PostStatus.RECOMMENDED).stream()
-                .map(DtoFactory::toPostDto).toList();
-        return PostListResponse.builder()
-                .postResponses(postResponses)
-                .build();
+    // 게시물 조회(추천게시물)
+    public PostListResponse findRecommendedPost(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postResponses = postConnector.findAllByStatus(PostStatus.RECOMMENDED, pageable);
+        return DtoFactory.toPaginationPostDto(postResponses);
     }
 
     // 게시글 개별 조회
