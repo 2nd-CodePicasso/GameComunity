@@ -40,7 +40,7 @@ public class PostController {
      * @param gameId
      * @return gameId 내 모든 게시글 조회
      */
-    @GetMapping("/games/{gameId}")
+    @GetMapping("/hi/games/{gameId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
             @PathVariable("gameId") Long gameId,
             @RequestParam(defaultValue = "0") int page,
@@ -56,7 +56,7 @@ public class PostController {
      * @param categoryId
      * @return categoryId 내 모든 게시글 조회
      */
-    @GetMapping("/categories/{categoryId}")
+    @GetMapping("/hi/categories/{categoryId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
             @PathVariable("categoryId") Long categoryId,
             @RequestParam(defaultValue = "0") int page,
@@ -71,7 +71,7 @@ public class PostController {
      *
      * @return
      */
-    @GetMapping("/recommended")
+    @GetMapping("/hi/recommended")
     public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
@@ -86,7 +86,7 @@ public class PostController {
      * @param postId
      * @return 개별 게시물
      */
-    @GetMapping("/{postId}")
+    @GetMapping("/hi/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> findById(
             @PathVariable("postId") Long postId
     ) {
