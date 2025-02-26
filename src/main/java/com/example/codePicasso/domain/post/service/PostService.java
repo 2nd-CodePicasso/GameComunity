@@ -60,6 +60,7 @@ public class PostService {
     }
 
     // 게시글 개별 조회
+    @Transactional
     public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
         getPost.increaseViewCount();
