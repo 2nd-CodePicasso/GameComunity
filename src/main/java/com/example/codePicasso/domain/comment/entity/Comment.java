@@ -49,11 +49,17 @@ public class Comment extends TimeStamp {
 
     public void addReplies(Comment comment) {
         this.replies.add(comment);
+        comment.parent = this;
     }
 
     // 댓글 수정
     public void updateComment(String text) {
         this.text = text;
+    }
+
+    // 대댓글 확인 메서드
+    public boolean isReply() {
+        return this.parent != null;
     }
 
 
