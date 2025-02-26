@@ -42,9 +42,11 @@ public class PostController {
      */
     @GetMapping("/games/{gameId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostByGameId(
-            @PathVariable("gameId") Long gameId
+            @PathVariable("gameId") Long gameId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        PostListResponse postListResponse = postService.findAllByGameId(gameId);
+        PostListResponse postListResponse = postService.findAllByGameId(gameId, page, size);
         return ApiResponse.success(postListResponse);
     }
 
@@ -56,19 +58,25 @@ public class PostController {
      */
     @GetMapping("/categories/{categoryId}")
     public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
-            @PathVariable("categoryId") Long categoryId
+            @PathVariable("categoryId") Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId);
+        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId, page, size);
         return ApiResponse.success(postListResponse);
     }
 
     /**
      * 추천글만 조회하기
+     *
      * @return
      */
     @GetMapping("/recommended")
-    public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost() {
-        PostListResponse postListResponse = postService.findRecommendedPost();
+    public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        PostListResponse postListResponse = postService.findRecommendedPost(page, size);
         return ApiResponse.success(postListResponse);
     }
 
