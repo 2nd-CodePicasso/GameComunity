@@ -3,7 +3,6 @@ package com.example.codePicasso.domain.comment.service;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.List;
 
 @Component

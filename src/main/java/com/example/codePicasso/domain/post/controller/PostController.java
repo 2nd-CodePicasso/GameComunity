@@ -6,6 +6,7 @@ import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
 import com.example.codePicasso.global.common.CustomUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +28,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody PostRequest request
+            @Valid @RequestBody PostRequest request
     ) {
         PostResponse response = postService.createPost(user.getUserId(), request);
         return ApiResponse.created(response);
@@ -97,7 +98,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(
             @PathVariable("postId") Long postId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody PostRequest request
+            @Valid @RequestBody PostRequest request
     ) {
         PostResponse response = postService.updatePost(postId, user.getUserId(), request);
         return ApiResponse.success(response);
