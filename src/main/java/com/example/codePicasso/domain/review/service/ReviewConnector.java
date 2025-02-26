@@ -1,6 +1,6 @@
-package com.example.codePicasso.domain.exchange.service;
+package com.example.codePicasso.domain.review.service;
 
-import com.example.codePicasso.domain.exchange.entity.Review;
+import com.example.codePicasso.domain.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;

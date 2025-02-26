@@ -1,7 +1,7 @@
-package com.example.codePicasso.domain.exchange.repository;
+package com.example.codePicasso.domain.review.repository;
 
-import com.example.codePicasso.domain.exchange.entity.Review;
-import com.example.codePicasso.domain.exchange.service.ReviewConnector;
+import com.example.codePicasso.domain.review.entity.Review;
+import com.example.codePicasso.domain.review.service.ReviewConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;

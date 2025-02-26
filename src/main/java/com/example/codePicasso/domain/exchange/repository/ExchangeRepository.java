@@ -12,5 +12,5 @@ public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
 
     Page<Exchange> findAllByTradeTypeAndCompleted(TradeType tradeType, boolean completed, Pageable pageable);
 
-    Exchange findByIdAndCompleted(Long id, boolean completed);
+    Exchange findByIdAndIsCompleted(Long id, boolean isCompleted);
 }

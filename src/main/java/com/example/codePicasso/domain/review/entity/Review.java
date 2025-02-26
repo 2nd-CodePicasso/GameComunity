@@ -1,5 +1,6 @@
-package com.example.codePicasso.domain.exchange.entity;
+package com.example.codePicasso.domain.review.entity;
 
+import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;

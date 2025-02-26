@@ -33,8 +33,8 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
     }
 
     @Override
-    public Exchange findByIdAndCompleted(Long id) {
-        return exchangeRepository.findByIdAndCompleted(id, false);
+    public Exchange findByIdAndIsCompleted(Long id) {
+        return exchangeRepository.findByIdAndIsCompleted(id, false);
     }
 
     @Override

@@ -1,6 +1,6 @@
-package com.example.codePicasso.domain.exchange.repository;
+package com.example.codePicasso.domain.review.repository;
 
-import com.example.codePicasso.domain.exchange.entity.Review;
+import com.example.codePicasso.domain.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

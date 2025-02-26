@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.exchange.dto.response;
+package com.example.codePicasso.domain.review.dto.response;
 
 import lombok.Builder;
 

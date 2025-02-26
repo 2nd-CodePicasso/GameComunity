@@ -3,11 +3,12 @@ package com.example.codePicasso.domain.exchange.service;
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
-import com.example.codePicasso.domain.exchange.dto.request.ReviewRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
-import com.example.codePicasso.domain.exchange.dto.response.ReviewResponse;
-import com.example.codePicasso.domain.exchange.entity.*;
+import com.example.codePicasso.domain.exchange.entity.Exchange;
+import com.example.codePicasso.domain.exchange.entity.MyExchange;
+import com.example.codePicasso.domain.exchange.entity.StatusType;
+import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.exchange.redis.RedisLockService;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
@@ -36,7 +37,6 @@ public class ExchangeService {
 
     private final ExchangeConnector exchangeConnector;
     private final MyExchangeConnector myExchangeConnector;
-    private final ReviewConnector reviewConnector;
     private final GameConnector gameConnector;
     private final UserConnector userConnector;
     private final ExchangeRankingService exchangeRankingService;
@@ -91,14 +91,14 @@ public class ExchangeService {
 
     // 거래소 아이템 조회_특정 아이템
     public ExchangeResponse getExchangeById(Long exchangesId) {
-        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangesId);
+        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangesId);
         return DtoFactory.toExchangeDto(exchange);
     }
 
     // 거래소 아이템 수정
     @Transactional
     public ExchangeResponse updateExchange(Long exchangeId, ExchangeRequest request, Long userId) {
-        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangeId);
+        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangeId);
 
         if (!exchange.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
@@ -132,7 +132,7 @@ public class ExchangeService {
     // 판매하기 & 구매하기
     @Transactional
     public MyExchangeResponse doExchange(Long exchangeId, Long userId, MyExchangeRequest request) {
-        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangeId);
+        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangeId);
         User user = userConnector.findById(userId);
 
         if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
@@ -161,7 +161,7 @@ public class ExchangeService {
         return myExchanges.map(DtoFactory::toMyExchangeDto);
     }*/
 
-    // 내 거래 목록
+    // 내 거래 목록 조회 (200 OK)
     public Page<MyExchangeResponse> getAllMyExchange(TradeType tradeType, Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
@@ -170,11 +170,15 @@ public class ExchangeService {
         return myExchanges.map(DtoFactory::toMyExchangeDto);
     }
 
+    // 내 거리 목록 단일 조회 (200 OK)
     public MyExchangeResponse getMyExchangeById(Long myExchangeId, CustomUser user) {
-        return null;
+
+        MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
+
+        return DtoFactory.toMyExchangeDto(myExchange);
     }
 
-    //거래 상태 변경 및 처리 로직.
+    // 거래 승인/거절/취소하기 (200 OK)
     @Transactional
     public void decisionMyExchange(Long myExchangeId, Long userId, PutMyExchangeRequest putMyExchangeRequest) {
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
@@ -197,6 +201,8 @@ public class ExchangeService {
 
     /// --- ↑ MyExchange ---
 
+    /// --- ↓ Redis ---
+
     @Transactional
     public void completeExchange(Long exchangeId) {
         // Redis pub/sub 기반 락 획득 시도
@@ -204,7 +210,7 @@ public class ExchangeService {
             throw new InvalidRequestException(ErrorCode.ALREADY_IN_PROGRESS);
         }
 
-        Exchange exchange = exchangeConnector.findByIdAndCompleted(exchangeId);
+        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangeId);
 
         //Redis 랭킹 처리 (buy, sell)
         boolean isBuy = exchange.getTradeType() == TradeType.BUY;
@@ -220,68 +226,5 @@ public class ExchangeService {
         }
     }
 
-    /// --- ↓ Review ---
-
-    public ReviewResponse createReview(Long exchangeId, Long userId, ReviewRequest request) {
-        MyExchange myExchange = myExchangeConnector.findByExchangeIdAndUserId(exchangeId, userId);
-
-        if (myExchange.getStatusType() != StatusType.COMPLETED) {
-            throw new InvalidRequestException(ErrorCode.NOT_COMPLETED);
-        }
-
-        Review review = request.toEntity(myExchange.getExchange(), myExchange.getUser());
-        Review savedReview = reviewConnector.save(review);
-
-        return DtoFactory.toReviewDto(savedReview);
-    }
-
-    public Page<ReviewResponse> getReviews(Long exchangeId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Review> reviews = reviewConnector.findAllByExchangeId(exchangeId, pageable);
-
-        return reviews.map(DtoFactory::toReviewDto);
-    }
-
-    public ReviewResponse getReviewById(Long exchangeId, Long reviewId) {
-        Review review = reviewConnector.findById(reviewId);
-
-        if (!review.getExchange().getId().equals(exchangeId)) {
-            throw new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND);
-        }
-
-        return DtoFactory.toReviewDto(review);
-    }
-
-    public ReviewResponse updateReview(Long exchangeId, Long reviewId, Long userId, ReviewRequest request) {
-        Review review = reviewConnector.findById(reviewId);
-
-        if (!review.getExchange().getId().equals(exchangeId)) {
-            throw new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND);
-        }
-
-        if (!review.getUser().getId().equals(userId)) {
-            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
-        }
-
-        review.updateReview(request.rating(), request.review());
-
-        return DtoFactory.toReviewDto(review);
-    }
-
-    public void deleteReview(Long exchangeId, Long reviewId, Long userId) {
-        Review review = reviewConnector.findById(reviewId);
-
-        if (!review.getExchange().getId().equals(exchangeId)) {
-            throw new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND);
-        }
-
-        if (review.getUser().getId().equals(userId)) {
-            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
-        }
-
-        reviewConnector.delete(review);
-    }
-
-    /// --- ↑ Review ---
+    /// --- ↑ Redis ---
 }
