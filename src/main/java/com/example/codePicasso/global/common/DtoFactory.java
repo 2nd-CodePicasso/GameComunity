@@ -17,8 +17,10 @@ import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.response.ReviewResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
+import com.example.codePicasso.domain.exchange.entity.Review;
 import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
@@ -136,10 +138,20 @@ public class DtoFactory {
 
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange){
         return MyExchangeResponse.builder()
-                .exchange(myExchange.getExchange())
-                .user(myExchange.getUser())
+                .exchangeId(myExchange.getExchange().getId())
+                .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
                 .statustype(myExchange.getStatusType())
+                .build();
+    }
+
+    public static ReviewResponse toReviewDto(Review review){
+        return ReviewResponse.builder()
+                .id(review.getId())
+                .exchangeId(review.getExchange().getId())
+                .userId(review.getUser().getId())
+                .rating(review.getRating())
+                .review(review.getReview())
                 .build();
     }
 

@@ -42,4 +42,9 @@ public class MyExchangeConnectorImpl implements MyExchangeConnector {
         return myExchangeRepository.existsByExchangeIdAndUserId(exchangeId, userId);
     }
 
+    @Override
+    public MyExchange findByExchangeIdAndUserId(Long exchangeId, Long userId) {
+        return myExchangeRepository.findByExchangeIdAndUserId(exchangeId, userId);
+    }
+
 }

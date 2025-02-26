@@ -1,14 +1,12 @@
 package com.example.codePicasso.domain.exchange.dto.response;
 
-import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.StatusType;
-import com.example.codePicasso.domain.user.entity.User;
 import lombok.Builder;
 
 @Builder
 public record MyExchangeResponse (
-        Exchange exchange,
-        User user,
+        Long exchangeId,
+        Long userId,
         String contact,
         StatusType statustype
 ) {

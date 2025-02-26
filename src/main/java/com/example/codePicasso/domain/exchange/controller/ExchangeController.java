@@ -3,10 +3,8 @@ package com.example.codePicasso.domain.exchange.controller;
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
-import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse;
-import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
-import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
-import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.request.ReviewRequest;
+import com.example.codePicasso.domain.exchange.dto.response.*;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.exchange.service.ExchangeService;
 import com.example.codePicasso.global.common.ApiResponse;
@@ -151,9 +149,9 @@ public class ExchangeController {
     public ResponseEntity<ApiResponse<Void>> cancelBuyExchange(
             @PathVariable Long myExchangeId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody PutMyExchangeRequest putMyExchangeRequest
+            @RequestBody PutMyExchangeRequest request
     ) {
-        exchangeService.putExchange(myExchangeId, user.getUserId(), putMyExchangeRequest);
+        exchangeService.putExchange(myExchangeId, user.getUserId(), request);
         return ApiResponse.noContent();
     }
 
@@ -162,9 +160,64 @@ public class ExchangeController {
     public ResponseEntity<ApiResponse<Void>> approveSellExchange(
             @PathVariable Long myExchangeId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody PutMyExchangeRequest putMyExchangeRequest
+            @RequestBody PutMyExchangeRequest request
     ) {
-        exchangeService.putExchange(myExchangeId, user.getUserId(), putMyExchangeRequest);
+        exchangeService.putExchange(myExchangeId, user.getUserId(), request);
         return ApiResponse.noContent();
     }
+
+    // --- 후기글 ---
+    @PostMapping("/{tradeType}/{exchangeId}/reviews")
+    public ResponseEntity<ApiResponse<ReviewResponse>> createReview(
+            @PathVariable TradeType tradeType,
+            @PathVariable Long exchangeId,
+            @AuthenticationPrincipal CustomUser user,
+            @RequestBody ReviewRequest request
+    ) {
+        return ApiResponse.created(exchangeService.createReview(exchangeId, user.getUserId(), request));
+    }
+
+    @GetMapping("/{tradeType}/{exchangeId}/reviews/list")
+    public ResponseEntity<ApiResponse<ReviewListResponse>> getAllReview(
+            @PathVariable TradeType tradeType,
+            @PathVariable Long exchangeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+
+    ) {
+        Page<ReviewResponse> reviews = exchangeService.getReviews(exchangeId, page, size);
+        return ApiResponse.success(ReviewListResponse.builder().reviewPageResponse(reviews).build());
+    }
+
+    @GetMapping("/{tradeType}/{exchangeId}/reviews/{reviewId}")
+    public ResponseEntity<ApiResponse<ReviewResponse>> getReviewById(
+            @PathVariable TradeType tradeType,
+            @PathVariable Long exchangeId,
+            @PathVariable Long reviewId
+    ) {
+        return ApiResponse.success(exchangeService.getReviewById(exchangeId, reviewId));
+    }
+
+    @PatchMapping("/{tradeType}/{exchangeId}/reviews/{reviewId}")
+    public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
+            @PathVariable TradeType tradeType,
+            @PathVariable Long exchangeId,
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal CustomUser user,
+            @RequestBody ReviewRequest request
+    ) {
+        return ApiResponse.success(exchangeService.updateReview(exchangeId, reviewId, user.getUserId(), request));
+    }
+
+    @DeleteMapping("/{tradeType}/{exchangeId}/reviews/{reviewId}")
+    public ResponseEntity<ApiResponse<Void>> deleteReview(
+            @PathVariable TradeType tradeType,
+            @PathVariable Long exchangeId,
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal CustomUser user
+    ) {
+        exchangeService.deleteReview(exchangeId, reviewId, user.getUserId());
+        return ApiResponse.noContent();
+    }
+    // --- 후기글 ---
 }

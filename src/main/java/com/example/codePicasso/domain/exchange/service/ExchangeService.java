@@ -3,12 +3,11 @@ package com.example.codePicasso.domain.exchange.service;
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.ReviewRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
-import com.example.codePicasso.domain.exchange.entity.Exchange;
-import com.example.codePicasso.domain.exchange.entity.MyExchange;
-import com.example.codePicasso.domain.exchange.entity.StatusType;
-import com.example.codePicasso.domain.exchange.entity.TradeType;
+import com.example.codePicasso.domain.exchange.dto.response.ReviewResponse;
+import com.example.codePicasso.domain.exchange.entity.*;
 import com.example.codePicasso.domain.exchange.redis.RedisLockService;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
@@ -36,6 +35,7 @@ public class ExchangeService {
 
     private final ExchangeConnector exchangeConnector;
     private final MyExchangeConnector myExchangeConnector;
+    private final ReviewConnector reviewConnector;
     private final GameConnector gameConnector;
     private final UserConnector userConnector;
     private final ExchangeRankingService exchangeRankingService;
@@ -186,5 +186,67 @@ public class ExchangeService {
         } finally {
             redisLockService.releaseLock(exchangeId);
         }
+    }
+
+    // --- 후기글 ---
+    public ReviewResponse createReview(Long exchangeId, Long userId, ReviewRequest request) {
+        MyExchange myExchange = myExchangeConnector.findByExchangeIdAndUserId(exchangeId, userId);
+
+        if (myExchange.getStatusType() != StatusType.COMPLETED) {
+            throw new InvalidRequestException(ErrorCode.NOT_COMPLETED);
+        }
+
+        Review review = request.toEntity(myExchange.getExchange(), myExchange.getUser());
+        Review savedReview = reviewConnector.save(review);
+
+        return DtoFactory.toReviewDto(savedReview);
+    }
+
+    public Page<ReviewResponse> getReviews(Long exchangeId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Review> reviews = reviewConnector.findAllByExchangeId(exchangeId, pageable);
+
+        return reviews.map(DtoFactory::toReviewDto);
+    }
+
+    public ReviewResponse getReviewById(Long exchangeId, Long reviewId) {
+        Review review = reviewConnector.findById(reviewId);
+
+        if (!review.getExchange().getId().equals(exchangeId)) {
+            throw new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND);
+        }
+
+        return DtoFactory.toReviewDto(review);
+    }
+
+    public ReviewResponse updateReview(Long exchangeId, Long reviewId, Long userId, ReviewRequest request) {
+        Review review = reviewConnector.findById(reviewId);
+
+        if (!review.getExchange().getId().equals(exchangeId)) {
+            throw new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND);
+        }
+
+        if (!review.getUser().getId().equals(userId)) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        review.updateReview(request.rating(), request.review());
+
+        return DtoFactory.toReviewDto(review);
+    }
+
+    public void deleteReview(Long exchangeId, Long reviewId, Long userId) {
+        Review review = reviewConnector.findById(reviewId);
+
+        if (!review.getExchange().getId().equals(exchangeId)) {
+            throw new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND);
+        }
+
+        if (review.getUser().getId().equals(userId)) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        reviewConnector.delete(review);
     }
 }
