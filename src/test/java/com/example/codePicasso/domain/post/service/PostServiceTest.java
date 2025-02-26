@@ -90,7 +90,7 @@ class PostServiceTest {
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
         when(postConnector.save(any(Post.class))).thenReturn(mockPost);
 
-        PostResponse response = postService.createPost(userId, postRequest);
+        PostResponse response = postService.createPost(userId, request);
 
         // Then
         verify(postConnector, times(1)).save(any());

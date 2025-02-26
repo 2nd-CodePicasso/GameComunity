@@ -42,13 +42,13 @@ public class CommentController {
      * 대댓글 생성
      */
     @PostMapping("/{postId}/reply/{parentId}")
-    public ResponseEntity<ApiResponse<ReplyResponse>> createReply(
+    public ResponseEntity<ApiResponse<CommentResponse>> createReply(
             @PathVariable("postId") Long postId,
             @PathVariable("parentId") Long parentId,
             @AuthenticationPrincipal CustomUser user,
             @Valid @RequestBody CommentRequest request
     ) {
-        ReplyResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request);
+        CommentResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request);
         return ApiResponse.created(replyResponse);
     }
 

@@ -40,6 +40,7 @@ public enum ErrorCode {
 
     //Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "", "댓글을 찾을 수 없습니다."),
+    CANNOT_WRITE_COMMENT(HttpStatus.BAD_REQUEST, "", "댓글을 작성할 수 없습니다."),
 
     //Category
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "", "카테고리를 찾을 수 없습니다."),
