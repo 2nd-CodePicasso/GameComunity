@@ -6,10 +6,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
-        /* 간단한 스타일 */
-        #chat {
-            width: 400px;
+        #container {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
             margin: 20px auto;
+        }
+        #room-section, #chat-section {
+            width: 48%;
             border: 1px solid #ccc;
             padding: 10px;
         }
@@ -19,35 +23,92 @@
             border: 1px solid #eee;
             padding: 5px;
         }
-        #messageInput, #usernameInput {
+        #response-time {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #007bff;
+        }
+        input[type="text"], input[type="password"] {
             width: 80%;
             margin-bottom: 10px;
+        }
+        #chat-room-section {
+            width: 48%; /* 기존과 동일하게 왼쪽과 오른쪽에 같은 크기 비율을 적용 */
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px; /* 다른 영역과 구분을 위해 위쪽 여백 추가 */
+            background-color: #f9f9f9; /* 채팅방 배경색 추가 */
+        }
+
+        #room-messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #eee;
+            padding: 10px;
+            background-color: #ffffff; /* 메시지 영역의 배경색 */
+        }
+
+        #roomMessageInput {
+            width: 80%;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-<div id="chat">
-    <h2>채팅 어플리케이션</h2>
+<div id="container">
+    <div id="room-section">
+        <h3>채팅방 생성</h3>
+        <input type="text" id="roomNameInput" placeholder="채팅방 이름을 입력하세요." />
+        <br>
+        <label>
+            <input type="checkbox" id="isSecurityInput" /> 비밀방 여부
+        </label>
+        <br>
+        <input type="password" id="passwordInput" placeholder="비밀번호 (비밀방일 때만)" />
+        <br>
+        <button onclick="createRoom()">채팅방 생성</button>
 
-    <input type="text" id="usernameInput" placeholder="유저 이름을 입력하세요." />
-    <div id="messages"></div>
-    <br>
-    <input type="text" id="messageInput" placeholder="메시지를 입력하세요." />
-    <button onclick="sendMessage()">전송</button>
-
-    <div id="responseTime">
-        <h3>응답 시간</h3>
-        <p id="responseTimeText">메시지 응답 대기 중...</p>
+        <h3>채팅방 목록</h3>
+        <ul id="roomList"></ul>
     </div>
-</div>
 
+    <div id="chat-section">
+        <h2>채팅</h2>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="메시지를 입력하세요." />
+        <button onclick="sendMessage()">전송</button>
+        <div id="response-time">응답 시간: -</div>
+    </div>
+
+    <div id="chat-room-section">
+        <h2>선택한 채팅방</h2>
+        <div id="room-messages"></div>
+        <input type="text" id="roomMessageInput" placeholder="채팅방 메시지를 입력하세요." />
+        <button onclick="sendRoomMessage()">전송</button>
+    </div>
+
+</div>
 
 <script>
     const token = localStorage.getItem('authToken');
     var stompClient = null;
     var messageSendTime = null;
-    // 페이지가 로드되면, 메타 태그에서 토큰을 가져와 HTTP 요청에 포
-    // WebSocket 연결 및 STOMP 클라이언트 생성
+    var currentRoom = null;
+
     function connect() {
         var socket = new SockJS('/ws'); // 서버의 WebSocket 엔드포인트
         stompClient = Stomp.over(socket);
@@ -62,9 +123,140 @@
             },{'Authorization': token});
         });
         loadChatHistory();
+        loadRooms();
     }
 
-    // 채팅 메시지 기록 불러오는 함수
+
+    function connectToRoom(room) {
+        if (!stompClient || !stompClient.connected) {
+            console.log('stompClient가 연결되지 않았습니다.');
+            return;
+        }
+
+        // 채팅방 구독 시작
+        stompClient.subscribe(`/topic/${room.roomId}`, function (messageOutput) {
+            console.log('메시지 수신:', messageOutput.body);
+            showRoomMessage(JSON.parse(messageOutput.body));
+        }, {'Authorization': token});
+
+        console.log(`채팅방 ${room.roomId} (${room.roomName}) 구독 성공!`);
+
+        currentRoom = room.roomId;
+        loadChatHistoryForRoom(room.roomId);
+    }
+
+    function createRoom() {
+        const roomName = document.getElementById('roomNameInput').value.trim();
+        const isSecurity = document.getElementById('isSecurityInput').checked;
+        const password = document.getElementById('passwordInput').value.trim();
+
+        if (roomName) {
+            fetch('/room', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: JSON.stringify({
+                    name: roomName,
+                    isSecurity: isSecurity,
+                    password: isSecurity ? password : ''
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.successOrFail) {
+                        const room = data.data;
+                        alert(`채팅방 "${room.roomName}"이(가) 생성되었습니다!`);
+                        loadRooms();
+                    } else {
+                        alert('채팅방 생성에 실패했습니다.');
+                    }
+                })
+                .catch(error => console.error('채팅방 생성 중 오류 발생:', error));
+        } else {
+            alert('채팅방 이름을 입력해 주세요!');
+        }
+    }
+
+    function sendRoomMessage() {
+        const message = document.getElementById('roomMessageInput').value.trim();
+        if (message && stompClient && currentRoom) {
+            const chatMessage = {message: message };
+            stompClient.send(`/app/send/room/${currentRoom}`, {'Authorization': token}, JSON.stringify(chatMessage));
+            document.getElementById('roomMessageInput').value = '';
+        }
+    }
+
+    function loadRooms() {
+        fetch('/room', {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const roomList = document.getElementById('roomList');
+                roomList.innerHTML = '';
+                if (data.successOrFail && data.data && Array.isArray(data.data.roomResponses)) {
+                    data.data.roomResponses.forEach(room => {
+                        const roomElement = document.createElement('li');
+                        roomElement.textContent = `${room.roomName} (${room.isSecurity ? '🔒' : '🔓'})`;
+                        roomElement.onclick = () => connectToRoom(room);
+                        roomList.appendChild(roomElement);
+                    });
+                }
+            })
+            .catch(error => console.error('채팅방 목록 불러오는 중 오류 발생:', error));
+    }
+
+    function showRoomMessage(message) {
+        console.log(message);  // 메시지 객체를 로그로 확인
+        const roomMessages = document.getElementById('room-messages');
+
+
+        var messageElement = document.createElement('p');
+        const createdAt = new Date(message.createdAt);
+        const realTime = createdAt.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }).replace(',', '');
+        messageElement.textContent = `${message.username}: ${message.message}  ${realTime}`;
+
+        roomMessages.appendChild(messageElement);
+        roomMessages.scrollTop = roomMessages.scrollHeight;
+        showResponseTime();
+    }
+
+    function loadChatHistoryForRoom(roomId) {
+
+        const roomMessages = document.getElementById('room-messages');
+        roomMessages.innerHTML = '';  // 기존 메시지 모두 삭제
+
+        fetch(`/chats/${roomId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("채팅 내역:", data);
+                // 수정된 부분: data.data.chatResponses로 수정
+                if (data && data.data && Array.isArray(data.data.chatResponses)) {
+                    data.data.chatResponses.forEach(message => {
+                        showRoomMessage(message);
+                    });
+                }
+            })
+            .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
+    }
+
     function loadChatHistory() {
         fetch('/chats/history', {
             method: 'GET',
@@ -75,7 +267,7 @@
             .then(response => response.json())
             .then(data => {
                 console.log("서버 응답:", data);
-                // 서버 응답에서 'data' 객체 내의 'chatsResponseList' 접근
+                // 'chatsResponseList'가 배열인지 확인 후 순회
                 if (data && data.data && Array.isArray(data.data.chatsResponseList)) {
                     data.data.chatsResponseList.forEach(message => {
                         showMessage(message); // 각 메시지를 화면에 추가
@@ -86,13 +278,12 @@
             })
             .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
     }
+
     function sendMessage() {
         var messageContent = document.getElementById('messageInput').value.trim();
-        var username = document.getElementById('usernameInput').value.trim();
         if (messageContent && stompClient) {
             // 메시지 객체 생성 (필요에 따라 sender 값을 설정)
             var chatMessage = {
-                username: username,
                 message: messageContent
             };
 
@@ -106,15 +297,7 @@
         }
 
     }
-    // 응답받은 시간 차이를 계산하여 화면에 표시
-    function showResponseTime() {
-        if (messageSendTime) {
-            var responseTime = new Date() - messageSendTime;  // 전송 시간과 응답 시간 차이
-            var responseTimeText = `응답 시간: ${responseTime}ms`;
-            document.getElementById('responseTimeText').textContent = responseTimeText;
-        }
-    }
-    // 수신한 메시지를 화면에 표시하는 함수
+
     function showMessage(message) {
         console.log(message)
         var messagesDiv = document.getElementById('messages');
@@ -128,14 +311,18 @@
             minute: '2-digit',
             hour12: false
         }).replace(',', '');
-        messageElement.textContent = "User" + message.username + ": " + message.message+"  "+ realTime;
+        messageElement.textContent = `${message.username}: ${message.message}  ${realTime}`;
 
         messagesDiv.appendChild(messageElement);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
         showResponseTime();
     }
 
-    // 페이지 로드 시 WebSocket 연결 실행
+    function showResponseTime(time) {
+        const responseTimeDiv = document.getElementById('response-time');
+        responseTimeDiv.textContent = `응답 시간: ${time}ms`;
+    }
+
     window.onload = function () {
         connect();
 
