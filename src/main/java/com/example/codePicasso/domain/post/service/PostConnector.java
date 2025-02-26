@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public interface PostConnector {
     Post save(Post post);
@@ -17,7 +15,7 @@ public interface PostConnector {
     Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable);
 
     Page<Post> findAllByStatus(PostStatus postStatus, Pageable pageable);
-  
+
     Post findById(Long postId);
 
     Post findByIdAndUserId(Long postId, Long userId);

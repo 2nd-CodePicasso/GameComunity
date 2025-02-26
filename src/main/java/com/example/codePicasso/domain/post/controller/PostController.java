@@ -68,6 +68,7 @@ public class PostController {
 
     /**
      * 추천글만 조회하기
+     *
      * @return
      */
     @GetMapping("/recommended")

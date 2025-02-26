@@ -18,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -54,7 +52,7 @@ public class PostService {
     }
 
     // 게시물 조회(추천게시물)
-    public PostListResponse findRecommendedPost(int page, int size){
+    public PostListResponse findRecommendedPost(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Post> postResponses = postConnector.findAllByStatus(PostStatus.RECOMMENDED, pageable);
         return DtoFactory.toPaginationPostDto(postResponses);
@@ -63,7 +61,7 @@ public class PostService {
     // 게시글 개별 조회
     public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
-          getPost.increaseViewCount();
+        getPost.increaseViewCount();
         return DtoFactory.toPostDto(getPost);
     }
 
