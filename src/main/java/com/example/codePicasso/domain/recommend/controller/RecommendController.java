@@ -2,6 +2,7 @@ package com.example.codePicasso.domain.recommend.controller;
 
 import com.example.codePicasso.domain.recommend.service.RecommendService;
 import com.example.codePicasso.global.common.ApiResponse;
+import com.example.codePicasso.global.common.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,9 +17,9 @@ public class RecommendController {
     @PostMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse<Integer>> createRecommend(
             @PathVariable Long postId,
-            @AuthenticationPrincipal Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        Integer response = recommendService.doRecommend(postId, userId);
+        Integer response = recommendService.doRecommend(postId, user.getUserId());
         return ApiResponse.success(response);
     }
 
@@ -33,9 +34,9 @@ public class RecommendController {
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse<Void>> deleteRecommend(
             @PathVariable Long postId,
-            @AuthenticationPrincipal Long userId
+            @AuthenticationPrincipal CustomUser user
     ) {
-        recommendService.undoRecommend(postId, userId);
+        recommendService.undoRecommend(postId, user.getUserId());
         return ApiResponse.noContentAndSendMessage("추천이 취소되었습니다.");
     }
 }

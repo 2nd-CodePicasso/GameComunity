@@ -3,14 +3,8 @@ package com.example.codePicasso.global.common;
 
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
-import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
-import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
-import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
-import com.example.codePicasso.domain.chat.entity.Chat;
-import com.example.codePicasso.domain.chat.entity.ChatRoom;
-import com.example.codePicasso.domain.chat.entity.GlobalChat;
-import com.example.codePicasso.domain.chat.entity.Notification;
+import com.example.codePicasso.domain.chat.dto.response.*;
+import com.example.codePicasso.domain.chat.entity.*;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.dto.response.ReplyListResponse;
 import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
@@ -23,12 +17,14 @@ import com.example.codePicasso.domain.game.dto.response.GameResponse;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
+import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
+import org.springframework.data.domain.Page;
 
 public class DtoFactory {
 
@@ -65,6 +61,17 @@ public class DtoFactory {
                 .status(post.getStatus())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
+                .build();
+    }
+
+    public static PostListResponse toPaginationPostDto(Page<Post> postsPage) {
+        return PostListResponse.builder()
+                .postResponses(postsPage.getContent().stream()
+                        .map(DtoFactory::toPostDto)
+                        .toList())
+                .currentPage(postsPage.getNumber())
+                .totalPages(postsPage.getTotalPages())
+                .totalElements(postsPage.getTotalElements())
                 .build();
     }
 
@@ -167,6 +174,12 @@ public class DtoFactory {
                 .username(chatRoom.getUser().getNickname())
                 .roomName(chatRoom.getName())
                 .isSecurity(chatRoom.isSecurity())
+                .build();
+    }
+
+    public static ImageResponse toImageDto(Image saveImage) {
+        return ImageResponse.builder()
+                .imageUrl(saveImage.getImageUrl())
                 .build();
     }
 }
