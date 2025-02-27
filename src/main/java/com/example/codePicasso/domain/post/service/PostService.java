@@ -12,6 +12,8 @@ import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ public class PostService {
 
     // 게시글 생성
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public PostResponse createPost(Long userId, PostRequest request) {
         User user = userConnector.findById(userId);
         Category category = categoryConnector.findById(request.categoryId());
@@ -60,7 +63,9 @@ public class PostService {
     }
 
     // 게시글 개별 조회
+    // viewCount 기능 때문에 캐시 사용 고려
     @Transactional
+    @Cacheable(value = "posts", key = "#postId")
     public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
         getPost.increaseViewCount();
@@ -69,6 +74,7 @@ public class PostService {
 
     // 게시글 수정
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public PostResponse updatePost(Long postId, Long userId, PostRequest postRequest) {
         Post foundPost = postConnector.findByIdAndUserId(postId, userId);
 
@@ -84,6 +90,7 @@ public class PostService {
 
     // 게시글 삭제
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public void deletePost(Long postId, Long userId) {
         Post deletePost = postConnector.findByIdAndUserId(postId, userId);
 
