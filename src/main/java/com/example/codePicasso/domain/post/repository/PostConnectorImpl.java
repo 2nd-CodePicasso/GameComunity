@@ -6,9 +6,9 @@ import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -23,19 +23,20 @@ public class PostConnectorImpl implements PostConnector {
 
     // gameId로 게시글 전체 조회
     @Override
-    public List<Post> findAllByGameId(Long gameId) {
-        return postRepository.findAllByGameId(gameId);
+    public Page<Post> findAllByGameId(Long gameId, Pageable pageable) {
+        return postRepository.findAllByGameId(gameId, pageable);
     }
 
     // categoryId로 게시글 전체 조회
     @Override
-    public List<Post> findAllByCategoryId(Long categoryId) {
-        return postRepository.findAllByCategoryId(categoryId);
+    public Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable) {
+        return postRepository.findAllByCategoryId(categoryId, pageable);
     }
 
+    // 추천게시물 조회
     @Override
-    public List<Post> findAllByStatus(PostStatus postStatus) {
-        return postRepository.findAllByStatus(postStatus);
+    public Page<Post> findAllByStatus(PostStatus postStatus, Pageable pageable) {
+        return postRepository.findAllByStatus(postStatus, pageable);
     }
 
     // 게시글 개별 조회
