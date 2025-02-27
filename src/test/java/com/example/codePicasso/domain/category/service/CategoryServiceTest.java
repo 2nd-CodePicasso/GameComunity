@@ -6,10 +6,7 @@ import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
-import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.user.entity.Admin;
-import com.example.codePicasso.domain.user.entity.User;
-import com.example.codePicasso.global.common.DtoFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -37,8 +35,6 @@ public class CategoryServiceTest {
     private GameConnector gameConnector;
 
 
-    private Post mockPost;
-    private User mockUser;
     private Admin mockAdmin;
     private Game mockGame;
     private Category mockCategory;
@@ -47,7 +43,6 @@ public class CategoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        mockUser = new User("user", "testUser", "user123");  // 예시: User 객체 생성
         mockAdmin = new Admin("admin", "testAdmin");
         mockGame = Game.builder()
                 .id(1L)
@@ -56,44 +51,29 @@ public class CategoryServiceTest {
                 .gameDescription("This is a test game.")
                 .build();
         mockCategory = Category.builder()
-                .id(1L)
                 .game(mockGame)
                 .categoryName("test Category")
                 .build();
-        mockPost = Post.builder()
-                .user(mockUser)
-                .game(mockGame)
-                .category(mockCategory)
-                .title("test Title")
-                .description("This is a test post.")
-                .build();
         categories.add(mockCategory);
-        categoryRequest = new CategoryRequest("category name");
     }
 
     @Test
     void 카테고리_생성() {
         //given
         Long gameId = 1L;
-        CategoryRequest request = new CategoryRequest("Test Category");
-        Category savedCategory = Category.builder()
-                .id(1L)
-                .game(mockGame)
-                .categoryName("Test Category")
-                .build();
-        CategoryResponse expectedResponse = new CategoryResponse(1L, "Test Category");
+        CategoryRequest request = new CategoryRequest("test Category");
 
         //when
         when(gameConnector.findByIdForUser(gameId)).thenReturn(mockGame);
-        when(categoryConnector.save(any(Category.class))).thenReturn(savedCategory);
-        mockStatic(DtoFactory.class);
-        when(DtoFactory.toCategoryDto(savedCategory)).thenReturn(expectedResponse);
+        when(categoryConnector.save(any(Category.class))).thenReturn(mockCategory);
 
         CategoryResponse categoryResponse = categoryService.createCategory(gameId, request);
 
         //then
+        verify(categoryConnector, times(1)).save(any());
         verify(gameConnector).findByIdForUser(gameId);
-        verify(categoryConnector).save(any(Category.class));
+
+        assertEquals(mockGame.getId(), categoryResponse.gameId());
         assertEquals(request.categoryName(), categoryResponse.categoryName());
     }
 
@@ -102,14 +82,21 @@ public class CategoryServiceTest {
         //given
         Long gameId = 1L;
 
+        categories.clear();
+        categories.add(mockCategory);
+
         //when
         when(categoryConnector.findCategoryByGameId(gameId)).thenReturn(categories);
         CategoryListResponse categoryListResponse = categoryService.getAllCategory(gameId);
-        List<CategoryResponse> categoryResponseList = categoryListResponse.categoryResponses();
 
         //then
         verify(categoryConnector).findCategoryByGameId(gameId);
-        assertEquals(categories.get(0).getCategoryName(), categoryResponseList.get(0).categoryName());
+
+        List<CategoryResponse> categoryList = categoryListResponse.categoryResponses();
+        assertFalse(categoryList.isEmpty(), "Not found category List");
+
+        CategoryResponse getCategory = categoryList.get(0);
+        assertEquals(categories.get(0).getCategoryName(), getCategory.categoryName());
     }
 
     @Test
@@ -117,17 +104,9 @@ public class CategoryServiceTest {
         //given
         Long categoryId = 1L;
         CategoryRequest request = new CategoryRequest("Updated Category");
-        Category updatedCategory = Category.builder()
-                .id(1L)
-                .game(mockGame)
-                .categoryName("Updated Category")
-                .build();
-        CategoryResponse expectedResponse = new CategoryResponse(1L, "Updated Category");
 
         //when
         when(categoryConnector.findById(categoryId)).thenReturn(mockCategory);
-        mockCategory.updateCategory(request.categoryName());
-        when(DtoFactory.toCategoryDto(mockCategory)).thenReturn(expectedResponse);
 
         CategoryResponse categoryResponse = categoryService.updateCategory(categoryId, request);
 
