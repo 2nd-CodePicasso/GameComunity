@@ -25,3 +25,13 @@ jwt:
     import: optional:myInfo.yml
   secretKey: ${secure.key}
   tokenTime: ${secure.timer}
+
+cloud:
+  aws:
+    credentials:
+      access-key: YOUR_ACCESS_KEY_ID
+      secret-key: YOUR_SECRET_ACCESS_KEY
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: woosik-bucket
