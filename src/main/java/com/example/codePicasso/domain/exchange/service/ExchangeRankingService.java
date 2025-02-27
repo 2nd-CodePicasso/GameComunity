@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.exchange.service;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,11 +21,13 @@ public class ExchangeRankingService {
     private static final String BUY_RANKING_KEY = "ranking:buy";
     private static final String SELL_RANKING_KEY = "ranking:sell";
 
-    private static final String DAILY_BUY_RANKING_KEY = "ranking:daily:buy";
-    private static final String DAILY_SELL_RANKING_KEY = "ranking:daily:sell";
-    private static final String HOURLY_BUY_RANKING_KEY = "ranking:hourly:buy";
-    private static final String HOURLY_SELL_RANKING_KEY = "ranking:hourly:sell";
+    private static final String DAILY_BUY_RANKING_KEY = "ranking:buy:daily:";
+    private static final String DAILY_SELL_RANKING_KEY = "ranking:sell:daily:";
+    private static final String HOURLY_BUY_RANKING_KEY = "ranking:buy:hourly:";
+    private static final String HOURLY_SELL_RANKING_KEY = "ranking:sell:hourly:";
+
     private static final String GAME_ID_TITLE_HASH_KEY = "game:id:title";
+    private static final String GAME_TITLE_ID_HASH_KEY = "game:title:id";
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter HOUR_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH");
@@ -32,23 +35,34 @@ public class ExchangeRankingService {
     /**
      * 거래 완료 기준, 게임 ID의 카운트 증가 (날짜/시간 단위로 저장)
      */
+
+    protected double getCurrentTimestamp() {
+        return System.currentTimeMillis() / 1000.0;
+    }
+
     public void increaseTradeCount(Long gameId, String gameTitle, boolean isBuy) {
         ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
         HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
 
-        //전체 기간
+        // 현재 시간 기준 타임스탬프를 가져옴 (테스트에서는 Mocking 가능)
+        double timestamp = getCurrentTimestamp();
+        double adjustedScore = 1 + (timestamp / 1_000_000.0);
+
+        // 전체 기간 랭킹 증가
         String key = isBuy ? BUY_RANKING_KEY : SELL_RANKING_KEY;
-        zSetOps.incrementScore(key, gameId.toString(), 1);
+        zSetOps.incrementScore(key, gameId.toString(), adjustedScore);
 
-        //날짜별
+        // 일별 랭킹 증가
         String todayKey = (isBuy ? DAILY_BUY_RANKING_KEY : DAILY_SELL_RANKING_KEY) + LocalDate.now().format(DATE_FORMAT);
-        zSetOps.incrementScore(todayKey, gameId.toString(), 1);
+        zSetOps.incrementScore(todayKey, gameId.toString(), adjustedScore);
 
-        //시간별
-        String currentHourKey = (isBuy ? HOURLY_BUY_RANKING_KEY : HOURLY_SELL_RANKING_KEY) + LocalDate.now().format(HOUR_FORMAT);
-        zSetOps.incrementScore(currentHourKey, gameId.toString(), 1);
+        // 시간별 랭킹 증가
+        String currentHourKey = (isBuy ? HOURLY_BUY_RANKING_KEY : HOURLY_SELL_RANKING_KEY) + LocalDateTime.now().format(HOUR_FORMAT);
+        zSetOps.incrementScore(currentHourKey, gameId.toString(), adjustedScore);
 
+        // 게임 ID ↔ 타이틀 매핑 저장
         hashOps.putIfAbsent(GAME_ID_TITLE_HASH_KEY, gameId.toString(), gameTitle);
+        hashOps.putIfAbsent(GAME_TITLE_ID_HASH_KEY, gameTitle, gameId.toString());
     }
 
     /**
@@ -59,22 +73,20 @@ public class ExchangeRankingService {
         ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
 
         if (isHourly) {
-            //시간별 조회
             LocalDateTime dateTime = startDate.atStartOfDay();
             LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
             while (dateTime.isBefore(endDateTime)) {
                 String hourKey = (isBuy ? HOURLY_BUY_RANKING_KEY : HOURLY_SELL_RANKING_KEY) + dateTime.format(HOUR_FORMAT);
                 Double score = zSetOps.score(hourKey, gameId.toString());
-                result.put(dateTime.format(HOUR_FORMAT), score != null ? score.longValue() : 0L);
+                result.put(dateTime.format(HOUR_FORMAT), (score != null) ? score.longValue() : 0L);
                 dateTime = dateTime.plusHours(1);
             }
         } else {
-            //일별 조회
             LocalDate date = startDate;
-            while (date.isBefore(endDate)) {
+            while (!date.isAfter(endDate)) {
                 String todayKey = (isBuy ? DAILY_BUY_RANKING_KEY : DAILY_SELL_RANKING_KEY) + date.format(DATE_FORMAT);
                 Double score = zSetOps.score(todayKey, gameId.toString());
-                result.put(date.format(DATE_FORMAT), score != null ? score.longValue() : 0L);
+                result.put(date.format(DATE_FORMAT), (score != null) ? score.longValue() : 0L);
                 date = date.plusDays(1);
             }
         }
@@ -86,8 +98,16 @@ public class ExchangeRankingService {
      */
     public Set<String> getTopRanking(int topN, boolean isBuy) {
         ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
+        HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
         String key = isBuy ? BUY_RANKING_KEY : SELL_RANKING_KEY;
-        return zSetOps.reverseRange(key, 0, topN - 1);
+
+        Set<String> topGameIds = zSetOps.reverseRange(key, 0, topN - 1);
+        if (topGameIds == null) return Set.of();
+
+        return topGameIds.stream()
+            .map(gameId -> (String) hashOps.get(GAME_ID_TITLE_HASH_KEY, gameId))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
     }
 
     /**
@@ -134,14 +154,8 @@ public class ExchangeRankingService {
      */
     public Long getGameIdByTitle(String gameTitle) {
         HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
-
-        Map<Object, Object> entries = hashOps.entries(GAME_ID_TITLE_HASH_KEY);
-
-        return entries.entrySet().stream()
-                .filter(entry -> gameTitle.equals(entry.getValue()))
-                .map(entry -> Long.valueOf((String) entry.getKey()))
-                .findFirst()
-                .orElse(null);
+        String gameId = (String) hashOps.get(GAME_TITLE_ID_HASH_KEY, gameTitle);
+        return (gameId != null) ? Long.valueOf(gameId) : null;
     }
 
 }

@@ -59,6 +59,27 @@ public class ExchangeRankingController {
         return ResponseEntity.ok(topRanking);
     }
 
+    /**
+     * 특정 게임의 전체 기간 거래량 조회
+     */
+    @GetMapping("/total/trade-count")
+    public ResponseEntity<Long> getBuyTotalTradeCount(
+        @RequestParam Long gameId
+        ) {
+        isBuy = true;
+        Long totalTradeCount = exchangeRankingService.getTotalTradeCount(gameId, isBuy);
+        return ResponseEntity.ok(totalTradeCount);
+    }
+
+    @GetMapping("/total/trade-count")
+    public ResponseEntity<Long> getSellTotalTradeCount(
+        @RequestParam Long gameId
+    ) {
+        isBuy = false;
+        Long totalTradeCount = exchangeRankingService.getTotalTradeCount(gameId, isBuy);
+        return ResponseEntity.ok(totalTradeCount);
+    }
+
     @GetMapping("/trade-count/buy")
     public ResponseEntity<Map<String, Long>> getBuyTradeCountByTimePeriod(
             @RequestParam Long gameId,

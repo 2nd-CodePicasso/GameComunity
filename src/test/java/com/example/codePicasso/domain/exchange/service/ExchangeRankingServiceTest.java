@@ -1,10 +1,12 @@
 package com.example.codePicasso.domain.exchange.service;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,6 +34,7 @@ class ExchangeRankingServiceTest {
     private HashOperations<String, Object, Object> hashOperations;
 
     @InjectMocks
+    @Spy
     private ExchangeRankingService exchangeRankingService;
 
     private static final String BUY_RANKING_KEY = "ranking:buy";
@@ -41,8 +44,9 @@ class ExchangeRankingServiceTest {
     private static final String HOURLY_BUY_RANKING_PREFIX = "ranking:buy:hourly:";
     private static final String HOURLY_SELL_RANKING_PREFIX = "ranking:sell:hourly:";
     private static final String GAME_ID_TITLE_HASH_KEY = "game:id:title";
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter HOUR_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH");
+    private static final String GAME_TITLE_ID_HASH_KEY = "game:title:id";
+
+    private final double MOCK_TIMESTAMP = 1740575.883893;
 
     @BeforeEach
     void setUp() {
@@ -58,20 +62,26 @@ class ExchangeRankingServiceTest {
         Long gameId = 1L;
         String gameTitle = "GameA";
         boolean isBuy = true;
+        double adjustedScore = 1 + (MOCK_TIMESTAMP / 1_000_000.0);  // 예상 점수
+
+        // Mocking된 타임스탬프 값을 올바르게 설정
+        doReturn(MOCK_TIMESTAMP).when(exchangeRankingService).getCurrentTimestamp();
 
         // when
         exchangeRankingService.increaseTradeCount(gameId, gameTitle, isBuy);
 
-        // then
-        verify(zSetOperations, times(1)).incrementScore(BUY_RANKING_KEY, gameId.toString(), 1);
+        // then - 랭킹 데이터 증가 검증
+        verify(zSetOperations, times(1)).incrementScore(BUY_RANKING_KEY, gameId.toString(), adjustedScore);
 
-        String dailyKey = DAILY_BUY_RANKING_PREFIX + LocalDate.now().format(DATE_FORMAT);
-        verify(zSetOperations, times(1)).incrementScore(dailyKey, gameId.toString(), 1);
+        String dailyKey = DAILY_BUY_RANKING_PREFIX + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        verify(zSetOperations, times(1)).incrementScore(dailyKey, gameId.toString(), adjustedScore);
 
-        String hourlyKey = HOURLY_BUY_RANKING_PREFIX + LocalDate.now().format(HOUR_FORMAT);
-        verify(zSetOperations, times(1)).incrementScore(hourlyKey, gameId.toString(), 1);
+        String hourlyKey = HOURLY_BUY_RANKING_PREFIX + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH"));
+        verify(zSetOperations, times(1)).incrementScore(hourlyKey, gameId.toString(), adjustedScore);
 
+        // then - 게임 ID, 타이틀 저장 검증
         verify(hashOperations, times(1)).putIfAbsent(GAME_ID_TITLE_HASH_KEY, gameId.toString(), gameTitle);
+        verify(hashOperations, times(1)).putIfAbsent(GAME_TITLE_ID_HASH_KEY, gameTitle, gameId.toString());
     }
 
     @Test
@@ -80,20 +90,26 @@ class ExchangeRankingServiceTest {
         Long gameId = 2L;
         String gameTitle = "GameB";
         boolean isBuy = false;
+        double adjustedScore = 1 + (MOCK_TIMESTAMP / 1_000_000.0);
+
+        // Mocking된 타임스탬프 값을 올바르게 설정
+        doReturn(MOCK_TIMESTAMP).when(exchangeRankingService).getCurrentTimestamp();
 
         // when
         exchangeRankingService.increaseTradeCount(gameId, gameTitle, isBuy);
 
-        // then
-        verify(zSetOperations, times(1)).incrementScore(SELL_RANKING_KEY, gameId.toString(), 1);
+        // then - 랭킹 데이터 증가 검증
+        verify(zSetOperations, times(1)).incrementScore(SELL_RANKING_KEY, gameId.toString(), adjustedScore);
 
-        String dailyKey = DAILY_SELL_RANKING_PREFIX + LocalDate.now().format(DATE_FORMAT);
-        verify(zSetOperations, times(1)).incrementScore(dailyKey, gameId.toString(), 1);
+        String dailyKey = DAILY_SELL_RANKING_PREFIX + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        verify(zSetOperations, times(1)).incrementScore(dailyKey, gameId.toString(), adjustedScore);
 
-        String hourlyKey = HOURLY_SELL_RANKING_PREFIX + LocalDate.now().format(HOUR_FORMAT);
-        verify(zSetOperations, times(1)).incrementScore(hourlyKey, gameId.toString(), 1);
+        String hourlyKey = HOURLY_SELL_RANKING_PREFIX + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH"));
+        verify(zSetOperations, times(1)).incrementScore(hourlyKey, gameId.toString(), adjustedScore);
 
+        // then - 게임 ID ↔ 타이틀 저장 검증
         verify(hashOperations, times(1)).putIfAbsent(GAME_ID_TITLE_HASH_KEY, gameId.toString(), gameTitle);
+        verify(hashOperations, times(1)).putIfAbsent(GAME_TITLE_ID_HASH_KEY, gameTitle, gameId.toString());
     }
 
     @Test
@@ -107,7 +123,7 @@ class ExchangeRankingServiceTest {
         // when
         Set<String> result = exchangeRankingService.getTopRanking(10, true);
 
-        // then
+        // then - gameTitle이 올바르게 매핑되었는지 검증
         assertThat(result).containsExactlyInAnyOrder("GameA", "GameB");
         verify(zSetOperations, times(1)).reverseRange(BUY_RANKING_KEY, 0, 9);
     }
@@ -123,31 +139,25 @@ class ExchangeRankingServiceTest {
         // when
         Set<String> result = exchangeRankingService.getTopRanking(10, false);
 
-        // then
+        // then - gameTitle이 올바르게 매핑되었는지 검증
         assertThat(result).containsExactlyInAnyOrder("GameC", "GameD");
         verify(zSetOperations, times(1)).reverseRange(SELL_RANKING_KEY, 0, 9);
     }
 
     @Test
     void 게임_타이틀로_gameId_조회() {
-        //given
+        // given
         String gameTitle = "GameA";
-        Long gameId = 1L;
+        Long expectedGameId = 1L;
 
-        //Redis 해시 맵 엔트리 시뮬레이션을 위한 임시 데이터
-        Map<Object, Object> mockGameIdTitleMap = new HashMap<>();
-        mockGameIdTitleMap.put("1", "GameA");
-        mockGameIdTitleMap.put("2", "GameB");
+        // HashOperations에서 바로 gameTitle을 Key로 gameId를 찾도록 개선
+        when(hashOperations.get(GAME_TITLE_ID_HASH_KEY, gameTitle)).thenReturn(expectedGameId.toString());
 
-        //HashOperations의 entries 메서드에서 임시 데이터 반환
-        when(hashOperations.entries(GAME_ID_TITLE_HASH_KEY)).thenReturn(mockGameIdTitleMap);
-
-        //when
+        // when
         Long actualGameId = exchangeRankingService.getGameIdByTitle(gameTitle);
-        //then
-        //gameId 일치 확인
-        assertThat(actualGameId).isEqualTo(gameId);
-        //HashOperations의 entries 호출 검증
-        verify(hashOperations, times(1)).entries(GAME_ID_TITLE_HASH_KEY);
+
+        // then - O(1) 조회가 정상적으로 작동하는지 검증
+        assertThat(actualGameId).isEqualTo(expectedGameId);
+        verify(hashOperations, times(1)).get(GAME_TITLE_ID_HASH_KEY, gameTitle);
     }
 }
