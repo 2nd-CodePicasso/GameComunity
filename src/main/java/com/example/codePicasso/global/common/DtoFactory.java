@@ -176,9 +176,4 @@ public class DtoFactory {
                 .build();
     }
 
-    public static ImageResponse toImageDto(Image saveImage) {
-        return ImageResponse.builder()
-                .imageUrl(saveImage.getImageUrl())
-                .build();
-    }
 }

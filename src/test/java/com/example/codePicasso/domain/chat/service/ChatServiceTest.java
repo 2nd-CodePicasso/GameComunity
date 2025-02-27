@@ -56,7 +56,7 @@ public class ChatServiceTest {
     void 설정() {
         user = new User("user", "testUser", "user123");  // 예시: User 객체 생성
         roomRequest = new RoomRequest("집에가고싶은방",true,"12345");
-        chatRequest = new ChatRequest("집에가고싶다");
+        chatRequest = new ChatRequest("집에가고싶다",null);
         chatRoom = roomRequest.toEntity(user, "12345");
         chat = chatRequest.toEntityFromChat(userId, chatRoom, EmojiParser.parseToUnicode(":smile:"),username);
         globalChat = chatRequest.toEntityFromGlobalChat(userId, EmojiParser.parseToUnicode(":smile:"), username);
