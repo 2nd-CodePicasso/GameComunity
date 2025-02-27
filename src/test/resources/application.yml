@@ -25,3 +25,11 @@ jwt:
     import: optional:myInfo.yml
   secretKey: ${secure.key}
   tokenTime: ${secure.timer}
+
+cloud:
+  config:
+    import: optional:myInfo.yml
+  aws:
+    credentials:
+      access-key: ${s3.aKey}
+      secret-key: ${s3.sKey}

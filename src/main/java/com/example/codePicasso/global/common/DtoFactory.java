@@ -3,11 +3,15 @@ package com.example.codePicasso.global.common;
 
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
-import com.example.codePicasso.domain.chat.dto.response.*;
-import com.example.codePicasso.domain.chat.entity.*;
+import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
+import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
+import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
+import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.chat.entity.ChatRoom;
+import com.example.codePicasso.domain.chat.entity.GlobalChat;
+import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
-import com.example.codePicasso.domain.comment.dto.response.ReplyListResponse;
-import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
@@ -84,7 +88,7 @@ public class DtoFactory {
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
                 .createdAt(comment.getCreatedAt())
-                .updatedAp(comment.getUpdatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .replies(comment.getReplies().stream()
                         .map(DtoFactory::toCommentDto)
                         .toList())
