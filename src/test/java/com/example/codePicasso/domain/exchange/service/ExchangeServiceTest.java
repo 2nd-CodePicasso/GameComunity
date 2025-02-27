@@ -14,6 +14,7 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
+import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.DataAccessException;
 import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
@@ -41,7 +42,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class ExchangeServiceTest {
-
     @Mock
     private ExchangeConnector exchangeConnector;
 
@@ -65,11 +65,13 @@ class ExchangeServiceTest {
 
     /// --- Exchange ---
     private ExchangeRequest exchangeRequest;
+    private ExchangeResponse exchangeResponse;
     private Exchange exchange;
     private Page<Exchange> exchanges;
 
     /// --- MyExchange ---
     private MyExchangeRequest myExchangeRequest;
+    private MyExchangeResponse myExchangeResponse;
     private MyExchange myExchange;
     private Page<MyExchange> myExchanges;
     private PutMyExchangeRequest putCanceledMyExchangeRequest;
@@ -80,6 +82,7 @@ class ExchangeServiceTest {
 
     /// --- Id ---
     private Long exchangeId = 1L;
+    private Long myExchangeId = 1L;
     private Long userId = 1L;
     private Long gameId = 1L;
 
@@ -90,24 +93,27 @@ class ExchangeServiceTest {
 
     @BeforeEach
     void 설정() {
+        user = mock(User.class);
+        game = mock(Game.class);
+
         exchangeRequest = new ExchangeRequest(1L, "거래소", 100, "거래소", 100, "010-1234-5678");
         exchange = exchangeRequest.toEntity(user, game, TradeType.BUY);
         exchanges = new PageImpl<>(List.of(exchange));
+        exchangeResponse = DtoFactory.toExchangeDto(exchange);
 
         myExchangeRequest = new MyExchangeRequest("01012341234");
         myExchange = myExchangeRequest.toEntity(exchange, user);
         myExchanges = new PageImpl<>(List.of(myExchange));
+        myExchangeResponse = DtoFactory.toMyExchangeDto(myExchange);
         putCanceledMyExchangeRequest = new PutMyExchangeRequest(StatusType.CANCELED);
 
-        user = spy(User.class);
-        game = spy(Game.class);
-
         when(userConnector.findById(userId)).thenReturn(user);
-        when(gameConnector.findByIdForAdmin(gameId)).thenReturn(game);
+        when(gameConnector.findByIdForUser(gameId)).thenReturn(game);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
 
         when(user.getId()).thenReturn(userId);
-        when(game.getId()).thenReturn(userId);
+        when(game.getId()).thenReturn(gameId);
     }
 
     /// --- Exchange ✅ ---
@@ -331,7 +337,7 @@ class ExchangeServiceTest {
     @Test
     void 거래소_아이템_삭제_이미_삭제됨() {
         // given
-        Exchange exchange = spy(this.exchange);
+        Exchange exchange = mock(Exchange.class);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
         when(exchange.isCompleted()).thenReturn(true);
 

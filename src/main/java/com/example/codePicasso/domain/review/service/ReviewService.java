@@ -84,7 +84,7 @@ public class ReviewService {
             throw new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND);
         }
 
-        if (review.getUser().getId().equals(userId)) {
+        if (!review.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 

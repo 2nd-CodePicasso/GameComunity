@@ -1,15 +1,18 @@
 package com.example.codePicasso.domain.review.service;
 
+import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
+import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
 import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.service.MyExchangeConnector;
 import com.example.codePicasso.domain.review.dto.request.ReviewRequest;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
 import com.example.codePicasso.domain.review.entity.Review;
-import com.example.codePicasso.global.common.DtoFactory;
+import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +31,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
-
     @Mock
     private ReviewConnector reviewConnector;
 
@@ -38,45 +40,62 @@ class ReviewServiceTest {
     @InjectMocks
     private ReviewService reviewService;
 
-    private Long exchangeId = 1L;
     private Long userId = 1L;
+    private User user;
+
+    private Long exchangeId = 1L;
+    private Exchange exchange;
+
+    private MyExchangeRequest myExchangeRequest;
+    private MyExchange myExchange;
+
     private Long reviewId = 1L;
     private ReviewRequest reviewRequest;
     private Review review;
-    private MyExchange myExchange;
+    private Page<Review> reviews;
+
     private Pageable pageable = PageRequest.of(0, 10);
 
     @BeforeEach
     void setUp() {
-        myExchange = mock(MyExchange.class);
+        user = mock(User.class);
+
+        exchange = mock(Exchange.class);
+
         reviewRequest = new ReviewRequest(5, "Excellent service!");
-        review = mock(Review.class);
+        review = reviewRequest.toEntity(exchange, user);
+        reviews = new PageImpl<>(List.of(review));
+
+        myExchangeRequest = new MyExchangeRequest("01012341234");
+        myExchange = myExchangeRequest.toEntity(exchange, user);
+        myExchange.changeStatus(StatusType.COMPLETED);
     }
 
     /// --- Review ✅ ---
     @Test
     void 리뷰_생성() {
         // given
+        when(user.getId()).thenReturn(userId);
+        when(exchange.getId()).thenReturn(exchangeId);
         when(myExchangeConnector.findByExchangeIdAndUserId(exchangeId, userId)).thenReturn(myExchange);
-        when(myExchange.getStatusType()).thenReturn(StatusType.COMPLETED);
-        when(reviewRequest.toEntity(any(), any())).thenReturn(review);
         when(reviewConnector.save(any(Review.class))).thenReturn(review);
-        when(DtoFactory.toReviewDto(review)).thenReturn(new ReviewResponse(reviewId, 5, "Excellent service!"));
 
         // when
         ReviewResponse response = reviewService.createReview(exchangeId, userId, reviewRequest);
 
         // then
-        assertNotNull(response);
-        assertEquals(5, response.rating());
+        Assertions.assertThat(response)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "exchangeId", "userId")
+                .isEqualTo(reviewRequest);
     }
 
     @Test
     void 리뷰_조회() {
         // given
-        Page<Review> reviews = new PageImpl<>(List.of(review));
+        when(user.getId()).thenReturn(userId);
+        when(exchange.getId()).thenReturn(exchangeId);
         when(reviewConnector.findAllByExchangeId(exchangeId, pageable)).thenReturn(reviews);
-        when(DtoFactory.toReviewDto(any())).thenReturn(new ReviewResponse(reviewId, 5, "Excellent service!"));
 
         // when
         Page<ReviewResponse> responses = reviewService.getReviews(exchangeId, 0, 10);
@@ -89,26 +108,27 @@ class ReviewServiceTest {
     @Test
     void 리뷰_수정() {
         // given
+        when(user.getId()).thenReturn(userId);
+        when(exchange.getId()).thenReturn(exchangeId);
         when(reviewConnector.findById(reviewId)).thenReturn(review);
-        when(review.getExchange().getId()).thenReturn(exchangeId);
-        when(review.getUser().getId()).thenReturn(userId);
-        when(DtoFactory.toReviewDto(review)).thenReturn(new ReviewResponse(reviewId, exchangeId, 4, "Updated review"));
+        ReviewRequest updateRequest = new ReviewRequest(4, "updated review!");
 
         // when
-        ReviewResponse response = reviewService.updateReview(exchangeId, reviewId, userId, new ReviewRequest(4, "Updated review"));
+        ReviewResponse response = reviewService.updateReview(exchangeId, reviewId, userId, updateRequest);
 
         // then
-        assertNotNull(response);
-        assertEquals(4, response.rating());
-        assertEquals("Updated review", response.review());
+        Assertions.assertThat(response)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "exchangeId", "userId")
+                .isEqualTo(updateRequest);
     }
 
     @Test
     void 리뷰_삭제() {
         // given
+        when(user.getId()).thenReturn(userId);
+        when(exchange.getId()).thenReturn(exchangeId);
         when(reviewConnector.findById(reviewId)).thenReturn(review);
-        when(review.getExchange().getId()).thenReturn(exchangeId);
-        when(review.getUser().getId()).thenReturn(userId);
 
         // when
         reviewService.deleteReview(exchangeId, reviewId, userId);
@@ -123,7 +143,7 @@ class ReviewServiceTest {
     void 리뷰_생성_실패_거래완료되지않음() {
         // given
         when(myExchangeConnector.findByExchangeIdAndUserId(exchangeId, userId)).thenReturn(myExchange);
-        when(myExchange.getStatusType()).thenReturn(StatusType.PROGRESS);
+        myExchange.changeStatus(StatusType.PROGRESS);
 
         // when & then
         InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
@@ -137,7 +157,7 @@ class ReviewServiceTest {
     void 리뷰_조회_실패_잘못된_거래_ID() {
         // given
         when(reviewConnector.findById(reviewId)).thenReturn(review);
-        when(review.getExchange().getId()).thenReturn(2L);
+        when(exchange.getId()).thenReturn(2L);
 
         // when & then
         NotFoundException exception = assertThrows(NotFoundException.class, () -> {
@@ -151,8 +171,8 @@ class ReviewServiceTest {
     void 리뷰_삭제_실패_사용자_ID_불일치() {
         // given
         when(reviewConnector.findById(reviewId)).thenReturn(review);
-        when(review.getExchange().getId()).thenReturn(exchangeId);
-        when(review.getUser().getId()).thenReturn(2L);
+        when(exchange.getId()).thenReturn(exchangeId);
+        when(user.getId()).thenReturn(2L);
 
         // when & then
         NotFoundException exception = assertThrows(NotFoundException.class, () -> {
