@@ -139,6 +139,7 @@ public class DtoFactory {
     public static ChatResponse toChatDto(Chat chats) {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
+                .roomId(chats.getChatRoom().getId())
                 .message(chats.getContent())
                 .username(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
