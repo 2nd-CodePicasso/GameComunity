@@ -14,7 +14,7 @@ public record CommentResponse(
         String nickname,
         String text,
         LocalDateTime createdAt,
-        LocalDateTime updatedAp,
+        LocalDateTime updatedAt,
         List<CommentResponse> replies
 ) {
 }

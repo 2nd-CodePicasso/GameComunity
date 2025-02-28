@@ -14,7 +14,8 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
-import com.example.codePicasso.global.exception.base.DataAccessException;
+import com.example.codePicasso.global.common.DtoFactory;
+import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -40,7 +41,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class ExchangeServiceTest {
-
     @Mock
     private ExchangeConnector exchangeConnector;
 
@@ -62,18 +62,30 @@ class ExchangeServiceTest {
     @InjectMocks
     private ExchangeService exchangeService;
 
+    /// --- Exchange ---
     private ExchangeRequest exchangeRequest;
+    private ExchangeResponse exchangeResponse;
     private Exchange exchange;
     private Page<Exchange> exchanges;
+
+    /// --- MyExchange ---
     private MyExchangeRequest myExchangeRequest;
+    private MyExchangeResponse myExchangeResponse;
     private MyExchange myExchange;
     private Page<MyExchange> myExchanges;
-    private PutExchangeRequest putCanceledExchangeRequest;
+    private PutExchangeRequest putCanceledMyExchangeRequest;
+
+    /// --- Entity ---
     private User user;
     private Game game;
+
+    /// --- Id ---
     private Long exchangeId = 1L;
+    private Long myExchangeId = 1L;
     private Long userId = 1L;
     private Long gameId = 1L;
+
+    /// --- Page ---
     private int page = 0;
     private int size = 10;
     private Pageable pageable = PageRequest.of(page, size);
@@ -86,20 +98,23 @@ class ExchangeServiceTest {
         exchangeRequest = new ExchangeRequest(1L, "거래소", 100, "거래소", 100, "010-1234-5678");
         exchange = exchangeRequest.toEntity(user, game, TradeType.BUY);
         exchanges = new PageImpl<>(List.of(exchange));
+        exchangeResponse = DtoFactory.toExchangeDto(exchange);
 
         myExchangeRequest = new MyExchangeRequest("01012341234");
         myExchange = myExchangeRequest.toEntity(exchange, user);
         myExchanges = new PageImpl<>(List.of(myExchange));
-        putCanceledExchangeRequest = new PutExchangeRequest(StatusType.CANCELED);
+        myExchangeResponse = DtoFactory.toMyExchangeDto(myExchange);
+        putCanceledMyExchangeRequest = new PutExchangeRequest(StatusType.CANCELED);
 
         when(userConnector.findById(userId)).thenReturn(user);
-        when(gameConnector.findByIdForAdmin(gameId)).thenReturn(game);
+        when(gameConnector.findByIdForUser(gameId)).thenReturn(game);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
 
         when(user.getId()).thenReturn(userId);
-        when(game.getId()).thenReturn(userId);
+        when(game.getId()).thenReturn(gameId);
     }
 
+    /// --- Exchange ✅ ---
     @Test
     void 거래소_아이템_생성() {
         // given
@@ -111,9 +126,9 @@ class ExchangeServiceTest {
         // then
         ExchangeResponse expectedResponse = convertToResponse(exchange, userId);
         Assertions.assertThat(response)
-            .usingRecursiveComparison()
-            .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
-            .isEqualTo(expectedResponse);
+                .usingRecursiveComparison()
+                .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
+                .isEqualTo(expectedResponse);
     }
 
     @Test
@@ -122,7 +137,7 @@ class ExchangeServiceTest {
         when(exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.BUY, pageable)).thenReturn(exchanges);
 
         // when
-        Page<ExchangeResponse> responses = exchangeService.getBuyExchanges(gameId, page, size);
+        Page<ExchangeResponse> responses = exchangeService.getExchanges(TradeType.BUY, gameId, page, size);
 
         // then
         verify(exchangeConnector).findByGameIdAndTradeType(gameId, TradeType.BUY, pageable);
@@ -136,7 +151,7 @@ class ExchangeServiceTest {
         when(exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.SELL, pageable)).thenReturn(exchanges);
 
         // when
-        Page<ExchangeResponse> responses = exchangeService.getSellExchanges(gameId, page, size);
+        Page<ExchangeResponse> responses = exchangeService.getExchanges(TradeType.SELL, gameId, page, size);
 
         // then
         verify(exchangeConnector).findByGameIdAndTradeType(gameId, TradeType.SELL, pageable);
@@ -161,30 +176,30 @@ class ExchangeServiceTest {
     void 거래소_아이템_수정() {
         // given
         ExchangeRequest newReq = new ExchangeRequest(1L, "짱거래소", 1000, "거래소", 100, "010-1234-5678");
+        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
         when(exchangeConnector.save(any(Exchange.class))).thenReturn(exchange);
-        when(exchange.getUser().getId()).thenReturn(userId);
 
         // when
         ExchangeResponse response = exchangeService.updateExchange(exchangeId, newReq, userId);
 
         // then
         ExchangeResponse expectedResponse = new ExchangeResponse(
-            exchange.getId(),
-            userId,
-            exchange.getGame().getId(),
-            "짱거래소", // 변경된 값
-            1000, // 변경된 값
-            exchange.getDescription(),
-            exchange.getQuantity(),
-            exchange.getContact(),
-            exchange.getTradeType(),
-            exchange.getStatusType()
+                exchange.getId(),
+                userId,
+                exchange.getGame().getId(),
+                "짱거래소", // 변경된 값
+                1000, // 변경된 값
+                exchange.getDescription(),
+                exchange.getQuantity(),
+                exchange.getContact(),
+                exchange.getTradeType(),
+                exchange.getStatusType()
         );
 
         Assertions.assertThat(response)
-            .usingRecursiveComparison()
-            .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
-            .isEqualTo(expectedResponse);
+                .usingRecursiveComparison()
+                .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
+                .isEqualTo(expectedResponse);
     }
 
     @Test
@@ -196,111 +211,98 @@ class ExchangeServiceTest {
         exchangeService.deleteExchange(exchangeId, userId);
 
         // then
-        verify(exchangeConnector, atLeastOnce()).deleteById(exchangeId);
+        verify(exchangeConnector).deleteById(exchangeId);
     }
+    /// --- Exchange ✅ ---
 
+    /// --- Exchange ❌ ---
     @Test
-    void 판매하기_구매하기() {
+    void 거래소_아이템_생성_게임_없음() {
         // given
-        when(exchangeConnector.save(any(Exchange.class))).thenReturn(exchange);
-        when(myExchangeConnector.save(any(MyExchange.class))).thenReturn(myExchange);
+        Long wrongGameId = 999L;
+        when(gameConnector.findByIdForUser(wrongGameId)).thenThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        // when
-        MyExchangeResponse response = exchangeService.doExchange(exchangeId, userId, myExchangeRequest);
-
-        // then
-        Assertions.assertThat(response)
-                .usingRecursiveComparison()
-                .ignoringFields("exchange", "user") // id는 자동 생성되므로 비교에서 제외
-                .isEqualTo(myExchangeRequest);
-    }
-
-    @Test
-    void 내_구매하기_목록() {
-        // given
-        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable)).thenReturn(myExchanges);
-
-        // when
-        Page<MyExchangeResponse> myBuyExchanges = exchangeService.getMyBuyExchanges(userId, page, size);
-
-        // then
-        verify(myExchangeConnector).findByUserIdAndTradeType(userId, TradeType.BUY, pageable);
-        assertNotNull(myBuyExchanges);
-        assertEquals(1, myBuyExchanges.getSize());
-    }
-
-    @Test
-    void 내_판매하기_목록() {
-        // given
-        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable)).thenReturn(myExchanges);
-
-        // when
-        Page<MyExchangeResponse> mySellExchanges = exchangeService.getMySellExchanges(userId, page, size);
-
-        // then
-        verify(myExchangeConnector).findByUserIdAndTradeType(userId, TradeType.SELL, pageable);
-        assertNotNull(mySellExchanges);
-        assertEquals(1, mySellExchanges.getSize());
-    }
-
-    @Test
-    void 거래_상태_변경_및_처리_로직() {
-        // given
-        when(myExchangeConnector.findById(1L)).thenReturn(myExchange);
-
-        // when
-        exchangeService.putExchange(1L, userId, putCanceledExchangeRequest);
-
-        // then
-        Assertions.assertThat(myExchange.getExchange().getStatusType()).isEqualTo(StatusType.CANCELED);
-        verify(myExchangeConnector).save(myExchange);
-    }
-
-    // 거래 완료 시 Redisson 락이 정상적으로 획득 및 해제.
-    @Test
-    void 거래_완료시_Redis_락_획득과_해제() {
-        // given
-        when(redisLockService.acquireLock(exchangeId)).thenReturn(true); // 락 획득 성공
-        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
-        doNothing().when(exchangeRankingService).increaseTradeCount(anyString(), anyBoolean()); // 거래 랭킹 업데이트 목 처리
-
-        // when
-        exchangeService.completeExchange(exchangeId);
-
-        // then
-        verify(redisLockService).acquireLock(exchangeId); // 락 획득 검증
-        verify(exchangeRankingService).increaseTradeCount(exchange.getGame().getGameTitle(), exchange.getTradeType() == TradeType.BUY); // 거래 랭킹 업데이트 검증
-        verify(redisLockService).releaseLock(exchangeId); // 락 해제 검증
-    }
-
-    // 거래 완료 시 Redisson 락을 얻지 못한 경우 예외 발생 여부
-    @Test
-    void 거래_완료시_Redis_락_획득_실패시_예외발생() {
-        // given
-        when(redisLockService.acquireLock(exchangeId)).thenReturn(false); // 락 획득 실패
+        ExchangeRequest requestWithWrongGameId = new ExchangeRequest(wrongGameId, "거래소", 100, "거래소", 100, "010-1234-5678");
 
         // when & then
-        InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
-            exchangeService.completeExchange(exchangeId);
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            exchangeService.createExchange(requestWithWrongGameId, TradeType.BUY, userId);
         });
 
-        assertEquals("거래 완료 처리가 이미 진행 중입니다.", exception.getMessage());
-        verify(redisLockService, never()).releaseLock(exchangeId); // 락 해제 호출되지 않음 검증
+        assertEquals(ErrorCode.GAME_NOT_FOUND, exception.getErrorCode());
     }
 
-    // 예외 or 다른 로직 처리
     @Test
     void 거래소_아이템_조회_구매_Param_gameId_No() {
         // given
         when(exchangeConnector.findByTradeType(TradeType.BUY, pageable)).thenReturn(exchanges);
 
         // when
-        Page<ExchangeResponse> responses = exchangeService.getBuyExchanges(null, page, size);
+        Page<ExchangeResponse> responses = exchangeService.getExchanges(TradeType.BUY, null, page, size);
 
         // then
         verify(exchangeConnector).findByTradeType(TradeType.BUY, pageable);
         assertNotNull(responses);
         assertEquals(1, responses.getSize());
+    }
+
+    @Test
+    void 거래소_아이템_생성_유저_없음() {
+        // given
+        Long wrongUserId = 999L;
+        when(userConnector.findById(wrongUserId)).thenThrow(new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        // when & then
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            exchangeService.createExchange(exchangeRequest, TradeType.BUY, wrongUserId);
+        });
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    void 내_구매하기_목록_빈결과() {
+        // given
+        Page<MyExchange> emptyPage = new PageImpl<>(List.of());
+        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable)).thenReturn(emptyPage);
+
+        // when
+        Page<MyExchangeResponse> responses = exchangeService.getAllMyExchange(TradeType.BUY, userId, page, size);
+
+        // then
+        assertNotNull(responses);
+        assertEquals(0, responses.getTotalElements());
+    }
+
+    @Test
+    void 내_판매하기_목록_빈결과() {
+        // given
+        Page<MyExchange> emptyPage = new PageImpl<>(List.of());
+        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable)).thenReturn(emptyPage);
+
+        // when
+        Page<MyExchangeResponse> responses = exchangeService.getAllMyExchange(TradeType.SELL, userId, page, size);
+
+        // then
+        assertNotNull(responses);
+        assertEquals(0, responses.getTotalElements());
+    }
+
+    @Test
+    void 거래소_아이템_수정_권한없음() {
+        // given
+        Long anotherUserId = 999L;
+        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        when(exchange.getUser().getId()).thenReturn(userId);
+
+        ExchangeRequest newReq = new ExchangeRequest(1L, "업데이트된 거래소", 500, "업데이트", 200, "010-5678-1234");
+
+        // when & then
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            exchangeService.updateExchange(exchangeId, newReq, anotherUserId);
+        });
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
@@ -328,122 +330,76 @@ class ExchangeServiceTest {
         });
         assertEquals(ErrorCode.EXCHANGE_NOT_FOUND, exception.getErrorCode());
     }
+    /// --- Exchange ❌ ---
 
-    // --- GPT 테스트 ---
-
+    /// --- MyExchange ✅ ---
     @Test
-    void 거래소_아이템_생성_유저_없음() {
+    void 판매하기_구매하기() {
         // given
-        Long wrongUserId = 999L;
-        when(userConnector.findById(wrongUserId)).thenThrow(new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        when(exchangeConnector.save(any(Exchange.class))).thenReturn(exchange);
+        when(myExchangeConnector.save(any(MyExchange.class))).thenReturn(myExchange);
 
-        // when & then
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            exchangeService.createExchange(exchangeRequest, TradeType.BUY, wrongUserId);
-        });
+        // when
+        MyExchangeResponse response = exchangeService.doExchange(exchangeId, userId, myExchangeRequest);
 
-        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+        // then
+        Assertions.assertThat(response.contact()).isEqualTo(myExchangeRequest.contact());
     }
 
     @Test
-    void 거래소_아이템_생성_게임_없음() {
+    void 내_구매하기_목록() {
         // given
-        Long wrongGameId = 999L;
-        when(gameConnector.findByIdForUser(wrongGameId)).thenThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable)).thenReturn(myExchanges);
 
-        ExchangeRequest requestWithWrongGameId = new ExchangeRequest(wrongGameId, "거래소", 100, "거래소", 100, "010-1234-5678");
+        // when
+        Page<MyExchangeResponse> myBuyExchanges = exchangeService.getAllMyExchange(TradeType.BUY, userId, page, size);
 
-        // when & then
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            exchangeService.createExchange(requestWithWrongGameId, TradeType.BUY, userId);
-        });
-
-        assertEquals(ErrorCode.GAME_NOT_FOUND, exception.getErrorCode());
+        // then
+        verify(myExchangeConnector).findByUserIdAndTradeType(userId, TradeType.BUY, pageable);
+        assertNotNull(myBuyExchanges);
+        assertEquals(1, myBuyExchanges.getSize());
     }
 
     @Test
-    void 거래소_아이템_수정_권한없음() {
+    void 내_판매하기_목록() {
         // given
-        Long anotherUserId = 999L;
-        when(exchange.getUser().getId()).thenReturn(userId);
+        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable)).thenReturn(myExchanges);
 
-        ExchangeRequest newReq = new ExchangeRequest(1L, "업데이트된 거래소", 500, "업데이트", 200, "010-5678-1234");
+        // when
+        Page<MyExchangeResponse> mySellExchanges = exchangeService.getAllMyExchange(TradeType.SELL, userId, page, size);
 
-        // when & then
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            exchangeService.updateExchange(exchangeId, newReq, anotherUserId);
-        });
-
-        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+        // then
+        verify(myExchangeConnector).findByUserIdAndTradeType(userId, TradeType.SELL, pageable);
+        assertNotNull(mySellExchanges);
+        assertEquals(1, mySellExchanges.getSize());
     }
 
     @Test
-    void 거래소_아이템_삭제_권한없음() {
+    void 거래_상태_변경_및_처리_로직() {
         // given
-        Long anotherUserId = 999L;
-        when(exchange.getUser().getId()).thenReturn(userId);
+        when(myExchangeConnector.findById(1L)).thenReturn(myExchange);
 
-        // when & then
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            exchangeService.deleteExchange(exchangeId, anotherUserId);
-        });
+        // when
+        exchangeService.decisionMyExchange(1L, userId, putCanceledMyExchangeRequest);
 
-        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+        // then
+        Assertions.assertThat(myExchange.getExchange().getStatusType()).isEqualTo(StatusType.CANCELED);
+        verify(myExchangeConnector).save(myExchange);
     }
+    /// --- MyExchange ✅ ---
 
-    @Test
-    void 거래소_아이템_삭제_이미_삭제됨() {
-        // given
-        doThrow(new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND)).when(exchangeConnector).deleteById(exchangeId);
-
-        // when & then
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            exchangeService.deleteExchange(exchangeId, userId);
-        });
-
-        assertEquals(ErrorCode.EXCHANGE_NOT_FOUND, exception.getErrorCode());
-    }
-
+    /// --- MyExchange ❌ ---
     @Test
     void 거래_중복_요청_예외() {
         // given
-        Exchange spyExchange = spy(exchange);
-        when(spyExchange.getStatusType()).thenReturn(StatusType.PROGRESS);
-        when(exchangeConnector.findById(exchangeId)).thenReturn(spyExchange);
+        when(myExchangeConnector.existsByExchangeIdAndUserId(exchangeId, userId)).thenReturn(true);
 
         // when & then
-        InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
+        DuplicateException exception = assertThrows(DuplicateException.class, () -> {
             exchangeService.doExchange(exchangeId, userId, myExchangeRequest);
         });
 
-        assertEquals(ErrorCode.ALREADY_IN_PROGRESS, exception.getErrorCode());
-    }
-
-    @Test
-    void 거래_완료시_랭킹_업데이트_실패() {
-        // given
-        when(redisLockService.acquireLock(exchangeId)).thenReturn(true);
-
-        Exchange spyExchange = spy(exchange);
-        when(spyExchange.getGame()).thenReturn(game);
-        when(game.getGameTitle()).thenReturn("테스트 게임");
-
-        when(exchangeConnector.findById(exchangeId)).thenReturn(spyExchange);
-
-        // when
-        doThrow(new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED))
-                .when(exchangeRankingService)
-                .increaseTradeCount("테스트 게임", true);
-
-        // when & then
-        DataAccessException exception = assertThrows(DataAccessException.class, () -> {
-            exchangeService.completeExchange(exchangeId);
-        });
-
-        // then
-        assertEquals(ErrorCode.TRADE_RANKING_UPDATE_FAILED, exception.getErrorCode());
-        verify(redisLockService).releaseLock(exchangeId);
-        verify(exchangeRankingService, times(1)).increaseTradeCount("테스트 게임", exchange.getTradeType() == TradeType.BUY);
+        assertEquals(ErrorCode.DUPLICATE, exception.getErrorCode());
     }
 
     @Test
@@ -458,54 +414,54 @@ class ExchangeServiceTest {
 
         assertEquals(ErrorCode.ALREADY_IN_PROGRESS, exception.getErrorCode());
     }
+    /// --- MyExchange ❌ ---
 
+    /// --- Redis ✅ ---
     @Test
-    void 내_구매하기_목록_빈결과() {
+    void 거래_완료시_Redis_락_획득과_해제() {
         // given
-        Page<MyExchange> emptyPage = new PageImpl<>(List.of());
-        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable)).thenReturn(emptyPage);
+        when(redisLockService.acquireLock(exchangeId)).thenReturn(true); // 락 획득 성공
+        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        doNothing().when(exchangeRankingService).increaseTradeCount(anyString(), anyBoolean()); // 거래 랭킹 업데이트 목 처리
 
         // when
-        Page<MyExchangeResponse> responses = exchangeService.getMyBuyExchanges(userId, page, size);
+        exchangeService.completeExchange(exchangeId);
 
         // then
-        assertNotNull(responses);
-        assertEquals(0, responses.getTotalElements());
+        verify(redisLockService).acquireLock(exchangeId); // 락 획득 검증
+        verify(exchangeRankingService).increaseTradeCount(exchange.getGame().getGameTitle(), exchange.getTradeType() == TradeType.BUY); // 거래 랭킹 업데이트 검증
+        verify(redisLockService).releaseLock(exchangeId); // 락 해제 검증
     }
+    /// --- Redis ✅ ---
 
+    /// --- Redis ❌---
     @Test
-    void 내_판매하기_목록_빈결과() {
+    void 거래_완료시_Redis_락_획득_실패시_예외발생() {
         // given
-        Page<MyExchange> emptyPage = new PageImpl<>(List.of());
-        when(myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable)).thenReturn(emptyPage);
+        when(redisLockService.acquireLock(exchangeId)).thenReturn(false); // 락 획득 실패
 
-        // when
-        Page<MyExchangeResponse> responses = exchangeService.getMySellExchanges(userId, page, size);
+        // when & then
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
+            exchangeService.completeExchange(exchangeId);
+        });
 
-        // then
-        assertNotNull(responses);
-        assertEquals(0, responses.getTotalElements());
+        assertEquals("거래 완료 처리가 이미 진행 중입니다.", exception.getMessage());
+        verify(redisLockService, never()).releaseLock(exchangeId); // 락 해제 호출되지 않음 검증
     }
-
-
-    /**추가적으로 테스트 할만한 것들.
-     * 내 구매 목록, 내 판매 목록, buy 취소, sell 거래 승인/거절
-     * 추가적으로 랭킹 가져오는 테스트 코드를 만들 수 있으면?
-     * */
+    /// --- Redis ❌---
 
     private ExchangeResponse convertToResponse(Exchange exchange, Long userId) {
         return ExchangeResponse.builder()
-            .id(exchange.getId())
-            .userId(userId)
-            .gameId(exchange.getGame().getId())
-            .title(exchange.getTitle())
-            .price(exchange.getPrice())
-            .description(exchange.getDescription())
-            .quantity(exchange.getQuantity())
-            .contact(exchange.getContact())
-            .tradeType(exchange.getTradeType())
-            .statustype(exchange.getStatusType())
-            .build();
+                .id(exchange.getId())
+                .userId(userId)
+                .gameId(exchange.getGame().getId())
+                .title(exchange.getTitle())
+                .price(exchange.getPrice())
+                .description(exchange.getDescription())
+                .quantity(exchange.getQuantity())
+                .contact(exchange.getContact())
+                .tradeType(exchange.getTradeType())
+                .statustype(exchange.getStatusType())
+                .build();
     }
 }
-

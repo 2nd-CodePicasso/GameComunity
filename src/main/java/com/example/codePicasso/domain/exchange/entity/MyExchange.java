@@ -19,7 +19,7 @@ public class MyExchange extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "exchange_id", nullable = false)
     private Exchange exchange;
 

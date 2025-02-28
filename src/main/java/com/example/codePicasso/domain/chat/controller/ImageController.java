@@ -1,32 +1,28 @@
 package com.example.codePicasso.domain.chat.controller;
 
-import com.example.codePicasso.domain.chat.dto.response.ImageResponse;
-import com.example.codePicasso.domain.chat.service.ImageService;
+import com.example.codePicasso.domain.chat.service.S3Service;
 import com.example.codePicasso.global.common.ApiResponse;
-import com.example.codePicasso.global.common.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping
+@RestController
+@RequestMapping("/images/hi/bye")
 @RequiredArgsConstructor
 public class ImageController {
 
-    private final ImageService imageService;
+    private final S3Service s3Service;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ImageResponse>> addImage(
-            @RequestParam MultipartFile multipartFile,
-            @AuthenticationPrincipal CustomUser user
+    public ResponseEntity<ApiResponse<String>> addImage(
+            @RequestParam String filename
             ) {
-        ImageResponse imageResponse = imageService.addImage(multipartFile,user.getUserId());
+        String url = s3Service.makePreSignedUrl(filename);
 
-        return ApiResponse.created(imageResponse);
+        return ApiResponse.created(url);
     }
 }
