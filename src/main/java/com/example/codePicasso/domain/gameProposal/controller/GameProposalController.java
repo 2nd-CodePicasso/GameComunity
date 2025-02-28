@@ -12,11 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,7 +49,7 @@ public class GameProposalController {
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getMyProposalsApi(
             @AuthenticationPrincipal CustomUser user
     ) {
-        GameProposalGetManyResponse response = gameProposalService.getMyProposals(user.getUserId());
+        GameProposalGetManyResponse response = gameProposalService.getProposalsByUserId(user.getUserId());
         return ApiResponse.success(response);
     }
 

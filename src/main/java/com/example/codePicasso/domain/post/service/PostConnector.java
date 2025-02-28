@@ -2,20 +2,20 @@ package com.example.codePicasso.domain.post.service;
 
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public interface PostConnector {
     Post save(Post post);
 
-    List<Post> findAllByGameId(Long gameId);
+    Page<Post> findAllByGameId(Long gameId, Pageable pageable);
 
-    List<Post> findAllByCategoryId(Long categoryId);
+    Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable);
 
-    List<Post> findAllByStatus(PostStatus postStatus);
-  
+    Page<Post> findAllByStatus(PostStatus postStatus, Pageable pageable);
+
     Post findById(Long postId);
 
     Post findByIdAndUserId(Long postId, Long userId);

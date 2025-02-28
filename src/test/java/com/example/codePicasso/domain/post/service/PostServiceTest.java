@@ -8,6 +8,7 @@ import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
@@ -17,11 +18,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,6 +73,7 @@ class PostServiceTest {
                 .category(mockCategory)
                 .title("test Title")
                 .description("This is a test post.")
+                .viewCount(0)
                 .build();
         posts.add(mockPost);
         postRequest = new PostRequest(1L, "testTitle", "This is a test post.");
@@ -89,7 +92,7 @@ class PostServiceTest {
         when(categoriesConnector.findById(categoryId)).thenReturn(mockCategory);
         when(postConnector.save(any(Post.class))).thenReturn(mockPost);
 
-        PostResponse response = postService.createPost(userId, postRequest);
+        PostResponse response = postService.createPost(userId, request);
 
         // Then
         verify(postConnector, times(1)).save(any());
@@ -105,31 +108,18 @@ class PostServiceTest {
     void 게시물_찾기_게임아이디() {
         //given
         Long gameId = 1L;
+        int page = 0;
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
         //when
-        when(postConnector.findAllByGameId(gameId)).thenReturn(posts);
-        PostListResponse postListResponse = postService.findAllByGameId(gameId);
+        when(postConnector.findAllByGameId(eq(gameId), any(Pageable.class))).thenReturn(pagePosts);
+        PostListResponse postListResponse = postService.findAllByGameId(gameId, page, size);
 
         //then
-        verify(postConnector).findAllByGameId(gameId);
-        assertEquals(posts.get(0).getId(),postListResponse.postResponses().get(0).postId());
-        assertEquals(posts.get(0).getGame().getId(),postListResponse.postResponses().get(0).gameId());
-        assertEquals(posts.get(0).getTitle(),postListResponse.postResponses().get(0).title());
-        assertEquals(posts.get(0).getCategory().getCategoryName(),postListResponse.postResponses().get(0).categoryName());
-        assertEquals(posts.get(0).getDescription(),postListResponse.postResponses().get(0).description());
-    }
-
-    @Test
-    void 게시물_찾기_카테고리아이디() {
-        //given
-        Long categoryId = 1L;
-
-        //when
-        when(postConnector.findAllByCategoryId(categoryId)).thenReturn(posts);
-        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId);
-
-        //then
-        verify(postConnector).findAllByCategoryId(categoryId);
+        verify(postConnector).findAllByGameId(eq(gameId), eq(pageable));
         assertEquals(posts.get(0).getId(), postListResponse.postResponses().get(0).postId());
         assertEquals(posts.get(0).getGame().getId(), postListResponse.postResponses().get(0).gameId());
         assertEquals(posts.get(0).getTitle(), postListResponse.postResponses().get(0).title());
@@ -137,6 +127,51 @@ class PostServiceTest {
         assertEquals(posts.get(0).getDescription(), postListResponse.postResponses().get(0).description());
     }
 
+    @Test
+    void 게시물_찾기_카테고리아이디() {
+        //given
+        Long categoryId = 1L;
+        int page = 0;
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
+
+        //when
+        when(postConnector.findAllByCategoryId(eq(categoryId), any(Pageable.class))).thenReturn(pagePosts);
+        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId, page, size);
+
+        //then
+        verify(postConnector).findAllByCategoryId(eq(categoryId), eq(pageable));
+        assertEquals(posts.get(0).getId(), postListResponse.postResponses().get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(), postListResponse.postResponses().get(0).gameId());
+        assertEquals(posts.get(0).getTitle(), postListResponse.postResponses().get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(), postListResponse.postResponses().get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(), postListResponse.postResponses().get(0).description());
+    }
+
+    @Test
+    void 게시물_찾기_추천게시물() {
+        // Given
+        int page = 0;
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
+
+        // When
+        when(postConnector.findAllByStatus(eq(PostStatus.RECOMMENDED), any(Pageable.class))).thenReturn(pagePosts);
+        PostListResponse postListResponse = postService.findRecommendedPost(page, size);
+
+        // Then
+        verify(postConnector).findAllByStatus(eq(PostStatus.RECOMMENDED), eq(pageable));
+        assertEquals(posts.get(0).getId(), postListResponse.postResponses().get(0).postId());
+        assertEquals(posts.get(0).getGame().getId(), postListResponse.postResponses().get(0).gameId());
+        assertEquals(posts.get(0).getTitle(), postListResponse.postResponses().get(0).title());
+        assertEquals(posts.get(0).getCategory().getCategoryName(), postListResponse.postResponses().get(0).categoryName());
+        assertEquals(posts.get(0).getDescription(), postListResponse.postResponses().get(0).description());
+
+    }
     @Test
     void 게시물_찾기_게시물아이디() {
         //given
