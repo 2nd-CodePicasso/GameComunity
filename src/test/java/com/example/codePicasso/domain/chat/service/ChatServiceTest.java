@@ -84,12 +84,15 @@ public class ChatServiceTest {
     @Test
     void 글라발_채팅기록_조회() {
         //given
+        Long chatId = 1L;
+        LocalDateTime lastTime = LocalDateTime.now();
+        int size = 10;
         //when
-        when(globalChatConnector.findAll()).thenReturn(globalChats);
-        GlobalChatListResponse chatsHistory = chatService.getChatsHistory();
+        when(globalChatConnector.findAll(chatId, lastTime, size)).thenReturn(globalChats);
+        GlobalChatListResponse chatsHistory = chatService.getChatsHistory(chatId,lastTime,size);
 
         //then
-        verify(globalChatConnector).findAll();
+        verify(globalChatConnector).findAll(chatId,lastTime,size);
         assertEquals(globalChats.get(0).getUsername(), chatsHistory.chatsResponseList().get(0).username());
         assertEquals(globalChats.get(0).getContent(), chatsHistory.chatsResponseList().get(0).message());
     }

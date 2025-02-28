@@ -42,10 +42,10 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public GlobalChatListResponse getChatsHistory() {
-        List<GlobalChat> chats = globalChatConnector.findAll();
+    public GlobalChatListResponse getChatsHistory(Long chatId, LocalDateTime lastTime,int size) {
+        List<GlobalChat> chats = globalChatConnector.findAll(chatId,lastTime,size);
         return GlobalChatListResponse.builder()
-                .chatsResponseList(chats.stream().map(DtoFactory::toGlobalChatDto).toList())
+                .chatsResponses(chats.stream().map(DtoFactory::toGlobalChatDto).toList())
                 .build();
     }
 
