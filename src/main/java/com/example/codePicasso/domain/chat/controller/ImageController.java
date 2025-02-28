@@ -5,10 +5,7 @@ import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/images/hi/bye")
@@ -17,7 +14,7 @@ public class ImageController {
 
     private final S3Service s3Service;
 
-    @PostMapping
+    @GetMapping
     public ResponseEntity<ApiResponse<String>> addImage(
             @RequestParam String filename
             ) {

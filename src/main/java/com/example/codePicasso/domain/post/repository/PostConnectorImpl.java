@@ -1,19 +1,24 @@
 package com.example.codePicasso.domain.post.repository;
 
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.entity.QPost;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class PostConnectorImpl implements PostConnector {
     private final PostRepository postRepository;
+    private final JPAQueryFactory jpaQueryFactory;
 
     // 게시글 생성
     @Override
@@ -24,7 +29,8 @@ public class PostConnectorImpl implements PostConnector {
     // gameId로 게시글 전체 조회
     @Override
     public Page<Post> findAllByGameId(Long gameId, Pageable pageable) {
-        return postRepository.findAllByGameId(gameId, pageable);
+
+        return null;
     }
 
     // 게임별 추천게시물 조회

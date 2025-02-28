@@ -92,6 +92,8 @@
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요." />
         <button onclick="sendMessage()">전송</button>
         <div id="response-time">응답 시간: -</div>
+        <input type="file" id="fileInput" />
+        <button id="uploadBtn">Upload to S3</button>
     </div>
 
     <div id="chat-room-section">
@@ -194,6 +196,46 @@
             alert('채팅방 이름을 입력해 주세요!');
         }
     }
+
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        const filename = encodeURIComponent(file.name);
+        console.log(filename)
+
+        if (file) {
+            try {
+                // 프리사인드 URL 요청
+                const response = await fetch(`/images/hi/bye?filename=${filename}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json', // JSON 형식이지만 바디는 비어있음
+                        'Authorization': token  // Authorization 헤더에 토큰 추가
+                    }
+                });
+                const responseData = await response.json();
+                const presignedUrl =  responseData.data;
+                console.log(presignedUrl)
+                // 프리사인드 URL을 사용하여 S3에 파일 업로드
+                const uploadResponse = await fetch(presignedUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': file.type,
+                    },
+                    body: file,
+                });
+
+                if (uploadResponse.ok) {
+                    alert('File uploaded successfully!');
+                } else {
+                    alert('File upload failed!');
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                alert('Error uploading file.');
+            }
+        }
+    });
 
     function loadRooms() {
         console.log('여기가 로드룸스')
