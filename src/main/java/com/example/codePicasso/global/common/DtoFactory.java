@@ -140,6 +140,7 @@ public class DtoFactory {
     public static ChatResponse toChatDto(Chat chats) {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
+                .roomId(chats.getChatRoom().getId())
                 .message(chats.getContent())
                 .username(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
@@ -174,12 +175,6 @@ public class DtoFactory {
                 .username(chatRoom.getUser().getNickname())
                 .roomName(chatRoom.getName())
                 .isSecurity(chatRoom.isSecurity())
-                .build();
-    }
-
-    public static ImageResponse toImageDto(Image saveImage) {
-        return ImageResponse.builder()
-                .imageUrl(saveImage.getImageUrl())
                 .build();
     }
 }

@@ -21,7 +21,6 @@ public class S3Service {
     private final S3Presigner s3Presigner;
     private final String bucketName = "code-picasso-bucket";
 
-
     public String makePreSignedUrl(String fileName) {
         try {
             PutObjectRequest objectRequest = PutObjectRequest.builder()
