@@ -12,4 +12,6 @@ public interface MyExchangeRepository extends JpaRepository<MyExchange, Long> {
     List<MyExchange> findByUserId(Long userId);
 
     Page<MyExchange> findByUserIdAndExchange_TradeType(Long userId, TradeType tradeType, Pageable pageable);
+
+    boolean existsByExchangeIdAndUserId(Long exchangeId, Long userId);
 }
