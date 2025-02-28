@@ -179,7 +179,6 @@ class ExchangeServiceTest {
         // given
         ExchangeRequest newReq = new ExchangeRequest(1L, "짱거래소", 1000, "거래소", 100, "010-1234-5678");
         when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
-        when(exchange.getUser().getId()).thenReturn(userId);
         when(exchangeConnector.save(any(Exchange.class))).thenReturn(exchange);
 
         // when
