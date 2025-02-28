@@ -13,7 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable);
 
-    Page<Post> findAllByStatus(PostStatus status, Pageable pageable);
+    Page<Post> findAllByGameIdAndStatus(Long gameId, PostStatus status, Pageable pageable);
 
     Optional<Post> findByIdAndUserId(Long postId, Long userId);
 }
