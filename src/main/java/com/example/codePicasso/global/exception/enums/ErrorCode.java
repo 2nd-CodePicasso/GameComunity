@@ -63,6 +63,7 @@ public enum ErrorCode {
     MYEXCHANGE_NOT_FOUND(HttpStatus.NOT_FOUND, "", "내 거래내역을 찾을 수 없습니다."),
     ALREADY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "", "거래 완료 처리가 이미 진행 중입니다."),
     ALREADY_IN_COMPLETED(HttpStatus.BAD_REQUEST, "", "이미 완료된 거래입니다."),
+    DUPLICATE(HttpStatus.BAD_REQUEST, "", "중복된 요청입니다."),
 
     //Redis
     TRADE_RANKING_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "", "거래 랭킹 업데이트 중 문제가 발생했습니다.");
