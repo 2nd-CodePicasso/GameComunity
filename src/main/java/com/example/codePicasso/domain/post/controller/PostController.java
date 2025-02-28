@@ -71,12 +71,13 @@ public class PostController {
      *
      * @return
      */
-    @GetMapping("/recommended")
+    @GetMapping("/games/{gameId}/recommended")
     public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost(
+            @PathVariable Long gameId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        PostListResponse postListResponse = postService.findRecommendedPost(page, size);
+        PostListResponse postListResponse = postService.findRecommendedPost(gameId, page, size);
         return ApiResponse.success(postListResponse);
     }
 

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Controller
-@RequestMapping
+@RestController
+@RequestMapping("/images/hi/bye")
 @RequiredArgsConstructor
 public class ImageController {
 
