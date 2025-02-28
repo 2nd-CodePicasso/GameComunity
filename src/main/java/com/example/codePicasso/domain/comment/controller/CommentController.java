@@ -54,7 +54,7 @@ public class CommentController {
      * @param postId
      * @return
      */
-    @GetMapping("/{postId}")
+    @GetMapping("/hi/{postId}")
     public ResponseEntity<ApiResponse<CommentListResponse>> findComment(
             @PathVariable("postId") Long postId
     ) {

@@ -34,7 +34,7 @@ public class CategoryController {
      * @param gameId
      * @return
      */
-    @GetMapping("/{gameId}")
+    @GetMapping("/hi/{gameId}")
     public ResponseEntity<ApiResponse<CategoryListResponse>> getCategory(
             @PathVariable("gameId") Long gameId
     ) {
