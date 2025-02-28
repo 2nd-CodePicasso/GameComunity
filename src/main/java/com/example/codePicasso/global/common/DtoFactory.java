@@ -135,9 +135,11 @@ public class DtoFactory {
 
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {
         return MyExchangeResponse.builder()
-                .exchange(myExchange.getExchange())
-                .user(myExchange.getUser())
+                .id(myExchange.getId())
+                .exchangeId(myExchange.getExchange().getId())
+                .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
+                .statusType(myExchange.getExchange().getStatusType())
                 .build();
     }
 

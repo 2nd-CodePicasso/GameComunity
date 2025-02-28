@@ -109,7 +109,7 @@ public class ExchangeService {
         Exchange exchange = exchangeConnector.findById(exchangeId);
         User user = userConnector.findById(userId);
 
-        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
+        if (myExchangeConnector.existsByExchangeIdAndUserId(exchangeId, userId)) {
             throw new DuplicateException(ErrorCode.DUPLICATE);
         }
 

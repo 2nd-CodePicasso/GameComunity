@@ -392,7 +392,7 @@ class ExchangeServiceTest {
     @Test
     void 거래_중복_요청_예외() {
         // given
-        when(myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)).thenReturn(true);
+        when(myExchangeConnector.existsByExchangeIdAndUserId(exchangeId, userId)).thenReturn(true);
 
         // when & then
         DuplicateException exception = assertThrows(DuplicateException.class, () -> {
