@@ -84,7 +84,7 @@ public class DtoFactory {
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
                 .createdAt(comment.getCreatedAt())
-                .updatedAp(comment.getUpdatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .replies(comment.getReplies().stream()
                         .map(DtoFactory::toCommentDto)
                         .toList())
