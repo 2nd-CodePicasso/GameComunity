@@ -18,15 +18,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,7 +110,7 @@ class PostServiceTest {
         Long gameId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
@@ -136,7 +133,7 @@ class PostServiceTest {
         Long categoryId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
@@ -158,7 +155,7 @@ class PostServiceTest {
         // Given
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
