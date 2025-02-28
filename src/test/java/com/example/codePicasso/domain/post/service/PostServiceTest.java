@@ -112,7 +112,7 @@ class PostServiceTest {
         Long gameId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
@@ -135,7 +135,7 @@ class PostServiceTest {
         Long categoryId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
@@ -158,7 +158,7 @@ class PostServiceTest {
         Long gameId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
