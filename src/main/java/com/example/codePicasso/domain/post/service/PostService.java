@@ -45,17 +45,18 @@ public class PostService {
         return DtoFactory.toPaginationPostDto(postResponses);
     }
 
+    // 게시물 조회(게임별 추천게시물)
+    public PostListResponse findRecommendedPost(Long gameId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Post> postResponses = postConnector
+                .findAllRecommendedOfGame(gameId,PostStatus.RECOMMENDED, pageable);
+        return DtoFactory.toPaginationPostDto(postResponses);
+    }
+
     // 게시물 조회(categoryId)
     public PostListResponse findAllByCategoryId(Long categoryId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Post> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
-        return DtoFactory.toPaginationPostDto(postResponses);
-    }
-
-    // 게시물 조회(추천게시물)
-    public PostListResponse findRecommendedPost(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Post> postResponses = postConnector.findAllByStatus(PostStatus.RECOMMENDED, pageable);
         return DtoFactory.toPaginationPostDto(postResponses);
     }
 
