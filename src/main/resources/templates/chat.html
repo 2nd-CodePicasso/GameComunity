@@ -439,6 +439,7 @@
             var chatMessage = {
                 message: messageContent
             };
+
             messageSendTime = new Date();
             stompClient.send("/app/send/all",
                 {'Authorization' : token},

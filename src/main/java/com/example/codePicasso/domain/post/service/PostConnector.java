@@ -14,7 +14,7 @@ public interface PostConnector {
 
     Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable);
 
-    Page<Post> findAllByStatus(PostStatus postStatus, Pageable pageable);
+    Page<Post> findAllRecommendedOfGame(Long gameId, PostStatus postStatus, Pageable pageable);
 
     Post findById(Long postId);
 
