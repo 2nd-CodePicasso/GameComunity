@@ -51,6 +51,7 @@ public class Post extends TimeStamp {
     @Column(nullable = false)
     private Integer viewCount;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PostStatus status;
 
