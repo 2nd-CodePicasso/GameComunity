@@ -3,14 +3,8 @@ package com.example.codePicasso.global.common;
 
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
-import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
-import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
-import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
-import com.example.codePicasso.domain.chat.entity.Chat;
-import com.example.codePicasso.domain.chat.entity.ChatRoom;
-import com.example.codePicasso.domain.chat.entity.GlobalChat;
-import com.example.codePicasso.domain.chat.entity.Notification;
+import com.example.codePicasso.domain.chat.dto.response.*;
+import com.example.codePicasso.domain.chat.entity.*;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
@@ -88,7 +82,7 @@ public class DtoFactory {
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
                 .createdAt(comment.getCreatedAt())
-                .updatedAp(comment.getUpdatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .replies(comment.getReplies().stream()
                         .map(DtoFactory::toCommentDto)
                         .toList())
@@ -135,15 +129,18 @@ public class DtoFactory {
 
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {
         return MyExchangeResponse.builder()
-                .exchange(myExchange.getExchange())
-                .user(myExchange.getUser())
+                .id(myExchange.getId())
+                .exchangeId(myExchange.getExchange().getId())
+                .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
+                .statusType(myExchange.getExchange().getStatusType())
                 .build();
     }
 
     public static ChatResponse toChatDto(Chat chats) {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
+                .roomId(chats.getChatRoom().getId())
                 .message(chats.getContent())
                 .username(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
@@ -178,12 +175,6 @@ public class DtoFactory {
                 .username(chatRoom.getUser().getNickname())
                 .roomName(chatRoom.getName())
                 .isSecurity(chatRoom.isSecurity())
-                .build();
-    }
-
-    public static ImageResponse toImageDto(Image saveImage) {
-        return ImageResponse.builder()
-                .imageUrl(saveImage.getImageUrl())
                 .build();
     }
 }

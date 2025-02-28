@@ -50,7 +50,7 @@ class PostServiceTest {
     private Game mockGame;
     private Category mockCategory;
     private PostRequest postRequest;
-    private List<Post> posts = new ArrayList<>();
+    private List<Post> posts;
 
     @BeforeEach
     void setUp() {
@@ -74,7 +74,9 @@ class PostServiceTest {
                 .title("test Title")
                 .description("This is a test post.")
                 .viewCount(0)
+                .status(PostStatus.RECOMMENDED)
                 .build();
+        posts = new ArrayList<>();
         posts.add(mockPost);
         postRequest = new PostRequest(1L, "testTitle", "This is a test post.");
     }
@@ -110,7 +112,7 @@ class PostServiceTest {
         Long gameId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
@@ -133,7 +135,7 @@ class PostServiceTest {
         Long categoryId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
@@ -153,25 +155,26 @@ class PostServiceTest {
     @Test
     void 게시물_찾기_추천게시물() {
         // Given
+        Long gameId = 1L;
         int page = 0;
         int size = 10;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Page<Post> pagePosts = new PageImpl<>(posts, pageable, posts.size());
 
         // When
-        when(postConnector.findAllByStatus(eq(PostStatus.RECOMMENDED), any(Pageable.class))).thenReturn(pagePosts);
-        PostListResponse postListResponse = postService.findRecommendedPost(page, size);
+        when(postConnector.findAllRecommendedOfGame(eq(gameId),eq(PostStatus.RECOMMENDED), any(Pageable.class))).thenReturn(pagePosts);
+        PostListResponse postListResponse = postService.findRecommendedPost(gameId, page, size);
 
         // Then
-        verify(postConnector).findAllByStatus(eq(PostStatus.RECOMMENDED), eq(pageable));
+        verify(postConnector).findAllRecommendedOfGame(eq(gameId),eq(PostStatus.RECOMMENDED), eq(pageable));
         assertEquals(posts.get(0).getId(), postListResponse.postResponses().get(0).postId());
         assertEquals(posts.get(0).getGame().getId(), postListResponse.postResponses().get(0).gameId());
         assertEquals(posts.get(0).getTitle(), postListResponse.postResponses().get(0).title());
         assertEquals(posts.get(0).getCategory().getCategoryName(), postListResponse.postResponses().get(0).categoryName());
         assertEquals(posts.get(0).getDescription(), postListResponse.postResponses().get(0).description());
-
     }
+
     @Test
     void 게시물_찾기_게시물아이디() {
         //given

@@ -27,16 +27,16 @@ public class PostConnectorImpl implements PostConnector {
         return postRepository.findAllByGameId(gameId, pageable);
     }
 
+    // 게임별 추천게시물 조회
+    @Override
+    public Page<Post> findAllRecommendedOfGame(Long gameId, PostStatus postStatus, Pageable pageable) {
+        return postRepository.findAllByGameIdAndStatus(gameId, postStatus, pageable);
+    }
+
     // categoryId로 게시글 전체 조회
     @Override
     public Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable) {
         return postRepository.findAllByCategoryId(categoryId, pageable);
-    }
-
-    // 추천게시물 조회
-    @Override
-    public Page<Post> findAllByStatus(PostStatus postStatus, Pageable pageable) {
-        return postRepository.findAllByStatus(postStatus, pageable);
     }
 
     // 게시글 개별 조회

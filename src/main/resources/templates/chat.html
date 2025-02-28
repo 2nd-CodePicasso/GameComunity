@@ -108,6 +108,7 @@
     var stompClient = null;
     var messageSendTime = null;
     var currentRoom = null;
+    let size = 5;
 
     function connect() {
         var socket = new SockJS('/ws'); // 서버의 WebSocket 엔드포인트
@@ -128,6 +129,7 @@
 
 
     function connectToRoom(room) {
+        console.log('이게 룸아이디', room.roomId)
         if (!stompClient || !stompClient.connected) {
             console.log('stompClient가 연결되지 않았습니다.');
             return;
@@ -135,7 +137,7 @@
 
         // 채팅방 구독 시작
         stompClient.subscribe(`/topic/${room.roomId}`, function (messageOutput) {
-            console.log('메시지 수신:', messageOutput.body);
+            console.log('메시지 수신:', messageOutput.body)
             showRoomMessage(JSON.parse(messageOutput.body));
         }, {'Authorization': token});
 
@@ -179,16 +181,8 @@
         }
     }
 
-    function sendRoomMessage() {
-        const message = document.getElementById('roomMessageInput').value.trim();
-        if (message && stompClient && currentRoom) {
-            const chatMessage = {message: message };
-            stompClient.send(`/app/send/room/${currentRoom}`, {'Authorization': token}, JSON.stringify(chatMessage));
-            document.getElementById('roomMessageInput').value = '';
-        }
-    }
-
     function loadRooms() {
+        console.log('여기가 로드룸스')
         fetch('/room', {
             method: 'GET',
             headers: {
@@ -233,12 +227,32 @@
         showResponseTime();
     }
 
+    function toISO8601Local(date) {
+        // 로컬 타임존 오프셋 계산
+        let timezoneOffset = -date.getTimezoneOffset(); // 로컬 시간대 오프셋 (분 단위)
+        let timezoneSign = timezoneOffset >= 0 ? '+' : '-';
+        let timezoneHours = String(Math.floor(Math.abs(timezoneOffset) / 60)).padStart(2, '0');
+        let timezoneMinutes = String(Math.abs(timezoneOffset) % 60).padStart(2, '0');
+
+        // 로컬 시간을 ISO 8601 형식으로 변환
+        let localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)); // UTC로 변환된 시간에 오프셋을 빼서 로컬 시간으로 변환
+        let isoString = localDate.toISOString().replace('Z', `${timezoneSign}${timezoneHours}:${timezoneMinutes}`);
+
+        return isoString;
+    }
+
     function loadChatHistoryForRoom(roomId) {
 
         const roomMessages = document.getElementById('room-messages');
         roomMessages.innerHTML = '';  // 기존 메시지 모두 삭제
 
-        fetch(`/chats/${roomId}`, {
+        let chatId = 0;  // chatId가 없다면 0으로 설정
+        let lastTime = toISO8601Local(new Date());
+        console.log(lastTime)
+
+        const url = `/chats/${roomId}?size=${size}&chatId=${chatId}&lastTime=${encodeURIComponent(lastTime)}`;
+
+        fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': token
@@ -252,11 +266,70 @@
                     data.data.chatResponses.forEach(message => {
                         showRoomMessage(message);
                     });
+
+                    if (data.data.chatResponses.length > 0) {
+                        const lastMessage = data.data.chatResponses[data.data.chatResponses.length - 1];
+                        const lastMessageId = lastMessage.chatsId; // 마지막 메시지의 ID
+                        const lastMessageTime = lastMessage.createdAt; // 마지막 메시지의 시간
+
+                        // localStorage에 마지막 채팅 ID와 시간을 저장
+                        localStorage.setItem(`lastChatId_${roomId}`, lastMessageId);
+                        localStorage.setItem(`lastChatTime_${roomId}`, lastMessageTime);
+                    }
                 }
             })
             .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
+        handleScrollForPaging(roomId)
     }
 
+
+    // 스크롤 시 페이징 처리 함수
+    function handleScrollForPaging(roomId) {
+        const roomMessages = document.getElementById('room-messages');
+
+        roomMessages.addEventListener('scroll', () => {
+            // 스크롤이 상단에 가까워졌을 때 (1% 남았을 때)
+            if (roomMessages.scrollTop <= 100) {
+                const chatId = localStorage.getItem(`lastChatId_${roomId}`);
+                const lastTime = localStorage.getItem(`lastChatTime_${roomId}`);
+
+
+                // 이전 채팅 내역을 가져오는 요청
+                const url = `/chats/${roomId}?size=${size}&chatId=${chatId}&lastTime=${encodeURIComponent(lastTime)}`;
+
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.data && Array.isArray(data.data.chatResponses)) {
+                            // 기존 채팅 메시지 앞에 새로운 메시지를 추가
+                            const roomMessages = document.getElementById('room-messages');
+                            data.data.chatResponses.forEach(message => {
+                                showRoomMessage(message);
+                            });
+
+                            if (data.data.chatResponses.length > 0) {
+                                const firstMessage = data.data.chatResponses[0];
+                                const firstMessageId = firstMessage.chatsId; // 첫 번째 메시지의 ID
+                                const firstMessageTime = firstMessage.createdAt; // 첫 번째 메시지의 시간
+
+                                // localStorage에 첫 번째 채팅 ID와 시간을 저장
+                                localStorage.setItem(`lastChatId_${roomId}`, firstMessageId);
+                                localStorage.setItem(`lastChatTime_${roomId}`, firstMessageTime);
+                            }
+                        }
+                    })
+                    .catch(error => console.error('이전 채팅 내역을 불러오는 중 오류 발생:', error))
+                    .finally(() => {
+                        loadingInProgress = false;  // 로딩 종료 상태로 설정
+                    });
+            }
+        });
+    }
     function loadChatHistory() {
         fetch('/chats/history', {
             method: 'GET',
@@ -279,6 +352,21 @@
             .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
     }
 
+
+    function sendRoomMessage() {
+        const message = document.getElementById('roomMessageInput').value.trim();
+        if (message && stompClient && currentRoom) {
+
+            const chatMessage = {message: message
+            };
+
+            stompClient.send(`/app/send/room/${currentRoom}`,
+                {'Authorization': token},
+                JSON.stringify(chatMessage));
+            document.getElementById('roomMessageInput').value = '';
+        }
+    }
+
     function sendMessage() {
         var messageContent = document.getElementById('messageInput').value.trim();
         if (messageContent && stompClient) {
@@ -286,9 +374,7 @@
             var chatMessage = {
                 message: messageContent
             };
-
             messageSendTime = new Date();
-
             // "/app/chat.sendMessage" 엔드포인트로 메시지 전송
             stompClient.send("/app/send/all",
                 {'Authorization' : token},
@@ -325,6 +411,7 @@
 
     window.onload = function () {
         connect();
+        connectToRoom()
 
         document.getElementById('messageInput').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {

@@ -31,7 +31,7 @@
         }
 
         @MessageMapping("/send/room/{roomId}")
-        @SendTo("/topic/{roomId}}")
+        @SendTo("/topic/{roomId}")
         public ChatResponse testMessage(
                 @Payload ChatRequest chatsRequest,
                 @DestinationVariable Long roomId,

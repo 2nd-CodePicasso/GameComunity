@@ -8,8 +8,11 @@ import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.service.ChatService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/chats")
@@ -34,9 +37,17 @@ public class ChatRestController {
 
     @GetMapping("/{roomId}")
     public ResponseEntity<ApiResponse<ChatListResponse>> getChatsByRoomId(
-            @PathVariable Long roomId
-    ) {
-        ChatListResponse chatListResponse = chatsService.getByRoomId(roomId);
+            @PathVariable Long roomId,
+            @RequestParam int size,
+            @RequestParam Long chatId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime lastTime
+            ) {
+
+        if (lastTime == null) {
+            lastTime = LocalDateTime.now();
+        }
+
+        ChatListResponse chatListResponse = chatsService.getByRoomId(roomId,size,chatId,lastTime);
         return ApiResponse.success(chatListResponse);
     }
 
