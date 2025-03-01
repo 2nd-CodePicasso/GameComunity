@@ -145,7 +145,7 @@ public class ExchangeService {
     public void decisionMyExchange(Long myExchangeId, Long userId, PutExchangeRequest putExchangeRequest) {
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
 
-        if (!myExchange.getUser().getId().equals(userId)) {
+        if (!myExchange.getExchange().getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
