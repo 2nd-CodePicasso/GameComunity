@@ -15,7 +15,6 @@ public class ImageController {
 
     private final S3Service s3Service;
 
-    @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.OPTIONS})
     @GetMapping
     public ResponseEntity<?> addImage(
             @RequestParam String filename
