@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record GlobalChatListResponse(
-        List<GlobalChatResponse> chatsResponseList
+        List<GlobalChatResponse> chatsResponses
 ) {
 }
