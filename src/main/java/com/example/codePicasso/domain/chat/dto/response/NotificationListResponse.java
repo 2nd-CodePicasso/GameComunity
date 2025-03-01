@@ -1,6 +1,5 @@
-package com.example.codePicasso.domain.chat.controller;
+package com.example.codePicasso.domain.chat.dto.response;
 
-import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
 import lombok.Builder;
 
 import java.util.List;
