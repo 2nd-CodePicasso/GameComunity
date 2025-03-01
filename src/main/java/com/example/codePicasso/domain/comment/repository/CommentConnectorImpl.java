@@ -5,6 +5,7 @@ import com.example.codePicasso.domain.comment.entity.QComment;
 import com.example.codePicasso.domain.comment.service.CommentConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,14 @@ public class CommentConnectorImpl implements CommentConnector {
 
     private final QComment replies = new QComment("replies");
 
+    private JPAQuery<Comment> baseCommentQuery() {
+        return queryFactory.select(comment)
+                .from(comment)
+                .leftJoin(comment.user, user).fetchJoin()
+                .leftJoin(comment.post, post).fetchJoin()
+                .leftJoin(comment.replies, replies).fetchJoin();
+    }
+
     @Override
     public Comment save(Comment comment) {
         return commentRepository.save(comment);
@@ -30,22 +39,14 @@ public class CommentConnectorImpl implements CommentConnector {
 
     @Override
     public List<Comment> findAllByPostId(Long postId) {
-        return queryFactory.select(comment)
-                .from(comment)
-                .leftJoin(comment.user, user).fetchJoin()
-                .leftJoin(comment.post, post).fetchJoin()
-                .leftJoin(comment.replies, replies).fetchJoin()
+        return baseCommentQuery()
                 .where(comment.post.id.eq(postId))
                 .fetch();
     }
 
     @Override
     public Comment findByIdAndUserId(Long commentId, Long userId) {
-        Comment foundComment = queryFactory.select(comment)
-                .from(comment)
-                .leftJoin(comment.user, user).fetchJoin()
-                .leftJoin(comment.post, post).fetchJoin()
-                .leftJoin(comment.replies, replies).fetchJoin()
+        Comment foundComment = baseCommentQuery()
                 .where(comment.id.eq(commentId), comment.user.id.eq(userId))
                 .fetchOne();
         if (foundComment == null) {
@@ -61,11 +62,7 @@ public class CommentConnectorImpl implements CommentConnector {
 
     @Override
     public Comment findById(Long parentId) {
-        Comment foundComment = queryFactory.select(comment)
-                .from(comment)
-                .leftJoin(comment.user, user).fetchJoin()
-                .leftJoin(comment.post, post).fetchJoin()
-                .leftJoin(comment.replies, replies).fetchJoin()
+        Comment foundComment = baseCommentQuery()
                 .where(comment.id.eq(parentId))
                 .fetchOne();
         if (foundComment == null) {

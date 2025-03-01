@@ -5,6 +5,7 @@ import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,21 @@ public class PostConnectorImpl implements PostConnector {
     private final PostRepository postRepository;
     private final JPAQueryFactory queryFactory;
 
+    private JPAQuery<Post> basePostQuery() {
+        return queryFactory.select(post)
+                .from(post)
+                .leftJoin(post.user, user).fetchJoin()
+                .leftJoin(post.category, category).fetchJoin()
+                .leftJoin(post.game, game).fetchJoin();
+    }
+
+    private Long baseCountQuery() {
+        return Optional.ofNullable(queryFactory.select(post.count())
+                        .from(post)
+                        .fetchOne())
+                .orElse(0L);
+    }
+
     // 게시글 생성
     @Override
     public Post save(Post post) {
@@ -35,20 +51,13 @@ public class PostConnectorImpl implements PostConnector {
     // gameId로 게시글 전체 조회
     @Override
     public Page<Post> findAllByGameId(Long gameId, Pageable pageable) {
-        List<Post> posts = queryFactory.select(post)
-                .from(post)
-                .leftJoin(post.user, user).fetchJoin()
-                .leftJoin(post.category, category).fetchJoin()
-                .leftJoin(post.game, game).fetchJoin()
+        List<Post> posts = basePostQuery()
                 .where(post.game.id.eq(gameId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count = Optional.ofNullable(queryFactory.select(post.count())
-                        .from(post)
-                        .fetchOne())
-                .orElse(0L);
+        Long count = baseCountQuery();
 
         return new PageImpl<>(posts, pageable, count);
     }
@@ -56,20 +65,13 @@ public class PostConnectorImpl implements PostConnector {
     // 게임별 추천게시물 조회
     @Override
     public Page<Post> findAllRecommendedOfGame(Long gameId, PostStatus postStatus, Pageable pageable) {
-        List<Post> posts = queryFactory.select(post)
-                .from(post)
-                .leftJoin(post.user, user).fetchJoin()
-                .leftJoin(post.category, category).fetchJoin()
-                .leftJoin(post.game, game).fetchJoin()
+        List<Post> posts = basePostQuery()
                 .where(post.game.id.eq(gameId), post.status.eq(postStatus))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count = Optional.ofNullable(queryFactory.select(post.count())
-                        .from(post)
-                        .fetchOne())
-                .orElse(0L);
+        Long count = baseCountQuery();
 
         return new PageImpl<>(posts, pageable, count);
     }
@@ -77,20 +79,13 @@ public class PostConnectorImpl implements PostConnector {
     // categoryId로 게시글 전체 조회
     @Override
     public Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable) {
-        List<Post> posts = queryFactory.select(post)
-                .from(post)
-                .leftJoin(post.user, user).fetchJoin()
-                .leftJoin(post.category, category).fetchJoin()
-                .leftJoin(post.game, game).fetchJoin()
+        List<Post> posts = basePostQuery()
                 .where(post.category.id.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        Long count = Optional.ofNullable(queryFactory.select(post.count())
-                        .from(post)
-                        .fetchOne())
-                .orElse(0L);
+        Long count = baseCountQuery();
 
         return new PageImpl<>(posts, pageable, count);
     }
@@ -98,11 +93,7 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 개별 조회
     @Override
     public Post findById(Long postId) {
-        return queryFactory.select(post)
-                .from(post)
-                .leftJoin(post.user, user).fetchJoin()
-                .leftJoin(post.category, category).fetchJoin()
-                .leftJoin(post.game, game).fetchJoin()
+        return basePostQuery()
                 .where(post.id.eq(postId))
                 .fetchOne();
     }
@@ -110,11 +101,7 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 수정
     @Override
     public Post findByIdAndUserId(Long postId, Long userId) {
-        Post foundPost = queryFactory.select(post)
-                .from(post)
-                .leftJoin(post.user, user).fetchJoin()
-                .leftJoin(post.category, category).fetchJoin()
-                .leftJoin(post.game, game).fetchJoin()
+        Post foundPost = basePostQuery()
                 .where(post.id.eq(postId), post.user.id.eq(userId))
                 .fetchOne();
         if (foundPost == null) {
