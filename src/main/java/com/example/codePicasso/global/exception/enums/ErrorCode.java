@@ -36,7 +36,7 @@ public enum ErrorCode {
     GAME_ALREADY_ACTIVATED(HttpStatus.BAD_REQUEST,"", "이미 활성화된 게임입니다.."),
 
     //Post
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "", "커뮤니티를 찾을 수 없습니다."),
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "", "게시글을 찾을 수 없습니다."),
 
     //Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "", "댓글을 찾을 수 없습니다."),
