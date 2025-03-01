@@ -19,7 +19,7 @@ import java.time.Duration;
 public class S3Service {
 
     private final S3Presigner s3Presigner;
-    private final String bucketName = "code-picasso-bucket3";
+    private final String bucketName = "code-picasso-bucket";
 
     public String makePreSignedUrl(String fileName) {
         try {

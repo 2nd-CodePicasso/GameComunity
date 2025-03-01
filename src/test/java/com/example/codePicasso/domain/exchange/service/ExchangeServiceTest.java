@@ -340,7 +340,8 @@ class ExchangeServiceTest {
         when(myExchangeConnector.save(any(MyExchange.class))).thenReturn(myExchange);
 
         // when
-        MyExchangeResponse response = exchangeService.doExchange(exchangeId, userId, myExchangeRequest);
+        // Todo : 자기꺼 구매하길래 임의로 바꿔둠. 수정 요망
+        MyExchangeResponse response = exchangeService.doExchange(exchangeId, 2L, myExchangeRequest);
 
         // then
         Assertions.assertThat(response.contact()).isEqualTo(myExchangeRequest.contact());
