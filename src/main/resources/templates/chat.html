@@ -197,6 +197,18 @@
         }
     }
 
+    // 이미지 태그를 #messages 안에 추가하는 함수
+    function addImageToMessages(fileUrl, altText = 'Uploaded Image', width = '200px', height = '200px') {
+        const messagesDiv = document.getElementById('messages');
+        const imgElement = document.createElement('img');
+        imgElement.src = fileUrl;
+        imgElement.alt = altText;
+        imgElement.style.width = width;
+        imgElement.style.height = height;
+        imgElement.style.marginTop = '10px';
+        messagesDiv.appendChild(imgElement);
+    }
+
     document.getElementById('uploadBtn').addEventListener('click', async () => {
         const fileInput = document.getElementById('fileInput');
         const file = fileInput.files[0];
@@ -219,14 +231,21 @@
                 // 프리사인드 URL을 사용하여 S3에 파일 업로드
                 const uploadResponse = await fetch(presignedUrl, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': file.type,
-                    },
                     body: file,
+                    headers: {
+                        'Content-Type': file.type  // 파일의 MIME 타입 (예: image/jpeg, image/png 등)
+                    }
                 });
 
                 if (uploadResponse.ok) {
                     alert('File uploaded successfully!');
+                    const fileUrl = presignedUrl.split('?')[0]; // 쿼리 파라미터 제거해서 순수 URL만 사용
+                    console.log(fileUrl);
+                    const message = {
+                        imageUrl: fileUrl,
+                        message: ""
+                    };
+                    sendImage(message)// 이미지 추가 함수 호출
                 } else {
                     alert('File upload failed!');
                 }
@@ -473,6 +492,21 @@
         }
     }
 
+    function sendImage(message) {
+        console.log(message)
+        // 채팅방에 해당하는 WebSocket을 통해 메시지 전송
+        if (stompClient && stompClient.connected) {
+            stompClient.send('/app/send/all',
+                {
+                    'Authorization': token
+                },
+                JSON.stringify(message)
+            );
+        } else {
+            console.log('WebSocket 연결이 되어 있지 않습니다.');
+        }
+    }
+
 
     function sendMessage() {
         var messageContent = document.getElementById('messageInput').value.trim();
@@ -517,34 +551,69 @@
     }
 
     function showMessage(message, prepend = false) {
-        console.log(message)
         var roomMessages = document.getElementById('messages');
 
-        var messageElement = document.createElement('p');
-        const createdAt = new Date(message.createdAt);
-        const realTime = createdAt.toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        }).replace(',', '');
-        messageElement.textContent = `${message.username}: ${message.message}  ${realTime}`;
+        // 이미지 URL이 존재하는 경우
+        if (message.imageUrl !== null && message.imageUrl !== "") {
+            const messageElement = document.createElement('div');  // 메시지를 담을 div 생성
 
+            // 사용자 이름과 시간을 표시하는 부분
+            const userAndTime = document.createElement('p');
+            const createdAt = new Date(message.createdAt);
+            const realTime = createdAt.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).replace(',', '');
 
-        const messageTime = new Date();
+            userAndTime.textContent = `${message.username}  ${realTime}`;
+            messageElement.appendChild(userAndTime);
 
-        // 시간 차이 계산 (보낸 시간과 받은 시간)
-        const timeDiff = calculateTimeDifference(messageTime, messageSendTime);
+            // 이미지 요소 생성
+            const imgElement = document.createElement('img');
+            imgElement.src = message.imageUrl;
+            imgElement.alt = 'Uploaded Image';
+            imgElement.style.width = '200px';
+            imgElement.style.height = 'auto';
+            messageElement.appendChild(imgElement);
 
-        if (prepend) {
-            roomMessages.insertBefore(messageElement, roomMessages.firstChild);
+            // 메시지 렌더링
+            if (prepend) {
+                roomMessages.insertBefore(messageElement, roomMessages.firstChild);
+            } else {
+                roomMessages.appendChild(messageElement);
+            }
         } else {
-            roomMessages.appendChild(messageElement);
+            // 텍스트 메시지 처리
+            const messageElement = document.createElement('p');
+            const createdAt = new Date(message.createdAt);
+            const realTime = createdAt.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).replace(',', '');
+            messageElement.textContent = `${message.username}: ${message.message}  ${realTime}`;
+
+            const messageTime = new Date();
+
+            // 시간 차이 계산 (보낸 시간과 받은 시간)
+            const timeDiff = calculateTimeDifference(messageTime, messageSendTime);
+
+            if (prepend) {
+                roomMessages.insertBefore(messageElement, roomMessages.firstChild);
+            } else {
+                roomMessages.appendChild(messageElement);
+            }
+            showResponseTime(timeDiff);
         }
-        showResponseTime(timeDiff);
     }
+
 
     function showResponseTime(time) {
         console.log(time)

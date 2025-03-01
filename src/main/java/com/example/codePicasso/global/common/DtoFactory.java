@@ -164,6 +164,7 @@ public class DtoFactory {
         return GlobalChatResponse.builder()
                 .username(chats.getUsername())
                 .chatsId(chats.getId())
+                .imageUrl(chats.getImageUrl())
                 .message(chats.getContent())
                 .createdAt(chats.getCreatedAt())
                 .build();
