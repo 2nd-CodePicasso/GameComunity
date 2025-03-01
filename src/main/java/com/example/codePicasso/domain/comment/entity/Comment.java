@@ -44,7 +44,7 @@ public class Comment extends TimeStamp {
     // 자식 댓글 (대댓글)
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
-    @BatchSize(size = 10)
+    @BatchSize(size = 30)
     @Builder.Default
     @JsonIgnore
     private List<Comment> replies = new ArrayList<>();
