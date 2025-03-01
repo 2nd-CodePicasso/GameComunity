@@ -92,8 +92,6 @@
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요." />
         <button onclick="sendMessage()">전송</button>
         <div id="response-time">응답 시간: -</div>
-        <input type="file" id="fileInput" />
-        <button id="uploadBtn">Upload to S3</button>
     </div>
 
     <div id="chat-room-section">
@@ -520,7 +518,6 @@
             var chatMessage = {
                 message: messageContent
             };
-
             messageSendTime = new Date();
             stompClient.send("/app/send/all",
                 {'Authorization' : token},

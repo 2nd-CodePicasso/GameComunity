@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,9 @@ public class Comment extends TimeStamp {
     private Comment parent;
 
     // 자식 댓글 (대댓글)
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 10)
     @Builder.Default
     @JsonIgnore
     private List<Comment> replies = new ArrayList<>();
