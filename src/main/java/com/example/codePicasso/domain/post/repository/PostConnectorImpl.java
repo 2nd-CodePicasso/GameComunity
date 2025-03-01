@@ -110,7 +110,17 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 수정
     @Override
     public Post findByIdAndUserId(Long postId, Long userId) {
-        return postRepository.findByIdAndUserId(postId, userId).orElseThrow(() -> new InvalidRequestException(ErrorCode.POST_NOT_FOUND));
+        Post foundPost = queryFactory.select(post)
+                .from(post)
+                .leftJoin(post.user, user).fetchJoin()
+                .leftJoin(post.category, category).fetchJoin()
+                .leftJoin(post.game, game).fetchJoin()
+                .where(post.id.eq(postId), post.user.id.eq(userId))
+                .fetchOne();
+        if (foundPost == null) {
+            throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
+        }
+        return foundPost;
     }
 
     // 게시글 삭제

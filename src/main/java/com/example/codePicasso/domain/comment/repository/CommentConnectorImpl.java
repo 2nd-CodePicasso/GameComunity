@@ -21,6 +21,8 @@ public class CommentConnectorImpl implements CommentConnector {
     private final CommentRepository commentRepository;
     private final JPAQueryFactory queryFactory;
 
+    private final QComment replies = new QComment("replies");
+
     @Override
     public Comment save(Comment comment) {
         return commentRepository.save(comment);
@@ -28,8 +30,6 @@ public class CommentConnectorImpl implements CommentConnector {
 
     @Override
     public List<Comment> findAllByPostId(Long postId) {
-        QComment replies = new QComment("replies");
-
         return queryFactory.select(comment)
                 .from(comment)
                 .leftJoin(comment.user, user).fetchJoin()
@@ -41,8 +41,17 @@ public class CommentConnectorImpl implements CommentConnector {
 
     @Override
     public Comment findByIdAndUserId(Long commentId, Long userId) {
-        return commentRepository.findByIdAndUserId(commentId, userId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND));
+        Comment foundComment = queryFactory.select(comment)
+                .from(comment)
+                .leftJoin(comment.user, user).fetchJoin()
+                .leftJoin(comment.post, post).fetchJoin()
+                .leftJoin(comment.replies, replies).fetchJoin()
+                .where(comment.id.eq(commentId), comment.user.id.eq(userId))
+                .fetchOne();
+        if (foundComment == null) {
+            throw new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+        return foundComment;
     }
 
     @Override
@@ -52,8 +61,17 @@ public class CommentConnectorImpl implements CommentConnector {
 
     @Override
     public Comment findById(Long parentId) {
-        return commentRepository.findById(parentId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND));
+        Comment foundComment = queryFactory.select(comment)
+                .from(comment)
+                .leftJoin(comment.user, user).fetchJoin()
+                .leftJoin(comment.post, post).fetchJoin()
+                .leftJoin(comment.replies, replies).fetchJoin()
+                .where(comment.id.eq(parentId))
+                .fetchOne();
+        if (foundComment == null) {
+            throw new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+        return foundComment;
     }
 
 }
