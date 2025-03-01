@@ -113,6 +113,10 @@ public class ExchangeService {
             throw new DuplicateException(ErrorCode.DUPLICATE);
         }
 
+        if (exchange.getUser().getId().equals(userId)) {
+            throw new InvalidRequestException(ErrorCode.TRANSACTION_FORBIDDEN);
+        }
+
         MyExchange myExchange = request.toEntity(exchange, user);
         MyExchange savedMyExchange = myExchangeConnector.save(myExchange);
 
