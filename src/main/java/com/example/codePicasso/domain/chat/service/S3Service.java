@@ -19,7 +19,7 @@ import java.time.Duration;
 public class S3Service {
 
     private final S3Presigner s3Presigner;
-    private final String bucketName = "code-picasso-bucket2";
+    private final String bucketName = "code-picasso-bucket3";
 
     public String makePreSignedUrl(String fileName) {
         try {
@@ -42,4 +42,5 @@ public class S3Service {
             throw new ImageIoException(ErrorCode.IMAGE_IOEXCEPTION);
         }
     }
+
 }

@@ -25,7 +25,7 @@ public class AwsS3Config {
         AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKey, secretKey);
 
         return S3Presigner.builder()
-                .region(Region.AP_NORTHEAST_2)
+                .region(Region.AP_SOUTHEAST_2)
                 .credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials))
                 .build();
     }
