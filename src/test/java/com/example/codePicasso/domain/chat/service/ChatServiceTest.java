@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,9 +113,12 @@ public class ChatServiceTest {
     @Test
     void 룸_채팅_조회() {
         //given
+        int size = 0;
+        Long chatId = 1L;
+        LocalDateTime localDateTime = LocalDateTime.now();
         //when
         when(chatConnector.findAllByRoomId(roomId)).thenReturn(chats);
-        ChatListResponse chatResponses = chatService.getByRoomId(roomId);
+        ChatListResponse chatResponses = chatService.getByRoomId(roomId, size, chatId, localDateTime);
 
         //then
         verify(chatConnector).findAllByRoomId(roomId);
