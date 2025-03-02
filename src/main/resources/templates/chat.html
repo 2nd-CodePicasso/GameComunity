@@ -96,8 +96,13 @@
         <div id="response-time">응답 시간: -</div>
 
 
+        <div>
         <input type="file" id="fileInput" />
         <button id="uploadBtn">Upload to S3</button>
+        </div>
+        <label for="username">사용자 이름:</label>
+        <input type="text" id="username" placeholder="응답시간 확인할 이름을 입력하시오">
+        <button onclick="setCurrentUser()">사용자 이름 설정</button>
     </div>
 
     <div id="chat-room-section">
@@ -106,6 +111,8 @@
         <input type="text" id="roomMessageInput" placeholder="채팅방 메시지를 입력하세요." />
         <button onclick="sendRoomMessage()">전송</button>
     </div>
+
+
 
 </div>
 
@@ -123,6 +130,16 @@
     let globalOldestChatId = null;
     let globalOldestChatTime= null;
     let globalLoadingInProgress = false;
+    let currentUser = null;
+
+    function setCurrentUser() {
+        const usernameInput = document.getElementById('username').value;
+        if (usernameInput) {
+            currentUser = usernameInput;
+        } else {
+            alert("사용자 이름을 입력해주세요.");
+        }
+    }
 
     function connect() {
         var socket = new SockJS('/ws'); // 서버의 WebSocket 엔드포인트
@@ -570,6 +587,7 @@
             const userAndTime = document.createElement('p');
             const createdAt = new Date(message.createdAt);
             const realTime = createdAt.toLocaleString('ko-KR', {
+                timeZone: 'Asia/Seoul',
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -600,6 +618,7 @@
             const messageElement = document.createElement('p');
             const createdAt = new Date(message.createdAt);
             const realTime = createdAt.toLocaleString('ko-KR', {
+                timeZone: 'Asia/Seoul',
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -614,12 +633,17 @@
             // 시간 차이 계산 (보낸 시간과 받은 시간)
             const timeDiff = calculateTimeDifference(messageTime, messageSendTime);
 
+            // 현재 사용자가 보낸 메시지일 때만 showResponseTime 호출
+            if (message.username === currentUser) {
+                showResponseTime(timeDiff);
+            }
+
             if (prepend) {
                 roomMessages.insertBefore(messageElement, roomMessages.firstChild);
             } else {
                 roomMessages.appendChild(messageElement);
             }
-            showResponseTime(timeDiff);
+
         }
     }
 

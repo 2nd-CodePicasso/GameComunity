@@ -6,6 +6,7 @@ import com.example.codePicasso.domain.chat.service.GlobalChatConnector;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,7 @@ public class GlobalChatConnectorImpl implements GlobalChatConnector {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
+    @Transactional
     public GlobalChat save(GlobalChat chats) {
         return globalChatRepository.save(chats);
     }
