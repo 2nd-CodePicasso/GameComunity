@@ -56,6 +56,11 @@ public class CommentConnectorImpl implements CommentConnector {
         if (foundComment == null) {
             throw new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND);
         }
+        // 입력받은 userId와 조회한 userId 검증
+        if (!foundComment.getUser().getId().equals(userId)) {
+            throw new InvalidRequestException(ErrorCode.UNAUTHORIZED_ID);
+        }
+
         return foundComment;
     }
 

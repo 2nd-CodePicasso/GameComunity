@@ -122,6 +122,10 @@ public class PostConnectorImpl implements PostConnector {
         if (foundPost == null) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
+        // 입력받은 userId와 조회한 userId 검증
+        if (!foundPost.getUser().getId().equals(userId)) {
+            throw new InvalidRequestException(ErrorCode.UNAUTHORIZED_ID);
+        }
 
         return foundPost;
     }
