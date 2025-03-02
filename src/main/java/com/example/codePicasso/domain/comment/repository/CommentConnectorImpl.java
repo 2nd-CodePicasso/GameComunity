@@ -39,9 +39,13 @@ public class CommentConnectorImpl implements CommentConnector {
 
     @Override
     public List<Comment> findAllByPostId(Long postId) {
-        return baseCommentQuery()
+        List<Comment> comments = baseCommentQuery()
                 .where(comment.post.id.eq(postId))
                 .fetch();
+        if (comments.isEmpty()) {
+            throw new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+        return comments;
     }
 
     @Override

@@ -32,11 +32,15 @@ public class CategoryConnectorImpl implements CategoryConnector {
 
     @Override
     public List<Category> findCategoryByGameId(Long gameId) {
-        return queryFactory.select(category)
+        List<Category> foundCategory = queryFactory.select(category)
                 .from(category)
                 .leftJoin(category.game, game).fetchJoin()
                 .where(category.game.id.eq(gameId))
                 .fetch();
+        if (foundCategory.isEmpty()) {
+            throw new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+        return foundCategory;
     }
 
     @Override
