@@ -21,13 +21,12 @@
         private final NotificationService notificationService;
 
         @MessageMapping("/send/all")
-        @SendTo("/topic/hi")
-        public GlobalChatResponse sendMessage(
+        public void sendMessage(
                 @Payload ChatRequest chatRequest,
                 @Header("userId") String userId,
                 @Header("username") String username
         ) {
-            return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
+            chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
         }
 
         @MessageMapping("/send/room/{roomId}")
