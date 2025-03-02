@@ -76,7 +76,8 @@ public class DtoFactory {
     public static CommentResponse toCommentDto(Comment comment) {
         return CommentResponse.builder().
                 commentId(comment.getId())
-                .postId(comment.getPost().getId())
+                .postId(comment.getParent() != null ?
+                        comment.getParent().getPost().getId() : comment.getPost().getId())
                 .userId(comment.getUser().getId())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .nickname(comment.getUser().getNickname())

@@ -19,9 +19,9 @@ public record CommentRequest(
     }
 
     // 대댓글 생성 메서드
-    public static Comment toEntityForReply(Post post, User user, Comment parent, String text) {
+    public static Comment toEntityForReply(User user, Comment parent, String text) {
         return Comment.builder()
-                .post(post)
+                .post(parent.getPost())
                 .user(user)
                 .parent(parent)
                 .text(text)

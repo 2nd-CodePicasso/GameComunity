@@ -27,6 +27,7 @@ public class PostConnectorImpl implements PostConnector {
     private final PostRepository postRepository;
     private final JPAQueryFactory queryFactory;
 
+    // 공통 쿼리
     private JPAQuery<Post> basePostQuery() {
         return queryFactory.select(post)
                 .from(post)
@@ -35,6 +36,7 @@ public class PostConnectorImpl implements PostConnector {
                 .leftJoin(post.game, game).fetchJoin();
     }
 
+    // Count 쿼리
     private Long baseCountQuery() {
         return Optional.ofNullable(queryFactory.select(post.count())
                         .from(post)
@@ -45,6 +47,7 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 생성
     @Override
     public Post save(Post post) {
+
         return postRepository.save(post);
     }
 
@@ -56,7 +59,9 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
+        if (posts.isEmpty()) {
+            throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
+        }
         Long count = baseCountQuery();
 
         return new PageImpl<>(posts, pageable, count);
@@ -70,7 +75,9 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
+        if (posts.isEmpty()) {
+            throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
+        }
         Long count = baseCountQuery();
 
         return new PageImpl<>(posts, pageable, count);
@@ -84,7 +91,9 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
+        if (posts.isEmpty()) {
+            throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
+        }
         Long count = baseCountQuery();
 
         return new PageImpl<>(posts, pageable, count);
@@ -93,9 +102,15 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 개별 조회
     @Override
     public Post findById(Long postId) {
-        return basePostQuery()
+        Post foundPost = basePostQuery()
                 .where(post.id.eq(postId))
                 .fetchOne();
+
+        if (foundPost == null) {
+            throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
+        }
+
+        return foundPost;
     }
 
     // 게시글 수정
@@ -107,6 +122,11 @@ public class PostConnectorImpl implements PostConnector {
         if (foundPost == null) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
+        // 입력받은 userId와 조회한 userId 검증
+        if (!foundPost.getUser().getId().equals(userId)) {
+            throw new InvalidRequestException(ErrorCode.UNAUTHORIZED_ID);
+        }
+
         return foundPost;
     }
 
