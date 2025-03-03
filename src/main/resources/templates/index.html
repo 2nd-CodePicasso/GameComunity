@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login</h1>
+<form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <button type="submit">Login</button>
+</form>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        fetch('/auth/hi/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                loginId: username,
+                password: password,
+            }),
+        })
+            .then(response => {
+                if (response.ok) {  // 응답이 성공적인지 먼저 확인
+                    return response.json();
+                }
+                throw new Error('Login failed');
+            })
+            .then(data => {
+                if (data.successOrFail && data.data && data.data.token) {
+                    // Store token in localStorage or cookies
+                    localStorage.setItem('authToken', data.data.token);
+                    // Redirect to the chat page
+                    window.location.href = '/chat/hi/lol';
+                } else {
+                    alert('Invalid login credentials');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Login failed');
+            });
+    });
+</script>
+</body>
+</html>
