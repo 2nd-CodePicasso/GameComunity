@@ -32,7 +32,7 @@ public class ChatConnectorImpl implements ChatConnector {
                 .where(chat.createdAt.lt(lastTime)
                         .or(chat.createdAt.eq(lastTime)
                                 .and(chat.id.lt(chatId))))
-                .orderBy(chat.createdAt.asc(),chat.id.asc())
+                .orderBy(chat.createdAt.desc(),chat.id.desc())
                 .limit(size)
                 .fetch();
     }

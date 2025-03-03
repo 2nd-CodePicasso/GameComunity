@@ -32,6 +32,7 @@ public class S3Service {
                     .putObjectRequest(objectRequest)
                     .signatureDuration(Duration.ofMinutes(15))
                     .build();
+
             PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(putObjectPresignRequest);
             URL url = presignedPutObjectRequest.url();
             return url.toString();
@@ -41,4 +42,5 @@ public class S3Service {
             throw new ImageIoException(ErrorCode.IMAGE_IOEXCEPTION);
         }
     }
+
 }

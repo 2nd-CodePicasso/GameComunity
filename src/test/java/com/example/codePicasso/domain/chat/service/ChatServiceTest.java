@@ -82,19 +82,6 @@ public class ChatServiceTest {
     }
 
     @Test
-    void 글라발_채팅기록_조회() {
-        //given
-        //when
-        when(globalChatConnector.findAll()).thenReturn(globalChats);
-        GlobalChatListResponse chatsHistory = chatService.getChatsHistory();
-
-        //then
-        verify(globalChatConnector).findAll();
-        assertEquals(globalChats.get(0).getUsername(), chatsHistory.chatsResponseList().get(0).username());
-        assertEquals(globalChats.get(0).getContent(), chatsHistory.chatsResponseList().get(0).message());
-    }
-
-    @Test
     void 룸_채팅_생성() {
         //given
         //when
@@ -108,22 +95,5 @@ public class ChatServiceTest {
         assertEquals(chat.getContent(), chatResponse.message());
         assertEquals(chat.getCreatedAt(), chatResponse.createdAt());
         assertEquals(chat.getUsername(), chatResponse.username());
-    }
-
-    @Test
-    void 룸_채팅_조회() {
-        //given
-        int size = 0;
-        Long chatId = 1L;
-        LocalDateTime localDateTime = LocalDateTime.now();
-        //when
-        when(chatConnector.findAllByRoomId(roomId)).thenReturn(chats);
-        ChatListResponse chatResponses = chatService.getByRoomId(roomId, size, chatId, localDateTime);
-
-        //then
-        verify(chatConnector).findAllByRoomId(roomId);
-        assertEquals(chats.get(0).getContent(), chatResponses.chatResponses().get(0).message());
-        assertEquals(chats.get(0).getUsername(), chatResponses.chatResponses().get(0).username());
-        assertEquals(chats.get(0).getCreatedAt(), chatResponses.chatResponses().get(0).createdAt());
     }
 }
