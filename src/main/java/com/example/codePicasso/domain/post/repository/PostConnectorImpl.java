@@ -117,7 +117,7 @@ public class PostConnectorImpl implements PostConnector {
     @Override
     public Post findByIdAndUserId(Long postId, Long userId) {
         Post foundPost = basePostQuery()
-                .where(post.id.eq(postId), post.user.id.eq(userId))
+                .where(post.id.eq(postId))
                 .fetchOne();
         if (foundPost == null) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);

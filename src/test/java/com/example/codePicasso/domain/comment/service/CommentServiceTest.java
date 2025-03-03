@@ -21,8 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.awt.SystemColor.text;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -120,22 +119,19 @@ class CommentServiceTest {
     @Test
         // 대댓글 생성
     void createReply() {
-        Long postId = 1L;
         Long userId = 1L;
         Long parentId = 1L;
         CommentRequest request = new CommentRequest("test Reply");
 
         // When
-        when(postConnector.findById(postId)).thenReturn(mockPost);
         when(userConnector.findById(userId)).thenReturn(mockUser);
         when(commentConnector.findById(parentId)).thenReturn(mockComment);
         when(commentConnector.save(any(Comment.class))).thenReturn(mockReply);
 
-        CommentResponse response = commentService.createReply(postId, parentId, userId, request);
+        CommentResponse response = commentService.createReply(parentId, userId, request);
 
         // Then
         verify(commentConnector, times(1)).save(any());
-        verify(postConnector).findById(postId);
         verify(userConnector).findById(userId);
         verify(commentConnector).findById(parentId);
 
