@@ -1,9 +1,12 @@
 package com.example.codePicasso.domain.chat.repository;
 
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
+import com.example.codePicasso.domain.chat.entity.QChatRoom;
 import com.example.codePicasso.domain.chat.service.RoomConnector;
+import com.example.codePicasso.domain.user.entity.QUser;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomConnectorImpl implements RoomConnector {
     private final RoomRepository roomRepository;
-
+    private final JPAQueryFactory jpaQueryFactory;
     @Override
     public ChatRoom save(ChatRoom chatRoom) {
         return roomRepository.save(chatRoom);
@@ -21,7 +24,12 @@ public class RoomConnectorImpl implements RoomConnector {
 
     @Override
     public List<ChatRoom> findAll() {
-        return roomRepository.findAll();
+        QChatRoom chatRoom = QChatRoom.chatRoom;
+        QUser user = QUser.user;
+        return jpaQueryFactory.select(chatRoom)
+                .from(chatRoom)
+                .leftJoin(chatRoom.user,user).fetchJoin()
+                .fetch();
     }
 
     @Override

@@ -48,8 +48,7 @@ public class PostService {
     // 게시물 조회(게임별 추천게시물)
     public PostListResponse findRecommendedPost(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postResponses = postConnector
-                .findAllRecommendedOfGame(gameId,PostStatus.RECOMMENDED, pageable);
+        Page<Post> postResponses = postConnector.findAllRecommendedOfGame(gameId, PostStatus.RECOMMENDED, pageable);
         return DtoFactory.toPaginationPostDto(postResponses);
     }
 

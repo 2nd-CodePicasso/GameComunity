@@ -30,8 +30,12 @@ public class ChatRestController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<ApiResponse<GlobalChatListResponse>> getChatsHistory() {
-        GlobalChatListResponse chatsHistory = chatsService.getChatsHistory();
+    public ResponseEntity<ApiResponse<GlobalChatListResponse>> getChatsHistory(
+            @RequestParam Long chatId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime lastTime,
+            @RequestParam int size
+    ) {
+        GlobalChatListResponse chatsHistory = chatsService.getChatsHistory(chatId,lastTime,size);
         return ApiResponse.success(chatsHistory);
     }
 

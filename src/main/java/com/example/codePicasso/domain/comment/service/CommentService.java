@@ -39,8 +39,7 @@ public class CommentService {
 
     // 대댓글 생성
     @Transactional
-    public CommentResponse createReply(Long postId, Long parentId, Long userId, CommentRequest request) {
-        Post post = postConnector.findById(postId);
+    public CommentResponse createReply(Long parentId, Long userId, CommentRequest request) {
         User user = userConnector.findById(userId);
         Comment parentComment = commentConnector.findById(parentId);
 
@@ -49,7 +48,7 @@ public class CommentService {
             throw new InvalidRequestException(ErrorCode.CANNOT_WRITE_COMMENT);
         }
 
-        Comment createReply = CommentRequest.toEntityForReply(post, user, parentComment, request.text());
+        Comment createReply = CommentRequest.toEntityForReply(user, parentComment, request.text());
 
         parentComment.addReplies(createReply);
         Comment saveReply = commentConnector.save(createReply);
