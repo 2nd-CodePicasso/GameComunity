@@ -171,6 +171,8 @@ public class DtoFactory {
                 .build();
     }
 
+
+
     public static RoomResponse toChatRoomDto(ChatRoom chatRoom) {
         return RoomResponse.builder()
                 .roomId(chatRoom.getId())
