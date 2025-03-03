@@ -19,7 +19,7 @@
         }
         #messages {
             height: 300px;
-            overflow-y: scroll;
+            overflow-y: auto;
             border: 1px solid #eee;
             padding: 5px;
         }
@@ -42,7 +42,7 @@
 
         #room-messages {
             height: 300px;
-            overflow-y: scroll;
+            overflow-y: auto;
             border: 1px solid #eee;
             padding: 10px;
             background-color: #ffffff; /* 메시지 영역의 배경색 */
@@ -82,6 +82,8 @@
         <br>
         <button onclick="createRoom()">채팅방 생성</button>
 
+
+
         <h3>채팅방 목록</h3>
         <ul id="roomList"></ul>
     </div>
@@ -92,6 +94,10 @@
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요." />
         <button onclick="sendMessage()">전송</button>
         <div id="response-time">응답 시간: -</div>
+
+
+        <input type="file" id="fileInput" />
+        <button id="uploadBtn">Upload to S3</button>
     </div>
 
     <div id="chat-room-section">
@@ -108,6 +114,15 @@
     var stompClient = null;
     var messageSendTime = null;
     var currentRoom = null;
+    let size = 10;
+    let oldestChatId = null;  // 가장 오래된 메시지의 ID
+    let oldestChatTime = null;  // 가장 오래된 메시지의 생성 시간
+    let loadingInProgress = false;  // 중복 호출 방지를 위한 플래그
+    let roomSubscriptions = {};
+
+    let globalOldestChatId = null;
+    let globalOldestChatTime= null;
+    let globalLoadingInProgress = false;
 
     function connect() {
         var socket = new SockJS('/ws'); // 서버의 WebSocket 엔드포인트
@@ -128,19 +143,26 @@
 
 
     function connectToRoom(room) {
+        console.log('이게 룸아이디', room.roomId);
         if (!stompClient || !stompClient.connected) {
             console.log('stompClient가 연결되지 않았습니다.');
             return;
         }
 
-        // 채팅방 구독 시작
-        stompClient.subscribe(`/topic/${room.roomId}`, function (messageOutput) {
-            console.log('메시지 수신:', messageOutput.body);
-            showRoomMessage(JSON.parse(messageOutput.body));
-        }, {'Authorization': token});
+        // 이미 해당 방에 대한 구독이 있는지 확인합니다.
+        if (roomSubscriptions[room.roomId]) {
+            console.log(`채팅방 ${room.roomId}는 이미 구독 중입니다.`);
+        } else {
+            // 채팅방 구독 시작 및 구독 객체를 저장
+            let subscription = stompClient.subscribe(`/topic/${room.roomId}`, function (messageOutput) {
+                console.log('메시지 수신:', messageOutput.body);
+                showRoomMessage(JSON.parse(messageOutput.body));
+            }, {'Authorization': token});
+            roomSubscriptions[room.roomId] = subscription; // 구독 상태 저장
+            console.log(`채팅방 ${room.roomId} (${room.roomName}) 구독 성공!`);
+        }
 
-        console.log(`채팅방 ${room.roomId} (${room.roomName}) 구독 성공!`);
-
+        // 현재 접속한 채팅방으로 설정 후 채팅 내역 로드
         currentRoom = room.roomId;
         loadChatHistoryForRoom(room.roomId);
     }
@@ -179,16 +201,72 @@
         }
     }
 
-    function sendRoomMessage() {
-        const message = document.getElementById('roomMessageInput').value.trim();
-        if (message && stompClient && currentRoom) {
-            const chatMessage = {message: message };
-            stompClient.send(`/app/send/room/${currentRoom}`, {'Authorization': token}, JSON.stringify(chatMessage));
-            document.getElementById('roomMessageInput').value = '';
-        }
+    // 이미지 태그를 #messages 안에 추가하는 함수
+    function addImageToMessages(fileUrl, altText = 'Uploaded Image', width = '200px', height = '200px') {
+        const messagesDiv = document.getElementById('messages');
+        const imgElement = document.createElement('img');
+        imgElement.src = fileUrl;
+        imgElement.alt = altText;
+        imgElement.style.width = width;
+        imgElement.style.height = height;
+        imgElement.style.marginTop = '10px';
+        messagesDiv.appendChild(imgElement);
     }
 
+    document.addEventListener('DOMContentLoaded', () => {
+        const uploadBtn = document.getElementById('uploadBtn');
+        if (uploadBtn) {
+            uploadBtn.addEventListener('click', async () => {
+                const fileInput = document.getElementById('fileInput');
+                const file = fileInput.files[0];
+                const filename = encodeURIComponent(file.name);
+                console.log(filename)
+
+                if (file) {
+                    try {
+                        // 프리사인드 URL 요청
+                        const response = await fetch(`/images/hi/bye?filename=${filename}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json', // JSON 형식이지만 바디는 비어있음
+                                'Authorization': token  // Authorization 헤더에 토큰 추가
+                            }
+                        });
+                        const responseData = await response.json();
+                        const presignedUrl = responseData.data;
+                        console.log(presignedUrl)
+                        // 프리사인드 URL을 사용하여 S3에 파일 업로드
+                        const uploadResponse = await fetch(presignedUrl, {
+                            method: 'PUT',
+                            body: file,
+                            headers: {
+                                'Content-Type': file.type  // 파일의 MIME 타입 (예: image/jpeg, image/png 등)
+                            }
+                        });
+
+                        if (uploadResponse.ok) {
+                            alert('File uploaded successfully!');
+                            const fileUrl = presignedUrl.split('?')[0]; // 쿼리 파라미터 제거해서 순수 URL만 사용
+                            console.log(fileUrl);
+                            const message = {
+                                imageUrl: fileUrl,
+                                message: ""
+                            };
+                            sendImage(message)// 이미지 추가 함수 호출
+                        } else {
+                            alert('File upload failed!');
+                        }
+                    } catch (error) {
+                        console.error('Error uploading file:', error);
+                        alert('Error uploading file.');
+                    }
+                }
+            });
+        }
+    });
+
     function loadRooms() {
+        console.log('여기가 로드룸스')
         fetch('/room', {
             method: 'GET',
             headers: {
@@ -211,7 +289,252 @@
             .catch(error => console.error('채팅방 목록 불러오는 중 오류 발생:', error));
     }
 
-    function showRoomMessage(message) {
+    function loadMoreChatHistoryForRoom(roomId) {
+        if (loadingInProgress) return;
+        loadingInProgress = true;
+
+        console.log("다음 요청의 기준값 - chatId:", oldestChatId, ", lastTime:", oldestChatTime)
+
+        const roomMessages = document.getElementById('room-messages');
+        // 메시지를 추가하기 전 현재 스크롤 높이를 저장
+        const previousScrollHeight = roomMessages.scrollHeight;
+
+        // 이전 메시지를 불러오기 위해, 현재 저장된 oldestChatId, oldestChatTime를 사용
+        const url = `/chats/${roomId}?size=${size}&chatId=${oldestChatId}&lastTime=${encodeURIComponent(oldestChatTime)}`;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("fetch 응답 데이터:", data);
+                if (data && data.data && Array.isArray(data.data.chatResponses)) {
+                    const messages = data.data.chatResponses;
+                    if (messages.length === 0) {
+                        // 더 불러올 메시지가 없는 경우
+                        return;
+                    }
+                    // 이전 기록은 위쪽에 추가하기 위해 reverse() 할 수도 있습니다.
+                    // (API에서 반환하는 순서에 따라 필요할 수 있음)
+                    //messages.reverse(); // 오래된 메시지가 위로 오게 순서 뒤집기
+
+                    messages.forEach(message => {
+                        // true: 메시지를 상단에 삽입
+                        showRoomMessage(message, true);
+                    });
+
+                    // 새로 불러온 메시지 중 가장 오래된 정보를 업데이트
+                    const lastIndex = messages.length - 1;
+                    oldestChatId = messages[lastIndex].chatsId;
+                    oldestChatTime = messages[lastIndex].createdAt;
+                    // 메시지를 prepend 한 후 스크롤 위치 보정
+                    const newScrollHeight = roomMessages.scrollHeight;
+                    roomMessages.scrollTop = newScrollHeight - previousScrollHeight;
+                }
+            })
+            .catch(error => console.error('이전 채팅 내역을 불러오는 중 오류 발생:', error))
+            .finally(() => {
+                loadingInProgress = false;
+            });
+    }
+
+    function loadMoreChatHistory() {
+        if (globalLoadingInProgress) return;
+        globalLoadingInProgress = true;
+
+        console.log("다음 요청의 기준값 - chatId:", globalOldestChatId, ", lastTime:",globalOldestChatTime)
+
+        const roomMessages = document.getElementById('messages');
+        // 메시지를 추가하기 전 현재 스크롤 높이를 저장
+        const previousScrollHeight = roomMessages.scrollHeight;
+
+        // 이전 메시지를 불러오기 위해, 현재 저장된 oldestChatId, oldestChatTime를 사용
+        const url = `/chats/history?size=${size}&chatId=${globalOldestChatId}&lastTime=${encodeURIComponent(globalOldestChatTime)}`;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("fetch 응답 데이터:", data);
+                if (data && data.data && Array.isArray(data.data.chatsResponses)) {
+                    const messages = data.data.chatsResponses;
+                    if (messages.length === 0) {
+                        // 더 불러올 메시지가 없는 경우
+                        return;
+                    }
+                    // 이전 기록은 위쪽에 추가하기 위해 reverse() 할 수도 있습니다.
+                    // (API에서 반환하는 순서에 따라 필요할 수 있음)
+                    //messages.reverse(); // 오래된 메시지가 위로 오게 순서 뒤집기
+
+                    messages.forEach(message => {
+                        // true: 메시지를 상단에 삽입
+                        showMessage(message, true);
+                    });
+
+                    // 새로 불러온 메시지 중 가장 오래된 정보를 업데이트
+                    const lastIndex = messages.length - 1;
+                    globalOldestChatId = messages[lastIndex].chatsId;
+                    globalOldestChatTime = messages[lastIndex].createdAt;
+                    // 메시지를 prepend 한 후 스크롤 위치 보정
+                    const newScrollHeight = roomMessages.scrollHeight;
+                    roomMessages.scrollTop = newScrollHeight - previousScrollHeight;
+                }
+            })
+            .catch(error => console.error('이전 채팅 내역을 불러오는 중 오류 발생:', error))
+            .finally(() => {
+                globalLoadingInProgress = false;
+            });
+    }
+
+    function toISO8601Local(date) {
+        // 로컬 타임존 오프셋 계산
+        let timezoneOffset = -date.getTimezoneOffset(); // 로컬 시간대 오프셋 (분 단위)
+        let timezoneSign = timezoneOffset >= 0 ? '+' : '-';
+        let timezoneHours = String(Math.floor(Math.abs(timezoneOffset) / 60)).padStart(2, '0');
+        let timezoneMinutes = String(Math.abs(timezoneOffset) % 60).padStart(2, '0');
+
+        // 로컬 시간을 ISO 8601 형식으로 변환
+        let localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)); // UTC로 변환된 시간에 오프셋을 빼서 로컬 시간으로 변환
+        let isoString = localDate.toISOString().replace('Z', `${timezoneSign}${timezoneHours}:${timezoneMinutes}`);
+
+        return isoString;
+    }
+
+    function loadChatHistoryForRoom(roomId) {
+
+        const roomMessages = document.getElementById('room-messages');
+        roomMessages.innerHTML = '';  // 기존 메시지 모두 삭제
+
+        let chatId = 0;  // chatId가 없다면 0으로 설정
+        let lastTime = toISO8601Local(new Date());
+        console.log(lastTime)
+
+        const url = `/chats/${roomId}?size=${size}&chatId=${chatId}&lastTime=${encodeURIComponent(lastTime)}`;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data && Array.isArray(data.data.chatResponses)) {
+                    const messages = data.data.chatResponses;
+
+                    messages.reverse();
+
+                    messages.forEach(message => {
+                        // false: 메시지를 하단에 추가 (초기 로드)
+                        showRoomMessage(message, false);
+                    });
+                    // 메시지가 존재하면 가장 오래된 메시지의 정보 업데이트
+                    if (messages.length > 0) {
+                        // messages[0]가 가장 오래된 메시지라고 가정
+                        oldestChatId = messages[0].chatsId;
+                        oldestChatTime = messages[0].createdAt;
+                    }
+                    roomMessages.scrollTop = roomMessages.scrollHeight;
+                }
+            })
+            .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
+
+    }
+
+    function loadChatHistory() {
+
+        let chatId = 0;  // chatId가 없다면 0으로 설정
+        let lastTime = toISO8601Local(new Date());
+        console.log(lastTime)
+        const url = `/chats/history?size=${size}&chatId=${chatId}&lastTime=${encodeURIComponent(lastTime)}`;
+        console.log(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data && Array.isArray(data.data.chatsResponses)) {
+                    const messages = data.data.chatsResponses;
+                    console.log(messages)
+
+                    messages.reverse();
+
+                    messages.forEach(message => {
+                        // false: 메시지를 하단에 추가 (초기 로드)
+                        showMessage(message, false);
+                    });
+                    // 메시지가 존재하면 가장 오래된 메시지의 정보 업데이트
+                    if (messages.length > 0) {
+                        // messages[0]가 가장 오래된 메시지라고 가정
+                        globalOldestChatId = messages[0].chatsId;
+                        globalOldestChatTime = messages[0].createdAt;
+                    }
+                    const roomMessages = document.getElementById('messages');  // 채팅 메시지가 담기는 요소
+                    roomMessages.scrollTop = roomMessages.scrollHeight;
+                }
+            })
+            .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
+    }
+
+
+    function sendRoomMessage() {
+        const message = document.getElementById('roomMessageInput').value.trim();
+        if (message && stompClient && currentRoom) {
+
+            const chatMessage = {message: message
+            };
+
+            stompClient.send(`/app/send/room/${currentRoom}`,
+                {'Authorization': token},
+                JSON.stringify(chatMessage));
+            document.getElementById('roomMessageInput').value = '';
+        }
+    }
+
+    function sendImage(message) {
+        console.log(message)
+        // 채팅방에 해당하는 WebSocket을 통해 메시지 전송
+        if (stompClient && stompClient.connected) {
+            stompClient.send('/app/send/all',
+                {
+                    'Authorization': token
+                },
+                JSON.stringify(message)
+            );
+        } else {
+            console.log('WebSocket 연결이 되어 있지 않습니다.');
+        }
+    }
+
+
+    function sendMessage() {
+        var messageContent = document.getElementById('messageInput').value.trim();
+        if (messageContent && stompClient) {
+            // 메시지 객체 생성 (필요에 따라 sender 값을 설정)
+            var chatMessage = {
+                message: messageContent
+            };
+
+            messageSendTime = new Date();
+            stompClient.send("/app/send/all",
+                {'Authorization' : token},
+                JSON.stringify(chatMessage));
+            document.getElementById('messageInput').value = '';
+        }
+
+    }
+
+    function showRoomMessage(message, prepend = false) {
         console.log(message);  // 메시지 객체를 로그로 확인
         const roomMessages = document.getElementById('room-messages');
 
@@ -228,99 +551,90 @@
         }).replace(',', '');
         messageElement.textContent = `${message.username}: ${message.message}  ${realTime}`;
 
-        roomMessages.appendChild(messageElement);
-        roomMessages.scrollTop = roomMessages.scrollHeight;
-        showResponseTime();
-    }
-
-    function loadChatHistoryForRoom(roomId) {
-
-        const roomMessages = document.getElementById('room-messages');
-        roomMessages.innerHTML = '';  // 기존 메시지 모두 삭제
-
-        fetch(`/chats/${roomId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': token
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("채팅 내역:", data);
-                // 수정된 부분: data.data.chatResponses로 수정
-                if (data && data.data && Array.isArray(data.data.chatResponses)) {
-                    data.data.chatResponses.forEach(message => {
-                        showRoomMessage(message);
-                    });
-                }
-            })
-            .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
-    }
-
-    function loadChatHistory() {
-        fetch('/chats/history', {
-            method: 'GET',
-            headers: {
-                'Authorization': token
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("서버 응답:", data);
-                // 'chatsResponseList'가 배열인지 확인 후 순회
-                if (data && data.data && Array.isArray(data.data.chatsResponseList)) {
-                    data.data.chatsResponseList.forEach(message => {
-                        showMessage(message); // 각 메시지를 화면에 추가
-                    });
-                } else {
-                    console.error("서버 응답이 예상한 형식이 아닙니다.");
-                }
-            })
-            .catch(error => console.error('채팅 내역을 불러오는 중 오류 발생:', error));
-    }
-
-    function sendMessage() {
-        var messageContent = document.getElementById('messageInput').value.trim();
-        if (messageContent && stompClient) {
-            // 메시지 객체 생성 (필요에 따라 sender 값을 설정)
-            var chatMessage = {
-                message: messageContent
-            };
-
-            messageSendTime = new Date();
-
-            // "/app/chat.sendMessage" 엔드포인트로 메시지 전송
-            stompClient.send("/app/send/all",
-                {'Authorization' : token},
-                JSON.stringify(chatMessage));
-            document.getElementById('messageInput').value = '';
+        // prepend 여부에 따라 메시지 추가 위치 결정
+        if (prepend) {
+            roomMessages.insertBefore(messageElement, roomMessages.firstChild);
+        } else {
+            roomMessages.appendChild(messageElement);
         }
-
     }
 
-    function showMessage(message) {
-        console.log(message)
-        var messagesDiv = document.getElementById('messages');
-        var messageElement = document.createElement('p');
-        const createdAt = new Date(message.createdAt);
-        const realTime = createdAt.toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        }).replace(',', '');
-        messageElement.textContent = `${message.username}: ${message.message}  ${realTime}`;
+    function showMessage(message, prepend = false) {
+        var roomMessages = document.getElementById('messages');
 
-        messagesDiv.appendChild(messageElement);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        showResponseTime();
+        // 이미지 URL이 존재하는 경우
+        if (message.imageUrl !== null && message.imageUrl !== "") {
+            const messageElement = document.createElement('div');  // 메시지를 담을 div 생성
+
+            // 사용자 이름과 시간을 표시하는 부분
+            const userAndTime = document.createElement('p');
+            const createdAt = new Date(message.createdAt);
+            const realTime = createdAt.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).replace(',', '');
+
+            userAndTime.textContent = `${message.username}  ${realTime}`;
+            messageElement.appendChild(userAndTime);
+
+            // 이미지 요소 생성
+            const imgElement = document.createElement('img');
+            imgElement.src = message.imageUrl;
+            imgElement.alt = 'Uploaded Image';
+            imgElement.style.width = '200px';
+            imgElement.style.height = 'auto';
+            messageElement.appendChild(imgElement);
+
+            // 메시지 렌더링
+            if (prepend) {
+                roomMessages.insertBefore(messageElement, roomMessages.firstChild);
+            } else {
+                roomMessages.appendChild(messageElement);
+            }
+        } else {
+            // 텍스트 메시지 처리
+            const messageElement = document.createElement('p');
+            const createdAt = new Date(message.createdAt);
+            const realTime = createdAt.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).replace(',', '');
+            messageElement.textContent = `${message.username}: ${message.message}  ${realTime}`;
+
+            const messageTime = new Date();
+
+            // 시간 차이 계산 (보낸 시간과 받은 시간)
+            const timeDiff = calculateTimeDifference(messageTime, messageSendTime);
+
+            if (prepend) {
+                roomMessages.insertBefore(messageElement, roomMessages.firstChild);
+            } else {
+                roomMessages.appendChild(messageElement);
+            }
+            showResponseTime(timeDiff);
+        }
     }
+
 
     function showResponseTime(time) {
+        console.log(time)
         const responseTimeDiv = document.getElementById('response-time');
         responseTimeDiv.textContent = `응답 시간: ${time}ms`;
+    }
+    function calculateTimeDifference(sendTime, receivedTime) {
+        console.log('보낸시간',sendTime)
+        console.log('받은시간',receivedTime)
+        return sendTime - receivedTime;  // 밀리초 차이
+
+
     }
 
     window.onload = function () {
@@ -332,6 +646,20 @@
             }
         });
     };
+
+    document.getElementById('room-messages').addEventListener('scroll', function() {
+        if (this.scrollTop < 50 && currentRoom) {
+            console.log("스크롤이 임계값에 도달했습니다. 추가 메시지 로드 시작");
+            loadMoreChatHistoryForRoom(currentRoom);
+        }
+    });
+
+    document.getElementById('messages').addEventListener('scroll', function() {
+        if (this.scrollTop < 50 ) {
+            console.log("스크롤이 임계값에 도달했습니다. 추가 메시지 로드 시작");
+            loadMoreChatHistory();
+        }
+    });
 </script>
 </body>
 </html>

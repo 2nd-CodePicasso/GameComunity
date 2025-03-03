@@ -3,7 +3,6 @@ package com.example.codePicasso.domain.comment.service;
 import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
 import com.example.codePicasso.domain.comment.dto.response.CommentListResponse;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
-import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.service.PostConnector;
@@ -40,17 +39,16 @@ public class CommentService {
 
     // 대댓글 생성
     @Transactional
-    public CommentResponse createReply(Long postId, Long parentId, Long userId, CommentRequest request) {
-        Post post = postConnector.findById(postId);
+    public CommentResponse createReply(Long parentId, Long userId, CommentRequest request) {
         User user = userConnector.findById(userId);
         Comment parentComment = commentConnector.findById(parentId);
 
         // 부모 댓글이 대댓글이면 추가 대댓글 작성 불가
-        if (parentComment.getParent() != null) {
+        if (parentComment.isReply()) {
             throw new InvalidRequestException(ErrorCode.CANNOT_WRITE_COMMENT);
         }
 
-        Comment createReply = CommentRequest.toEntityForReply(post, user, parentComment, request.text());
+        Comment createReply = CommentRequest.toEntityForReply(user, parentComment, request.text());
 
         parentComment.addReplies(createReply);
         Comment saveReply = commentConnector.save(createReply);

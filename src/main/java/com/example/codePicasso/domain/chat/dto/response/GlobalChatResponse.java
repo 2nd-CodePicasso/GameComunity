@@ -9,6 +9,7 @@ public record GlobalChatResponse(
         Long chatsId,
         String username,
         String message,
+        String imageUrl,
         LocalDateTime createdAt
 ) {
 

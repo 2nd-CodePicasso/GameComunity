@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -41,10 +42,10 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public GlobalChatListResponse getChatsHistory() {
-        List<GlobalChat> chats = globalChatConnector.findAll();
+    public GlobalChatListResponse getChatsHistory(Long chatId, LocalDateTime lastTime,int size) {
+        List<GlobalChat> chats = globalChatConnector.findAll(chatId,lastTime,size);
         return GlobalChatListResponse.builder()
-                .chatsResponseList(chats.stream().map(DtoFactory::toGlobalChatDto).toList())
+                .chatsResponses(chats.stream().map(DtoFactory::toGlobalChatDto).toList())
                 .build();
     }
 
@@ -58,11 +59,11 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public ChatListResponse getByRoomId(Long roomId) {
+    public ChatListResponse getByRoomId(Long roomId, int size, Long chatId, LocalDateTime localDateTime) {
         if (roomConnector.isSecurityById(roomId)) {
             throw new DuplicateException(ErrorCode.UNAUTHORIZED_CHAT_ROOM);
         }
-        List<Chat> chats = chatConnector.findAllByRoomId(roomId);
+        List<Chat> chats = chatConnector.findAll(roomId,size,chatId,localDateTime);
         return ChatListResponse.builder()
                 .chatResponses(chats.stream().map(DtoFactory::toChatDto).toList())
                 .build();

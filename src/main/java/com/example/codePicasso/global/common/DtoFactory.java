@@ -76,13 +76,14 @@ public class DtoFactory {
     public static CommentResponse toCommentDto(Comment comment) {
         return CommentResponse.builder().
                 commentId(comment.getId())
-                .postId(comment.getPost().getId())
+                .postId(comment.getParent() != null ?
+                        comment.getParent().getPost().getId() : comment.getPost().getId())
                 .userId(comment.getUser().getId())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
                 .createdAt(comment.getCreatedAt())
-                .updatedAp(comment.getUpdatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .replies(comment.getReplies().stream()
                         .map(DtoFactory::toCommentDto)
                         .toList())
@@ -129,15 +130,18 @@ public class DtoFactory {
 
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {
         return MyExchangeResponse.builder()
-                .exchange(myExchange.getExchange())
-                .user(myExchange.getUser())
+                .id(myExchange.getId())
+                .exchangeId(myExchange.getExchange().getId())
+                .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
+                .statusType(myExchange.getExchange().getStatusType())
                 .build();
     }
 
     public static ChatResponse toChatDto(Chat chats) {
         return ChatResponse.builder()
                 .chatsId(chats.getId())
+                .roomId(chats.getChatRoom().getId())
                 .message(chats.getContent())
                 .username(chats.getUsername())
                 .createdAt(chats.getCreatedAt())
@@ -161,6 +165,7 @@ public class DtoFactory {
         return GlobalChatResponse.builder()
                 .username(chats.getUsername())
                 .chatsId(chats.getId())
+                .imageUrl(chats.getImageUrl())
                 .message(chats.getContent())
                 .createdAt(chats.getCreatedAt())
                 .build();
@@ -172,12 +177,6 @@ public class DtoFactory {
                 .username(chatRoom.getUser().getNickname())
                 .roomName(chatRoom.getName())
                 .isSecurity(chatRoom.isSecurity())
-                .build();
-    }
-
-    public static ImageResponse toImageDto(Image saveImage) {
-        return ImageResponse.builder()
-                .imageUrl(saveImage.getImageUrl())
                 .build();
     }
 }

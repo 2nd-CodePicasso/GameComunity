@@ -37,14 +37,13 @@ public class CommentController {
     /**
      * 대댓글 생성
      */
-    @PostMapping("/{postId}/reply/{parentId}")
+    @PostMapping("/reply/{parentId}")
     public ResponseEntity<ApiResponse<CommentResponse>> createReply(
-            @PathVariable("postId") Long postId,
             @PathVariable("parentId") Long parentId,
             @AuthenticationPrincipal CustomUser user,
             @Valid @RequestBody CommentRequest request
     ) {
-        CommentResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request);
+        CommentResponse replyResponse = commentService.createReply(parentId, user.getUserId(), request);
         return ApiResponse.created(replyResponse);
     }
 
@@ -54,7 +53,7 @@ public class CommentController {
      * @param postId
      * @return
      */
-    @GetMapping("/{postId}")
+    @GetMapping("/hi/{postId}")
     public ResponseEntity<ApiResponse<CommentListResponse>> findComment(
             @PathVariable("postId") Long postId
     ) {
