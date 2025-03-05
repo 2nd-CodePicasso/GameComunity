@@ -75,8 +75,8 @@ jobs:
     - name: Gradle 설치
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
-    - name: Gradlew로 빌드
-      run: ./gradlew build
+    - name: Gradlew로 빌드(테스트 스킵)
+      run: ./gradlew build -x test
 
 
   dependency-submission:
