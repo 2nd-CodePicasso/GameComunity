@@ -2,7 +2,6 @@ HELP.md
 .gradle
 /gradle.*
 build/
-!gradle/wrapper/gradle-wrapper.properties
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -12,7 +11,6 @@ build/
 
 ### setting ###
 myInfo.yml
-*.properties
 
 ### STS ###
 .apt_generated
