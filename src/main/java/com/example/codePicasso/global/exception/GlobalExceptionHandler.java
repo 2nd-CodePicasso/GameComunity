@@ -5,6 +5,7 @@ import com.example.codePicasso.global.exception.base.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,6 +29,11 @@ public class GlobalExceptionHandler {
                 .findFirst().orElse("입력값이 유효하지 않습니다");
         log.error("유효하지 않은 값 입력. message=\"{}\"", message);
         return ApiResponse.fail(HttpStatus.BAD_REQUEST, message);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<String>> handleEnumMismatchException(MethodArgumentTypeMismatchException ex) {
+        return ApiResponse.fail(HttpStatus.BAD_REQUEST, "잘못된 거래 타입입니다. 'BUY' 또는 'SELL'을 사용하세요.");
     }
 
 //    @ExceptionHandler(Exception.class)

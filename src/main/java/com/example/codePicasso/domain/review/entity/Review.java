@@ -1,5 +1,6 @@
-package com.example.codePicasso.domain.exchange.entity;
+package com.example.codePicasso.domain.review.entity;
 
+import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.TimeStamp;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyExchange extends TimeStamp {
+public class Review extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,16 +24,15 @@ public class MyExchange extends TimeStamp {
     @JoinColumn(name = "exchange_id", nullable = false)
     private Exchange exchange;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private String contact;
+    private int rating;
+    private String review;
 
-    @Enumerated(EnumType.STRING)
-    private StatusType statusType;
-
-    public void changeStatus(StatusType statusType){
-        this.statusType = statusType;
+    public void updateReview(int rating, String review) {
+        this.rating = rating;
+        this.review = review;
     }
 }

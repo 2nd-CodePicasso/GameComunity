@@ -64,6 +64,10 @@ public enum ErrorCode {
     ALREADY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "", "거래 완료 처리가 이미 진행 중입니다."),
     ALREADY_IN_COMPLETED(HttpStatus.BAD_REQUEST, "", "이미 완료된 거래입니다."),
     DUPLICATE(HttpStatus.BAD_REQUEST, "", "중복된 요청입니다."),
+    NOT_COMPLETED(HttpStatus.BAD_REQUEST, "", "완료되지 않은 거래입니다."),
+
+    //Review
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "", "후기글을 찾을 수 없습니다."),
     TRANSACTION_FORBIDDEN(HttpStatus.BAD_REQUEST, "", "내 글에서 거래할 수 없습니다."),
 
     //Redis

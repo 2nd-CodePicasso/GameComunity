@@ -2,7 +2,7 @@ package com.example.codePicasso.domain.exchange.service;
 
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
-import com.example.codePicasso.domain.exchange.dto.request.PutExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
@@ -15,6 +15,7 @@ import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
+import com.example.codePicasso.global.exception.base.DataAccessException;
 import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
@@ -73,7 +74,7 @@ class ExchangeServiceTest {
     private MyExchangeResponse myExchangeResponse;
     private MyExchange myExchange;
     private Page<MyExchange> myExchanges;
-    private PutExchangeRequest putCanceledMyExchangeRequest;
+    private PutMyExchangeRequest putCanceledMyExchangeRequest;
 
     /// --- Entity ---
     private User user;
@@ -104,11 +105,12 @@ class ExchangeServiceTest {
         myExchange = myExchangeRequest.toEntity(exchange, user);
         myExchanges = new PageImpl<>(List.of(myExchange));
         myExchangeResponse = DtoFactory.toMyExchangeDto(myExchange);
-        putCanceledMyExchangeRequest = new PutExchangeRequest(StatusType.CANCELED);
+        putCanceledMyExchangeRequest = new PutMyExchangeRequest(StatusType.CANCELED);
 
         when(userConnector.findById(userId)).thenReturn(user);
         when(gameConnector.findByIdForUser(gameId)).thenReturn(game);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
 
         when(user.getId()).thenReturn(userId);
         when(game.getId()).thenReturn(gameId);
@@ -126,9 +128,9 @@ class ExchangeServiceTest {
         // then
         ExchangeResponse expectedResponse = convertToResponse(exchange, userId);
         Assertions.assertThat(response)
-                .usingRecursiveComparison()
-                .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
-                .isEqualTo(expectedResponse);
+            .usingRecursiveComparison()
+            .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
+            .isEqualTo(expectedResponse);
     }
 
     @Test
@@ -162,13 +164,13 @@ class ExchangeServiceTest {
     @Test
     void 거래소_아이템_조회_특정_아이템() {
         // given
-        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
 
         // when
         ExchangeResponse response = exchangeService.getExchangeById(exchangeId);
 
         // then
-        verify(exchangeConnector).findById(exchangeId);
+        verify(exchangeConnector).findByIdAndIsCompleted(exchangeId);
         assertNotNull(response);
     }
 
@@ -176,7 +178,7 @@ class ExchangeServiceTest {
     void 거래소_아이템_수정() {
         // given
         ExchangeRequest newReq = new ExchangeRequest(1L, "짱거래소", 1000, "거래소", 100, "010-1234-5678");
-        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
         when(exchangeConnector.save(any(Exchange.class))).thenReturn(exchange);
 
         // when
@@ -184,22 +186,22 @@ class ExchangeServiceTest {
 
         // then
         ExchangeResponse expectedResponse = new ExchangeResponse(
-                exchange.getId(),
-                userId,
-                exchange.getGame().getId(),
-                "짱거래소", // 변경된 값
-                1000, // 변경된 값
-                exchange.getDescription(),
-                exchange.getQuantity(),
-                exchange.getContact(),
-                exchange.getTradeType(),
-                exchange.getStatusType()
+            exchange.getId(),
+            userId,
+            exchange.getGame().getId(),
+            "짱거래소", // 변경된 값
+            1000, // 변경된 값
+            exchange.getDescription(),
+            exchange.getQuantity(),
+            exchange.getContact(),
+            exchange.getTradeType(),
+            exchange.isCompleted()
         );
 
         Assertions.assertThat(response)
-                .usingRecursiveComparison()
-                .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
-                .isEqualTo(expectedResponse);
+            .usingRecursiveComparison()
+            .ignoringFields("id") // id는 자동 생성되므로 비교에서 제외
+            .isEqualTo(expectedResponse);
     }
 
     @Test
@@ -211,7 +213,7 @@ class ExchangeServiceTest {
         exchangeService.deleteExchange(exchangeId, userId);
 
         // then
-        verify(exchangeConnector).deleteById(exchangeId);
+        Assertions.assertThat(exchange.isCompleted()).isTrue();
     }
     /// --- Exchange ✅ ---
 
@@ -292,7 +294,7 @@ class ExchangeServiceTest {
     void 거래소_아이템_수정_권한없음() {
         // given
         Long anotherUserId = 999L;
-        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
         when(exchange.getUser().getId()).thenReturn(userId);
 
         ExchangeRequest newReq = new ExchangeRequest(1L, "업데이트된 거래소", 500, "업데이트", 200, "010-5678-1234");
@@ -330,6 +332,21 @@ class ExchangeServiceTest {
         });
         assertEquals(ErrorCode.EXCHANGE_NOT_FOUND, exception.getErrorCode());
     }
+
+    @Test
+    void 거래소_아이템_삭제_이미_삭제됨() {
+        // given
+        Exchange exchange = mock(Exchange.class);
+        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
+        when(exchange.isCompleted()).thenReturn(true);
+
+        // when & then
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
+            exchangeService.deleteExchange(exchangeId, userId);
+        });
+
+        assertEquals(ErrorCode.ALREADY_IN_COMPLETED, exception.getErrorCode());
+    }
     /// --- Exchange ❌ ---
 
     /// --- MyExchange ✅ ---
@@ -340,8 +357,7 @@ class ExchangeServiceTest {
         when(myExchangeConnector.save(any(MyExchange.class))).thenReturn(myExchange);
 
         // when
-        // Todo : 자기꺼 구매하길래 임의로 바꿔둠. 수정 요망
-        MyExchangeResponse response = exchangeService.doExchange(exchangeId, 2L, myExchangeRequest);
+        MyExchangeResponse response = exchangeService.doExchange(exchangeId, userId, myExchangeRequest);
 
         // then
         Assertions.assertThat(response.contact()).isEqualTo(myExchangeRequest.contact());
@@ -384,7 +400,7 @@ class ExchangeServiceTest {
         exchangeService.decisionMyExchange(1L, userId, putCanceledMyExchangeRequest);
 
         // then
-        Assertions.assertThat(myExchange.getExchange().getStatusType()).isEqualTo(StatusType.CANCELED);
+        Assertions.assertThat(myExchange.getStatusType()).isEqualTo(StatusType.CANCELED);
         verify(myExchangeConnector).save(myExchange);
     }
     /// --- MyExchange ✅ ---
@@ -393,7 +409,7 @@ class ExchangeServiceTest {
     @Test
     void 거래_중복_요청_예외() {
         // given
-        when(myExchangeConnector.existsByExchangeIdAndUserId(exchangeId, userId)).thenReturn(true);
+        when(myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)).thenReturn(true);
 
         // when & then
         DuplicateException exception = assertThrows(DuplicateException.class, () -> {
@@ -401,6 +417,32 @@ class ExchangeServiceTest {
         });
 
         assertEquals(ErrorCode.DUPLICATE, exception.getErrorCode());
+    }
+
+    @Test
+    void 거래_완료시_랭킹_업데이트_실패() {
+        // given
+        Exchange exchange = spy(this.exchange);
+        when(redisLockService.acquireLock(exchangeId)).thenReturn(true);
+        when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
+        when(exchange.getGame()).thenReturn(game);
+        when(game.getId()).thenReturn(gameId);
+        when(game.getGameTitle()).thenReturn("테스트 게임");
+
+        // when
+        doThrow(new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED))
+                .when(exchangeRankingService)
+                .increaseTradeCount(gameId, "테스트 게임", true);
+
+        // when & then
+        DataAccessException exception = assertThrows(DataAccessException.class, () -> {
+            exchangeService.completeExchange(exchangeId);
+        });
+
+        // then
+        assertEquals(ErrorCode.TRADE_RANKING_UPDATE_FAILED, exception.getErrorCode());
+        verify(redisLockService).releaseLock(exchangeId);
+        verify(exchangeRankingService, times(1)).increaseTradeCount(gameId,"테스트 게임", exchange.getTradeType() == TradeType.BUY);
     }
 
     @Test
@@ -422,15 +464,15 @@ class ExchangeServiceTest {
     void 거래_완료시_Redis_락_획득과_해제() {
         // given
         when(redisLockService.acquireLock(exchangeId)).thenReturn(true); // 락 획득 성공
-        when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
-        doNothing().when(exchangeRankingService).increaseTradeCount(anyString(), anyBoolean()); // 거래 랭킹 업데이트 목 처리
+        when(exchangeConnector.findByIdAndIsCompleted(exchangeId)).thenReturn(exchange);
+        doNothing().when(exchangeRankingService).increaseTradeCount(anyLong(), anyString(), anyBoolean()); // 거래 랭킹 업데이트 목 처리
 
         // when
         exchangeService.completeExchange(exchangeId);
 
         // then
         verify(redisLockService).acquireLock(exchangeId); // 락 획득 검증
-        verify(exchangeRankingService).increaseTradeCount(exchange.getGame().getGameTitle(), exchange.getTradeType() == TradeType.BUY); // 거래 랭킹 업데이트 검증
+        verify(exchangeRankingService).increaseTradeCount(exchange.getGame().getId(), exchange.getGame().getGameTitle(), exchange.getTradeType() == TradeType.BUY); // 거래 랭킹 업데이트 검증
         verify(redisLockService).releaseLock(exchangeId); // 락 해제 검증
     }
     /// --- Redis ✅ ---
@@ -453,16 +495,17 @@ class ExchangeServiceTest {
 
     private ExchangeResponse convertToResponse(Exchange exchange, Long userId) {
         return ExchangeResponse.builder()
-                .id(exchange.getId())
-                .userId(userId)
-                .gameId(exchange.getGame().getId())
-                .title(exchange.getTitle())
-                .price(exchange.getPrice())
-                .description(exchange.getDescription())
-                .quantity(exchange.getQuantity())
-                .contact(exchange.getContact())
-                .tradeType(exchange.getTradeType())
-                .statustype(exchange.getStatusType())
-                .build();
+            .id(exchange.getId())
+            .userId(userId)
+            .gameId(exchange.getGame().getId())
+            .title(exchange.getTitle())
+            .price(exchange.getPrice())
+            .description(exchange.getDescription())
+            .quantity(exchange.getQuantity())
+            .contact(exchange.getContact())
+            .tradeType(exchange.getTradeType())
+            .isCompleted(exchange.isCompleted())
+            .build();
     }
 }
+

@@ -1,4 +1,4 @@
-package com.example.codePicasso.domain.exchange.config;
+package com.example.codePicasso.global.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
