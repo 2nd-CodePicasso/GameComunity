@@ -20,7 +20,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/reviews")
+    @PostMapping
     public ResponseEntity<ApiResponse<ReviewResponse>> createReview(
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId,
