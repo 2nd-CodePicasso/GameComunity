@@ -18,6 +18,8 @@ import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
+import com.example.codePicasso.domain.review.entity.Review;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
@@ -124,7 +126,6 @@ public class DtoFactory {
                 .contact(exchange.getContact())
                 .quantity(exchange.getQuantity())
                 .tradeType(exchange.getTradeType())
-                .statustype(exchange.getStatusType())
                 .build();
     }
 
@@ -134,8 +135,18 @@ public class DtoFactory {
                 .exchangeId(myExchange.getExchange().getId())
                 .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
-                .statusType(myExchange.getExchange().getStatusType())
+                .statusType(myExchange.getStatusType())
                 .build();
+    }
+
+    public static ReviewResponse toReviewDto(Review review) {
+        return ReviewResponse.builder()
+            .id(review.getId())
+            .exchangeId(review.getExchange().getId())
+            .userId(review.getUser().getId())
+            .rating(review.getRating())
+            .review(review.getReview())
+            .build();
     }
 
     public static ChatResponse toChatDto(Chat chats) {
@@ -170,6 +181,8 @@ public class DtoFactory {
                 .createdAt(chats.getCreatedAt())
                 .build();
     }
+
+
 
     public static RoomResponse toChatRoomDto(ChatRoom chatRoom) {
         return RoomResponse.builder()
