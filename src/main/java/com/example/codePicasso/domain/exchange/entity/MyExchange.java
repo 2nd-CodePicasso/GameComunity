@@ -35,4 +35,7 @@ public class MyExchange extends TimeStamp {
     public void changeStatus(StatusType statusType){
         this.statusType = statusType;
     }
+
+    @Version
+    private Long version;
 }

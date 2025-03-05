@@ -1,0 +1,30 @@
+package com.example.codePicasso.domain.exchange.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class TradeCount {
+    @Id
+    private Long gameId;
+
+    private Long count;
+
+    @Version
+    private Long version;
+
+    public TradeCount(Long gameId, Long count) {
+        this.gameId = gameId;
+        this.count = count;
+    }
+
+    public void incrementCount() {
+        this.count++;
+    }
+
+}

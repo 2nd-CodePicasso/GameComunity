@@ -48,4 +48,7 @@ public class Exchange extends TimeStamp {
     public void completed(){
         this.isCompleted = true;
     }
+
+    @Version
+    private Long version;
 }
