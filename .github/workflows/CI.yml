@@ -58,6 +58,10 @@ jobs:
         touch ./myInfo.yml
         echo "${{ secrets.MYINFO }}" > ./myInfo.yml
 
+    - name: MySQL 실행
+      run: |
+        sudo systemctl start mysql || sudo service mysql start
+
     - name: 테스트 yml파일 생성
       run: |
         mkdir -p ./src/test/resources
