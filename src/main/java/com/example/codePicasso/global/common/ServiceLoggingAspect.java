@@ -7,7 +7,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -48,10 +47,6 @@ public class ServiceLoggingAspect {
         try {
             if (data == null) return "null";
 
-            if (data instanceof Page<?>) {
-                return convertPageToJson((Page<?>) data);
-            }
-
             if (data.getClass().isArray()) {
                 Object[] arrayData = (Object[]) data;
                 return Arrays.stream(arrayData)
@@ -68,21 +63,6 @@ public class ServiceLoggingAspect {
         } catch (Exception e) {
             log.warn("⚠️ Failed to parse JSON for logging: {}", e.getMessage());
             return data.toString();
-        }
-    }
-
-    private <T> String convertPageToJson(Page<T> page) {
-        try {
-            PageResponse<T> pageResponse = new PageResponse<>(
-                    page.getContent(),
-                    page.getNumber(),
-                    page.getTotalPages(),
-                    page.getTotalElements()
-            );
-            return objectMapper.writeValueAsString(pageResponse);
-        } catch (Exception e) {
-            log.warn("⚠️ Failed to convert Page to JSON: {}", e.getMessage());
-            return "Page Serialization Error";
         }
     }
 }
