@@ -2,7 +2,7 @@ package com.example.codePicasso.domain.exchange.service;
 
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
-import com.example.codePicasso.domain.exchange.dto.request.PutExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
@@ -109,7 +109,7 @@ public class ExchangeService {
         Exchange exchange = exchangeConnector.findById(exchangeId);
         User user = userConnector.findById(userId);
 
-        if (myExchangeConnector.existsByExchangeIdAndUserId(exchangeId, userId)) {
+        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
             throw new DuplicateException(ErrorCode.DUPLICATE);
         }
 
@@ -142,18 +142,18 @@ public class ExchangeService {
 
     // 거래 승인/거절/취소하기 (200 OK)
     @Transactional
-    public void decisionMyExchange(Long myExchangeId, Long userId, PutExchangeRequest putExchangeRequest) {
+    public void decisionMyExchange(Long myExchangeId, Long userId, PutMyExchangeRequest putExchangeRequest) {
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
 
         if (!myExchange.getExchange().getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
-        if (myExchange.getExchange().getStatusType() == StatusType.COMPLETED) {
+        if (myExchange.getStatusType() == StatusType.COMPLETED) {
             throw new InvalidRequestException(ErrorCode.ALREADY_IN_COMPLETED);
         }
 
-        myExchange.getExchange().changeStatus(putExchangeRequest.statusType());
+        myExchange.changeStatus(putExchangeRequest.statusType());
         myExchangeConnector.save(myExchange);
 
         if (putExchangeRequest.statusType() == StatusType.COMPLETED) {
@@ -178,7 +178,7 @@ public class ExchangeService {
         boolean isBuy = exchange.getTradeType() == TradeType.BUY;
 
         try {
-            exchangeRankingService.increaseTradeCount(exchange.getGame().getGameTitle(), isBuy);
+            exchangeRankingService.increaseTradeCount(exchange.getGame().getId(), exchange.getGame().getGameTitle(), isBuy);
         } catch (Exception e) {
             log.error("Redis 업데이트 실패: gameTitle={}, isBuy={}", exchange.getGame().getGameTitle(), isBuy, e);
             throw new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED) {

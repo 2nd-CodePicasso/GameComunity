@@ -38,7 +38,13 @@ public class MyExchangeConnectorImpl implements MyExchangeConnector {
     }
 
     @Override
-    public boolean existsByExchangeIdAndUserId(Long exchangeId, Long userId) {
+    public boolean existByExchangeIdAndUserId(Long exchangeId, Long userId) {
         return myExchangeRepository.existsByExchangeIdAndUserId(exchangeId, userId);
     }
+
+    @Override
+    public MyExchange findByExchangeIdAndUserId(Long exchangeId, Long userId) {
+        return myExchangeRepository.findByExchangeIdAndUserId(exchangeId, userId);
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.example.codePicasso.domain.exchange.dto.response;
 
-import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import lombok.Builder;
 
@@ -15,6 +14,6 @@ public record ExchangeResponse(
         int quantity,
         String contact,
         TradeType tradeType,
-        StatusType statustype
+        boolean isCompleted
 ) {
 }
