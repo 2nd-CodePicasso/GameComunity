@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.chat.dto.response;
 
+import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import lombok.Builder;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ public record GlobalChatResponse(
         String message,
         String imageUrl,
         LocalDateTime createdAt
-) implements Serializable {
+)   {
+
 
 }

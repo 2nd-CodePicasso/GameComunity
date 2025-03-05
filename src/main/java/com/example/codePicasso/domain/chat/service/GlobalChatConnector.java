@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.chat.service;
 
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatDto;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import org.springframework.stereotype.Component;
@@ -13,5 +14,5 @@ public interface GlobalChatConnector {
 
     List<GlobalChat> findAll(Long chatId, LocalDateTime lastTime, int size);
 
-    void saveAll(List<GlobalChatResponse> messages);
+    void saveAll(List<GlobalChatDto> messages);
 }
