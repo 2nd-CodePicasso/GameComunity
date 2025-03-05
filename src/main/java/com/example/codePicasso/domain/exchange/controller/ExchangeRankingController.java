@@ -71,15 +71,6 @@ public class ExchangeRankingController {
         return ResponseEntity.ok(totalTradeCount);
     }
 
-    @GetMapping("/total/trade-count")
-    public ResponseEntity<Long> getSellTotalTradeCount(
-        @RequestParam Long gameId
-    ) {
-        isBuy = false;
-        Long totalTradeCount = exchangeRankingService.getTotalTradeCount(gameId, isBuy);
-        return ResponseEntity.ok(totalTradeCount);
-    }
-
     @GetMapping("/trade-count/buy")
     public ResponseEntity<Map<String, Long>> getBuyTradeCountByTimePeriod(
             @RequestParam Long gameId,

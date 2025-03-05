@@ -20,7 +20,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/{tradeType}/{exchangeId}/reviews")
+    @PostMapping
     public ResponseEntity<ApiResponse<ReviewResponse>> createReview(
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId,
@@ -30,7 +30,7 @@ public class ReviewController {
         return ApiResponse.created(reviewService.createReview(exchangeId, user.getUserId(), request));
     }
 
-    @GetMapping("/{tradeType}/{exchangeId}/reviews/list")
+    @GetMapping("/list")
     public ResponseEntity<ApiResponse<ReviewListResponse>> getAllReview(
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId,
@@ -42,7 +42,7 @@ public class ReviewController {
         return ApiResponse.success(ReviewListResponse.builder().reviewPageResponse(reviews).build());
     }
 
-    @GetMapping("/{tradeType}/{exchangeId}/reviews/{reviewId}")
+    @GetMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<ReviewResponse>> getReviewById(
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId,
@@ -51,7 +51,7 @@ public class ReviewController {
         return ApiResponse.success(reviewService.getReviewById(exchangeId, reviewId));
     }
 
-    @PatchMapping("/{tradeType}/{exchangeId}/reviews/{reviewId}")
+    @PatchMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId,
@@ -62,7 +62,7 @@ public class ReviewController {
         return ApiResponse.success(reviewService.updateReview(exchangeId, reviewId, user.getUserId(), request));
     }
 
-    @DeleteMapping("/{tradeType}/{exchangeId}/reviews/{reviewId}")
+    @DeleteMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<Void>> deleteReview(
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId,
