@@ -27,22 +27,18 @@ public class GlobalChat {
 
     private String content;
 
+    private String imageUrl;
+
+    private MessageType messageType;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
-    public GlobalChat(Long userId, String username, String content) {
+    public GlobalChat(Long userId, String username, String content, String imageUrl) {
         this.userId = userId;
         this.username = username;
         this.content = content;
-    }
-
-    public GlobalChatResponse toDto() {
-        return GlobalChatResponse.builder()
-                .chatsId(id)
-                .username(username)
-                .message(content)
-                .createdAt(createdAt)
-                .build();
+        this.imageUrl = imageUrl;
     }
 }

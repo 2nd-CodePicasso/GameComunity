@@ -9,7 +9,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-#    show-sql: false
+    #    show-sql: false
     show-sql: true
     properties:
       hibernate:
@@ -33,9 +33,3 @@ cloud:
     credentials:
       access-key: ${s3.aKey}
       secret-key: ${s3.sKey}
-
-
-api:
-  spam-check:
-    url: "https://apick.app/rest/check_spam_number"
-    auth-key: f4856687c81a60da1932589803df35fd

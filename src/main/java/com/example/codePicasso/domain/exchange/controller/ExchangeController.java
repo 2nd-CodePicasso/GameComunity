@@ -27,24 +27,6 @@ public class ExchangeController {
 
     /// --- ↓ Exchange ---
 
-/*    // 구매 거래소 게시글 생성 (201 Created)
-    @PostMapping("/buy")
-    public ResponseEntity<ApiResponse<ExchangeResponse>> createBuyExchange(
-            @Valid @RequestBody ExchangeRequest exchangeRequest,
-            @AuthenticationPrincipal CustomUser user
-            ) {
-        return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.BUY, user.getUserId()));
-    }
-
-    // 판매 거래소 게시글 생성 (201 Created)
-    @PostMapping("/sell")
-    public ResponseEntity<ApiResponse<ExchangeResponse>> createSellExchange(
-            @Valid @RequestBody ExchangeRequest exchangeRequest,
-            @AuthenticationPrincipal CustomUser user
-    ) {
-        return ApiResponse.created(exchangeService.createExchange(exchangeRequest, TradeType.SELL, user.getUserId()));
-    }*/
-    
     // 거래소 게시글 생성 (201 Created)
     @PostMapping("/{tradeType}")
     public ResponseEntity<ApiResponse<ExchangeResponse>> createExchange(
@@ -54,28 +36,6 @@ public class ExchangeController {
     ) {
         return ApiResponse.created(exchangeService.createExchange(exchangeRequest, tradeType, user.getUserId()));
     }
-
-/*    // 구매 거래소 게시글 목록 조회 (200 OK)
-    @GetMapping( "/buy/list")
-    public ResponseEntity<ApiResponse<ExchangeListResponse>> getAllBuy(
-            @RequestParam(required = false) Long gameId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<ExchangeResponse> responses = exchangeService.getBuyExchanges(gameId, page, size);
-        return ApiResponse.success(ExchangeListResponse.builder().exchangePageResponse(responses).build());
-    }
-
-    // 판매 거래소 게시글 목록 조회 (200 OK)
-    @GetMapping( "/sell/list")
-    public ResponseEntity<ApiResponse<ExchangeListResponse>> getAllSell(
-            @RequestParam(required = false) Long gameId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<ExchangeResponse> responses = exchangeService.getSellExchanges(gameId, page, size);
-        return ApiResponse.success(ExchangeListResponse.builder().exchangePageResponse(responses).build());
-    }*/
 
     // 거래소 게시글 목록 조회 (200 OK)
     @GetMapping( "/{tradeType}/list")
@@ -88,22 +48,6 @@ public class ExchangeController {
         Page<ExchangeResponse> responses = exchangeService.getExchanges(tradeType, gameId, page, size);
         return ApiResponse.success(ExchangeListResponse.builder().exchangePageResponse(responses).build());
     }
-
-/*    // 거래소의 구매 게시글 세부페이지 조회 (200 OK)
-    @GetMapping("/buy/{exchangeId}")
-    public ResponseEntity<ApiResponse<ExchangeResponse>> getBuyByExchangeId(
-            @PathVariable Long exchangeId
-    ) {
-        return ApiResponse.success(exchangeService.getExchangeById(exchangeId));
-    }
-
-    // 거래소의 판매 게시글 세부페이지 조회 (200 OK)
-    @GetMapping("/sell/{exchangeId}")
-    public ResponseEntity<ApiResponse<ExchangeResponse>> getSellByExchangeId(
-            @PathVariable Long exchangeId
-    ) {
-        return ApiResponse.success(exchangeService.getExchangeById(exchangeId));
-    }*/
 
     // 거래소의 판매 게시글 세부페이지 조회 (200 OK)
     @GetMapping("/{tradeType}/{exchangeId}")
@@ -138,28 +82,6 @@ public class ExchangeController {
 
     ///  --- ↓ MyExchange ---
 
-/*    //판매하기
-    @PostMapping("/buy/{exchangeId}")
-    public ResponseEntity<ApiResponse<MyExchangeResponse>> buyExchange(
-            @PathVariable Long exchangeId,
-            @AuthenticationPrincipal CustomUser user,
-            @RequestBody MyExchangeRequest request
-    ) {
-        MyExchangeResponse response = exchangeService.doExchange(exchangeId, user.getUserId(), request);
-        return ApiResponse.success(response);
-    }
-
-    //구매하기
-    @PostMapping("/sell/{exchangeId}")
-    public ResponseEntity<ApiResponse<MyExchangeResponse>> sellExchange(
-            @PathVariable Long exchangeId,
-            @AuthenticationPrincipal CustomUser user,
-            @RequestBody MyExchangeRequest request
-    ) {
-        MyExchangeResponse response =  exchangeService.doExchange(exchangeId, user.getUserId(), request);
-        return ApiResponse.success(response);
-    }*/
-
     // 판매하기 & 구매하기 (200 OK)
     @PostMapping("/{tradeType}/{exchangeId}")
     public ResponseEntity<ApiResponse<MyExchangeResponse>> doExchange(
@@ -171,28 +93,6 @@ public class ExchangeController {
         MyExchangeResponse response =  exchangeService.doExchange(exchangeId, user.getUserId(), request);
         return ApiResponse.success(response);
     }
-
-/*    //내 구매 거래 목록 조회 (200 OK)
-    @GetMapping("/myList/buy")
-    public ResponseEntity<ApiResponse<MyExchangeListResponse>> getMyBuy(
-            @AuthenticationPrincipal CustomUser user,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<MyExchangeResponse> responses =  exchangeService.getMyBuyExchanges(user.getUserId(), page, size);
-        return ApiResponse.success(MyExchangeListResponse.builder().myExchangePageResponse(responses).build());
-    }
-
-    //내 판매 거래 목록 조회 (200 OK)
-    @GetMapping("/myList/sell")
-    public ResponseEntity<ApiResponse<MyExchangeListResponse>> getMySell(
-            @AuthenticationPrincipal CustomUser user,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<MyExchangeResponse> responses =  exchangeService.getMySellExchanges(user.getUserId(), page, size);
-        return ApiResponse.success(MyExchangeListResponse.builder().myExchangePageResponse(responses).build());
-    }*/
 
     // 내 거래 목록 조회 (200 OK)
     @GetMapping("/myList/{tradeType}")
@@ -206,7 +106,7 @@ public class ExchangeController {
         return ApiResponse.success(MyExchangeListResponse.builder().myExchangePageResponse(responses).build());
     }
 
-    // 내 거리 목록 단일 조회 (200 OK)
+    // 내 거래 목록 단일 조회 (200 OK)
     @GetMapping("/myList/{tradeType}/{myExchangeId}")
     public ResponseEntity<ApiResponse<MyExchangeResponse>> getMyExchangeById(
             @PathVariable TradeType tradeType,
@@ -215,28 +115,6 @@ public class ExchangeController {
     ) {
         return ApiResponse.success(exchangeService.getMyExchangeById(myExchangeId, user));
     }
-
-/*    // buy_취소하기
-    @PutMapping("/list/buy/{myExchangeId}")
-    public ResponseEntity<ApiResponse<Void>> cancelBuyExchange(
-            @PathVariable Long myExchangeId,
-            @AuthenticationPrincipal CustomUser user,
-            @RequestBody PutMyExchangeRequest request
-    ) {
-        exchangeService.rejectionMyExchange(myExchangeId, user.getUserId(), request);
-        return ApiResponse.noContent();
-    }
-
-    // sell_거래 승인/거절하기
-    @PutMapping("/list/sell/{myExchangeId}")
-    public ResponseEntity<ApiResponse<Void>> approveSellExchange(
-            @PathVariable Long myExchangeId,
-            @AuthenticationPrincipal CustomUser user,
-            @RequestBody PutMyExchangeRequest request
-    ) {
-        exchangeService.rejectionMyExchange(myExchangeId, user.getUserId(), request);
-        return ApiResponse.noContent();
-    }*/
 
     // 거래 승인/거절/취소하기 (200 OK)
     @PutMapping("/myList/{tradeType}/{myExchangeId}")

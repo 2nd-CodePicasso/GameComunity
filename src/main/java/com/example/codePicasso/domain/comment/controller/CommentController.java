@@ -3,8 +3,6 @@ package com.example.codePicasso.domain.comment.controller;
 import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
 import com.example.codePicasso.domain.comment.dto.response.CommentListResponse;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
-import com.example.codePicasso.domain.comment.dto.response.ReplyListResponse;
-import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.service.CommentService;
 import com.example.codePicasso.global.common.ApiResponse;
 import com.example.codePicasso.global.common.CustomUser;
@@ -13,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,14 +37,13 @@ public class CommentController {
     /**
      * 대댓글 생성
      */
-    @PostMapping("/{postId}/reply/{parentId}")
-    public ResponseEntity<ApiResponse<ReplyResponse>> createReply(
-            @PathVariable("postId") Long postId,
+    @PostMapping("/reply/{parentId}")
+    public ResponseEntity<ApiResponse<CommentResponse>> createReply(
             @PathVariable("parentId") Long parentId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody CommentRequest request
+            @Valid @RequestBody CommentRequest request
     ) {
-        ReplyResponse replyResponse = commentService.createReply(postId, parentId, user.getUserId(), request);
+        CommentResponse replyResponse = commentService.createReply(parentId, user.getUserId(), request);
         return ApiResponse.created(replyResponse);
     }
 
@@ -58,7 +53,7 @@ public class CommentController {
      * @param postId
      * @return
      */
-    @GetMapping("/{postId}")
+    @GetMapping("/hi/{postId}")
     public ResponseEntity<ApiResponse<CommentListResponse>> findComment(
             @PathVariable("postId") Long postId
     ) {

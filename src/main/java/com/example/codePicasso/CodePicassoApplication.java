@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @EnableJpaAuditing
-@SpringBootApplication
-@EnableConfigurationProperties(JwtProperties.class)
+  @SpringBootApplication
+  @EnableConfigurationProperties(JwtProperties.class)
 public class CodePicassoApplication {
 
   public static void main(String[] args) {

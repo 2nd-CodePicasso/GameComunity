@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -33,41 +34,42 @@ public class ChatService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId) {
+    public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId, String username) {
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
-        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId,emoji);
+        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId,emoji,username);
         GlobalChat chats = globalChatConnector.save(globalChat);
         return DtoFactory.toGlobalChatDto(chats);
     }
 
     @Transactional(readOnly = true)
-    public GlobalChatListResponse getChatsHistory() {
-        List<GlobalChat> chats = globalChatConnector.findAll();
+    public GlobalChatListResponse getChatsHistory(Long chatId, LocalDateTime lastTime,int size) {
+        List<GlobalChat> chats = globalChatConnector.findAll(chatId,lastTime,size);
         return GlobalChatListResponse.builder()
-                .chatsResponseList(chats.stream().map(GlobalChat::toDto).toList())
+                .chatsResponses(chats.stream().map(DtoFactory::toGlobalChatDto).toList())
                 .build();
     }
 
     @Transactional
-    public ChatResponse addForRoomToMessage(ChatRequest chatsRequest, Long roomId, Long userId) {
+    public ChatResponse addForRoomToMessage(ChatRequest chatsRequest, Long roomId, Long userId, String username) {
         ChatRoom chatRoom = roomConnector.findById(roomId);
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
-        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji);
+        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji,username);
         Chat saveChat = chatConnector.save(chat);
         return DtoFactory.toChatDto(saveChat);
     }
 
     @Transactional(readOnly = true)
-    public ChatListResponse getByRoomId(Long roomId) {
+    public ChatListResponse getByRoomId(Long roomId, int size, Long chatId, LocalDateTime localDateTime) {
         if (roomConnector.isSecurityById(roomId)) {
             throw new DuplicateException(ErrorCode.UNAUTHORIZED_CHAT_ROOM);
         }
-        List<Chat> chats = chatConnector.findAllByRoomId(roomId);
+        List<Chat> chats = chatConnector.findAll(roomId,size,chatId,localDateTime);
         return ChatListResponse.builder()
                 .chatResponses(chats.stream().map(DtoFactory::toChatDto).toList())
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public ChatListResponse getSecurityChatsHistory(SecurityChatRequest securityChatRequest) {
         ChatRoom chatRoom = roomConnector.findById(securityChatRequest.roomId());
         if (!passwordEncoder.matches(securityChatRequest.password(), chatRoom.getPassword())) {

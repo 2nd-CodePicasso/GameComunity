@@ -10,7 +10,6 @@ import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.user.entity.User;
-import com.example.codePicasso.global.config.PasswordEncoder;
 import com.vdurmont.emoji.EmojiParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +44,7 @@ public class ChatServiceTest {
     private ChatRequest chatRequest;
     private Long userId = 1L;
     private Long roomId = 1L;
+    String username = "한씨";
     private User user;
     private GlobalChat globalChat;
     private Chat chat;
@@ -56,10 +57,10 @@ public class ChatServiceTest {
     void 설정() {
         user = new User("user", "testUser", "user123");  // 예시: User 객체 생성
         roomRequest = new RoomRequest("집에가고싶은방",true,"12345");
-        chatRequest = new ChatRequest("나야", "집에가고싶다");
+        chatRequest = new ChatRequest("집에가고싶다",null);
         chatRoom = roomRequest.toEntity(user, "12345");
-        chat = chatRequest.toEntityFromChat(userId, chatRoom, EmojiParser.parseToUnicode(":smile:"));
-        globalChat = chatRequest.toEntityFromGlobalChat(userId, EmojiParser.parseToUnicode(":smile:"));
+        chat = chatRequest.toEntityFromChat(userId, chatRoom, EmojiParser.parseToUnicode(":smile:"),username);
+        globalChat = chatRequest.toEntityFromGlobalChat(userId, EmojiParser.parseToUnicode(":smile:"), username);
 
         globalChats.add(globalChat);
         chats.add(chat);
@@ -69,9 +70,10 @@ public class ChatServiceTest {
     void 글라발_채팅_생성() {
         //given설정에서 처리함
 
+
         //when
         when(globalChatConnector.save(any(GlobalChat.class))).thenReturn(globalChat);
-        GlobalChatResponse globalChatResponse = chatService.addForAllRoomToMessage(chatRequest, userId);
+        GlobalChatResponse globalChatResponse = chatService.addForAllRoomToMessage(chatRequest, userId, username);
 
         //then
         verify(globalChatConnector).save(any(GlobalChat.class));
@@ -80,25 +82,12 @@ public class ChatServiceTest {
     }
 
     @Test
-    void 글라발_채팅기록_조회() {
-        //given
-        //when
-        when(globalChatConnector.findAll()).thenReturn(globalChats);
-        GlobalChatListResponse chatsHistory = chatService.getChatsHistory();
-
-        //then
-        verify(globalChatConnector).findAll();
-        assertEquals(globalChats.get(0).getUsername(), chatsHistory.chatsResponseList().get(0).username());
-        assertEquals(globalChats.get(0).getContent(), chatsHistory.chatsResponseList().get(0).message());
-    }
-
-    @Test
     void 룸_채팅_생성() {
         //given
         //when
         when(roomConnector.findById(roomId)).thenReturn(chatRoom);
         when(chatConnector.save(any(Chat.class))).thenReturn(chat);
-        ChatResponse chatResponse = chatService.addForRoomToMessage(chatRequest, roomId, userId);
+        ChatResponse chatResponse = chatService.addForRoomToMessage(chatRequest, roomId, userId,username);
 
         //then
         verify(roomConnector).findById(roomId);
@@ -106,19 +95,5 @@ public class ChatServiceTest {
         assertEquals(chat.getContent(), chatResponse.message());
         assertEquals(chat.getCreatedAt(), chatResponse.createdAt());
         assertEquals(chat.getUsername(), chatResponse.username());
-    }
-
-    @Test
-    void 룸_채팅_조회() {
-        //given
-        //when
-        when(chatConnector.findAllByRoomId(roomId)).thenReturn(chats);
-        ChatListResponse chatResponses = chatService.getByRoomId(roomId);
-
-        //then
-        verify(chatConnector).findAllByRoomId(roomId);
-        assertEquals(chats.get(0).getContent(), chatResponses.chatResponses().get(0).message());
-        assertEquals(chats.get(0).getUsername(), chatResponses.chatResponses().get(0).username());
-        assertEquals(chats.get(0).getCreatedAt(), chatResponses.chatResponses().get(0).createdAt());
     }
 }

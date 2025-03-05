@@ -24,19 +24,21 @@
         @SendTo("/topic/hi")
         public GlobalChatResponse sendMessage(
                 @Payload ChatRequest chatRequest,
-                @Header("userId") String userId
+                @Header("userId") String userId,
+                @Header("username") String username
         ) {
-            return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId));
+            return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
         }
 
-        @MessageMapping("/send/room")
-        @SendTo("/topic/{roomId}}")
+        @MessageMapping("/send/room/{roomId}")
+        @SendTo("/topic/{roomId}")
         public ChatResponse testMessage(
                 @Payload ChatRequest chatsRequest,
                 @DestinationVariable Long roomId,
-                @Header("userId") String userId
+                @Header("userId") String userId,
+                @Header("username") String username
         ) {
-            return chatService.addForRoomToMessage(chatsRequest, roomId, Long.valueOf(userId));
+            return chatService.addForRoomToMessage(chatsRequest, roomId, Long.valueOf(userId),username);
         }
 
         @MessageMapping("/send/room/notification")

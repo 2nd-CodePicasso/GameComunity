@@ -5,9 +5,10 @@ import lombok.Builder;
 
 @Builder
 public record MyExchangeResponse (
+        Long id,
         Long exchangeId,
         Long userId,
         String contact,
-        StatusType statustype
+        StatusType statusType
 ) {
 }

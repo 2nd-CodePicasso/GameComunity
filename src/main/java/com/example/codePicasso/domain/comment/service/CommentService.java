@@ -3,13 +3,14 @@ package com.example.codePicasso.domain.comment.service;
 import com.example.codePicasso.domain.comment.dto.request.CommentRequest;
 import com.example.codePicasso.domain.comment.dto.response.CommentListResponse;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
-import com.example.codePicasso.domain.comment.dto.response.ReplyResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
+import com.example.codePicasso.global.exception.base.InvalidRequestException;
+import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,30 +31,37 @@ public class CommentService {
         Post post = postConnector.findById(postId);
         User user = userConnector.findById(userId);
 
-        Comment createComment = Comment.toEntityForComment(post, user, request.text());
+        Comment createComment = CommentRequest.toEntityForComment(post, user, request.text());
 
-        commentConnector.save(createComment);
-        return DtoFactory.toCommentDto(createComment);
+        Comment saveComment = commentConnector.save(createComment);
+        return DtoFactory.toCommentDto(saveComment);
     }
 
     // 대댓글 생성
     @Transactional
-    public ReplyResponse createReply(Long postId, Long parentId, Long userId, CommentRequest request) {
-        Post post = postConnector.findById(postId);
+    public CommentResponse createReply(Long parentId, Long userId, CommentRequest request) {
         User user = userConnector.findById(userId);
         Comment parentComment = commentConnector.findById(parentId);
 
-        Comment createReply = Comment.toEntityForReply(post, user, parentComment, request.text());
-        parentComment.addReplies(createReply);
+        // 부모 댓글이 대댓글이면 추가 대댓글 작성 불가
+        if (parentComment.isReply()) {
+            throw new InvalidRequestException(ErrorCode.CANNOT_WRITE_COMMENT);
+        }
 
-        commentConnector.save(createReply);
-        return DtoFactory.toReplyDto(createReply);
+        Comment createReply = CommentRequest.toEntityForReply(user, parentComment, request.text());
+
+        parentComment.addReplies(createReply);
+        Comment saveReply = commentConnector.save(createReply);
+        return DtoFactory.toCommentDto(saveReply);
     }
 
     // 댓글, 대댓글 전체 조회
     public CommentListResponse findAllByPostId(Long postId) {
         List<CommentResponse> commentResponses = commentConnector.findAllByPostId(postId).stream()
-                .map(DtoFactory::toCommentDto).toList();
+                // 부모댓글 필터링 (자식 댓글 중복 조회 방지)
+                .filter(comment -> comment.getParent() == null)
+                .map(DtoFactory::toCommentDto)
+                .toList();
         return CommentListResponse.builder()
                 .commentResponses(commentResponses)
                 .build();
@@ -63,7 +71,6 @@ public class CommentService {
     @Transactional
     public CommentResponse updateComment(Long commentId, Long userId, CommentRequest request) {
         Comment foundComment = commentConnector.findByIdAndUserId(commentId, userId);
-
         foundComment.updateComment(request.text());
         return DtoFactory.toCommentDto(foundComment);
     }
@@ -74,7 +81,6 @@ public class CommentService {
         Comment deleteComment = commentConnector.findByIdAndUserId(commentId, userId);
         commentConnector.delete(deleteComment);
     }
-
 
 
 }

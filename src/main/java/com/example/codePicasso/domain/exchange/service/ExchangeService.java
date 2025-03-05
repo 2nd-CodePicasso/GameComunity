@@ -56,28 +56,6 @@ public class ExchangeService {
         return DtoFactory.toExchangeDto(savedExchange);
     }
 
-/*    // 거래소 아이템 조회_구매 (페이지네이션 적용)
-    public Page<ExchangeResponse> getBuyExchanges(Long gameId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Exchange> exchanges = (gameId == null)
-                ? exchangeConnector.findByTradeType(TradeType.BUY, pageable)
-                : exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.BUY, pageable);
-
-        return exchanges.map(DtoFactory::toExchangeDto);
-    }
-
-    // 거래소 아이템 조회_판매 (페이지네이션 적용)
-    public Page<ExchangeResponse> getSellExchanges(Long gameId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Exchange> exchanges = (gameId == null)
-                ? exchangeConnector.findByTradeType(TradeType.SELL, pageable)
-                : exchangeConnector.findByGameIdAndTradeType(gameId, TradeType.SELL, pageable);
-
-        return exchanges.map(DtoFactory::toExchangeDto);
-    }*/
-
     // 거래소 아이템 조회 (페이지네이션 적용)
     public Page<ExchangeResponse> getExchanges(TradeType tradeType, Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -91,14 +69,14 @@ public class ExchangeService {
 
     // 거래소 아이템 조회_특정 아이템
     public ExchangeResponse getExchangeById(Long exchangesId) {
-        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangesId);
+        Exchange exchange = exchangeConnector.findById(exchangesId);
         return DtoFactory.toExchangeDto(exchange);
     }
 
     // 거래소 아이템 수정
     @Transactional
     public ExchangeResponse updateExchange(Long exchangeId, ExchangeRequest request, Long userId) {
-        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangeId);
+        Exchange exchange = exchangeConnector.findById(exchangeId);
 
         if (!exchange.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
@@ -114,15 +92,11 @@ public class ExchangeService {
     public void deleteExchange(Long exchangeId, Long userId) {
         Exchange exchange = exchangeConnector.findById(exchangeId);
 
-        if (exchange.isCompleted()) {
-            throw new InvalidRequestException(ErrorCode.ALREADY_IN_COMPLETED);
-        }
-
         if (!exchange.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
-        exchange.completed();
+        exchangeConnector.deleteById(exchangeId);
     }
 
     /// --- ↑ Exchange ---
@@ -132,11 +106,15 @@ public class ExchangeService {
     // 판매하기 & 구매하기
     @Transactional
     public MyExchangeResponse doExchange(Long exchangeId, Long userId, MyExchangeRequest request) {
-        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangeId);
+        Exchange exchange = exchangeConnector.findById(exchangeId);
         User user = userConnector.findById(userId);
 
         if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
             throw new DuplicateException(ErrorCode.DUPLICATE);
+        }
+
+        if (exchange.getUser().getId().equals(userId)) {
+            throw new InvalidRequestException(ErrorCode.TRANSACTION_FORBIDDEN);
         }
 
         MyExchange myExchange = request.toEntity(exchange, user);
@@ -144,22 +122,6 @@ public class ExchangeService {
 
         return DtoFactory.toMyExchangeDto(savedMyExchange);
     }
-
-/*    //내 구매하기 목록
-    public Page<MyExchangeResponse> getMyBuyExchanges(Long userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.BUY, pageable);
-
-        return myExchanges.map(DtoFactory::toMyExchangeDto);
-    }
-
-    //내 판매하기 목록
-    public Page<MyExchangeResponse> getMySellExchanges(Long userId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, TradeType.SELL, pageable);
-
-        return myExchanges.map(DtoFactory::toMyExchangeDto);
-    }*/
 
     // 내 거래 목록 조회 (200 OK)
     public Page<MyExchangeResponse> getAllMyExchange(TradeType tradeType, Long userId, int page, int size) {
@@ -170,7 +132,7 @@ public class ExchangeService {
         return myExchanges.map(DtoFactory::toMyExchangeDto);
     }
 
-    // 내 거리 목록 단일 조회 (200 OK)
+    // 내 거래 목록 단일 조회 (200 OK)
     public MyExchangeResponse getMyExchangeById(Long myExchangeId, CustomUser user) {
 
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
@@ -180,10 +142,10 @@ public class ExchangeService {
 
     // 거래 승인/거절/취소하기 (200 OK)
     @Transactional
-    public void decisionMyExchange(Long myExchangeId, Long userId, PutMyExchangeRequest putMyExchangeRequest) {
+    public void decisionMyExchange(Long myExchangeId, Long userId, PutMyExchangeRequest putExchangeRequest) {
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
 
-        if (!myExchange.getUser().getId().equals(userId)) {
+        if (!myExchange.getExchange().getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
@@ -191,10 +153,10 @@ public class ExchangeService {
             throw new InvalidRequestException(ErrorCode.ALREADY_IN_COMPLETED);
         }
 
-        myExchange.changeStatus(putMyExchangeRequest.statusType());
+        myExchange.changeStatus(putExchangeRequest.statusType());
         myExchangeConnector.save(myExchange);
 
-        if (putMyExchangeRequest.statusType() == StatusType.COMPLETED) {
+        if (putExchangeRequest.statusType() == StatusType.COMPLETED) {
             completeExchange(myExchange.getExchange().getId());
         }
     }
@@ -210,13 +172,13 @@ public class ExchangeService {
             throw new InvalidRequestException(ErrorCode.ALREADY_IN_PROGRESS);
         }
 
-        Exchange exchange = exchangeConnector.findByIdAndIsCompleted(exchangeId);
+        Exchange exchange = exchangeConnector.findById(exchangeId);
 
         //Redis 랭킹 처리 (buy, sell)
         boolean isBuy = exchange.getTradeType() == TradeType.BUY;
 
         try {
-            exchangeRankingService.increaseTradeCount(exchange.getGame().getId() ,exchange.getGame().getGameTitle(), isBuy);
+            exchangeRankingService.increaseTradeCount(exchange.getGame().getId(), exchange.getGame().getGameTitle(), isBuy);
         } catch (Exception e) {
             log.error("Redis 업데이트 실패: gameTitle={}, isBuy={}", exchange.getGame().getGameTitle(), isBuy, e);
             throw new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED) {

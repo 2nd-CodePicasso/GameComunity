@@ -20,6 +20,7 @@ public class CategoryService {
     private final CategoryConnector categoryConnector;
     private final GameConnector gameConnector;
 
+    // 카테고리 생성
     @Transactional
     public CategoryResponse createCategory(Long gameId, CategoryRequest request) {
         Game game = gameConnector.findByIdForUser(gameId);
@@ -28,23 +29,26 @@ public class CategoryService {
         return DtoFactory.toCategoryDto(saveCategory);
     }
 
+    // 카테고리 조회
     public CategoryListResponse getAllCategory(Long gameId) {
         List<CategoryResponse> categoryResponses = categoryConnector.findCategoryByGameId(gameId).stream()
-                .map(CategoryResponse::toDto).toList();
+                .map(DtoFactory::toCategoryDto).toList();
         return CategoryListResponse.builder()
                 .categoryResponses(categoryResponses)
                 .build();
     }
 
+    // 카테고리 수정
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, CategoryRequest request) {
         Category foundCategory = categoryConnector.findById(categoryId);
 
         foundCategory.updateCategory(request.categoryName());
 
-        return CategoryResponse.toDto(foundCategory);
+        return DtoFactory.toCategoryDto(foundCategory);
     }
 
+    // 카테고리 삭제
     @Transactional
     public void deleteCategory(Long categoryId) {
         Category deleteCategory = categoryConnector.findById(categoryId);

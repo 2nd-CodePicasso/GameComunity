@@ -41,4 +41,9 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
     public Exchange findById(Long exchangeId) {
         return exchangeRepository.findById(exchangeId).orElseThrow(() -> new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND));
     }
+
+    @Override
+    public Exchange deleteById(Long exchangeId) {
+        return exchangeRepository.findById(exchangeId).orElseThrow(() -> new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND));
+    }
 }
