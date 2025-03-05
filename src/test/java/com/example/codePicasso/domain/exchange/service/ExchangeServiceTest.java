@@ -82,7 +82,6 @@ class ExchangeServiceTest {
 
     /// --- Id ---
     private Long exchangeId = 1L;
-    private Long myExchangeId = 1L;
     private Long userId = 1L;
     private Long gameId = 1L;
 
