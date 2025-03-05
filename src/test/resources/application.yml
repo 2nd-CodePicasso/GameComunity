@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:myInfo.yml
+    import: optional:testMyInfo.yml
   datasource:
     url: jdbc:mysql://${db.url}:${db.port}/${db.name}
     username: ${db.user}
@@ -23,20 +23,20 @@ spring:
   security:
 
     config:
-      import: optional:myInfo.yml
+      import: optional:testMyInfo.yml
     user:
       name: ${secure.admin}
       password: ${secure.password}
 
 jwt:
   config:
-    import: optional:myInfo.yml
+    import: optional:testMyInfo.yml
   secretKey: ${secure.key}
   tokenTime: ${secure.timer}
 
 cloud:
   config:
-    import: optional:myInfo.yml
+    import: optional:testMyInfo.yml
   aws:
     credentials:
       access-key: ${s3.aKey}

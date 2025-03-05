@@ -11,6 +11,7 @@ build/
 
 ### setting ###
 myInfo.yml
+testMyInfo.yml
 
 ### STS ###
 .apt_generated
