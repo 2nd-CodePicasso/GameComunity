@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.chat.repository;
 
+import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.chat.entity.QGlobalChat;
 import com.example.codePicasso.domain.chat.service.GlobalChatConnector;
@@ -35,5 +36,20 @@ public class GlobalChatConnectorImpl implements GlobalChatConnector {
                 .limit(size)
 
                 .fetch();
+    }
+
+    @Override
+    @Transactional
+    public void saveAll(List<GlobalChatResponse> messages) {
+        QGlobalChat globalChat = QGlobalChat.globalChat;
+
+        jpaQueryFactory.insert(globalChat)
+                .columns(globalChat.username, globalChat.content, globalChat.imageUrl, globalChat.createdAt)
+                .values(messages.stream()
+                        .map(m -> new Object[]{m.username(), m.message(), m.imageUrl(), m.createdAt()})
+                        .toList()
+                )
+                .execute();
+
     }
 }

@@ -70,8 +70,9 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-    //Reactor Netty
-    implementation 'io.projectreactor.netty:reactor-netty:1.1.6'
+
+    // RabbitMQ
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
 }
 

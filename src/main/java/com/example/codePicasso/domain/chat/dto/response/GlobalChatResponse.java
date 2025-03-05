@@ -2,6 +2,7 @@ package com.example.codePicasso.domain.chat.dto.response;
 
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Builder
@@ -11,6 +12,6 @@ public record GlobalChatResponse(
         String message,
         String imageUrl,
         LocalDateTime createdAt
-) {
+) implements Serializable {
 
 }

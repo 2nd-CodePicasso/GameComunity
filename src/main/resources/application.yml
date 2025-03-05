@@ -21,6 +21,11 @@ spring:
       port: 6379
       host: localhost
 
+  rabbitmq:
+    host: localhost      # RabbitMQ 서버 주소
+    port: 5672           # 기본 포트
+    connection-timeout: 10000ms
+
   security:
 
     config:
