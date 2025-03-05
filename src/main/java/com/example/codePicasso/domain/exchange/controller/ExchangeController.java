@@ -129,4 +129,11 @@ public class ExchangeController {
     }
 
     /// --- ↑ MyExchange ---
+
+    //test용 api
+    @PostMapping("/test/{gameId}")
+    public ResponseEntity<Void> test(@PathVariable Long gameId) {
+        exchangeService.increaseTradeCount(gameId);
+        return ResponseEntity.ok().build();
+    }
 }
