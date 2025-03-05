@@ -51,7 +51,7 @@ public class CommentConnectorImpl implements CommentConnector {
     @Override
     public Comment findByIdAndUserId(Long commentId, Long userId) {
         Comment foundComment = baseCommentQuery()
-                .where(comment.id.eq(commentId), comment.user.id.eq(userId))
+                .where(comment.id.eq(commentId))
                 .fetchOne();
         if (foundComment == null) {
             throw new InvalidRequestException(ErrorCode.COMMENT_NOT_FOUND);
