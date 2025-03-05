@@ -28,4 +28,11 @@ public class MyExchange extends TimeStamp {
     private User user;
 
     private String contact;
+
+    @Enumerated(EnumType.STRING)
+    private StatusType statusType;
+
+    public void changeStatus(StatusType statusType){
+        this.statusType = statusType;
+    }
 }

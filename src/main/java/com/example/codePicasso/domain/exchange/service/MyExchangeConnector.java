@@ -19,5 +19,7 @@ public interface MyExchangeConnector {
 
     MyExchange findById(Long myExchangeId);
 
-    boolean existsByExchangeIdAndUserId(Long exchangeId, Long userId);
+    boolean existByExchangeIdAndUserId(Long exchangeId, Long userId);
+
+    MyExchange findByExchangeIdAndUserId(Long exchangeId, Long userId);
 }
