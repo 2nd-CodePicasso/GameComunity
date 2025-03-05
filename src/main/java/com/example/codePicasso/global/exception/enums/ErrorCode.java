@@ -55,6 +55,7 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "", "공지를 찾을수 없습니다."),
     UNAUTHORIZED_CHAT_ROOM(HttpStatus.UNAUTHORIZED,"","해당 채팅방은 비밀방입니다."),
     IMAGE_IOEXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "", "이미지 입출력작업중 문제가 발생했습니다."),
+    REDIS_JACKSON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"","레디스에서 메시지 발행하는도중 역직렬화에 실패했습니다."),
 
     //Exchange
     EXCHANGE_NOT_FOUND(HttpStatus.NOT_FOUND, "", "거래내역을 찾을 수 없습니다."),
@@ -64,6 +65,10 @@ public enum ErrorCode {
     ALREADY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "", "거래 완료 처리가 이미 진행 중입니다."),
     ALREADY_IN_COMPLETED(HttpStatus.BAD_REQUEST, "", "이미 완료된 거래입니다."),
     DUPLICATE(HttpStatus.BAD_REQUEST, "", "중복된 요청입니다."),
+    NOT_COMPLETED(HttpStatus.BAD_REQUEST, "", "완료되지 않은 거래입니다."),
+
+    //Review
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "", "후기글을 찾을 수 없습니다."),
     TRANSACTION_FORBIDDEN(HttpStatus.BAD_REQUEST, "", "내 글에서 거래할 수 없습니다."),
 
     //Redis
