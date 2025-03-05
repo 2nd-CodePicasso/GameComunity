@@ -23,6 +23,7 @@ public class CommentConnectorImpl implements CommentConnector {
     private final JPAQueryFactory queryFactory;
 
     private final QComment replies = new QComment("replies");
+    private final QComment parent = new QComment("parent");
 
     private JPAQuery<Comment> baseCommentQuery() {
         return queryFactory.select(comment)
@@ -51,6 +52,7 @@ public class CommentConnectorImpl implements CommentConnector {
     @Override
     public Comment findByIdAndUserId(Long commentId, Long userId) {
         Comment foundComment = baseCommentQuery()
+                .leftJoin(comment.parent, parent).fetchJoin()
                 .where(comment.id.eq(commentId))
                 .fetchOne();
         if (foundComment == null) {

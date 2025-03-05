@@ -78,8 +78,7 @@ public class DtoFactory {
     public static CommentResponse toCommentDto(Comment comment) {
         return CommentResponse.builder().
                 commentId(comment.getId())
-                .postId(comment.getParent() != null ?
-                        comment.getParent().getPost().getId() : comment.getPost().getId())
+                .postId(comment.getPost().getId())
                 .userId(comment.getUser().getId())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .nickname(comment.getUser().getNickname())
@@ -89,6 +88,19 @@ public class DtoFactory {
                 .replies(comment.getReplies().stream()
                         .map(DtoFactory::toCommentDto)
                         .toList())
+                .build();
+    }
+
+    // 댓글 수정용
+    public static CommentResponse toUpdateCommentDto(Comment comment) {
+        return CommentResponse.builder().
+                commentId(comment.getId())
+                .postId(comment.getPost().getId())
+                .userId(comment.getUser().getId())
+                .nickname(comment.getUser().getNickname())
+                .text(comment.getText())
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .build();
     }
 
