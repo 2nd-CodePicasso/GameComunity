@@ -132,10 +132,14 @@ public class ExchangeController {
 
     //test용 api
 
-    @PostMapping("/test/{exchangeId}")
-    public ResponseEntity<ApiResponse<Void>> testCompleteExchange(@PathVariable Long exchangeId) {
-        exchangeService.completeExchange(exchangeId);
-        return ApiResponse.noContent();
+    @PostMapping("/complete")
+    public ResponseEntity<Void> completeExchange(
+        @RequestParam Long gameId,
+        @RequestParam String gameTitle,
+        @RequestParam boolean isBuy
+    ) {
+        exchangeService.completeExchange_2(gameId, gameTitle, isBuy);
+        return ResponseEntity.ok().build();
     }
 
 }

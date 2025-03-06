@@ -22,8 +22,8 @@ public class RedisLockService {
     /**
      * Redis Redisson (pub/sub)분산 락 획득
      */
-    public boolean acquireLock(Long exchangeId) {
-        String lockKey = LOCK_PREFIX + exchangeId;
+    public boolean acquireLock(Long gameId) {
+        String lockKey = LOCK_PREFIX + gameId;
         RedisCommands<String, String> commands = connection.sync();
         long endTime = System.currentTimeMillis() + Duration.ofSeconds(5).toMillis();
         while (System.currentTimeMillis() < endTime) {
@@ -45,8 +45,8 @@ public class RedisLockService {
     /**
      * 락 해제
      */
-    public void releaseLock(Long exchangeId) {
-        String lockKey = LOCK_PREFIX + exchangeId;
+    public void releaseLock(Long gameId) {
+        String lockKey = LOCK_PREFIX + gameId;
         RedisCommands<String, String> commands = connection.sync();
         commands.del(lockKey);
     }

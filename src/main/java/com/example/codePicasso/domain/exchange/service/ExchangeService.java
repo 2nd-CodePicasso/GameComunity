@@ -199,5 +199,24 @@ public class ExchangeService {
         }
     }
 
+    //테스트용 service
+
+    @Transactional
+    public void completeExchange_2(Long gameId, String gameTitle, boolean isBuy) {
+        // Redis 기반 락 획득 시도
+        if (!redisLockService.acquireLock(gameId)) {
+            throw new InvalidRequestException(ErrorCode.ALREADY_IN_PROGRESS);
+        }
+
+        try {
+            exchangeRankingService.increaseTradeCount(gameId, gameTitle, isBuy);
+        } catch (Exception e) {
+            log.error("Redis 업데이트 실패: gameTitle={}, isBuy={}", gameTitle, isBuy, e);
+            throw new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED) {};
+        } finally {
+            redisLockService.releaseLock(gameId);
+        }
+    }
+
     /// --- ↑ dblock ---
 }
