@@ -192,4 +192,14 @@ public class DtoFactory {
                 .isSecurity(chatRoom.isSecurity())
                 .build();
     }
+
+    public static GlobalChatDto toRabbitDto(GlobalChat globalChat) {
+        return GlobalChatDto.builder()
+                .username(globalChat.getUsername())
+                .userId(globalChat.getUserId())
+                .message(globalChat.getContent())
+                .imageUrl(globalChat.getImageUrl())
+                .createdAt(globalChat.getCreatedAt())
+                .build();
+    }
 }

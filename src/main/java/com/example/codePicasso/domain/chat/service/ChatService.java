@@ -59,6 +59,7 @@ public class ChatService {
         ChatRoom chatRoom = roomConnector.findById(roomId);
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
         Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji,username);
+        simpMessagingTemplate.convertAndSend("/topic/"+roomId,DtoFactory.toChatDto(chat));
         Chat saveChat = chatConnector.save(chat);
         return DtoFactory.toChatDto(saveChat);
     }
