@@ -36,33 +36,33 @@ public class ExchangeRankingService {
      * 거래 완료 기준, 게임 ID의 카운트 증가 (날짜/시간 단위로 저장)
      */
 
-    protected double getCurrentTimestamp() {
-        return System.currentTimeMillis() / 1000.0;
-    }
+//    protected double getCurrentTimestamp() {
+//        return System.currentTimeMillis() / 1000.0;
+//    }
 
     public void increaseTradeCount(Long gameId, String gameTitle, boolean isBuy) {
         ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
+//        HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
 
-        // 현재 시간 기준 타임스탬프를 가져옴 (테스트에서는 Mocking 가능)
-        double timestamp = getCurrentTimestamp();
-        double adjustedScore = 1 + (timestamp / 1_000_000.0);
+//        // 현재 시간 기준 타임스탬프를 가져옴 (테스트에서는 Mocking 가능)
+//        double timestamp = getCurrentTimestamp();
+//        double adjustedScore = 1 + (timestamp / 1_000_000.0);
 
         // 전체 기간 랭킹 증가
         String key = isBuy ? BUY_RANKING_KEY : SELL_RANKING_KEY;
-        zSetOps.incrementScore(key, gameId.toString(), adjustedScore);
+        zSetOps.incrementScore(key, gameId.toString(), 1);
 
-        // 일별 랭킹 증가
-        String todayKey = (isBuy ? DAILY_BUY_RANKING_KEY : DAILY_SELL_RANKING_KEY) + LocalDate.now().format(DATE_FORMAT);
-        zSetOps.incrementScore(todayKey, gameId.toString(), adjustedScore);
-
-        // 시간별 랭킹 증가
-        String currentHourKey = (isBuy ? HOURLY_BUY_RANKING_KEY : HOURLY_SELL_RANKING_KEY) + LocalDateTime.now().format(HOUR_FORMAT);
-        zSetOps.incrementScore(currentHourKey, gameId.toString(), adjustedScore);
-
-        // 게임 ID ↔ 타이틀 매핑 저장
-        hashOps.putIfAbsent(GAME_ID_TITLE_HASH_KEY, gameId.toString(), gameTitle);
-        hashOps.putIfAbsent(GAME_TITLE_ID_HASH_KEY, gameTitle, gameId.toString());
+//        // 일별 랭킹 증가
+//        String todayKey = (isBuy ? DAILY_BUY_RANKING_KEY : DAILY_SELL_RANKING_KEY) + LocalDate.now().format(DATE_FORMAT);
+//        zSetOps.incrementScore(todayKey, gameId.toString(), adjustedScore);
+//
+//        // 시간별 랭킹 증가
+//        String currentHourKey = (isBuy ? HOURLY_BUY_RANKING_KEY : HOURLY_SELL_RANKING_KEY) + LocalDateTime.now().format(HOUR_FORMAT);
+//        zSetOps.incrementScore(currentHourKey, gameId.toString(), adjustedScore);
+//
+//        // 게임 ID ↔ 타이틀 매핑 저장
+//        hashOps.putIfAbsent(GAME_ID_TITLE_HASH_KEY, gameId.toString(), gameTitle);
+//        hashOps.putIfAbsent(GAME_TITLE_ID_HASH_KEY, gameTitle, gameId.toString());
     }
 
     /**
