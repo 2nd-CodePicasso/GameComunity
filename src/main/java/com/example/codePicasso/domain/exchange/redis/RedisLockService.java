@@ -14,7 +14,7 @@ public class RedisLockService {
     private final StatefulRedisConnection<String, String> connection;
     private static final String LOCK_PREFIX = "exchange:lock";
     private static final long LOCK_EXPIRY = 10;
-    private static final long SPIN_INTERVAL = 50;
+    private static final long SPIN_INTERVAL = 1;
 
     /**
      * Redis Redisson (pub/sub)분산 락 획득
