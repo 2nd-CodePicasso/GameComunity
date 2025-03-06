@@ -4,7 +4,7 @@
 
 <div> 
   <h2> 🎮 프로젝트 소개 </h2>  
-  게이머들에 의한, 게이머들을 위한 소통 공간입니다.<br>
+  게이머의, 게이머들에 의한, 게이머들을 위한 소통 공간입니다.<br> <!--게이게이게이야-->
   <b>"Of the Gamers, By the Gamers, For the Gamers.</li> Our Battle Field, OBF Gamers."</b>
 </div>
 
