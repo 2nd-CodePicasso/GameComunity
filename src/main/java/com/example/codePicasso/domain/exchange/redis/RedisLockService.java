@@ -1,8 +1,11 @@
 package com.example.codePicasso.domain.exchange.redis;
 
+import io.lettuce.core.SetArgs;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -11,22 +14,31 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisLockService {
 
-    private final RedissonClient redissonClient;
+    private final StatefulRedisConnection<String, String> connection;
     private static final String LOCK_PREFIX = "exchange:lock";
+    private static final long LOCK_EXPIRY = 10;
+    private static final long SPIN_INTERVAL = 100;
 
     /**
      * Redis Redisson (pub/sub)분산 락 획득
      */
     public boolean acquireLock(Long exchangeId) {
         String lockKey = LOCK_PREFIX + exchangeId;
-        RLock lock = redissonClient.getLock(lockKey);
-        try {
-            //최대 기다림 5초. 락 획득 시 10초 유지
-            return lock.tryLock(5, 10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
+        RedisCommands<String, String> commands = connection.sync();
+        long endTime = System.currentTimeMillis() + Duration.ofSeconds(5).toMillis();
+        while (System.currentTimeMillis() < endTime) {
+            String result = commands.set(lockKey, "locked", SetArgs.Builder.nx().ex(LOCK_EXPIRY));
+            if ("OK".equals(result)) {
+                return true;
+            }
+            try {
+                Thread.sleep(SPIN_INTERVAL);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
         }
+        return false;
     }
 
 
@@ -35,10 +47,8 @@ public class RedisLockService {
      */
     public void releaseLock(Long exchangeId) {
         String lockKey = LOCK_PREFIX + exchangeId;
-        RLock lock = redissonClient.getLock(lockKey);
-        if (lock.isHeldByCurrentThread()) {
-            lock.unlock();
-        }
+        RedisCommands<String, String> commands = connection.sync();
+        commands.del(lockKey);
     }
 
 }

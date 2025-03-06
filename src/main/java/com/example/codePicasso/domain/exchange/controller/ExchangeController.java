@@ -129,4 +129,13 @@ public class ExchangeController {
     }
 
     /// --- ↑ MyExchange ---
+
+    //test용 api
+
+    @PostMapping("/test/{exchangeId}")
+    public ResponseEntity<ApiResponse<Void>> testCompleteExchange(@PathVariable Long exchangeId) {
+        exchangeService.completeExchange(exchangeId);
+        return ApiResponse.noContent();
+    }
+
 }
