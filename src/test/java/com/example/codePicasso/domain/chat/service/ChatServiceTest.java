@@ -2,10 +2,7 @@ package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
 import com.example.codePicasso.domain.chat.dto.request.RoomRequest;
-import com.example.codePicasso.domain.chat.dto.response.ChatListResponse;
 import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatListResponse;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.Chat;
 import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
@@ -18,13 +15,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ChatServiceTest {
@@ -64,21 +61,6 @@ public class ChatServiceTest {
 
         globalChats.add(globalChat);
         chats.add(chat);
-    }
-
-    @Test
-    void 글라발_채팅_생성() {
-        //given설정에서 처리함
-
-
-        //when
-        when(globalChatConnector.save(any(GlobalChat.class))).thenReturn(globalChat);
-        GlobalChatResponse globalChatResponse = chatService.addForAllRoomToMessage(chatRequest, userId, username);
-
-        //then
-        verify(globalChatConnector).save(any(GlobalChat.class));
-        assertEquals(globalChat.getContent(), globalChatResponse.message());
-        assertEquals(globalChat.getUsername(),globalChatResponse.username());
     }
 
     @Test

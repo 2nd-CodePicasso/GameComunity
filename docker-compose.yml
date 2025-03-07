@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: "happybeny/mysql-container:latest"
+    restart: always
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
+
+  redis:
+    image: "happybeny/redis-container:latest"
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
+
+  app:
+    image: "$happybeny/app-image:latest"
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+    depends_on:
+      - mysql
+      - redis
+
+networks:
+  my-network:
+    driver: bridge
