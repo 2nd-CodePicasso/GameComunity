@@ -182,12 +182,24 @@ public class DtoFactory {
                 .build();
     }
 
+
+
     public static RoomResponse toChatRoomDto(ChatRoom chatRoom) {
         return RoomResponse.builder()
                 .roomId(chatRoom.getId())
                 .username(chatRoom.getUser().getNickname())
                 .roomName(chatRoom.getName())
                 .isSecurity(chatRoom.isSecurity())
+                .build();
+    }
+
+    public static GlobalChatDto toRabbitDto(GlobalChat globalChat) {
+        return GlobalChatDto.builder()
+                .username(globalChat.getUsername())
+                .userId(globalChat.getUserId())
+                .message(globalChat.getContent())
+                .imageUrl(globalChat.getImageUrl())
+                .createdAt(globalChat.getCreatedAt())
                 .build();
     }
 }

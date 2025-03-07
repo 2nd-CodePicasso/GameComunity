@@ -92,9 +92,20 @@ public class ExchangeService {
     public void deleteExchange(Long exchangeId, Long userId) {
         Exchange exchange = exchangeConnector.findById(exchangeId);
 
+        if (exchange.getUser() == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+
         if (!exchange.getUser().getId().equals(userId)) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
+
+        if (exchange.isCompleted()) {
+            log.debug("이미 완료된 거래, 예외 발생 예정.");
+            throw new InvalidRequestException(ErrorCode.ALREADY_IN_COMPLETED);
+        }
+
+        exchange.completed();
 
         exchangeConnector.deleteById(exchangeId);
     }
@@ -163,7 +174,7 @@ public class ExchangeService {
 
     /// --- ↑ MyExchange ---
 
-    /// --- ↓ Redis ---
+    /// --- ↓ dblock ---
 
     @Transactional
     public void completeExchange(Long exchangeId) {
@@ -188,5 +199,5 @@ public class ExchangeService {
         }
     }
 
-    /// --- ↑ Redis ---
+    /// --- ↑ dblock ---
 }

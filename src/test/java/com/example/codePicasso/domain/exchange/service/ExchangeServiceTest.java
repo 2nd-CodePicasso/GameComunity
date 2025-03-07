@@ -82,7 +82,6 @@ class ExchangeServiceTest {
 
     /// --- Id ---
     private Long exchangeId = 1L;
-    private Long myExchangeId = 1L;
     private Long userId = 1L;
     private Long gameId = 1L;
 
@@ -170,7 +169,7 @@ class ExchangeServiceTest {
         ExchangeResponse response = exchangeService.getExchangeById(exchangeId);
 
         // then
-        verify(exchangeConnector).findByIdAndIsCompleted(exchangeId);
+        verify(exchangeConnector).findById(exchangeId);
         assertNotNull(response);
     }
 
@@ -337,8 +336,11 @@ class ExchangeServiceTest {
     void 거래소_아이템_삭제_이미_삭제됨() {
         // given
         Exchange exchange = mock(Exchange.class);
+        User user = mock(User.class);
         when(exchangeConnector.findById(exchangeId)).thenReturn(exchange);
         when(exchange.isCompleted()).thenReturn(true);
+        when(exchange.getUser()).thenReturn(user);
+        when(user.getId()).thenReturn(userId);
 
         // when & then
         InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
@@ -357,7 +359,7 @@ class ExchangeServiceTest {
         when(myExchangeConnector.save(any(MyExchange.class))).thenReturn(myExchange);
 
         // when
-        MyExchangeResponse response = exchangeService.doExchange(exchangeId, userId, myExchangeRequest);
+        MyExchangeResponse response = exchangeService.doExchange(exchangeId, 2L, myExchangeRequest);
 
         // then
         Assertions.assertThat(response.contact()).isEqualTo(myExchangeRequest.contact());

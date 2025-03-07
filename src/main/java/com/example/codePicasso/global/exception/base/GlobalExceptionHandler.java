@@ -1,7 +1,6 @@
-package com.example.codePicasso.global.exception;
+package com.example.codePicasso.global.exception.base;
 
 import com.example.codePicasso.global.common.ApiResponse;
-import com.example.codePicasso.global.exception.base.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

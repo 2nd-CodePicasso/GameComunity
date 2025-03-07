@@ -7,8 +7,12 @@
     import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
     import com.example.codePicasso.domain.chat.service.ChatService;
     import com.example.codePicasso.domain.chat.service.NotificationService;
+    import com.example.codePicasso.domain.chat.service.RabbitPublisher;
+    import com.example.codePicasso.domain.chat.service.RedisPublisher;
+    import com.example.codePicasso.global.common.DtoFactory;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
+    import org.springframework.amqp.rabbit.core.RabbitTemplate;
     import org.springframework.messaging.handler.annotation.*;
     import org.springframework.stereotype.Controller;
 
@@ -19,19 +23,26 @@
 
         private final ChatService chatService;
         private final NotificationService notificationService;
+        private final RedisPublisher redisPublisher;
+        private final RabbitPublisher rabbitPublisher;
 
         @MessageMapping("/send/all")
-        @SendTo("/topic/hi")
-        public GlobalChatResponse sendMessage(
+        public void sendMessage(
                 @Payload ChatRequest chatRequest,
                 @Header("userId") String userId,
                 @Header("username") String username
         ) {
-            return chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
+            //심플 메시지브로커+RDB
+            chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
+
+            //레디스+RDB
+          //  redisPublisher.publishMessage(chatRequest,Long.valueOf(userId),username);
+
+            //레빗MQ
+         //   rabbitPublisher.publishMessage(chatRequest, Long.valueOf(userId), username);
         }
 
         @MessageMapping("/send/room/{roomId}")
-        @SendTo("/topic/{roomId}")
         public ChatResponse testMessage(
                 @Payload ChatRequest chatsRequest,
                 @DestinationVariable Long roomId,
@@ -49,4 +60,6 @@
         ) {
             return notificationService.addNotification(notificationRequest, Long.valueOf(userId));
         }
+
+
     }

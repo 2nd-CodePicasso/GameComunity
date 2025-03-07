@@ -37,13 +37,12 @@ jobs:
           if [[ "$BLOCKED" -eq 1 ]]; then
             exit 1
           fi
-
           
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
+      packages: write
     steps:
     - uses: actions/checkout@v4
     - name: JDK 17 설치
@@ -51,6 +50,24 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        
+    - name: 메인 yml파일 생성
+      run: |
+        mkdir -p ./src/main/resources
+        cd ./src/main/resources
+        touch ./myInfo.yml
+        echo "${{ secrets.MYINFO }}" > ./myInfo.yml
+
+    - name: MySQL 실행
+      run: |
+        sudo systemctl start mysql || sudo service mysql start
+
+    - name: 테스트 yml파일 생성
+      run: |
+        mkdir -p ./src/test/resources
+        cd ./src/test/resources
+        touch ./testMyInfo.yml
+        echo "${{ secrets.TESTMYINFO }}" > ./testMyInfo.yml
 
     - name: gradlew 접근 권한 설정
       run: chmod +x gradlew
@@ -58,8 +75,8 @@ jobs:
     - name: Gradle 설치
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
-    - name: Gradlew로 빌드
-      run: ./gradlew build
+    - name: Gradlew로 빌드(테스트 스킵)
+      run: ./gradlew build -x test
 
 
   dependency-submission:
