@@ -70,10 +70,6 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-
-    // RabbitMQ
- //   implementation 'org.springframework.boot:spring-boot-starter-amqp'
-
 }
 
 // queryDSL 시작
