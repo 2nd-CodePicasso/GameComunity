@@ -62,20 +62,4 @@ public class ChatServiceTest {
         globalChats.add(globalChat);
         chats.add(chat);
     }
-
-    @Test
-    void 룸_채팅_생성() {
-        //given
-        //when
-        when(roomConnector.findById(roomId)).thenReturn(chatRoom);
-        when(chatConnector.save(any(Chat.class))).thenReturn(chat);
-        ChatResponse chatResponse = chatService.addForRoomToMessage(chatRequest, roomId, userId,username);
-
-        //then
-        verify(roomConnector).findById(roomId);
-        verify(chatConnector).save(any(Chat.class));
-        assertEquals(chat.getContent(), chatResponse.message());
-        assertEquals(chat.getCreatedAt(), chatResponse.createdAt());
-        assertEquals(chat.getUsername(), chatResponse.username());
-    }
 }

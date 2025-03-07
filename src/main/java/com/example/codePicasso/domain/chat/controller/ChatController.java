@@ -11,7 +11,6 @@
     import com.example.codePicasso.global.common.DtoFactory;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
-    import org.springframework.amqp.rabbit.core.RabbitTemplate;
     import org.springframework.messaging.handler.annotation.*;
     import org.springframework.stereotype.Controller;
 
