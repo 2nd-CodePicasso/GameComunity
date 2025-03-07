@@ -17,13 +17,13 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 public class RedisConfig {
 
     @Bean
-    public RedisClient redisClient() {
-        return RedisClient.create("redis://localhost:6379");
-    }
-
-    @Bean
-    public StatefulRedisConnection<String, String> statefulRedisConnection(RedisClient redisClient) {
-        return redisClient.connect();
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+            .setAddress("redis://localhost:6379") // Redis 서버 주소
+            .setConnectionMinimumIdleSize(10)
+            .setConnectionPoolSize(100);
+        return Redisson.create(config);
     }
 
 
