@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Entity
 @NoArgsConstructor
@@ -29,16 +28,14 @@ public class GlobalChat {
 
     private String imageUrl;
 
-    private MessageType messageType;
-
-    @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
-    public GlobalChat(Long userId, String username, String content, String imageUrl) {
+    public GlobalChat(Long userId, String username, String content, String imageUrl,LocalDateTime createdAt) {
         this.userId = userId;
         this.username = username;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.createdAt = createdAt == null ? LocalDateTime.now():createdAt;
     }
 }

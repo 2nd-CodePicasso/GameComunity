@@ -19,19 +19,22 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         public void registerStompEndpoints(StompEndpointRegistry registry) {
             registry.addEndpoint("/ws")
                     .setAllowedOriginPatterns("*")
-                    .withSockJS();
+                    .withSockJS()
+                    .setHeartbeatTime(600000);
         }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic");
+        //심플 메시지 브로커
+         registry.enableSimpleBroker("/topic");
     }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration channelRegistration) {
         channelRegistration.interceptors(messageInterceptor);
     }
+
 
 
 }

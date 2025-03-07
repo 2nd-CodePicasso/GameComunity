@@ -7,18 +7,38 @@ spring:
     password: ${db.pw}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
 #    show-sql: false
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        #dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
+        jdbc:
+          batch_size: 10
+        order_inserts: true        # INSERT문 순서를 보장 (배치 최적화)
+        order_updates: true        # UPDATE문 순서를 보장 (배치 최적화)
+        batch_versioned_data: true
+
   data:
     redis:
       port: 6379
       host: localhost
+
+#  rabbitmq:
+#    host: localhost      # RabbitMQ 서버 주소
+#    port: 5672           # 기본 포트
+#    connection-timeout: 10000ms
+
+  security:
+
+    config:
+      import: optional:myInfo.yml
+    user:
+      name: ${secure.admin}
+      password: ${secure.password}
 
 jwt:
   config:
@@ -33,3 +53,9 @@ cloud:
     credentials:
       access-key: ${s3.aKey}
       secret-key: ${s3.sKey}
+
+
+api:
+  spam-check:
+    url: "https://apick.app/rest/check_spam_number"
+    auth-key: f4856687c81a60da1932589803df35fd

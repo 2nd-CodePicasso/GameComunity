@@ -36,7 +36,6 @@ dependencies {
 
     //웹소켓, 스톰프
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework:spring-messaging'
 
     //이모티콘
     implementation 'com.vdurmont:emoji-java:5.1.1'
@@ -52,7 +51,7 @@ dependencies {
 
     //Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+
     //Redis - Redisson
     implementation 'org.redisson:redisson-spring-boot-starter:3.21.1'
 
@@ -70,6 +69,10 @@ dependencies {
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+
+    // RabbitMQ
+ //   implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
 }
 

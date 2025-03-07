@@ -2,7 +2,7 @@ package com.example.codePicasso.domain.exchange.controller;
 
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
-import com.example.codePicasso.domain.exchange.dto.request.PutExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
@@ -122,7 +122,7 @@ public class ExchangeController {
             @PathVariable TradeType tradeType,
             @PathVariable Long myExchangeId,
             @AuthenticationPrincipal CustomUser user,
-            @RequestBody PutExchangeRequest request
+            @RequestBody PutMyExchangeRequest request
     ) {
         exchangeService.decisionMyExchange(myExchangeId, user.getUserId(), request);
         return ApiResponse.noContent();
