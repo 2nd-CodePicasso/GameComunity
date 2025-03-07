@@ -56,6 +56,7 @@ public enum ErrorCode {
     UNAUTHORIZED_CHAT_ROOM(HttpStatus.UNAUTHORIZED,"","해당 채팅방은 비밀방입니다."),
     IMAGE_IOEXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "", "이미지 입출력작업중 문제가 발생했습니다."),
     REDIS_JACKSON_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"","레디스에서 메시지 발행하는도중 역직렬화에 실패했습니다."),
+    RABBIT_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"","RabbitMQ의 연결 실패"),
 
     //Exchange
     EXCHANGE_NOT_FOUND(HttpStatus.NOT_FOUND, "", "거래내역을 찾을 수 없습니다."),

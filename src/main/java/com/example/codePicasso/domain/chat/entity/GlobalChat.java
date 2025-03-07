@@ -28,16 +28,14 @@ public class GlobalChat {
 
     private String imageUrl;
 
-    private MessageType messageType;
-
     private LocalDateTime createdAt;
 
     @Builder
-    public GlobalChat(Long userId, String username, String content, String imageUrl) {
+    public GlobalChat(Long userId, String username, String content, String imageUrl,LocalDateTime createdAt) {
         this.userId = userId;
         this.username = username;
         this.content = content;
         this.imageUrl = imageUrl;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt == null ? LocalDateTime.now():createdAt;
     }
 }
