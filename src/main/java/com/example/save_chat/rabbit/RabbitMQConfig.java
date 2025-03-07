@@ -1,4 +1,4 @@
-//package com.example.codePicasso.global.config;
+//package com.example.save_chat.rabbit;
 //
 //import org.springframework.amqp.core.Binding;
 //import org.springframework.amqp.core.BindingBuilder;
@@ -21,10 +21,10 @@
 //        return new FanoutExchange("rabbit");
 //    }
 //
-////    @Bean
-////    public Queue rabbitSaveQueue() {
-////        return new Queue("rabbit.save", true);
-////    }
+//    @Bean
+//    public Queue rabbitSaveQueue() {
+//        return new Queue("rabbit.save", true);
+//    }
 //
 //    @Bean
 //    public Queue rabbitReceiveQueue() {
@@ -35,11 +35,11 @@
 //    public Binding bindingReceiveQueue(FanoutExchange rabbitExchange, Queue rabbitReceiveQueue) {
 //        return BindingBuilder.bind(rabbitReceiveQueue).to(rabbitExchange);
 //    }
-////
-////    @Bean
-////    public Binding bindingSaveQueue(FanoutExchange rabbitExchange, Queue rabbitSaveQueue) {
-////        return BindingBuilder.bind(rabbitSaveQueue).to(rabbitExchange);
-////    }
+//
+//    @Bean
+//    public Binding bindingSaveQueue(FanoutExchange rabbitExchange, Queue rabbitSaveQueue) {
+//        return BindingBuilder.bind(rabbitSaveQueue).to(rabbitExchange);
+//    }
 //
 //
 //    @Bean
@@ -47,6 +47,7 @@
 //        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
 //        cachingConnectionFactory.setHost("localhost");
 //        cachingConnectionFactory.setPort(5672);
+//        cachingConnectionFactory.setCacheMode(CachingConnectionFactory.CacheMode.CONNECTION);
 //        return cachingConnectionFactory;
 //    }
 //
