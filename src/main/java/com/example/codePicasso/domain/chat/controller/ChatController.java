@@ -7,7 +7,6 @@
     import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
     import com.example.codePicasso.domain.chat.service.ChatService;
     import com.example.codePicasso.domain.chat.service.NotificationService;
-    import com.example.codePicasso.domain.chat.service.RabbitPublisher;
     import com.example.codePicasso.domain.chat.service.RedisPublisher;
     import com.example.codePicasso.global.common.DtoFactory;
     import lombok.RequiredArgsConstructor;
