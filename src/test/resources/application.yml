@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:myInfo.yml
+    import: optional:testMyInfo.yml
   datasource:
     url: jdbc:mysql://${db.url}:${db.port}/${db.name}
     username: ${db.user}
@@ -20,16 +20,29 @@ spring:
       port: 6379
       host: localhost
 
+  security:
+
+    config:
+      import: optional:testMyInfo.yml
+    user:
+      name: ${secure.admin}
+      password: ${secure.password}
+
 jwt:
   config:
-    import: optional:myInfo.yml
+    import: optional:testMyInfo.yml
   secretKey: ${secure.key}
   tokenTime: ${secure.timer}
 
 cloud:
   config:
-    import: optional:myInfo.yml
+    import: optional:testMyInfo.yml
   aws:
     credentials:
       access-key: ${s3.aKey}
       secret-key: ${s3.sKey}
+
+api:
+  spam-check:
+    url: "https://apick.app/rest/check_spam_number"
+    auth-key: f4856687c81a60da1932589803df35fd

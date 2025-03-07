@@ -17,6 +17,7 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +33,15 @@ public class ChatService {
     private final ChatConnector chatConnector;
     private final RoomConnector roomConnector;
     private final PasswordEncoder passwordEncoder;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Transactional
     public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId, String username) {
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
         GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId,emoji,username);
+        //메시지 브로커를 이용해서 저장하기 전에 발행
+        simpMessagingTemplate.convertAndSend("/topic/hi",DtoFactory.toGlobalChatDto(globalChat));
+
         GlobalChat chats = globalChatConnector.save(globalChat);
         return DtoFactory.toGlobalChatDto(chats);
     }
@@ -54,6 +59,7 @@ public class ChatService {
         ChatRoom chatRoom = roomConnector.findById(roomId);
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
         Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji,username);
+        simpMessagingTemplate.convertAndSend("/topic/"+roomId,DtoFactory.toChatDto(chat));
         Chat saveChat = chatConnector.save(chat);
         return DtoFactory.toChatDto(saveChat);
     }
