@@ -16,6 +16,7 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostSummaryResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
@@ -64,16 +65,25 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostListResponse toPaginationPostDto(Page<Post> postsPage) {
+    public static PostListResponse toPostPaginationDto(Page<PostSummaryResponse> page) {
         return PostListResponse.builder()
-                .postResponses(postsPage.getContent().stream()
-                        .map(DtoFactory::toPostDto)
-                        .toList())
-                .currentPage(postsPage.getNumber())
-                .totalPages(postsPage.getTotalPages())
-                .totalElements(postsPage.getTotalElements())
+                .postResponses(page.getContent())  // 이미 PostSummaryResponse로 조회된 리스트
+                .currentPage(page.getNumber())
+                .totalPages(page.getTotalPages())
+                .totalElements(page.getTotalElements())
                 .build();
     }
+
+//    public static PostListResponse toPaginationDto(Page<Post> postsPage) {
+//        return PostListResponse.builder()
+//                .postResponses(postsPage.getContent().stream()
+//                        .map(DtoFactory::toPostDto)
+//                        .toList())
+//                .currentPage(postsPage.getNumber())
+//                .totalPages(postsPage.getTotalPages())
+//                .totalElements(postsPage.getTotalElements())
+//                .build();
+//    }
 
     public static CommentResponse toCommentDto(Comment comment) {
         return CommentResponse.builder().

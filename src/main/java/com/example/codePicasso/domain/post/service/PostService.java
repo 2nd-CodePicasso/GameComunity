@@ -5,8 +5,8 @@ import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
+import com.example.codePicasso.domain.post.dto.response.PostSummaryResponse;
 import com.example.codePicasso.domain.post.entity.Post;
-import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -44,23 +44,23 @@ public class PostService {
     // 게시물 조회(gameId)
     public PostListResponse findAllByGameId(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postResponses = postConnector.findAllByGameId(gameId, pageable);
-        return DtoFactory.toPaginationPostDto(postResponses);
+        Page<PostSummaryResponse> postResponses = postConnector.findAllByGameId(gameId, pageable);
+        return DtoFactory.toPostPaginationDto(postResponses);
     }
 
-    // 게시물 조회(게임별 추천게시물)
-    public PostListResponse findRecommendedPost(Long gameId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postResponses = postConnector.findAllRecommendedOfGame(gameId, PostStatus.RECOMMENDED, pageable);
-        return DtoFactory.toPaginationPostDto(postResponses);
-    }
-
-    // 게시물 조회(categoryId)
-    public PostListResponse findAllByCategoryId(Long categoryId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
-        return DtoFactory.toPaginationPostDto(postResponses);
-    }
+//    // 게시물 조회(게임별 추천게시물)
+//    public PostListResponse findRecommendedPost(Long gameId, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+//        Page<Post> postResponses = postConnector.findAllRecommendedOfGame(gameId, PostStatus.RECOMMENDED, pageable);
+//        return DtoFactory.toPaginationDto(postResponses);
+//    }
+//
+//    // 게시물 조회(categoryId)
+//    public PostListResponse findAllByCategoryId(Long categoryId, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+//        Page<Post> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
+//        return DtoFactory.toPaginationDto(postResponses);
+//    }
 
     // 게시글 개별 조회
     // viewCount 기능 때문에 캐시 사용 고려

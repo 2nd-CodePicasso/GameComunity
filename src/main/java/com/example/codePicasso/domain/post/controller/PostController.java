@@ -50,36 +50,36 @@ public class PostController {
         return ApiResponse.success(postListResponse);
     }
 
-    /**
-     * 카테고리별 게시글 전체 조회
-     *
-     * @param categoryId
-     * @return categoryId 내 모든 게시글 조회
-     */
-    @GetMapping("/hi/categories/{categoryId}")
-    public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
-            @PathVariable("categoryId") Long categoryId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
-    ) {
-        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId, page, size);
-        return ApiResponse.success(postListResponse);
-    }
-
-    /**
-     * 추천글만 조회하기
-     *
-     * @return
-     */
-    @GetMapping("/hi/games/{gameId}/recommended")
-    public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost(
-            @PathVariable Long gameId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
-    ) {
-        PostListResponse postListResponse = postService.findRecommendedPost(gameId, page, size);
-        return ApiResponse.success(postListResponse);
-    }
+//    /**
+//     * 카테고리별 게시글 전체 조회
+//     *
+//     * @param categoryId
+//     * @return categoryId 내 모든 게시글 조회
+//     */
+//    @GetMapping("/hi/categories/{categoryId}")
+//    public ResponseEntity<ApiResponse<PostListResponse>> findPostsByCategoryId(
+//            @PathVariable("categoryId") Long categoryId,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "20") int size
+//    ) {
+//        PostListResponse postListResponse = postService.findAllByCategoryId(categoryId, page, size);
+//        return ApiResponse.success(postListResponse);
+//    }
+//
+//    /**
+//     * 추천글만 조회하기
+//     *
+//     * @return
+//     */
+//    @GetMapping("/hi/games/{gameId}/recommended")
+//    public ResponseEntity<ApiResponse<PostListResponse>> findRecommendedPost(
+//            @PathVariable Long gameId,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "20") int size
+//    ) {
+//        PostListResponse postListResponse = postService.findRecommendedPost(gameId, page, size);
+//        return ApiResponse.success(postListResponse);
+//    }
 
     /**
      * 개별 게시글 조회

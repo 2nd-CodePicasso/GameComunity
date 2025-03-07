@@ -1,10 +1,12 @@
 package com.example.codePicasso.domain.post.repository;
 
+import com.example.codePicasso.domain.post.dto.response.PostSummaryResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +55,22 @@ public class PostConnectorImpl implements PostConnector {
 
     // gameId로 게시글 전체 조회
     @Override
-    public Page<Post> findAllByGameId(Long gameId, Pageable pageable) {
-        List<Post> posts = basePostQuery()
+    public Page<PostSummaryResponse> findAllByGameId(Long gameId, Pageable pageable) {
+        List<PostSummaryResponse> posts = queryFactory.select(Projections.constructor(
+                PostSummaryResponse.class,
+                post.id,
+                post.title,
+                post.viewCount,
+                post.game.gameTitle,
+                post.category.categoryName,
+                post.user.nickname,
+                post.createdAt,
+                post.updatedAt
+                ))
+                .from(post)
+                .leftJoin(post.user, user)
+                .leftJoin(post.category, category)
+                .leftJoin(post.game, game)
                 .where(post.game.id.eq(gameId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

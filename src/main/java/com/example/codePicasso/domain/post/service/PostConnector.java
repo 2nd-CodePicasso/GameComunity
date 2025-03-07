@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.post.service;
 
+import com.example.codePicasso.domain.post.dto.response.PostSummaryResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 public interface PostConnector {
     Post save(Post post);
 
-    Page<Post> findAllByGameId(Long gameId, Pageable pageable);
+    Page<PostSummaryResponse> findAllByGameId(Long gameId, Pageable pageable);
 
     Page<Post> findAllByCategoryId(Long categoryId, Pageable pageable);
 
