@@ -16,10 +16,21 @@ spring:
       hibernate:
         #dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
+        jdbc:
+          batch_size: 10
+        order_inserts: true        # INSERT문 순서를 보장 (배치 최적화)
+        order_updates: true        # UPDATE문 순서를 보장 (배치 최적화)
+        batch_versioned_data: true
+
   data:
     redis:
       port: 6379
       host: localhost
+
+  rabbitmq:
+    host: localhost      # RabbitMQ 서버 주소
+    port: 5672           # 기본 포트
+    connection-timeout: 10000ms
 
   security:
     config:
