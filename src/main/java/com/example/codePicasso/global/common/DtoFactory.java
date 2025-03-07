@@ -4,7 +4,10 @@ package com.example.codePicasso.global.common;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.*;
-import com.example.codePicasso.domain.chat.entity.*;
+import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.chat.entity.ChatRoom;
+import com.example.codePicasso.domain.chat.entity.GlobalChat;
+import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
@@ -16,7 +19,6 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
-import com.example.codePicasso.domain.post.dto.response.PostSummaryResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
@@ -65,25 +67,16 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostListResponse toPostPaginationDto(Page<PostSummaryResponse> page) {
+    public static PostListResponse toPaginationDto(Page<Post> postsPage) {
         return PostListResponse.builder()
-                .postResponses(page.getContent())  // 이미 PostSummaryResponse로 조회된 리스트
-                .currentPage(page.getNumber())
-                .totalPages(page.getTotalPages())
-                .totalElements(page.getTotalElements())
+                .postResponses(postsPage.getContent().stream()
+                        .map(DtoFactory::toPostDto)
+                        .toList())
+                .currentPage(postsPage.getNumber())
+                .totalPages(postsPage.getTotalPages())
+                .totalElements(postsPage.getTotalElements())
                 .build();
     }
-
-//    public static PostListResponse toPaginationDto(Page<Post> postsPage) {
-//        return PostListResponse.builder()
-//                .postResponses(postsPage.getContent().stream()
-//                        .map(DtoFactory::toPostDto)
-//                        .toList())
-//                .currentPage(postsPage.getNumber())
-//                .totalPages(postsPage.getTotalPages())
-//                .totalElements(postsPage.getTotalElements())
-//                .build();
-//    }
 
     public static CommentResponse toCommentDto(Comment comment) {
         return CommentResponse.builder().
