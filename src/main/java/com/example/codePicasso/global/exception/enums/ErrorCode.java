@@ -18,6 +18,7 @@ public enum ErrorCode {
     ID_ALREADY_EXISTS(HttpStatus.CONFLICT,"","이미 해당 아이디가 존재합니다."),
     NOT_FOUND_ID(HttpStatus.BAD_REQUEST,"", "해당 아이디가 존재하지 않습니다."),
     UNAUTHORIZED_ID(HttpStatus.UNAUTHORIZED,"","권한이 없습니다."),
+    KAKAO_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"","카카오인증중 에러발생"),
 
     //User
     ID_ERROR(HttpStatus.UNAUTHORIZED,"1","아이디가 올바르지 않습니다."),

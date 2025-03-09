@@ -27,13 +27,16 @@ public class User extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
+    private Long kakaoId;
+
     private boolean isDeleted;
 
     @Builder
-    public User(String loginId, String nickname, String password) {
+    public User(String loginId, String nickname, String password,Long kakaoId) {
         this.loginId = loginId;
         this.nickname = nickname;
         this.password = password;
+        this.kakaoId = kakaoId;
         this.userStatus = UserStatus.USER;
         this.isDeleted = false;
     }
