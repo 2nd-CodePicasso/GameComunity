@@ -79,7 +79,7 @@ jobs:
 
 
   deploy:
-    runs-on: ubuntu-lastet
+    runs-on: ubuntu-latest
     needs: build
     steps:
     - name: SSH 키 파일 생성
