@@ -103,8 +103,12 @@ jobs:
     - name: EC2에서 Docker 이미지 Pull 및 컨테이너 실행
       run: |
         ssh -o StrictHostKeyChecking=no -i ec2_key.pem \
+        echo "hello1"
         docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+        echo "hello2"
         printf "%s" "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
+        echo "hello3"
+        
         docker-compose down
         docker-compose pull
         docker-compose up -d
