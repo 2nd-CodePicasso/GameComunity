@@ -89,7 +89,7 @@ jobs:
         cat ec2_key.pem
 
     - name: 배포
-      uses: appleboy/ssh-action@v1.2.1
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ubuntu
