@@ -93,7 +93,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ubuntu
-        key: ec2_key.pem
+        key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
           printf "%s" "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
