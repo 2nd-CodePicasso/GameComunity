@@ -102,7 +102,7 @@ jobs:
     
     - name: EC2에서 Docker 이미지 Pull 및 컨테이너 실행
       run: |
-        ssh -vi EC2_HOST ec2_key.pem ubuntu@ec2-13-125-123-62.ap-northeast-2.compute.amazonaws.com
+        ssh -vi ec2_key.pem ubuntu@ec2-13-125-123-62.ap-northeast-2.compute.amazonaws.com
         echo "hello1"
         docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
         echo "hello2"
