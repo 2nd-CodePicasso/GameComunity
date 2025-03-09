@@ -94,7 +94,7 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ubuntu
         key: ec2_key.pem
-        run: |
+        script: |
           docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
           printf "%s" "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
           docker-compose down
