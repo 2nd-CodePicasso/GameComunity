@@ -93,11 +93,12 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ubuntu
         key: ec2_key.pem
-        script: |
+        run: |
           docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
           printf "%s" "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
           docker-compose down
           docker-compose pull
           docker-compose up -d
+          
     - name: SSH 키 파일 삭제
       run: rm -f ec2_key.pem
