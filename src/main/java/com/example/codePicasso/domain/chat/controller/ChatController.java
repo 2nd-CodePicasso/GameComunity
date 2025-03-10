@@ -3,16 +3,13 @@
     import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
     import com.example.codePicasso.domain.chat.dto.request.NotificationRequest;
     import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
-    import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
     import com.example.codePicasso.domain.chat.dto.response.NotificationResponse;
     import com.example.codePicasso.domain.chat.service.ChatService;
     import com.example.codePicasso.domain.chat.service.NotificationService;
     import com.example.codePicasso.domain.chat.service.RabbitPublisher;
     import com.example.codePicasso.domain.chat.service.RedisPublisher;
-    import com.example.codePicasso.global.common.DtoFactory;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
-    import org.springframework.amqp.rabbit.core.RabbitTemplate;
     import org.springframework.messaging.handler.annotation.*;
     import org.springframework.stereotype.Controller;
 

@@ -2,7 +2,6 @@ package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatDto;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.global.common.DtoFactory;
 import com.vdurmont.emoji.EmojiParser;

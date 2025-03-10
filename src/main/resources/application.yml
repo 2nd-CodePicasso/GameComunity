@@ -57,15 +57,3 @@ api:
   spam-check:
     url: "https://apick.app/rest/check_spam_number"
     auth-key: f4856687c81a60da1932589803df35fd
-
-logging:
-  level:
-    root: info
-    com.example.codePicasso: info
-  file:
-    name: logs/application.log
-  logback:
-    rollingpolicy:
-      file-name-pattern: logs/application-%d{yyyy-MM-dd}.log
-      max-history: 365
-      max-file-size: 100MB
