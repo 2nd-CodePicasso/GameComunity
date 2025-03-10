@@ -14,11 +14,14 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Configuration
 public class RedisConfig {
 
+    @Value("${redis.host}")
+    private String redisHost;
+
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
-            .setAddress("redis://localhost:6379") // Redis 서버 주소
+            .setAddress("redis://" + redisHost + ":6379") // Redis 서버 주소
             .setConnectionMinimumIdleSize(5)
             .setConnectionPoolSize(10);
         return Redisson.create(config);
