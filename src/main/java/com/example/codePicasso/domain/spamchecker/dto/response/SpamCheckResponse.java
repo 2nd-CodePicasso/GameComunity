@@ -1,8 +1,8 @@
 package com.example.codePicasso.domain.spamchecker.dto.response;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class SpamCheckResponse {
     private String number;
     private String spam;

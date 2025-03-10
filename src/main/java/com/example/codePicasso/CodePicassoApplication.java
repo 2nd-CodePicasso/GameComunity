@@ -10,12 +10,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @EnableJpaAuditing
-  @SpringBootApplication(exclude = {RedisRepositoriesAutoConfiguration.class})
-  @EnableConfigurationProperties(JwtProperties.class)
+@SpringBootApplication(exclude = {RedisRepositoriesAutoConfiguration.class})
+@EnableConfigurationProperties(JwtProperties.class)
 public class CodePicassoApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(CodePicassoApplication.class, args);
   }
-
 }
