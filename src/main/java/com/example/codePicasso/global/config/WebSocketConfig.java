@@ -19,7 +19,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         public void registerStompEndpoints(StompEndpointRegistry registry) {
             registry.addEndpoint("/ws")
                     .setAllowedOriginPatterns("*")
-                    .withSockJS();
+                    .withSockJS()
+                    .setHeartbeatTime(600000);
         }
 
     @Override
@@ -33,6 +34,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureClientInboundChannel(ChannelRegistration channelRegistration) {
         channelRegistration.interceptors(messageInterceptor);
     }
+
 
 
 }

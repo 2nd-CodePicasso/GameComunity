@@ -35,7 +35,6 @@ public class MessageInterceptor implements ChannelInterceptor {
 
                 accessor.setNativeHeader("userId",userId);
                 accessor.setNativeHeader("username",username);
-                log.info("WebSocket 메시지 인증 성공: {}", username);
 
                 return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
             } catch (Exception e) {
