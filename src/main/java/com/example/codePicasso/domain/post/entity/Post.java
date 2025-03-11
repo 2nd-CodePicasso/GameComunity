@@ -16,6 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(
+        name = "post",
+        indexes = {
+                // user_id에 인덱스 추가
+                @Index(name = "idx_post_user_id", columnList = "user_id"),
+                // game_id에 인덱스 추가
+                @Index(name = "idx_post_game_id", columnList = "game_id"),
+                // category_id에 인덱스 추가
+                @Index(name = "idx_post_category_id", columnList = "category_id")
+        }
+)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

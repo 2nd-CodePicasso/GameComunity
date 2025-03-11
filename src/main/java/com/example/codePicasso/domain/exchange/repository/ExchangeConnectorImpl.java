@@ -24,12 +24,12 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
     @Override
     @Transactional(readOnly = true)
     public Page<Exchange> findByTradeType(TradeType tradeType, Pageable pageable) {
-        return exchangeRepository.findAllByTradeTypeAndCompleted(tradeType, false, pageable);
+        return exchangeRepository.findAllByTradeTypeAndIsCompleted(tradeType, false, pageable);
     }
 
     @Override
     public Page<Exchange> findByGameIdAndTradeType(Long gameId, TradeType tradeType, Pageable pageable) {
-        return exchangeRepository.findByGameIdAndTradeTypeAndCompleted(gameId, tradeType, false, pageable);
+        return exchangeRepository.findByGameIdAndTradeTypeAndIsCompleted(gameId, tradeType, false, pageable);
     }
 
     @Override
@@ -39,11 +39,6 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
 
     @Override
     public Exchange findById(Long exchangeId) {
-        return exchangeRepository.findById(exchangeId).orElseThrow(() -> new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND));
-    }
-
-    @Override
-    public Exchange deleteById(Long exchangeId) {
         return exchangeRepository.findById(exchangeId).orElseThrow(() -> new NotFoundException(ErrorCode.EXCHANGE_NOT_FOUND));
     }
 }

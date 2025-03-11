@@ -4,7 +4,10 @@ package com.example.codePicasso.global.common;
 import com.example.codePicasso.domain.category.dto.response.CategoryResponse;
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.chat.dto.response.*;
-import com.example.codePicasso.domain.chat.entity.*;
+import com.example.codePicasso.domain.chat.entity.Chat;
+import com.example.codePicasso.domain.chat.entity.ChatRoom;
+import com.example.codePicasso.domain.chat.entity.GlobalChat;
+import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
@@ -64,7 +67,7 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostListResponse toPaginationPostDto(Page<Post> postsPage) {
+    public static PostListResponse toPaginationDto(Page<Post> postsPage) {
         return PostListResponse.builder()
                 .postResponses(postsPage.getContent().stream()
                         .map(DtoFactory::toPostDto)
@@ -78,8 +81,7 @@ public class DtoFactory {
     public static CommentResponse toCommentDto(Comment comment) {
         return CommentResponse.builder().
                 commentId(comment.getId())
-                .postId(comment.getParent() != null ?
-                        comment.getParent().getPost().getId() : comment.getPost().getId())
+                .postId(comment.getPost().getId())
                 .userId(comment.getUser().getId())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .nickname(comment.getUser().getNickname())
@@ -89,6 +91,19 @@ public class DtoFactory {
                 .replies(comment.getReplies().stream()
                         .map(DtoFactory::toCommentDto)
                         .toList())
+                .build();
+    }
+
+    // 댓글 수정용
+    public static CommentResponse toUpdateCommentDto(Comment comment) {
+        return CommentResponse.builder().
+                commentId(comment.getId())
+                .postId(comment.getPost().getId())
+                .userId(comment.getUser().getId())
+                .nickname(comment.getUser().getNickname())
+                .text(comment.getText())
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .build();
     }
 

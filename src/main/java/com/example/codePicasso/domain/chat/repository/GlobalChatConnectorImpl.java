@@ -1,7 +1,6 @@
 package com.example.codePicasso.domain.chat.repository;
 
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatDto;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.chat.entity.QGlobalChat;
 import com.example.codePicasso.domain.chat.service.GlobalChatConnector;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 

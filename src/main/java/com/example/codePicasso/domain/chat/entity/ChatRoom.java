@@ -1,9 +1,7 @@
 package com.example.codePicasso.domain.chat.entity;
 
-import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
 import com.example.codePicasso.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
