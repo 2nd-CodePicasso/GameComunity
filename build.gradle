@@ -13,6 +13,10 @@ java {
     }
 }
 
+bootRun {
+    jvmArgs = ["-Djava.net.preferIPv4Stack=true"]
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -69,10 +73,6 @@ dependencies {
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-
-    // RabbitMQ
- //   implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
 }
 

@@ -5,8 +5,6 @@ import com.example.codePicasso.domain.chat.entity.ChatRoom;
 import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.user.entity.User;
 
-import java.time.LocalDateTime;
-
 public record NotificationRequest(
         Long messageId
         ) {
