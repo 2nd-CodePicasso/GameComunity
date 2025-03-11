@@ -106,8 +106,6 @@ public class ExchangeService {
         }
 
         exchange.completed();
-
-        exchangeConnector.deleteById(exchangeId);
     }
 
     /// --- ↑ Exchange ---
