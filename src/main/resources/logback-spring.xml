@@ -1,8 +1,10 @@
 <configuration>
-    <!-- 콘솔 로깅 설정 -->
+
+    <!-- 기존 콘솔 로깅을 그대로 두기 위한 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <!-- 기존 IntelliJ 스타일에 맞게 색상 적용 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level){FINTENSITY=YELLOW, ERROR=RED, WARN=YELLOW, INFO=BLUE, DEBUG=GREEN} %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -21,9 +23,10 @@
         </encoder>
     </appender>
 
-    <!-- 기본 로거 설정 (콘솔 & 파일 모두 출력) -->
-    <root level="info">
+    <!-- 기본 로거 설정 -->
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
+
 </configuration>

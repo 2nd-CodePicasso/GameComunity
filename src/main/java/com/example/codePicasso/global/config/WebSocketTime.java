@@ -14,7 +14,7 @@ public class WebSocketTime {
 
     private final WebSocketMessageBrokerStats stats;
 
-    @Scheduled(fixedRate =10000)  // 60초마다 로그 출력
+    @Scheduled(fixedRate =60000)  // 60초마다 로그 출력
     public void logStats() {
         System.out.println("WebSocket Stats: " + stats.toString());
     }
