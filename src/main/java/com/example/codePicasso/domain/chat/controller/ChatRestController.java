@@ -2,9 +2,7 @@ package com.example.codePicasso.domain.chat.controller;
 
 import com.example.codePicasso.domain.chat.dto.request.SecurityChatRequest;
 import com.example.codePicasso.domain.chat.dto.response.ChatListResponse;
-import com.example.codePicasso.domain.chat.dto.response.ChatResponse;
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatListResponse;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.service.ChatService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
