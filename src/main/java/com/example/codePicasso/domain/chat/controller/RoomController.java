@@ -5,7 +5,6 @@ import com.example.codePicasso.domain.chat.dto.request.UpdateRoomRequest;
 import com.example.codePicasso.domain.chat.dto.response.RoomListResponse;
 import com.example.codePicasso.domain.chat.dto.response.RoomResponse;
 import com.example.codePicasso.domain.chat.service.RoomService;
-import com.example.codePicasso.global.common.CustomUser;
 import com.example.codePicasso.global.common.ApiResponse;
 import com.example.codePicasso.global.common.CustomUser;
 import lombok.RequiredArgsConstructor;

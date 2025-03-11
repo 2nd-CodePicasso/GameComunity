@@ -33,7 +33,6 @@ spring:
 #    connection-timeout: 10000ms
 
   security:
-
     config:
       import: optional:myInfo.yml
     user:
@@ -53,7 +52,6 @@ cloud:
     credentials:
       access-key: ${s3.aKey}
       secret-key: ${s3.sKey}
-
 
 api:
   spam-check:

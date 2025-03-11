@@ -1,7 +1,6 @@
 package com.example.codePicasso.domain.chat.service;
 
 import com.example.codePicasso.domain.chat.dto.response.GlobalChatDto;
-import com.example.codePicasso.domain.chat.dto.response.GlobalChatResponse;
 import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import org.springframework.stereotype.Component;
 

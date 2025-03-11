@@ -72,7 +72,7 @@ public class CommentService {
     public CommentResponse updateComment(Long commentId, Long userId, CommentRequest request) {
         Comment foundComment = commentConnector.findByIdAndUserId(commentId, userId);
         foundComment.updateComment(request.text());
-        return DtoFactory.toCommentDto(foundComment);
+        return DtoFactory.toUpdateCommentDto(foundComment);
     }
 
     // 댓글 삭제
