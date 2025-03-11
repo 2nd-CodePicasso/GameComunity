@@ -8,15 +8,14 @@ import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
 import com.example.codePicasso.domain.exchange.entity.StatusType;
+import com.example.codePicasso.domain.exchange.entity.TradeCount;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
-import com.example.codePicasso.domain.exchange.redis.RedisLockService;
 import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.game.service.GameConnector;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.CustomUser;
 import com.example.codePicasso.global.common.DtoFactory;
-import com.example.codePicasso.global.exception.base.DataAccessException;
 import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
@@ -26,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +39,7 @@ public class ExchangeService {
     private final MyExchangeConnector myExchangeConnector;
     private final GameConnector gameConnector;
     private final UserConnector userConnector;
-    private final ExchangeRankingService exchangeRankingService;
-    private final RedisLockService redisLockService;
+    private final TradeCountConnector tradeCountConnector;
 
     /// --- ↓ Exchange ---
 
@@ -168,7 +167,7 @@ public class ExchangeService {
         myExchangeConnector.save(myExchange);
 
         if (putExchangeRequest.statusType() == StatusType.COMPLETED) {
-            completeExchange(myExchange.getExchange().getId());
+            increaseTradeCount(myExchange.getExchange().getId());
         }
     }
 
@@ -177,26 +176,35 @@ public class ExchangeService {
     /// --- ↓ dblock ---
 
     @Transactional
-    public void completeExchange(Long exchangeId) {
-        // Redis pub/sub 기반 락 획득 시도
-        if (!redisLockService.acquireLock(exchangeId)) {
-            throw new InvalidRequestException(ErrorCode.ALREADY_IN_PROGRESS);
+    public void increaseTradeCount(Long gameId) {
+        boolean updated = false;
+        int retryCount = 0;
+        int maxRetries = 3;
+
+        while (!updated && retryCount < maxRetries) {
+            try {
+                TradeCount tradeCount = tradeCountConnector.findBygameId(gameId)
+                    .orElse(new TradeCount(gameId, 0L));
+                tradeCount.incrementCount();
+                tradeCountConnector.save(tradeCount);
+                updated = true;
+            } catch (ObjectOptimisticLockingFailureException e) {
+                retryCount++;
+                if (retryCount >= maxRetries) {
+                    handleOptimisticLockException(e);
+                }
+                // 짧은 시간 대기 후 재시도
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
+    }
 
-        Exchange exchange = exchangeConnector.findById(exchangeId);
-
-        //Redis 랭킹 처리 (buy, sell)
-        boolean isBuy = exchange.getTradeType() == TradeType.BUY;
-
-        try {
-            exchangeRankingService.increaseTradeCount(exchange.getGame().getId(), exchange.getGame().getGameTitle(), isBuy);
-        } catch (Exception e) {
-            log.error("Redis 업데이트 실패: gameTitle={}, isBuy={}", exchange.getGame().getGameTitle(), isBuy, e);
-            throw new DataAccessException(ErrorCode.TRADE_RANKING_UPDATE_FAILED) {
-            };
-        } finally {
-            redisLockService.releaseLock(exchangeId);
-        }
+    private void handleOptimisticLockException(ObjectOptimisticLockingFailureException e) {
+        e.printStackTrace();
     }
 
     /// --- ↑ dblock ---

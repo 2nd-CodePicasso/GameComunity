@@ -1,6 +1,9 @@
 package com.example.codePicasso.domain.exchange.controller;
 
+import com.example.codePicasso.domain.exchange.entity.TradeCount;
+import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.exchange.service.ExchangeRankingService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,87 +22,42 @@ import java.util.Set;
 public class ExchangeRankingController {
 
     private final ExchangeRankingService exchangeRankingService;
-    private boolean isBuy;
 
-    @GetMapping("/buy")
-    public ResponseEntity<Set<String>> getBuyTopRanking(
-            @RequestParam int topN,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate
-            ) {
-        isBuy = true;
-        Set<String> topRanking = exchangeRankingService.getTopRankingInPeriod(startDate, endDate, isBuy, topN);
-        return ResponseEntity.ok(topRanking);
-    }
 
-    @GetMapping("/sell")
-    public ResponseEntity<Set<String>> getSellTopRanking(
-            @RequestParam int topN,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate
+    @GetMapping("/top-rankings")
+    public ResponseEntity<List<TradeCount>> getTopRanking(
+        @RequestParam int topN,
+        @RequestParam TradeType tradeType
     ) {
-        isBuy = false;
-        Set<String> topRanking = exchangeRankingService.getTopRankingInPeriod(startDate, endDate, isBuy, topN);
+        List<TradeCount> topRanking = exchangeRankingService.getTopRanking(topN, tradeType);
         return ResponseEntity.ok(topRanking);
     }
 
-    @GetMapping("/total/buy")
-    public ResponseEntity<Set<String>> getBuyTopRankingTotal(
-            @RequestParam int topN
-    ) {
-        isBuy = true;
-        Set<String> topRanking = exchangeRankingService.getTopRanking(topN, isBuy);
-        return ResponseEntity.ok(topRanking);
-    }
-
-    @GetMapping("/total/sell")
-    public ResponseEntity<Set<String>> getSellTopRankingTotal() {
-        isBuy = false;
-        Set<String> topRanking = exchangeRankingService.getTopRanking(10, isBuy);
-        return ResponseEntity.ok(topRanking);
-    }
-
-    /**
-     * 특정 게임의 전체 기간 거래량 조회
-     */
-    @GetMapping("/total/trade-count")
-    public ResponseEntity<Long> getBuyTotalTradeCount(
-        @RequestParam Long gameId
-        ) {
-        isBuy = true;
-        Long totalTradeCount = exchangeRankingService.getTotalTradeCount(gameId, isBuy);
+    // 특정 게임의 전체 기간 거래량 조회
+    @GetMapping("/total-trade-count")
+    public ResponseEntity<Long> getTotalTradeCount(
+        @RequestParam Long gameId,
+        @RequestParam TradeType tradeType) {
+        Long totalTradeCount = exchangeRankingService.getTotalTradeCount(gameId, tradeType);
         return ResponseEntity.ok(totalTradeCount);
     }
 
-
-    @GetMapping("/trade-count/buy")
-    public ResponseEntity<Map<String, Long>> getBuyTradeCountByTimePeriod(
-            @RequestParam Long gameId,
-            @RequestParam boolean isHourly,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        isBuy = true;
-        Map<String, Long> tradeCounts = exchangeRankingService.getTradeCountByTimePeriod(gameId, startDate, endDate, isHourly, isBuy);
+    // 특정 게임의 기간별 거래량 조회
+    @GetMapping("/trade-count")
+    public ResponseEntity<Map<String, Long>> getTradeCountByTimePeriod(
+        @RequestParam Long gameId,
+        @RequestParam boolean isHourly,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+        @RequestParam TradeType tradeType) {
+        Map<String, Long> tradeCounts = exchangeRankingService.getTradeCountByTimePeriod(gameId, startDate, endDate, isHourly, tradeType);
         return ResponseEntity.ok(tradeCounts);
     }
 
-    @GetMapping("/trade-count/sell")
-    public ResponseEntity<Map<String, Long>> getSellTradeCountByTimePeriod(
-            @RequestParam Long gameId,
-            @RequestParam boolean isHourly,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
-    ) {
-        isBuy = false;
-        Map<String, Long> tradeCounts = exchangeRankingService.getTradeCountByTimePeriod(gameId, startDate, endDate, isHourly, isBuy);
-        return ResponseEntity.ok(tradeCounts);
-    }
-    //boolean 관련해서 리퀘스트 파람을 어떻게 처리할지. 고민 됨.
-
-    @GetMapping("/gameId")
-    public ResponseEntity<Set<String>> getGameIdByTitle(@RequestParam String gameTitle) {
+    // 게임 타이틀로 게임 ID 조회
+    @GetMapping("/game-id")
+    public ResponseEntity<Long> getGameIdByTitle(@RequestParam String gameTitle) {
         Long gameId = exchangeRankingService.getGameIdByTitle(gameTitle);
-        return ResponseEntity.ok(Set.of(gameId.toString()));
+        return ResponseEntity.ok(gameId);
     }
-
 }
