@@ -13,10 +13,6 @@ java {
     }
 }
 
-bootRun {
-    jvmArgs = ["-Djava.net.preferIPv4Stack=true"]
-}
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
