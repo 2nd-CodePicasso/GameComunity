@@ -18,6 +18,4 @@ public interface ExchangeConnector {
     Exchange findByIdAndIsCompleted(Long id);
 
     Exchange findById(Long exchangeId);
-
-    Exchange deleteById(Long exchangeId);
 }
