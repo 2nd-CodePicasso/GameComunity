@@ -7,13 +7,15 @@ import lombok.Builder;
 public record UserRequest(
         String loginId,
         String password,
-        String nickname
+        String nickname,
+        String kakaoToken
         ) {
-    public User toEntity(String encodedPassword) {
+    public User toEntity(String encodedPassword, Long kakaoId) {
         return User.builder()
                 .loginId(loginId)
                 .password(encodedPassword)
                 .nickname(nickname)
+                .kakaoId(kakaoId)
                 .build();
     }
 }
