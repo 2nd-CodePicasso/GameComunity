@@ -22,7 +22,7 @@ public class RedisConfig {
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
-            .setAddress("redis://" + redisHost + ":6379") // Redis 서버 주소
+            .setAddress(redisHost) // Redis 서버 주소
             .setConnectionMinimumIdleSize(5)
             .setConnectionPoolSize(10);
         return Redisson.create(config);
