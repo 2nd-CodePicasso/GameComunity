@@ -21,7 +21,8 @@ spring:
         order_inserts: true        # INSERT문 순서를 보장 (배치 최적화)
         order_updates: true        # UPDATE문 순서를 보장 (배치 최적화)
         batch_versioned_data: true
-
+  elasticsearch:
+    uris: http://localhost:9200
   data:
     redis:
       port: 6379
