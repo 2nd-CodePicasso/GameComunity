@@ -67,10 +67,27 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostListResponse toPaginationDto(Page<Post> postsPage) {
+    public static PostResponse toPostResponseDto(PostResponse post) {
+        return PostResponse.builder().
+                postId(post.postId())
+                .gameId(post.gameId())
+                .categoryId(post.categoryId())
+                .userId(post.userId())
+                .categoryName(post.categoryName())
+                .title(post.title())
+                .nickname(post.nickname())
+                .description(post.description())
+                .viewCount(post.viewCount())
+                .status(post.status())
+                .createdAt(post.createdAt())
+                .updatedAt(post.updatedAt())
+                .build();
+    }
+
+    public static PostListResponse toPaginationDto(Page<PostResponse> postsPage) {
         return PostListResponse.builder()
                 .postResponses(postsPage.getContent().stream()
-                        .map(DtoFactory::toPostDto)
+                        .map(DtoFactory::toPostResponseDto)
                         .toList())
                 .currentPage(postsPage.getNumber())
                 .totalPages(postsPage.getTotalPages())
@@ -156,12 +173,12 @@ public class DtoFactory {
 
     public static ReviewResponse toReviewDto(Review review) {
         return ReviewResponse.builder()
-            .id(review.getId())
-            .exchangeId(review.getExchange().getId())
-            .userId(review.getUser().getId())
-            .rating(review.getRating())
-            .review(review.getReview())
-            .build();
+                .id(review.getId())
+                .exchangeId(review.getExchange().getId())
+                .userId(review.getUser().getId())
+                .rating(review.getRating())
+                .review(review.getReview())
+                .build();
     }
 
     public static ChatResponse toChatDto(Chat chats) {
@@ -196,7 +213,6 @@ public class DtoFactory {
                 .createdAt(chats.getCreatedAt())
                 .build();
     }
-
 
 
     public static RoomResponse toChatRoomDto(ChatRoom chatRoom) {

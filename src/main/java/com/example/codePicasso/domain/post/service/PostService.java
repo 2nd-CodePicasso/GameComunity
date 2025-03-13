@@ -40,22 +40,22 @@ public class PostService {
 
     // 게시물 조회(gameId)
     public PostListResponse findAllByGameId(Long gameId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postResponses = postConnector.findAllByGameId(gameId, pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostResponse> postResponses = postConnector.findAllByGameId(gameId, pageable);
         return DtoFactory.toPaginationDto(postResponses);
     }
 
     // 게시물 조회(게임별 추천게시물)
     public PostListResponse findRecommendedPost(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postResponses = postConnector.findAllRecommendedOfGame(gameId, PostStatus.RECOMMENDED, pageable);
+        Page<PostResponse> postResponses = postConnector.findAllRecommendedOfGame(gameId, PostStatus.RECOMMENDED, pageable);
         return DtoFactory.toPaginationDto(postResponses);
     }
 
     // 게시물 조회(categoryId)
     public PostListResponse findAllByCategoryId(Long categoryId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Post> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
+        Page<PostResponse> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
         return DtoFactory.toPaginationDto(postResponses);
     }
 
