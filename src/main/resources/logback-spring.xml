@@ -1,32 +1,26 @@
 <configuration>
-
-    <!-- 기존 콘솔 로깅을 그대로 두기 위한 설정 -->
+    <!-- 콘솔 로깅 설정 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <!-- 기존 IntelliJ 스타일에 맞게 색상 적용 -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level){FINTENSITY=YELLOW, ERROR=RED, WARN=YELLOW, INFO=BLUE, DEBUG=GREEN} %logger{36} - %msg%n</pattern>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %magenta([%thread]) %highlight(%5level) %cyan(%logger) - %msg%n</pattern>
         </encoder>
     </appender>
-
     <!-- 파일 로깅 설정 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/application.log</file>
-
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logs/application-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
             <maxHistory>365</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
-
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-
     <!-- 기본 로거 설정 -->
-    <root level="INFO">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
-
 </configuration>

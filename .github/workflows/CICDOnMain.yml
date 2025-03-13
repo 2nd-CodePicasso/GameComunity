@@ -76,40 +76,31 @@ jobs:
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/app-image:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/app-image:latest
-   
-  deploy: 
+
+
+  deploy:
     runs-on: ubuntu-latest
     needs: build
-   
-    env:
-      AWS_REGION: ap-northeast-2
-      EC2_HOST: ${{ secrets.EC2_HOST }}
-      EC2_USER: ubuntu
-      DOCKER_COMPOSE: |
-        version: "3"
-        services:
-          app:
-          image: my-image
-    
-    permissions:
-      contents: read
-    
     steps:
     - name: SSH 키 파일 생성
       run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ec2_key.pem
-        chmod 600 ec2_key.pem        
-    
-    - name: EC2에서 Docker 이미지 Pull 및 컨테이너 실행
-      run: |
-        ssh -o StrictHostKeyChecking=no -i ec2_key.pem \
-        ${{ env.EC2_USER }}@${{ env.EC2_HOST }} << EOF
-        docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
-        printf "%s" "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
-        docker-compose down
-        docker-compose pull 
-        docker-compose up -d 
-        EOF  
-    
+        echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+        chmod 600 ec2_key.pem
+        cat ec2_key.pem
+
+    - name: 배포
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+          printf "%s" "${{ secrets.DOCKER_COMPOSE }}" > docker-compose.yml
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
+          # 주석 추가
+          
     - name: SSH 키 파일 삭제
       run: rm -f ec2_key.pem
