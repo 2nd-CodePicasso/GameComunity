@@ -14,7 +14,6 @@ import java.net.URI;
 @Component
 @AllArgsConstructor
 public class SpamApiClient {
-
     private final RestTemplate restTemplate;
     private final ApiConfig apiConfig;
 
@@ -30,8 +29,7 @@ public class SpamApiClient {
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = new RequestEntity<>(formData, headers, HttpMethod.POST, URI.create(url));
 
-        ResponseEntity<ApiResponse> responseEntity = restTemplate.exchange(
-                requestEntity, ApiResponse.class);
+        ResponseEntity<ApiResponse> responseEntity = restTemplate.exchange(requestEntity, ApiResponse.class);
 
         return responseEntity.getBody();
     }

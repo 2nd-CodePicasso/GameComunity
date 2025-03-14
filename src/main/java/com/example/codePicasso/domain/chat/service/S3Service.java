@@ -17,7 +17,6 @@ import java.time.Duration;
 @Slf4j
 @RequiredArgsConstructor
 public class S3Service {
-
     private final S3Presigner s3Presigner;
     private final String bucketName = "code-picasso-bucket";
 
@@ -35,6 +34,7 @@ public class S3Service {
 
             PresignedPutObjectRequest presignedPutObjectRequest = s3Presigner.presignPutObject(putObjectPresignRequest);
             URL url = presignedPutObjectRequest.url();
+
             return url.toString();
 
         } catch (Exception e) {
@@ -42,5 +42,4 @@ public class S3Service {
             throw new ImageIoException(ErrorCode.IMAGE_IOEXCEPTION);
         }
     }
-
 }

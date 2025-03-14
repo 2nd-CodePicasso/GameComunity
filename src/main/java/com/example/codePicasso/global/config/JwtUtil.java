@@ -20,7 +20,6 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
-
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtProperties jwtProperties;
@@ -34,7 +33,9 @@ public class JwtUtil {
     public void init() {
         String secretKey = jwtProperties.getSecretKey();
         tokenTime = jwtProperties.getTokenTime();
+
         byte[] bytes = Base64.getDecoder().decode(secretKey);
+
         key = Keys.hmacShaKeyFor(bytes);
     }
 
@@ -44,7 +45,7 @@ public class JwtUtil {
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
-                        .claim("roles",userStatus.getRoles())
+                        .claim("roles", userStatus.getRoles())
                         .claim("username", username)
                         .setExpiration(new Date(date.getTime() + tokenTime))
                         .setIssuedAt(date) // 발급일
@@ -56,6 +57,7 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
+
         throw new UnsupportedJwtException("잘못된 토큰입니다.");
     }
 
@@ -70,6 +72,7 @@ public class JwtUtil {
     public String getString(String authorization) {
         String jwt = substringToken(authorization);
         Claims claims = extractClaims(jwt);
+
         return claims.getSubject();
     }
 }

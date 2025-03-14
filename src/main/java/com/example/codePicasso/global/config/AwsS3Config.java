@@ -10,7 +10,6 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Configuration
 public class AwsS3Config {
-
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 

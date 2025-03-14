@@ -39,12 +39,12 @@ public class GameProposal extends TimeStamp {
     @Column(nullable = false)
     private ProposalStatus status;
 
-    public void update(Admin admin, ProposalStatus status){
+    public void update(Admin admin, ProposalStatus status) {
         this.admin = admin;
         this.status = status;
     }
 
-    public void updateStatus(ProposalStatus status){
+    public void updateStatus(ProposalStatus status) {
         this.status = status;
     }
 }

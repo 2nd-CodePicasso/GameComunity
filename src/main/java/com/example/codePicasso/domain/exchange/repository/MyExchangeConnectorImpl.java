@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MyExchangeConnectorImpl implements MyExchangeConnector {
     private final MyExchangeRepository myExchangeRepository;
-
+// Todo 왜 MyExchange 부분만 DTO가 아닌 객체인가...?
     @Override
     public MyExchange save(MyExchange myExchange) {
         return myExchangeRepository.save(myExchange);
@@ -34,7 +34,8 @@ public class MyExchangeConnectorImpl implements MyExchangeConnector {
 
     @Override
     public MyExchange findById(Long myExchangeId) {
-        return myExchangeRepository.findById(myExchangeId).orElseThrow(() -> new NotFoundException(ErrorCode.MYEXCHANGE_NOT_FOUND));
+        return myExchangeRepository.findById(myExchangeId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MYEXCHANGE_NOT_FOUND));
     }
 
     @Override
@@ -46,5 +47,4 @@ public class MyExchangeConnectorImpl implements MyExchangeConnector {
     public MyExchange findByExchangeIdAndUserId(Long exchangeId, Long userId) {
         return myExchangeRepository.findByExchangeIdAndUserId(exchangeId, userId);
     }
-
 }

@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/exchanges")
 public class ExchangeController {
-
     private final ExchangeService exchangeService;
 
     /// --- ↓ Exchange ---
@@ -34,11 +33,15 @@ public class ExchangeController {
             @PathVariable TradeType tradeType,
             @AuthenticationPrincipal CustomUser user
     ) {
-        return ApiResponse.created(exchangeService.createExchange(exchangeRequest, tradeType, user.getUserId()));
+        ExchangeResponse response = exchangeService.createExchange(exchangeRequest, tradeType, user.getUserId());
+
+        return ApiResponse.created(response);
     }
 
+    // Todo return 방식 통일하는게 좋아보임
+
     // 거래소 게시글 목록 조회 (200 OK)
-    @GetMapping( "/{tradeType}/list")
+    @GetMapping("/{tradeType}/list")
     public ResponseEntity<ApiResponse<ExchangeListResponse>> getAllExchange(
             @PathVariable TradeType tradeType,
             @RequestParam(required = false) Long gameId,
@@ -46,7 +49,10 @@ public class ExchangeController {
             @RequestParam(defaultValue = "10") int size
     ) {
         Page<ExchangeResponse> responses = exchangeService.getExchanges(tradeType, gameId, page, size);
-        return ApiResponse.success(ExchangeListResponse.builder().exchangePageResponse(responses).build());
+
+        return ApiResponse.success(ExchangeListResponse.builder()
+                .exchangePageResponse(responses)
+                .build());
     }
 
     // 거래소의 판매 게시글 세부페이지 조회 (200 OK)
@@ -55,7 +61,9 @@ public class ExchangeController {
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId
     ) {
-        return ApiResponse.success(exchangeService.getExchangeById(exchangeId));
+        ExchangeResponse response = exchangeService.getExchangeById(exchangeId);
+
+        return ApiResponse.success(response);
     }
 
     // 거래소 게시글 수정 (200 OK)
@@ -65,7 +73,9 @@ public class ExchangeController {
             @Valid @RequestBody ExchangeRequest request,
             @AuthenticationPrincipal CustomUser user
     ) {
-        return ApiResponse.success(exchangeService.updateExchange(exchangeId, request, user.getUserId()));
+        ExchangeResponse response = exchangeService.updateExchange(exchangeId, request, user.getUserId());
+
+        return ApiResponse.success(response);
     }
 
     //거래소 게시글 삭제 (204 No Content)
@@ -75,6 +85,7 @@ public class ExchangeController {
             @AuthenticationPrincipal CustomUser user
     ) {
         exchangeService.deleteExchange(exchangeId, user.getUserId());
+
         return ApiResponse.noContent();
     }
 
@@ -90,7 +101,8 @@ public class ExchangeController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody MyExchangeRequest request
     ) {
-        MyExchangeResponse response =  exchangeService.doExchange(exchangeId, user.getUserId(), request);
+        MyExchangeResponse response = exchangeService.doExchange(exchangeId, user.getUserId(), request);
+
         return ApiResponse.success(response);
     }
 
@@ -102,7 +114,8 @@ public class ExchangeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<MyExchangeResponse> responses =  exchangeService.getAllMyExchange(tradeType, user.getUserId(), page, size);
+        Page<MyExchangeResponse> responses = exchangeService.getAllMyExchange(tradeType, user.getUserId(), page, size);
+
         return ApiResponse.success(MyExchangeListResponse.builder().myExchangePageResponse(responses).build());
     }
 
@@ -113,7 +126,9 @@ public class ExchangeController {
             @PathVariable Long myExchangeId,
             @AuthenticationPrincipal CustomUser user
     ) {
-        return ApiResponse.success(exchangeService.getMyExchangeById(myExchangeId, user));
+        MyExchangeResponse response = exchangeService.getMyExchangeById(myExchangeId, user);
+
+        return ApiResponse.success(response);
     }
 
     // 거래 승인/거절/취소하기 (200 OK)
@@ -125,6 +140,7 @@ public class ExchangeController {
             @RequestBody PutMyExchangeRequest request
     ) {
         exchangeService.decisionMyExchange(myExchangeId, user.getUserId(), request);
+
         return ApiResponse.noContent();
     }
 

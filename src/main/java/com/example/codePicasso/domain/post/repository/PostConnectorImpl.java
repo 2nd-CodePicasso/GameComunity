@@ -59,6 +59,7 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         if (posts.isEmpty()) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
@@ -95,6 +96,7 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         if (posts.isEmpty()) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
@@ -131,6 +133,7 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         if (posts.isEmpty()) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
@@ -170,9 +173,11 @@ public class PostConnectorImpl implements PostConnector {
                 .leftJoin(post.game, game).fetchJoin()
                 .where(post.id.eq(postId))
                 .fetchOne();
+
         if (foundPost == null) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
+
         // 입력받은 userId와 조회한 userId 검증
         if (!foundPost.getUser().getId().equals(userId)) {
             throw new InvalidRequestException(ErrorCode.UNAUTHORIZED_ID);

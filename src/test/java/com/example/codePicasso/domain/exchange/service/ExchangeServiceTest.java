@@ -103,7 +103,7 @@ class ExchangeServiceTest {
         myExchangeRequest = new MyExchangeRequest("01012341234");
         myExchange = myExchangeRequest.toEntity(exchange, user);
         myExchanges = new PageImpl<>(List.of(myExchange));
-        myExchangeResponse = DtoFactory.toMyExchangeDto(myExchange);
+        myExchangeResponse = DtoFactory.toMyExchangeResponseDto(myExchange);
         putCanceledMyExchangeRequest = new PutMyExchangeRequest(StatusType.CANCELED);
 
         when(userConnector.findById(userId)).thenReturn(user);

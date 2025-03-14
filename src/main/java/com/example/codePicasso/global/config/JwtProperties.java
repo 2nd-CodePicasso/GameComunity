@@ -13,4 +13,3 @@ public class JwtProperties {
     private String secretKey;
     private long tokenTime;
 }
-

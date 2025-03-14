@@ -26,7 +26,8 @@ public class ReviewConnectorImpl implements ReviewConnector {
 
     @Override
     public Review findById(Long reviewId) {
-        return reviewRepository.findById(reviewId).orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.REVIEW_NOT_FOUND));
     }
 
     @Override

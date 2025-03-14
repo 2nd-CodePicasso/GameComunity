@@ -27,8 +27,8 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatService {
-
     private final GlobalChatConnector globalChatConnector;
     private final ChatConnector chatConnector;
     private final RoomConnector roomConnector;
@@ -38,19 +38,22 @@ public class ChatService {
     @Transactional
     public GlobalChatResponse addForAllRoomToMessage(ChatRequest chatsRequest, Long userId, String username) {
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
-        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId,emoji,username);
+        GlobalChat globalChat = chatsRequest.toEntityFromGlobalChat(userId, emoji, username);
         //메시지 브로커를 이용해서 저장하기 전에 발행
-        simpMessagingTemplate.convertAndSend("/topic/hi",DtoFactory.toGlobalChatDto(globalChat));
+        simpMessagingTemplate.convertAndSend("/topic/hi", DtoFactory.toGlobalChatDto(globalChat));
 
         GlobalChat chats = globalChatConnector.save(globalChat);
+
         return DtoFactory.toGlobalChatDto(chats);
     }
 
-    @Transactional(readOnly = true)
-    public GlobalChatListResponse getChatsHistory(Long chatId, LocalDateTime lastTime,int size) {
-        List<GlobalChat> chats = globalChatConnector.findAll(chatId,lastTime,size);
+    public GlobalChatListResponse getChatsHistory(Long chatId, LocalDateTime lastTime, int size) {
+        List<GlobalChat> chats = globalChatConnector.findAll(chatId, lastTime, size);
+
         return GlobalChatListResponse.builder()
-                .chatsResponses(chats.stream().map(DtoFactory::toGlobalChatDto).toList())
+                .chatsResponses(chats.stream()
+                        .map(DtoFactory::toGlobalChatDto)
+                        .toList())
                 .build();
     }
 
@@ -58,24 +61,28 @@ public class ChatService {
     public ChatResponse addForRoomToMessage(ChatRequest chatsRequest, Long roomId, Long userId, String username) {
         ChatRoom chatRoom = roomConnector.findById(roomId);
         String emoji = EmojiParser.parseToUnicode(chatsRequest.message());
-        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom,emoji,username);
-        simpMessagingTemplate.convertAndSend("/topic/"+roomId,DtoFactory.toChatDto(chat));
+        Chat chat = chatsRequest.toEntityFromChat(userId, chatRoom, emoji, username);
+        //메시지 브로커를 이용해서 저장하기 전에 발행
+        simpMessagingTemplate.convertAndSend("/topic/" + roomId, DtoFactory.toChatDto(chat));
+
         Chat saveChat = chatConnector.save(chat);
+
         return DtoFactory.toChatDto(saveChat);
     }
 
-    @Transactional(readOnly = true)
     public ChatListResponse getByRoomId(Long roomId, int size, Long chatId, LocalDateTime localDateTime) {
         if (roomConnector.isSecurityById(roomId)) {
             throw new DuplicateException(ErrorCode.UNAUTHORIZED_CHAT_ROOM);
         }
-        List<Chat> chats = chatConnector.findAll(roomId,size,chatId,localDateTime);
+        List<Chat> chats = chatConnector.findAll(roomId, size, chatId, localDateTime);
+
         return ChatListResponse.builder()
-                .chatResponses(chats.stream().map(DtoFactory::toChatDto).toList())
+                .chatResponses(chats.stream()
+                        .map(DtoFactory::toChatDto)
+                        .toList())
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public ChatListResponse getSecurityChatsHistory(SecurityChatRequest securityChatRequest) {
         ChatRoom chatRoom = roomConnector.findById(securityChatRequest.roomId());
         if (!passwordEncoder.matches(securityChatRequest.password(), chatRoom.getPassword())) {
@@ -84,7 +91,9 @@ public class ChatService {
         List<Chat> chats = chatConnector.findAllByRoomId(securityChatRequest.roomId());
 
         return ChatListResponse.builder()
-                .chatResponses(chats.stream().map(DtoFactory::toChatDto).toList())
+                .chatResponses(chats.stream()
+                        .map(DtoFactory::toChatDto)
+                        .toList())
                 .build();
     }
 }

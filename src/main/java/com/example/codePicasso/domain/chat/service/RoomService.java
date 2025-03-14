@@ -17,51 +17,58 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RoomService {
-
     private final RoomConnector roomConnector;
     private final UserConnector userConnector;
     private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public RoomResponse addRoom(RoomRequest roomRequest, Long userId) {
         User user = userConnector.findById(userId);
         String encodedPassword = extracted(roomRequest);
-
-        ChatRoom chatRoom = roomRequest.toEntity(user,encodedPassword);
+        ChatRoom chatRoom = roomRequest.toEntity(user, encodedPassword);
         ChatRoom saveChatRoom = roomConnector.save(chatRoom);
+
         return DtoFactory.toChatRoomDto(saveChatRoom);
     }
 
-    @Transactional(readOnly = true)
     public RoomListResponse getAllRoom() {
         List<ChatRoom> chatRooms = roomConnector.findAll();
-        List<RoomResponse> roomResponses = chatRooms.stream().map(DtoFactory::toChatRoomDto).toList();
+        List<RoomResponse> roomResponses = chatRooms.stream()
+                .map(DtoFactory::toChatRoomDto)
+                .toList();
+
         return RoomListResponse.builder()
                 .roomResponses(roomResponses)
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public RoomResponse getByRoomName(String roomName) {
         ChatRoom chatRoom = roomConnector.findByName(roomName);
+
         return DtoFactory.toChatRoomDto(chatRoom);
     }
 
     @Transactional
     public RoomResponse updateRoom(UpdateRoomRequest updateRoomRequest, Long userId) {
         ChatRoom chatRoom = roomConnector.findByIdAndUserId(updateRoomRequest.roomId(), userId);
+
         if (!chatRoom.getName().equals(updateRoomRequest.name())) {
             chatRoom.updateName(updateRoomRequest.name());
         }
+
         if (!chatRoom.getUser().getNickname().equals(updateRoomRequest.username())) {
             User user = userConnector.findByNickname(updateRoomRequest.name());
             chatRoom.updateUser(user);
         }
+
         if (!passwordEncoder.matches(updateRoomRequest.password(), chatRoom.getPassword())) {
             String encodedPassword = passwordEncoder.encode(updateRoomRequest.password());
             chatRoom.updatePassword(encodedPassword);
         }
-        if (chatRoom.isSecurity()!= updateRoomRequest.isSecurity()) {
+
+        if (chatRoom.isSecurity() != updateRoomRequest.isSecurity()) {
             chatRoom.updateSecurity(updateRoomRequest.isSecurity());
         }
 

@@ -30,7 +30,6 @@ import com.example.codePicasso.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 
 public class DtoFactory {
-
     public static CategoryResponse toCategoryDto(Category category) {
         return CategoryResponse.builder()
                 .gameId(category.getGame().getId())
@@ -84,7 +83,7 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostListResponse toPaginationDto(Page<PostResponse> postsPage) {
+    public static PostListResponse toPostPaginationDto(Page<PostResponse> postsPage) {
         return PostListResponse.builder()
                 .postResponses(postsPage.getContent().stream()
                         .map(DtoFactory::toPostResponseDto)
@@ -163,16 +162,16 @@ public class DtoFactory {
 
     public static ExchangeResponse toExchangeResponseDto(ExchangeResponse exchange) {
         return ExchangeResponse.builder()
-            .id(exchange.id())
-            .userId(exchange.userId())
-            .gameId(exchange.gameId())
-            .title(exchange.title())
-            .price(exchange.price())
-            .description(exchange.description())
-            .contact(exchange.contact())
-            .quantity(exchange.quantity())
-            .tradeType(exchange.tradeType())
-            .build();
+                .id(exchange.id())
+                .userId(exchange.userId())
+                .gameId(exchange.gameId())
+                .title(exchange.title())
+                .price(exchange.price())
+                .description(exchange.description())
+                .contact(exchange.contact())
+                .quantity(exchange.quantity())
+                .tradeType(exchange.tradeType())
+                .build();
     }
 
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {

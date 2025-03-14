@@ -10,7 +10,6 @@ import java.util.List;
 
 @Component
 public interface MyExchangeConnector {
-
     MyExchange save(MyExchange myExchange);
 
     List<MyExchange> findByUserId(Long userId);
