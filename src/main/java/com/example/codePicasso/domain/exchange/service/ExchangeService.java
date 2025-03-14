@@ -118,9 +118,9 @@ public class ExchangeService {
         Exchange exchange = exchangeConnector.findById(exchangeId);
         User user = userConnector.findById(userId);
 
-        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE);
-        }
+//        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
+//            throw new DuplicateException(ErrorCode.DUPLICATE);
+//        }
 
         if (exchange.getUser().getId().equals(userId)) {
             throw new InvalidRequestException(ErrorCode.TRANSACTION_FORBIDDEN);

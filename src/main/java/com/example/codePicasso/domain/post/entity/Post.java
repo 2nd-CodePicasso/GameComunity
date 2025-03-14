@@ -19,12 +19,14 @@ import java.util.List;
 @Table(
         name = "post",
         indexes = {
-                // user_id에 인덱스 추가
+                // user_id 인덱스
                 @Index(name = "idx_post_user_id", columnList = "user_id"),
-                // game_id에 인덱스 추가
+                // game_id 인덱스
                 @Index(name = "idx_post_game_id", columnList = "game_id"),
-                // category_id에 인덱스 추가
-                @Index(name = "idx_post_category_id", columnList = "category_id")
+                // category_id 인덱스
+                @Index(name = "idx_post_category_id", columnList = "category_id"),
+                // status 인덱스
+                @Index(name = "idx_post_game_status", columnList = "game_id, status")
         }
 )
 @Getter
