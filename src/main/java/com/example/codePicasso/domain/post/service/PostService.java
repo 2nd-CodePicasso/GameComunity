@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,14 +46,14 @@ public class PostService {
 
     // 게시물 조회(게임별 추천게시물)
     public PostListResponse findRecommendedPost(Long gameId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, size);
         Page<PostResponse> postResponses = postConnector.findAllRecommendedOfGame(gameId, PostStatus.RECOMMENDED, pageable);
         return DtoFactory.toPaginationDto(postResponses);
     }
 
     // 게시물 조회(categoryId)
     public PostListResponse findAllByCategoryId(Long categoryId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, size);
         Page<PostResponse> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
         return DtoFactory.toPaginationDto(postResponses);
     }

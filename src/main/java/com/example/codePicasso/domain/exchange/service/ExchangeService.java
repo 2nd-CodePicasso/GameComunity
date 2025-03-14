@@ -60,11 +60,11 @@ public class ExchangeService {
     public Page<ExchangeResponse> getExchanges(TradeType tradeType, Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Exchange> exchanges = (gameId == null)
-                ? exchangeConnector.findByTradeType(tradeType, pageable)
-                : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
+        Page<ExchangeResponse> exchanges = (gameId == null)
+            ? exchangeConnector.findByTradeType(tradeType, pageable)
+            : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
 
-        return exchanges.map(DtoFactory::toExchangeDto);
+        return exchanges.map(DtoFactory::toExchangeResponseDto);
     }
 
     // 거래소 아이템 조회_특정 아이템
@@ -118,9 +118,9 @@ public class ExchangeService {
         Exchange exchange = exchangeConnector.findById(exchangeId);
         User user = userConnector.findById(userId);
 
-        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE);
-        }
+//        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
+//            throw new DuplicateException(ErrorCode.DUPLICATE);
+//        }
 
         if (exchange.getUser().getId().equals(userId)) {
             throw new InvalidRequestException(ErrorCode.TRANSACTION_FORBIDDEN);
