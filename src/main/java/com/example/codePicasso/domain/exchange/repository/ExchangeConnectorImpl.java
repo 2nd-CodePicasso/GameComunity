@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +29,6 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<ExchangeResponse> findByTradeType(TradeType tradeType, Pageable pageable) {
         QExchange exchange = QExchange.exchange;
 
