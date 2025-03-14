@@ -25,66 +25,83 @@
 
 #### 💡 Backend
 <p>
+    <!-- Java -->
     <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Java&logoColor=white">
-    <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
+    <!-- Spring -->
+    <img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white">
+    <!-- Spring Boot -->
     <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=Spring%20Boot&logoColor=white">
-    <img src="https://img.shields.io/badge/WebClient-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
-    <img src="https://img.shields.io/static/v1?message=emoji-java&color=F7DF1E&label=&style=for-the-badge">
-</p>
-
-#### 💡 Frontend
-<p>
-    <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
+    <!-- WebClient -->
+    <img src="https://img.shields.io/badge/WebClient-6DB33F?style=for-the-badge&logo=Spring&logoColor=white">
+    <!-- STOMP -->
+    <img src="https://img.shields.io/static/v1?message=STOMP&color=000000&label=&style=for-the-badge&logo">
+    <!-- WebSocket -->
+    <img src="https://img.shields.io/static/v1?message=WebSocket&color=000000&label=&style=for-the-badge">
+    <!-- Spring Security -->
+    <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=Spring%20Security&logoColor=white">
+    <!-- JWT -->
+    <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSONWebTokens&logoColor=white">
 </p>
 
 #### 💡 Database
 <p>
+    <!-- MySQL -->
     <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
+    <!-- Redis -->
     <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
-    <img src="https://img.shields.io/badge/JPA-6DB33F?style=for-the-badge&logo=hibernate&logoColor=white">
+    <!-- JPA -->
+    <img src="https://img.shields.io/badge/JPA-6DB33F?style=for-the-badge&logo=Hibernate&logoColor=white">
+    <!-- QueryDSL -->
     <img src="https://img.shields.io/badge/QueryDSL-6DB33F?style=for-the-badge&logo=QueryDSL&logoColor=white">
 </p>
 
 #### 💡 Infra & CI/CD
 <p>
+    <!-- Docker -->
     <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
+    <!-- Docker Compose -->
     <img src="https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
-    <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white">
-    <img src="https://img.shields.io/badge/AWS%20EC2-FF9900?style=for-the-badge&logo=Amazon%20AWS&logoColor=white">
-    <img src="https://img.shields.io/badge/AWS%20RDS-527FFF?style=for-the-badge&logo=Amazon%20RDS&logoColor=white">
+    <!-- GitHub Actions -->
     <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">
-</p>
-
-#### 💡 Test
-<p>
-    <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white">
-    <img src="https://img.shields.io/badge/JMeter-D22128?style=for-the-badge&logo=apachejmeter&logoColor=white">
-</p>
-
-#### 💡 Authentication & Authorization
-<p>
-    <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=Spring%20Security&logoColor=white">
-    <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white">
-</p>
-
-#### 💡 Message Queue & Real-time Communication
-<p>
-    <img src="https://img.shields.io/static/v1?message=WebSocket&color=000000&label=&style=for-the-badge">
-    <img src="https://img.shields.io/static/v1?message=STOMP&color=6DB33F&label=&style=for-the-badge">
+    <!-- RabbitMQ -->
     <img src="https://img.shields.io/static/v1?message=RabbitMQ&logo=rabbitmq&label=&color=FF6600&logoColor=white&labelColor=&style=for-the-badge">
+    <!-- AWS EC2 -->
+    <img src="https://img.shields.io/badge/AWS%20EC2-FF9900?style=for-the-badge&logo=Amazon%20AWS&logoColor=white">
+    <!-- Amazon S3 -->
+    <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white">
+    <!-- AWS Route53 -->
+    <img src="https://img.shields.io/badge/AWS%20Route53-232F3E?style=for-the-badge&logo=Amazon%20AWS&logoColor=white">
+    <!-- AWS RDS -->
+    <img src="https://img.shields.io/badge/AWS%20RDS-527FFF?style=for-the-badge&logo=Amazon%20RDS&logoColor=white">
 </p>
 
 #### 💡 Tools
 <p>
-    <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+    <!-- IntelliJ -->
+    <img src="https://img.shields.io/badge/IntelliJ-000000?style=for-the-badge&logo=IntelliJ%20IDEA&logoColor=white">
+    <!-- Git -->
     <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white">
+    <!-- GitHub -->
     <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white">
-    <img src="https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=IntelliJ%20IDEA&logoColor=white">
-    <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">
+    <!-- Gradle -->
+    <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+    <!-- Lombok -->
     <img src="https://img.shields.io/badge/Lombok-CA0C00?style=for-the-badge&logo=apachemaven&logoColor=white">
+    <!-- Slack -->
+    <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">
+    <!-- Figma -->
+    <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white">
+    <!-- Zep -->
+    <img src="https://img.shields.io/static/v1?message=Zep&color=4A44F2&label=&style=for-the-badge">
+    <!-- ERD Cloud -->
+    <img src="https://img.shields.io/static/v1?message=ERD%20Cloud&color=6DB33F&label=&style=for-the-badge">
+    <!-- Postman -->
+    <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white">
+    <!-- JMeter -->
+    <img src="https://img.shields.io/badge/JMeter-D22128?style=for-the-badge&logo=apachejmeter&logoColor=white">
+    <!-- Notion -->
     <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white">
 </p>
-
 
 <div>
   <h2> 🎲 주요 기능 </h2>
