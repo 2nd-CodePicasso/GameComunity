@@ -18,6 +18,27 @@ public record ExchangeResponse(
         boolean isCompleted
 ) {
     @QueryProjection
-    public ExchangeResponse {
+    public ExchangeResponse (
+        Long id,
+        Long userId,
+        Long gameId,
+        String title,
+        int price,
+        String description,
+        int quantity,
+        String contact,
+        TradeType tradeType,
+        boolean isCompleted
+    ) {
+        this.id = id;
+        this.userId = userId;
+        this.gameId = gameId;
+        this.title = title;
+        this.price = price;
+        this.description = description;
+        this.quantity = quantity;
+        this.contact = contact;
+        this.tradeType = tradeType;
+        this.isCompleted = isCompleted;
     }
 }
