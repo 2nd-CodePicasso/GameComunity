@@ -10,6 +10,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(
+    name = "exchange",
+    indexes = {
+        @Index(name = "idx_user_id", columnList = "user_id"),
+        @Index(name = "idx_game_id", columnList = "game_id")
+    }
+)
 @Getter
 @Builder
 @NoArgsConstructor
