@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.exchange.dto.response;
 
 import com.example.codePicasso.domain.exchange.entity.TradeType;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 
 @Builder
@@ -16,4 +17,7 @@ public record ExchangeResponse(
         TradeType tradeType,
         boolean isCompleted
 ) {
+    @QueryProjection
+    public ExchangeResponse {
+    }
 }

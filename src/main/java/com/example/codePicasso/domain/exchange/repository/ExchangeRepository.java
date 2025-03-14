@@ -8,9 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
 
-    Page<Exchange> findByGameIdAndTradeTypeAndIsCompleted(Long gameId, TradeType tradeType, boolean isCompleted, Pageable pageable);
-
-    Page<Exchange> findAllByTradeTypeAndIsCompleted(TradeType tradeType, boolean isCompleted, Pageable pageable);
-
-    Exchange findByIdAndIsCompleted(Long id, boolean isCompleted);
 }
