@@ -15,7 +15,6 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @Configuration
 public class RedisConfig {
-
     @Value("${redis.host}")
     private String redisHost;
 
@@ -24,9 +23,10 @@ public class RedisConfig {
         Config config = new Config();
         config.setCodec(new JsonJacksonCodec());
         config.useSingleServer()
-            .setAddress("redis://" + redisHost + ":6379") // Redis 서버 주소
-            .setConnectionMinimumIdleSize(5)
-            .setConnectionPoolSize(10);
+                .setAddress("redis://" + redisHost + ":6379") // Redis 서버 주소
+                .setConnectionMinimumIdleSize(5)
+                .setConnectionPoolSize(10);
+
         return Redisson.create(config);
     }
 
@@ -38,8 +38,8 @@ public class RedisConfig {
     ) {
         RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
         redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
-
         redisMessageListenerContainer.addMessageListener(messageListenerAdapter, new PatternTopic("redis"));
+
         return redisMessageListenerContainer;
     }
 

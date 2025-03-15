@@ -11,7 +11,5 @@ public record GlobalChatResponse(
         String message,
         String imageUrl,
         LocalDateTime createdAt
-)   {
-
-
+) {
 }

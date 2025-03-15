@@ -17,7 +17,6 @@ import java.util.Map;
 @Slf4j
 @Component
 public class Logging implements Filter {
-
     private static final String MASK = "****";
     private static final String[] SENSITIVE_KEYS = {"password", "contact"};
 
@@ -60,18 +59,21 @@ public class Logging implements Filter {
     private String getClient(HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
+
         return "{IP: " + ip + ", Browser: " + (userAgent != null ? userAgent : "Unknown") + "}";
     }
 
     private String getRequest(ContentCachingRequestWrapper wrappedRequest) {
         byte[] content = wrappedRequest.getContentAsByteArray();
         String requestBody = (content.length > 0) ? new String(content, StandardCharsets.UTF_8) : "Empty Body";
+
         return maskSensitiveData(requestBody);
     }
 
     private String getResponse(ContentCachingResponseWrapper wrappedResponse) {
         byte[] content = wrappedResponse.getContentAsByteArray();
         String responseBody = (content.length > 0) ? new String(content, StandardCharsets.UTF_8) : "Empty Body";
+
         return maskSensitiveData(responseBody);
     }
 

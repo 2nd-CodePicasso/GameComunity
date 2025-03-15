@@ -4,7 +4,7 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 
 public class InvalidRequestException extends BusinessException {
 
-  public InvalidRequestException(ErrorCode errorCode) {
-    super(errorCode);
-  }
+    public InvalidRequestException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 }

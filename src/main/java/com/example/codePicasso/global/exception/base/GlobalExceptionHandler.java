@@ -26,7 +26,9 @@ public class GlobalExceptionHandler {
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .findFirst().orElse("입력값이 유효하지 않습니다");
+
         log.error("유효하지 않은 값 입력. message=\"{}\"", message);
+
         return ApiResponse.fail(HttpStatus.BAD_REQUEST, message);
     }
 
@@ -34,11 +36,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<String>> handleEnumMismatchException(MethodArgumentTypeMismatchException ex) {
         return ApiResponse.fail(HttpStatus.BAD_REQUEST, "잘못된 거래 타입입니다. 'BUY' 또는 'SELL'을 사용하세요.");
     }
-
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
-//        log.error("예상 못한 예외 발생", e);
-//        return ApiResponse.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-//    }
 }
 

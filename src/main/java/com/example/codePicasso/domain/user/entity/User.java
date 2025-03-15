@@ -31,7 +31,7 @@ public class User extends TimeStamp {
     private boolean isDeleted;
 
     @Builder
-    public User(String loginId, String nickname, String password,Long kakaoId) {
+    public User(String loginId, String nickname, String password, Long kakaoId) {
         this.loginId = loginId;
         this.nickname = nickname;
         this.password = password;
@@ -39,7 +39,4 @@ public class User extends TimeStamp {
         this.userStatus = UserStatus.USER;
         this.isDeleted = false;
     }
-
-
-
 }

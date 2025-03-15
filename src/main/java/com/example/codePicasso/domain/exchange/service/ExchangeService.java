@@ -3,7 +3,9 @@ package com.example.codePicasso.domain.exchange.service;
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
@@ -17,7 +19,6 @@ import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.CustomUser;
 import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.exception.base.DataAccessException;
-import com.example.codePicasso.global.exception.base.DuplicateException;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.base.NotFoundException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
@@ -34,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ExchangeService {
-
     private final ExchangeConnector exchangeConnector;
     private final MyExchangeConnector myExchangeConnector;
     private final GameConnector gameConnector;
@@ -57,19 +57,18 @@ public class ExchangeService {
     }
 
     // 거래소 아이템 조회 (페이지네이션 적용)
-    public Page<ExchangeResponse> getExchanges(TradeType tradeType, Long gameId, int page, int size) {
+    public ExchangeListResponse getExchanges(TradeType tradeType, Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-
         Page<ExchangeResponse> exchanges = (gameId == null)
-            ? exchangeConnector.findByTradeType(tradeType, pageable)
-            : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
-
-        return exchanges.map(DtoFactory::toExchangeResponseDto);
+                ? exchangeConnector.findByTradeType(tradeType, pageable)
+                : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
+        return DtoFactory.toExchangePaginationResponse(exchanges);
     }
 
     // 거래소 아이템 조회_특정 아이템
     public ExchangeResponse getExchangeById(Long exchangesId) {
         Exchange exchange = exchangeConnector.findById(exchangesId);
+
         return DtoFactory.toExchangeDto(exchange);
     }
 
@@ -118,10 +117,6 @@ public class ExchangeService {
         Exchange exchange = exchangeConnector.findById(exchangeId);
         User user = userConnector.findById(userId);
 
-//        if (myExchangeConnector.existByExchangeIdAndUserId(exchangeId, userId)) {
-//            throw new DuplicateException(ErrorCode.DUPLICATE);
-//        }
-
         if (exchange.getUser().getId().equals(userId)) {
             throw new InvalidRequestException(ErrorCode.TRANSACTION_FORBIDDEN);
         }
@@ -133,17 +128,15 @@ public class ExchangeService {
     }
 
     // 내 거래 목록 조회 (200 OK)
-    public Page<MyExchangeResponse> getAllMyExchange(TradeType tradeType, Long userId, int page, int size) {
+    public MyExchangeListResponse getAllMyExchange(TradeType tradeType, Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<MyExchangeResponse> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, tradeType, pageable);
 
-        Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, tradeType, pageable);
-
-        return myExchanges.map(DtoFactory::toMyExchangeDto);
+        return DtoFactory.toMyExchangePaginationResponse(myExchanges);
     }
 
     // 내 거래 목록 단일 조회 (200 OK)
     public MyExchangeResponse getMyExchangeById(Long myExchangeId, CustomUser user) {
-
         MyExchange myExchange = myExchangeConnector.findById(myExchangeId);
 
         return DtoFactory.toMyExchangeDto(myExchange);
@@ -196,6 +189,5 @@ public class ExchangeService {
             redisLockService.releaseLock(exchangeId);
         }
     }
-
     /// --- ↑ dblock ---
 }

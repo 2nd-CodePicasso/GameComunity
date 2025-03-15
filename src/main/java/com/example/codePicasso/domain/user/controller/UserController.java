@@ -24,6 +24,7 @@ public class UserController {
             @AuthenticationPrincipal CustomUser user
     ) {
         UserInfoResponse userInfo = userService.getUserInfo(user.getUserId());
+      
         return ApiResponse.success(userInfo);
     }
 }

@@ -17,6 +17,7 @@ public class CategoryController {
 
     /**
      * 카테고리 생성
+     *
      * @param gameId
      * @param request
      * @return
@@ -26,11 +27,14 @@ public class CategoryController {
             @PathVariable("gameId") Long gameId,
             @RequestBody CategoryRequest request
     ) {
-        return ApiResponse.created(categoryService.createCategory(gameId, request));
+        CategoryResponse response = categoryService.createCategory(gameId, request);
+
+        return ApiResponse.created(response);
     }
 
     /**
      * gameId 내 카테고리 조회
+     *
      * @param gameId
      * @return
      */
@@ -38,12 +42,14 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<CategoryListResponse>> getCategory(
             @PathVariable("gameId") Long gameId
     ) {
-        CategoryListResponse categoryListResponse = categoryService.getAllCategory(gameId);
-        return ApiResponse.success(categoryListResponse);
+        CategoryListResponse responses = categoryService.getAllCategory(gameId);
+
+        return ApiResponse.success(responses);
     }
 
     /**
      * 카테고리 수정 (이름)
+     *
      * @param categoryId
      * @param request
      * @return
@@ -53,11 +59,14 @@ public class CategoryController {
             @PathVariable("categoryId") Long categoryId,
             @RequestBody CategoryRequest request
     ) {
-        return ApiResponse.success(categoryService.updateCategory(categoryId, request));
+        CategoryResponse response = categoryService.updateCategory(categoryId, request);
+
+        return ApiResponse.success(response);
     }
 
     /**
      * 카테고리 삭제
+     *
      * @param categoryId
      * @return
      */
@@ -66,6 +75,7 @@ public class CategoryController {
             @PathVariable("categoryId") Long categoryId
     ) {
         categoryService.deleteCategory(categoryId);
+
         return ApiResponse.noContent();
     }
 }

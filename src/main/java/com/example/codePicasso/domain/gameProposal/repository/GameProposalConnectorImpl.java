@@ -15,7 +15,7 @@ import java.util.List;
 public class GameProposalConnectorImpl implements GameProposalConnector {
     private final GameProposalRepository repository;
 
-    public GameProposal save(GameProposal proposal){
+    public GameProposal save(GameProposal proposal) {
         return repository.save(proposal);
     }
 
@@ -26,9 +26,8 @@ public class GameProposalConnectorImpl implements GameProposalConnector {
 
     @Override
     public GameProposal findById(Long proposalId) {
-        return repository.findById(proposalId).orElseThrow(
-                () -> new NotFoundException(ErrorCode.PROPOSAL_NOT_FOUND)
-        );
+        return repository.findById(proposalId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.PROPOSAL_NOT_FOUND));
     }
 
     @Override

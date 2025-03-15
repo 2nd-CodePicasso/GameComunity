@@ -7,13 +7,12 @@ import com.example.codePicasso.domain.user.entity.User;
 
 public record NotificationRequest(
         Long messageId
-        ) {
-
-        public Notification toEntity(User user, Chat chat, ChatRoom chatRoom) {
-                return Notification.builder()
-                        .chatRoom(chatRoom)
-                        .chat(chat)
-                        .user(user)
-                        .build();
-        }
+) {
+    public Notification toEntity(User user, Chat chat, ChatRoom chatRoom) {
+        return Notification.builder()
+                .chatRoom(chatRoom)
+                .chat(chat)
+                .user(user)
+                .build();
+    }
 }
