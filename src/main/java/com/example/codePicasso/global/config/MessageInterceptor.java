@@ -16,7 +16,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class MessageInterceptor implements ChannelInterceptor {
-
     private final JwtUtil jwtUtil;
 
     @Override
@@ -26,23 +25,22 @@ public class MessageInterceptor implements ChannelInterceptor {
         List<String> authHeaders = accessor.getNativeHeader("Authorization");
         if (authHeaders != null && !authHeaders.isEmpty()) {
             String token = authHeaders.get(0).replace("Bearer ", "");
-            try {
 
+            try {
                 Claims claims = jwtUtil.extractClaims(token);
 
                 String userId = claims.getSubject();
                 String username = claims.get("username", String.class);
 
-                accessor.setNativeHeader("userId",userId);
-                accessor.setNativeHeader("username",username);
+                accessor.setNativeHeader("userId", userId);
+                accessor.setNativeHeader("username", username);
 
                 return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
+
             } catch (Exception e) {
                 log.warn("WebSocket JWT 검증 실패", e);
-
             }
         }
         return message;
     }
-
 }

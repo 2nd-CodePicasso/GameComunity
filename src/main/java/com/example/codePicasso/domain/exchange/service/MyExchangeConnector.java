@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.exchange.service;
 
+import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import org.springframework.data.domain.Page;
@@ -10,12 +11,11 @@ import java.util.List;
 
 @Component
 public interface MyExchangeConnector {
-
     MyExchange save(MyExchange myExchange);
 
     List<MyExchange> findByUserId(Long userId);
 
-    Page<MyExchange> findByUserIdAndTradeType(Long userId, TradeType tradeType, Pageable pageable);
+    Page<MyExchangeResponse> findByUserIdAndTradeType(Long userId, TradeType tradeType, Pageable pageable);
 
     MyExchange findById(Long myExchangeId);
 

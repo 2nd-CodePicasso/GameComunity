@@ -6,11 +6,10 @@ import com.example.codePicasso.domain.exchange.entity.StatusType;
 import com.example.codePicasso.domain.user.entity.User;
 import jakarta.validation.constraints.NotNull;
 
-public record MyExchangeRequest (
+public record MyExchangeRequest(
         @NotNull(message = "연락처를 입력하세요.")
         String contact
-)
-{
+) {
     public MyExchange toEntity(Exchange exchange, User user) {
         return MyExchange.builder()
                 .exchange(exchange)

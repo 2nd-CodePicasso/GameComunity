@@ -8,5 +8,5 @@ public record RoomResponse(
         String username,
         String roomName,
         boolean isSecurity
-        ) {
+) {
 }

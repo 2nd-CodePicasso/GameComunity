@@ -12,7 +12,9 @@ public record GlobalChatDto(
         String username,
         String message,
         String imageUrl,
-        LocalDateTime createdAt) implements Serializable{
+        LocalDateTime createdAt
+) implements Serializable
+{
     public GlobalChat toEntity() {
         return GlobalChat.builder()
                 .username(username)
@@ -22,5 +24,4 @@ public record GlobalChatDto(
                 .createdAt(createdAt)
                 .build();
     }
-
 }

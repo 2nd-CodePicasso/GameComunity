@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GameService {
-
     private final GameProposalConnector gameProposalConnector;
     private final GameConnector gameConnector;
 
@@ -32,15 +31,17 @@ public class GameService {
 
     public GameGetAllResponse getAllGames() {
         return GameGetAllResponse.builder()
-                .responses(gameConnector.findAllForUser().stream()
-                        .map(DtoFactory::toGameDto).toList())
+                .gameResponses(gameConnector.findAllForUser().stream()
+                        .map(DtoFactory::toGameDto)
+                        .toList())
                 .build();
     }
 
     public GameGetAllResponse getAllGamesIgnoreStatus() {
         return GameGetAllResponse.builder()
-                .responses(gameConnector.findAllForAdmin().stream()
-                        .map(DtoFactory::toGameDto).toList())
+                .gameResponses(gameConnector.findAllForAdmin().stream()
+                        .map(DtoFactory::toGameDto)
+                        .toList())
                 .build();
     }
 
@@ -56,6 +57,7 @@ public class GameService {
     public GameResponse updateGame(Long gameId, GameUpdateRequest request) {
         Game foundGame = gameConnector.findByIdForUser(gameId);
         foundGame.updateDetails(request.gameDescription());
+
         return DtoFactory.toGameDto(foundGame);
     }
 
@@ -63,6 +65,7 @@ public class GameService {
     public void softDeleteGame(Long gameId) {
         Game foundGame = gameConnector.findByIdForUser(gameId);
         validateIsDeleted(foundGame, false, ErrorCode.GAME_ALREADY_DELETED);
+
         foundGame.deleteGame();
     }
 
@@ -70,6 +73,7 @@ public class GameService {
     public void restoreGame(Long gameId) {
         Game foundGame = gameConnector.findByIdForUser(gameId);
         validateIsDeleted(foundGame, true, ErrorCode.GAME_ALREADY_ACTIVATED);
+
         foundGame.restore();
     }
 

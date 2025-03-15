@@ -10,7 +10,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
-#    show-sql: false
+    #    show-sql: false
     show-sql: true
     properties:
       hibernate:
@@ -28,10 +28,10 @@ spring:
       port: 6379
       host: ${redis.host}
 
-#  rabbitmq:
-#    host: localhost      # RabbitMQ 서버 주소
-#    port: 5672           # 기본 포트
-#    connection-timeout: 10000ms
+  #  rabbitmq:
+  #    host: localhost      # RabbitMQ 서버 주소
+  #    port: 5672           # 기본 포트
+  #    connection-timeout: 10000ms
 
   security:
     config:

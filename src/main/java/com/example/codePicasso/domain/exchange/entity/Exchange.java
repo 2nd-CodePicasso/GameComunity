@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-    name = "exchange",
-    indexes = {
-        @Index(name = "idx_user_id", columnList = "user_id"),
-        @Index(name = "idx_game_id", columnList = "game_id")
-    }
+        name = "exchange",
+        indexes = {
+                @Index(name = "idx_user_id", columnList = "user_id"),
+                @Index(name = "idx_game_id", columnList = "game_id")
+        }
 )
 @Getter
 @Builder
@@ -52,7 +52,7 @@ public class Exchange extends TimeStamp {
         this.price = price;
     }
 
-    public void completed(){
+    public void completed() {
         this.isCompleted = true;
     }
 }

@@ -32,6 +32,7 @@ public class PostController {
             @Valid @RequestBody PostRequest request
     ) {
         PostResponse response = postService.createPost(user.getUserId(), request);
+
         return ApiResponse.created(response);
     }
 
@@ -48,6 +49,7 @@ public class PostController {
             @RequestParam(defaultValue = "20") int size
     ) {
         PostListResponse postListResponse = postService.findAllByGameId(gameId, page, size);
+
         return ApiResponse.success(postListResponse);
     }
 
@@ -64,6 +66,7 @@ public class PostController {
             @RequestParam(defaultValue = "20") int size
     ) {
         PostListResponse postListResponse = postService.findAllByCategoryId(categoryId, page, size);
+
         return ApiResponse.success(postListResponse);
     }
 
@@ -79,6 +82,7 @@ public class PostController {
             @RequestParam(defaultValue = "20") int size
     ) {
         PostListResponse postListResponse = postService.findRecommendedPost(gameId, page, size);
+
         return ApiResponse.success(postListResponse);
     }
 
@@ -93,6 +97,7 @@ public class PostController {
             @PathVariable("postId") Long postId
     ) {
         PostResponse response = postService.findById(postId);
+
         return ApiResponse.success(response);
     }
 
@@ -111,6 +116,7 @@ public class PostController {
             @Valid @RequestBody PostRequest request
     ) {
         PostResponse response = postService.updatePost(postId, user.getUserId(), request);
+
         return ApiResponse.success(response);
     }
 
@@ -127,6 +133,7 @@ public class PostController {
             @AuthenticationPrincipal CustomUser user
     ) {
         postService.deletePost(postId, user.getUserId());
+
         return ApiResponse.noContent();
     }
 

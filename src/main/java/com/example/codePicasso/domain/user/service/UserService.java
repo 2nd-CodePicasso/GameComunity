@@ -8,33 +8,26 @@ import com.example.codePicasso.global.common.DtoFactory;
 import com.example.codePicasso.global.config.PasswordEncoder;
 import com.example.codePicasso.global.exception.base.BusinessException;
 import com.example.codePicasso.global.exception.base.DuplicateException;
-import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserConnector userConnector;
     private final PasswordEncoder passwordEncoder;
     private final WebClient webClient;
 
-    public void exception(){
+    // Todo ???
+    public void exception() {
     }
 
     @Transactional
@@ -47,26 +40,28 @@ public class UserService {
 
         String encodePassword = passwordEncoder.encode(userRequest.password());
 
-        User user = userRequest.toEntity(encodePassword,kakaoId);
+        User user = userRequest.toEntity(encodePassword, kakaoId);
         userConnector.save(user);
+
         return DtoFactory.toUserDto(user);
     }
 
     private Long getKakaoId(String kakaoToken) {
         try {
-
             Map<String, Object> body = webClient.get()
                     .uri("https://kapi.kakao.com/v2/user/me")
                     .header("Authorization", "Bearer " + kakaoToken)
                     .header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                    })
                     .block();
+
             if (body != null) {
                 String string = body.get("id").toString();
+
                 return Long.valueOf(string);
             }
-
         } catch (Exception e) {
             log.info(e.getMessage());
             throw new BusinessException(ErrorCode.KAKAO_EXCEPTION);

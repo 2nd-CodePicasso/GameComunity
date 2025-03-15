@@ -40,7 +40,8 @@ public class PostConnectorImpl implements PostConnector {
     // gameId로 게시글 전체 조회
     @Override
     public Page<PostResponse> findAllByGameId(Long gameId, Pageable pageable) {
-        List<PostResponse> posts = queryFactory.select(new QPostResponse(
+        List<PostResponse> posts = queryFactory
+                .select(new QPostResponse(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -62,11 +63,13 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         if (posts.isEmpty()) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
 
-        JPAQuery<Long> count = queryFactory.select(post.count())
+        JPAQuery<Long> count = queryFactory
+                .select(post.count())
                 .from(post)
                 .where(post.game.id.eq(gameId));
 
@@ -76,7 +79,8 @@ public class PostConnectorImpl implements PostConnector {
     // 게임별 추천게시물 조회
     @Override
     public Page<PostResponse> findAllRecommendedOfGame(Long gameId, PostStatus postStatus, Pageable pageable) {
-        List<PostResponse> posts = queryFactory.select(new QPostResponse(
+        List<PostResponse> posts = queryFactory
+                .select(new QPostResponse(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -98,11 +102,13 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         if (posts.isEmpty()) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
 
-        JPAQuery<Long> count = queryFactory.select(post.count())
+        JPAQuery<Long> count = queryFactory
+                .select(post.count())
                 .from(post)
                 .where(post.game.id.eq(gameId), post.status.eq(postStatus));
 
@@ -112,7 +118,8 @@ public class PostConnectorImpl implements PostConnector {
     // categoryId로 게시글 전체 조회
     @Override
     public Page<PostResponse> findAllByCategoryId(Long categoryId, Pageable pageable) {
-        List<PostResponse> posts = queryFactory.select(new QPostResponse(
+        List<PostResponse> posts = queryFactory
+                .select(new QPostResponse(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -134,11 +141,13 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         if (posts.isEmpty()) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
 
-        JPAQuery<Long> count = queryFactory.select(post.count())
+        JPAQuery<Long> count = queryFactory
+                .select(post.count())
                 .from(post)
                 .where(post.category.id.eq(categoryId));
 
@@ -148,7 +157,8 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 개별 조회
     @Override
     public Post findById(Long postId) {
-        Post foundPost = queryFactory.select(post)
+        Post foundPost = queryFactory
+                .select(post)
                 .from(post)
                 .leftJoin(post.user, user).fetchJoin()
                 .leftJoin(post.category, category).fetchJoin()
@@ -166,16 +176,19 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 수정
     @Override
     public Post findByIdAndUserId(Long postId, Long userId) {
-        Post foundPost = queryFactory.select(post)
+        Post foundPost = queryFactory
+                .select(post)
                 .from(post)
                 .leftJoin(post.user, user).fetchJoin()
                 .leftJoin(post.category, category).fetchJoin()
                 .leftJoin(post.game, game).fetchJoin()
                 .where(post.id.eq(postId))
                 .fetchOne();
+
         if (foundPost == null) {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
+
         // 입력받은 userId와 조회한 userId 검증
         if (!foundPost.getUser().getId().equals(userId)) {
             throw new InvalidRequestException(ErrorCode.UNAUTHORIZED_ID);

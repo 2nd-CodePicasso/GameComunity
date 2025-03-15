@@ -17,29 +17,30 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RequestMapping("/exchanges")
 public class ExchangeRankingController {
-
     private final ExchangeRankingService exchangeRankingService;
     private boolean isBuy;
 
     @GetMapping("/buy")
     public ResponseEntity<Set<String>> getBuyTopRanking(
             @RequestParam int topN,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate
-            ) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
+    ) {
         isBuy = true;
         Set<String> topRanking = exchangeRankingService.getTopRankingInPeriod(startDate, endDate, isBuy, topN);
+
         return ResponseEntity.ok(topRanking);
     }
 
     @GetMapping("/sell")
     public ResponseEntity<Set<String>> getSellTopRanking(
             @RequestParam int topN,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
     ) {
         isBuy = false;
         Set<String> topRanking = exchangeRankingService.getTopRankingInPeriod(startDate, endDate, isBuy, topN);
+
         return ResponseEntity.ok(topRanking);
     }
 
@@ -49,6 +50,7 @@ public class ExchangeRankingController {
     ) {
         isBuy = true;
         Set<String> topRanking = exchangeRankingService.getTopRanking(topN, isBuy);
+
         return ResponseEntity.ok(topRanking);
     }
 
@@ -56,6 +58,7 @@ public class ExchangeRankingController {
     public ResponseEntity<Set<String>> getSellTopRankingTotal() {
         isBuy = false;
         Set<String> topRanking = exchangeRankingService.getTopRanking(10, isBuy);
+
         return ResponseEntity.ok(topRanking);
     }
 
@@ -64,10 +67,11 @@ public class ExchangeRankingController {
      */
     @GetMapping("/total/trade-count")
     public ResponseEntity<Long> getBuyTotalTradeCount(
-        @RequestParam Long gameId
-        ) {
+            @RequestParam Long gameId
+    ) {
         isBuy = true;
         Long totalTradeCount = exchangeRankingService.getTotalTradeCount(gameId, isBuy);
+
         return ResponseEntity.ok(totalTradeCount);
     }
 
@@ -80,6 +84,7 @@ public class ExchangeRankingController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
         isBuy = true;
         Map<String, Long> tradeCounts = exchangeRankingService.getTradeCountByTimePeriod(gameId, startDate, endDate, isHourly, isBuy);
+
         return ResponseEntity.ok(tradeCounts);
     }
 
@@ -92,6 +97,7 @@ public class ExchangeRankingController {
     ) {
         isBuy = false;
         Map<String, Long> tradeCounts = exchangeRankingService.getTradeCountByTimePeriod(gameId, startDate, endDate, isHourly, isBuy);
+
         return ResponseEntity.ok(tradeCounts);
     }
     //boolean 관련해서 리퀘스트 파람을 어떻게 처리할지. 고민 됨.
@@ -99,6 +105,7 @@ public class ExchangeRankingController {
     @GetMapping("/gameId")
     public ResponseEntity<Set<String>> getGameIdByTitle(@RequestParam String gameTitle) {
         Long gameId = exchangeRankingService.getGameIdByTitle(gameTitle);
+
         return ResponseEntity.ok(Set.of(gameId.toString()));
     }
 

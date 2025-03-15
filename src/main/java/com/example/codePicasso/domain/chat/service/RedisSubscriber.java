@@ -16,20 +16,19 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RedisSubscriber implements MessageListener {
-
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ObjectMapper objectMapper;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String messageBody = new String(message.getBody());
+
         try {
             GlobalChatResponse globalChatResponse = objectMapper.readValue(messageBody, GlobalChatResponse.class);
-            simpMessagingTemplate.convertAndSend("/topic/hi",globalChatResponse);
+            simpMessagingTemplate.convertAndSend("/topic/hi", globalChatResponse);
         } catch (JsonProcessingException e) {
             log.info(e.getMessage());
             throw new JacksonFailException(ErrorCode.REDIS_JACKSON_EXCEPTION);
         }
-
     }
 }

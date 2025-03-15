@@ -16,23 +16,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/room")
 @RequiredArgsConstructor
 public class RoomController {
-
-
-    // v2임
     private final RoomService roomService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<RoomResponse>> addRoom(
             @RequestBody RoomRequest roomRequest,
             @AuthenticationPrincipal CustomUser user
-            ) {
+    ) {
         RoomResponse room = roomService.addRoom(roomRequest, user.getUserId());
+
         return ApiResponse.created(room);
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<RoomListResponse>> getAllRoom() {
         RoomListResponse allRoom = roomService.getAllRoom();
+
         return ApiResponse.success(allRoom);
     }
 
@@ -41,6 +40,7 @@ public class RoomController {
             @PathVariable String roomName
     ) {
         RoomResponse room = roomService.getByRoomName(roomName);
+
         return ApiResponse.success(room);
     }
 
@@ -49,8 +49,8 @@ public class RoomController {
             @AuthenticationPrincipal Long userId,
             @RequestBody UpdateRoomRequest updateRoomRequest
     ) {
-
         RoomResponse roomResponse = roomService.updateRoom(updateRoomRequest, userId);
+
         return ApiResponse.success(roomResponse);
     }
 
@@ -58,8 +58,9 @@ public class RoomController {
     public ResponseEntity<ApiResponse<Void>> deleteRoom(
             @PathVariable Long roomId,
             @RequestAttribute Long userId
-            ) {
+    ) {
         roomService.deleteRoom(roomId, userId);
+
         return ApiResponse.noContent();
     }
 }

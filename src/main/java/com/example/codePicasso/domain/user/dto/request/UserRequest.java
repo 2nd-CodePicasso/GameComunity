@@ -9,7 +9,7 @@ public record UserRequest(
         String password,
         String nickname,
         String kakaoToken
-        ) {
+) {
     public User toEntity(String encodedPassword, Long kakaoId) {
         return User.builder()
                 .loginId(loginId)

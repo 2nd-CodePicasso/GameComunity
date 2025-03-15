@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface ReviewConnector {
-
     Review save(Review review);
 
     Page<Review> findAllByExchangeId(Long exchangeId, Pageable pageable);

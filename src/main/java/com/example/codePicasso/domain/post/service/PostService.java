@@ -40,9 +40,12 @@ public class PostService {
     public PostResponse createPost(Long userId, PostRequest request) {
         User user = userConnector.findById(userId);
         Category category = categoryConnector.findById(request.categoryId());
+
         Post createPost = request.toEntity(user, category.getGame(), category);
+
         Post save = postConnector.save(createPost);
         applicationEventPublisher.publishEvent(new PostEvent(save));
+      
         return DtoFactory.toPostDto(save);
     }
 
@@ -50,21 +53,24 @@ public class PostService {
     public PostListResponse findAllByGameId(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponse> postResponses = postConnector.findAllByGameId(gameId, pageable);
-        return DtoFactory.toPaginationDto(postResponses);
+
+        return DtoFactory.toPostPaginationDto(postResponses);
     }
 
     // 게시물 조회(게임별 추천게시물)
     public PostListResponse findRecommendedPost(Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponse> postResponses = postConnector.findAllRecommendedOfGame(gameId, PostStatus.RECOMMENDED, pageable);
-        return DtoFactory.toPaginationDto(postResponses);
+
+        return DtoFactory.toPostPaginationDto(postResponses);
     }
 
     // 게시물 조회(categoryId)
     public PostListResponse findAllByCategoryId(Long categoryId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PostResponse> postResponses = postConnector.findAllByCategoryId(categoryId, pageable);
-        return DtoFactory.toPaginationDto(postResponses);
+
+        return DtoFactory.toPostPaginationDto(postResponses);
     }
 
     // 게시글 개별 조회
@@ -73,6 +79,7 @@ public class PostService {
     public PostResponse findById(Long postId) {
         Post getPost = postConnector.findById(postId);
         getPost.increaseViewCount();
+
         return DtoFactory.toPostDto(getPost);
     }
 

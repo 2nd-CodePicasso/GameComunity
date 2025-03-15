@@ -16,8 +16,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NotificationService {
-
     private final NotificationConnector notificationConnector;
     private final UserConnector userConnector;
     private final ChatConnector chatConnector;
@@ -26,23 +26,25 @@ public class NotificationService {
     public NotificationResponse addNotification(NotificationRequest notificationRequest, Long userId) {
         User user = userConnector.findById(userId);
         Chat chat = chatConnector.findById(notificationRequest.messageId());
-        Notification notification = notificationRequest.toEntity(user, chat,chat.getChatRoom());
+        Notification notification = notificationRequest.toEntity(user, chat, chat.getChatRoom());
         Notification saveNotification = notificationConnector.save(notification);
 
         return DtoFactory.toNotificationDto(saveNotification);
     }
 
-    @Transactional(readOnly = true)
     public NotificationResponse findLastNotification(Long roomId) {
         Notification notification = notificationConnector.findLastByRoomId(roomId);
+
         return DtoFactory.toNotificationDto(notification);
     }
 
-    @Transactional(readOnly = true)
     public NotificationListResponse findAllNotification(Long roomId) {
         List<Notification> notifications = notificationConnector.findAllByRoomId(roomId);
+
         return NotificationListResponse.builder()
-                .notificationResponses(notifications.stream().map(DtoFactory::toNotificationDto).toList())
+                .notificationResponses(notifications.stream()
+                        .map(DtoFactory::toNotificationDto)
+                        .toList())
                 .build();
     }
 }

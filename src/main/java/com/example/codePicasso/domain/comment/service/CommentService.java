@@ -32,8 +32,8 @@ public class CommentService {
         User user = userConnector.findById(userId);
 
         Comment createComment = CommentRequest.toEntityForComment(post, user, request.text());
-
         Comment saveComment = commentConnector.save(createComment);
+
         return DtoFactory.toCommentDto(saveComment);
     }
 
@@ -49,9 +49,9 @@ public class CommentService {
         }
 
         Comment createReply = CommentRequest.toEntityForReply(user, parentComment, request.text());
-
         parentComment.addReplies(createReply);
         Comment saveReply = commentConnector.save(createReply);
+
         return DtoFactory.toCommentDto(saveReply);
     }
 
@@ -62,6 +62,7 @@ public class CommentService {
                 .filter(comment -> comment.getParent() == null)
                 .map(DtoFactory::toCommentDto)
                 .toList();
+
         return CommentListResponse.builder()
                 .commentResponses(commentResponses)
                 .build();
@@ -72,6 +73,7 @@ public class CommentService {
     public CommentResponse updateComment(Long commentId, Long userId, CommentRequest request) {
         Comment foundComment = commentConnector.findByIdAndUserId(commentId, userId);
         foundComment.updateComment(request.text());
+
         return DtoFactory.toUpdateCommentDto(foundComment);
     }
 
@@ -81,6 +83,4 @@ public class CommentService {
         Comment deleteComment = commentConnector.findByIdAndUserId(commentId, userId);
         commentConnector.delete(deleteComment);
     }
-
-
 }

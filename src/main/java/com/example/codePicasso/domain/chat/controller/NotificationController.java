@@ -18,14 +18,20 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<NotificationResponse>> getNotification(@PathVariable Long roomId) {
+    public ResponseEntity<ApiResponse<NotificationResponse>> getNotification(
+            @PathVariable Long roomId
+    ) {
         NotificationResponse lastNotification = notificationService.findLastNotification(roomId);
+
         return ApiResponse.success(lastNotification);
     }
 
     @GetMapping("/{roomId}/all")
-    public ResponseEntity<ApiResponse<NotificationListResponse>> getAllNotification(@PathVariable Long roomId) {
+    public ResponseEntity<ApiResponse<NotificationListResponse>> getAllNotification(
+            @PathVariable Long roomId
+    ) {
         NotificationListResponse allNotification = notificationService.findAllNotification(roomId);
+
         return ApiResponse.success(allNotification);
     }
 }
