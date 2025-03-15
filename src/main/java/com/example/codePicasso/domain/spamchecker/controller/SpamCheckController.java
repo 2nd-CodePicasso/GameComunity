@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/spam-check")
 @AllArgsConstructor
 public class SpamCheckController {
-
     private final SpamCheckService spamCheckService;
 
     @GetMapping("/{number}")

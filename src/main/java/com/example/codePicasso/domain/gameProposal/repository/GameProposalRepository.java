@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface GameProposalRepository extends JpaRepository<GameProposal, Long> {
-
     boolean existsByGameTitle(String gameTitle);
 
     List<GameProposal> findAllByStatus(ProposalStatus status);

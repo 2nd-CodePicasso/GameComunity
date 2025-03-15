@@ -26,13 +26,16 @@ public class CategoryService {
         Game game = gameConnector.findByIdForUser(gameId);
         Category createCategory = request.toEntity(game);
         Category saveCategory = categoryConnector.save(createCategory);
+
         return DtoFactory.toCategoryDto(saveCategory);
     }
 
     // 카테고리 조회
     public CategoryListResponse getAllCategory(Long gameId) {
         List<CategoryResponse> categoryResponses = categoryConnector.findCategoryByGameId(gameId).stream()
-                .map(DtoFactory::toCategoryDto).toList();
+                .map(DtoFactory::toCategoryDto)
+                .toList();
+
         return CategoryListResponse.builder()
                 .categoryResponses(categoryResponses)
                 .build();
@@ -42,7 +45,6 @@ public class CategoryService {
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, CategoryRequest request) {
         Category foundCategory = categoryConnector.findById(categoryId);
-
         foundCategory.updateCategory(request.categoryName());
 
         return DtoFactory.toCategoryDto(foundCategory);
@@ -54,6 +56,5 @@ public class CategoryService {
         Category deleteCategory = categoryConnector.findById(categoryId);
 
         categoryConnector.delete(deleteCategory);
-
     }
 }

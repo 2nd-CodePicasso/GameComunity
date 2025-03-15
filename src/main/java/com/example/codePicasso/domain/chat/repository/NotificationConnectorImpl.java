@@ -21,12 +21,12 @@ public class NotificationConnectorImpl implements NotificationConnector {
 
     @Override
     public Notification findLastByRoomId(Long roomId) {
-        return notificationRepository.findTopByChatRoomIdOrderByCreatedTimeDesc(roomId).orElseThrow(()->new NotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
+        return notificationRepository.findTopByChatRoomIdOrderByCreatedTimeDesc(roomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND));
     }
 
     @Override
     public List<Notification> findAllByRoomId(Long roomId) {
         return notificationRepository.findAllByChatRoomId(roomId);
     }
-
 }

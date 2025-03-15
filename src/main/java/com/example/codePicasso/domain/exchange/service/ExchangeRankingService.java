@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ExchangeRankingService {
-
     private final StringRedisTemplate redisTemplate;
     //특정 기간이 아닌 전체 기록을 체크할 때 쓰일 수 있음.
     private static final String BUY_RANKING_KEY = "ranking:buy";
@@ -105,9 +104,9 @@ public class ExchangeRankingService {
         if (topGameIds == null) return Set.of();
 
         return topGameIds.stream()
-            .map(gameId -> (String) hashOps.get(GAME_ID_TITLE_HASH_KEY, gameId))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+                .map(gameId -> (String) hashOps.get(GAME_ID_TITLE_HASH_KEY, gameId))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -141,7 +140,6 @@ public class ExchangeRankingService {
         } else {
             redisTemplate.opsForZSet().unionAndStore(keys.get(0), keys.subList(1, keys.size()), tempKey);
         }
-
         Set<String> topGameIds = zSetOps.reverseRange(tempKey, 0, topN - 1);
 
         redisTemplate.delete(tempKey);
@@ -150,12 +148,12 @@ public class ExchangeRankingService {
     }
 
     /**
-     *  게임 타이틀을 클릭하면 해당 gameId 조회
+     * 게임 타이틀을 클릭하면 해당 gameId 조회
      */
     public Long getGameIdByTitle(String gameTitle) {
         HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
         String gameId = (String) hashOps.get(GAME_TITLE_ID_HASH_KEY, gameTitle);
+
         return (gameId != null) ? Long.valueOf(gameId) : null;
     }
-
 }

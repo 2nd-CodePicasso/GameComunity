@@ -36,6 +36,7 @@ public class RecommendService {
         if (recommendConnector.countByPostId(postId) >= 10) {
             foundPost.changeStatusToRecommended();
         }
+
         return recommendConnector.countByPostId(postId);
     }
 
