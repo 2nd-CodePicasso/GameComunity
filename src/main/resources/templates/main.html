@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임 커뮤니티 - 메인</title>
+    <style>
+        /* 공통 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 데스크탑 컨테이너 */
+        .desktop-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 데스크탑 헤더 */
+        .desktop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background-color: #4263eb;
+            color: white;
+        }
+
+        .desktop-logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .desktop-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .desktop-nav a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* 데스크탑 레이아웃 */
+        .desktop-layout {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+        }
+
+        .desktop-sidebar {
+            width: 280px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .desktop-main {
+            flex: 1;
+        }
+
+        /* 로그인 폼 스타일 */
+        .login-form {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 24px;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4263eb;
+            box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+        }
+
+        .btn {
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: #4263eb;
+            color: white;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: #495057;
+            border: 1px solid #e9ecef;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* 페이지 섹션 버튼들 */
+        .pages-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .page-button {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .page-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .board-icon {
+            background-color: #339af0;
+        }
+
+        .item-icon {
+            background-color: #20c997;
+        }
+
+        .chat-icon {
+            background-color: #845ef7;
+        }
+
+        .page-title {
+            font-weight: 600;
+            color: #212529;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .page-description {
+            color: #868e96;
+            font-size: 13px;
+        }
+
+        /* 데스크탑 메인 콘텐츠 */
+        .content-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            font-size: 18px;
+            color: #212529;
+            background-color: #f8f9fa;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .popular-content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .popular-content-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+
+        .popular-content-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .news-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-category {
+            background-color: #4263eb;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .news-title {
+            flex: 1;
+            font-size: 15px;
+            color: #212529;
+        }
+
+        .news-date {
+            color: #868e96;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        /* 에러 메시지 */
+        .error-message {
+            background-color: #fff5f5;
+            border: 1px solid #ffc9c9;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            color: #e03131;
+            font-size: 14px;
+        }
+
+        /* 링크 스타일 */
+        .text-link {
+            color: #4263eb;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 12px;
+            display: inline-block;
+        }
+
+        .text-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<!-- 데스크탑 컨테이너 -->
+<div class="desktop-container">
+    <!-- 데스크탑 헤더 -->
+    <div class="desktop-header">
+        <div class="desktop-logo">게임 커뮤니티</div>
+        <div class="desktop-nav">
+            <a href="/main/hi/game" class="active">홈</a>
+            <a href="/gameboard/hi/game">게시판</a>
+            <a href="/exchange/hi/game">아이템 거래소</a>
+            <a href="/chats/hi/lol">채팅방</a>
+        </div>
+    </div>
+
+    <!-- 데스크탑 레이아웃 -->
+    <div class="desktop-layout">
+        <!-- 사이드바 -->
+        <div class="desktop-sidebar">
+            <!-- 로그인 여부에 따라 다른 내용 표시 -->
+            <div id="non-logged-in-content">
+                <!-- 비로그인 상태: 로그인 폼 -->
+                    <h2 class="form-title">로그인</h2>
+
+                    <div class="form-group">
+                        <label for="username" class="form-label">아이디</label>
+                        <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">비밀번호</label>
+                        <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+
+                    <div class="buttons-container">
+                        <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
+                        <a href="/auth/signup" class="btn btn-outline">회원가입</a>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 16px;">
+                        <a href="#" class="text-link">아이디/비밀번호 찾기</a>
+                    </div>
+            </div>
+
+            <!-- 로그인한 경우: 회원 정보 -->
+            <div id="logged-in-content" style="display: none;" class="user-info-card">
+                <div class="user-info-header">
+                    <h2 class="form-title">회원 정보</h2>
+                </div>
+
+                <div class="user-profile">
+                    <div class="profile-image">
+                        <!-- 기본 프로필 이미지 -->
+                        <div class="avatar-circle">
+                            <span class="avatar-text">G</span>
+                        </div>
+                    </div>
+                    <div class="profile-details">
+                        <div class="user-nickname" id="user-nickname">로딩 중...</div>
+                        <div class="user-id" id="join-date">로딩 중...</div>
+                    </div>
+                </div>
+
+                <div class="buttons-container">
+                    <a href="/users/my-profile" class="btn btn-outline">내 프로필</a>
+                    <a href="#" class="btn btn-outline" onclick="logout()">로그아웃</a>
+                </div>
+            </div>
+
+
+            <!-- 바로가기 메뉴 -->
+            <div style="margin-top: 24px;">
+                <h3 style="margin-bottom: 16px; font-size: 16px; color: #495057;">바로가기</h3>
+                <div class="pages-section">
+                    <a href="/gameboard/hi/game" class="page-button">
+                        <div class="icon board-icon">B</div>
+                        <div>
+                            <div class="page-title">게시판</div>
+                        </div>
+                    </a>
+
+                    <a href="/exchange/hi/game" class="page-button">
+                        <div class="icon item-icon">I</div>
+                        <div>
+                            <div class="page-title">아이템 거래소</div>
+                        </div>
+                    </a>
+
+                    <a href="/chats/hi/lol" class="page-button">
+                        <div class="icon chat-icon">C</div>
+                        <div>
+                            <div class="page-title">채팅방</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="desktop-main">
+            <!-- 인기 게임 카드 -->
+            <div class="content-card">
+                <div class="card-header">인기 게임</div>
+                <div class="card-body">
+                    <div class="popular-content-grid">
+                        <div class="popular-content-item">
+                            <h4>리그 오브 레전드</h4>
+                            <p style="color: #868e96; font-size: 14px; margin-top: 8px;">활성 유저: 3,542명</p>
+                        </div>
+                        <div class="popular-content-item">
+                            <h4>배틀그라운드</h4>
+                            <p style="color: #868e96; font-size: 14px; margin-top: 8px;">활성 유저: 2,901명</p>
+                        </div>
+                        <div class="popular-content-item">
+                            <h4>오버워치</h4>
+                            <p style="color: #868e96; font-size: 14px; margin-top: 8px;">활성 유저: 2,158명</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 최신 소식 카드 -->
+            <div class="content-card">
+                <div class="card-header">최신 소식</div>
+                <div class="card-body">
+                    <div class="news-item">
+                        <span class="news-category">공지</span>
+                        <div class="news-title">서버 점검 안내 (3/12 02:00~06:00)</div>
+                        <div class="news-date">1시간 전</div>
+                    </div>
+                    <div class="news-item">
+                        <span class="news-category" style="background-color: #20c997;">이벤트</span>
+                        <div class="news-title">봄맞이 특별 이벤트 - 출석체크 보상 2배</div>
+                        <div class="news-date">3시간 전</div>
+                    </div>
+                    <div class="news-item">
+                        <span class="news-category" style="background-color: #845ef7;">업데이트</span>
+                        <div class="news-title">3월 2주차 패치노트 안내</div>
+                        <div class="news-date">어제</div>
+                    </div>
+                    <div class="news-item">
+                        <span class="news-category" style="background-color: #ff922b;">거래소</span>
+                        <div class="news-title">아이템 거래소 수수료 인하 이벤트</div>
+                        <div class="news-date">2일 전</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 인기 게시글 카드 -->
+            <div class="content-card">
+                <div class="card-header">인기 게시글</div>
+                <div class="card-body">
+                    <div class="news-item">
+                        <span class="news-category" style="background-color: #339af0;">정보</span>
+                        <div class="news-title">오버워치 신규 영웅 스킬 가이드</div>
+                        <div class="news-date">조회 1,245</div>
+                    </div>
+                    <div class="news-item">
+                        <span class="news-category" style="background-color: #ff6b6b;">공략</span>
+                        <div class="news-title">배그 신규 맵 전략적 위치 총정리</div>
+                        <div class="news-date">조회 982</div>
+                    </div>
+                    <div class="news-item">
+                        <span class="news-category" style="background-color: #cc5de8;">팁</span>
+                        <div class="news-title">롤 시즌13 승급전 꿀팁</div>
+                        <div class="news-date">조회 854</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    async function fetchRecommendedPosts(gameId) {
+        try {
+            const response = await fetch(`/hi/games/${gameId}/recommended?size=3`); // ✅ 인기 게시글 요청 (3개만)
+            if (!response.ok) {
+                throw new Error('서버 응답 오류');
+            }
+
+            const responseData = await response.json(); // ✅ JSON 데이터 변환
+            const posts = responseData.data.posts; // ✅ 게시글 목록 추출
+
+            renderRecommendedPosts(posts); // ✅ 인기 게시글 렌더링
+        } catch (error) {
+            console.error("인기 게시글 가져오기 실패:", error);
+        }
+    }
+
+    // ✅ 인기 게시글을 동적으로 렌더링하는 함수
+    function renderRecommendedPosts(posts) {
+        const cardBody = document.querySelector(".content-card .card-body");
+        cardBody.innerHTML = ""; // 기존 목록 초기화
+
+        posts.forEach(post => {
+            const newsItem = document.createElement("div");
+            newsItem.classList.add("news-item");
+
+            newsItem.innerHTML = `
+            <span class="news-category" style="background-color: ${getCategoryColor(post.category)};">${post.category}</span>
+            <div class="news-title">${post.title}</div>
+            <div class="news-date">조회 ${post.views.toLocaleString()}</div>
+        `;
+
+            cardBody.appendChild(newsItem); // 리스트에 추가
+        });
+    }
+
+    function login() {
+        // 입력값 가져오기
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        // JSON 데이터 생성
+        const loginData = {
+            loginId: username,
+            password: password
+        };
+
+        // 서버로 POST 요청 보내기
+        fetch("/auth/hi/users/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"  // JSON 데이터임을 명시
+            },
+            body: JSON.stringify(loginData)  // JSON 문자열로 변환하여 전송
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("로그인 실패");
+                }
+                return response.json();// JSON 응답을 파싱
+            })
+            .then(data => {
+                if (data.successOrFail && data.data && data.data.token) {
+                    const token = data.data.token; // ✅ JWT 토큰 추출
+                    localStorage.setItem("jwtToken", token); // ✅ JWT 토큰 저장
+                    alert("로그인 성공!");
+                    checkLoginStatus() // ✅ 홈 화면으로 이동
+                } else {
+                    throw new Error("토큰이 존재하지 않습니다.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+
+    }
+    function checkLoginStatus() {
+        const token = localStorage.getItem("jwtToken");  // localStorage에서 JWT 토큰 확인
+
+        const nonLoggedInContent = document.getElementById("non-logged-in-content");
+        const loggedInContent = document.getElementById("logged-in-content");
+        fetchUserInfo();
+        const nickname = document.getElementById("user-nickname");
+        const createdAt = document.getElementById("join-date");
+        const isUserInfoValid = token && nickname && createdAt;
+        if (isUserInfoValid) {
+            // ✅ 토큰이 있으면 로그인 상태
+            loggedInContent.style.display = "block";
+            nonLoggedInContent.style.display = "none";
+
+        } else {
+            // ❌ 토큰이 없으면 로그아웃 상태
+            loggedInContent.style.display = "none";
+            nonLoggedInContent.style.display = "block";
+        }
+    }
+
+    function fetchUserInfo() {
+        const token = localStorage.getItem("jwtToken");
+
+        if (!token) {
+            console.error("JWT 토큰 없음. 로그인 필요.");
+            return;
+        }
+
+        fetch("/users", {  // ✅ GET 요청
+            method: "GET",
+            headers: {
+                "Authorization": `${token}` // ✅ 서버에 JWT 토큰 전달
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("유저 정보 불러오기 실패");
+                }
+                return response.json();
+            })
+            .then(response => {
+                const rawDate = response.data.createdAt || null;
+                const formattedDate = rawDate ? formatDateTime(rawDate) : "정보 없음";
+
+                // ✅ 받은 데이터를 UI에 적용
+                document.getElementById("user-nickname").innerText = response.data.nickname || "알 수 없음";
+                document.getElementById("join-date").innerText = formattedDate;
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+    // ✅ 날짜 변환 함수 (ISO 8601 → YYYY-MM-DD HH:MM:SS)
+    function formatDateTime(isoString) {
+        const date = new Date(isoString);
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // ✅ 월 (1월 = 0이므로 +1)
+        const day = String(date.getDate()).padStart(2, '0'); // ✅ 일
+        const hours = String(date.getHours()).padStart(2, '0'); // ✅ 시
+        const minutes = String(date.getMinutes()).padStart(2, '0'); // ✅ 분
+        const seconds = String(date.getSeconds()).padStart(2, '0'); // ✅ 초
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    function logout() {
+        localStorage.removeItem("jwtToken");  // ✅ JWT 토큰 삭제
+        alert("로그아웃 되었습니다.");
+        checkLoginStatus();  // ✅ 상태 즉시 반영
+    }
+
+    // ✅ 페이지 로드 시 로그인 상태 확인
+    window.onload = checkLoginStatus;
+
+    // ✅ 로컬스토리지 변경 감지 (MutationObserver 대체)
+    window.addEventListener("storage", (event) => {
+        if (event.key === "jwtToken") {
+            checkLoginStatus();  // ✅ 토큰 변경 감지 시 상태 업데이트
+        }
+    });
+</script>
+
+
+</script>
+</html>

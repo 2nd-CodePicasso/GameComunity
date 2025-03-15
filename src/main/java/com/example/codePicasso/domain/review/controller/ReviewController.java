@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/exchanges/{tradeType}/{exchangeId}/reviews")
 public class ReviewController {
-
     private final ReviewService reviewService;
 
     @PostMapping
@@ -27,18 +26,21 @@ public class ReviewController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody ReviewRequest request
     ) {
-        return ApiResponse.created(reviewService.createReview(exchangeId, user.getUserId(), request));
+        ReviewResponse response = reviewService.createReview(exchangeId, user.getUserId(), request);
+
+        return ApiResponse.created(response);
     }
 
+    // Todo return 방법 통일 필요
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<ReviewListResponse>> getAllReview(
             @PathVariable TradeType tradeType,
             @PathVariable Long exchangeId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-
     ) {
         Page<ReviewResponse> reviews = reviewService.getReviews(exchangeId, page, size);
+
         return ApiResponse.success(ReviewListResponse.builder().reviewPageResponse(reviews).build());
     }
 
@@ -48,7 +50,9 @@ public class ReviewController {
             @PathVariable Long exchangeId,
             @PathVariable Long reviewId
     ) {
-        return ApiResponse.success(reviewService.getReviewById(exchangeId, reviewId));
+        ReviewResponse response = reviewService.getReviewById(exchangeId, reviewId);
+
+        return ApiResponse.success(response);
     }
 
     @PatchMapping("/{reviewId}")
@@ -59,7 +63,9 @@ public class ReviewController {
             @AuthenticationPrincipal CustomUser user,
             @RequestBody ReviewRequest request
     ) {
-        return ApiResponse.success(reviewService.updateReview(exchangeId, reviewId, user.getUserId(), request));
+        ReviewResponse response = reviewService.updateReview(exchangeId, reviewId, user.getUserId(), request);
+
+        return ApiResponse.success(response);
     }
 
     @DeleteMapping("/{reviewId}")
@@ -70,6 +76,7 @@ public class ReviewController {
             @AuthenticationPrincipal CustomUser user
     ) {
         reviewService.deleteReview(exchangeId, reviewId, user.getUserId());
+
         return ApiResponse.noContent();
     }
 }

@@ -31,8 +31,8 @@ public class GameConnectorImpl implements GameConnector {
 
     @Override
     public Game findByIdForUser(Long gameId) {
-        Game foundGame = gameRepository.findById(gameId).orElseThrow(
-                () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+        Game foundGame = gameRepository.findById(gameId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         if (foundGame.isDeleted()) {
             throw new NotFoundException(ErrorCode.GAME_ALREADY_DELETED);
@@ -43,16 +43,14 @@ public class GameConnectorImpl implements GameConnector {
 
     @Override
     public Game findByIdForAdmin(Long gameId) {
-        return gameRepository.findById(gameId).orElseThrow(
-                () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND)
-        );
+        return gameRepository.findById(gameId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
     }
 
     @Override
     public void deleteGameById(Long gameId) {
-        Game foundGame = gameRepository.findById(gameId).orElseThrow(
-                () -> new NotFoundException(ErrorCode.GAME_NOT_FOUND)
-        );
+        Game foundGame = gameRepository.findById(gameId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
         gameRepository.delete(foundGame);
     }
 }

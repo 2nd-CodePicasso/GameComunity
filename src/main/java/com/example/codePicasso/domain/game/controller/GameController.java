@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/games")
 public class GameController {
-
     private final GameService gameService;
 
     @GetMapping
@@ -54,6 +53,7 @@ public class GameController {
             @Valid @RequestBody GameUpdateRequest request
     ) {
         GameResponse response = gameService.updateGame(gameId, request);
+
         return ApiResponse.success(response);
     }
 

@@ -10,7 +10,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
-#    show-sql: false
+    #    show-sql: false
     show-sql: true
     properties:
       hibernate:
@@ -21,16 +21,17 @@ spring:
         order_inserts: true        # INSERT문 순서를 보장 (배치 최적화)
         order_updates: true        # UPDATE문 순서를 보장 (배치 최적화)
         batch_versioned_data: true
-
+  elasticsearch:
+    uris: http://localhost:9200
   data:
     redis:
       port: 6379
       host: ${redis.host}
 
-#  rabbitmq:
-#    host: localhost      # RabbitMQ 서버 주소
-#    port: 5672           # 기본 포트
-#    connection-timeout: 10000ms
+  #  rabbitmq:
+  #    host: localhost      # RabbitMQ 서버 주소
+  #    port: 5672           # 기본 포트
+  #    connection-timeout: 10000ms
 
   security:
     config:

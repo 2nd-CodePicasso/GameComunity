@@ -10,7 +10,9 @@ import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
+import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
@@ -24,13 +26,13 @@ import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
 import com.example.codePicasso.domain.review.entity.Review;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
+import com.example.codePicasso.domain.user.dto.response.UserInfoResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 
 public class DtoFactory {
-
     public static CategoryResponse toCategoryDto(Category category) {
         return CategoryResponse.builder()
                 .gameId(category.getGame().getId())
@@ -50,6 +52,13 @@ public class DtoFactory {
                 loginId(user.getLoginId()).
                 nickname(user.getNickname()).
                 build();
+    }
+
+    public static UserInfoResponse toUserInfoDto(User user) {
+        return UserInfoResponse.builder()
+                .nickname(user.getNickname())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 
     public static PostResponse toPostDto(Post post) {
@@ -84,7 +93,7 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostListResponse toPaginationDto(Page<PostResponse> postsPage) {
+    public static PostListResponse toPostPaginationDto(Page<PostResponse> postsPage) {
         return PostListResponse.builder()
                 .postResponses(postsPage.getContent().stream()
                         .map(DtoFactory::toPostResponseDto)
@@ -161,20 +170,6 @@ public class DtoFactory {
                 .build();
     }
 
-    public static ExchangeResponse toExchangeResponseDto(ExchangeResponse exchange) {
-        return ExchangeResponse.builder()
-            .id(exchange.id())
-            .userId(exchange.userId())
-            .gameId(exchange.gameId())
-            .title(exchange.title())
-            .price(exchange.price())
-            .description(exchange.description())
-            .contact(exchange.contact())
-            .quantity(exchange.quantity())
-            .tradeType(exchange.tradeType())
-            .build();
-    }
-
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {
         return MyExchangeResponse.builder()
                 .id(myExchange.getId())
@@ -182,6 +177,20 @@ public class DtoFactory {
                 .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
                 .statusType(myExchange.getStatusType())
+                .build();
+    }
+
+    // ExchangeListResponse 생성 메서드
+    public static ExchangeListResponse toExchangePaginationResponse(Page<ExchangeResponse> exchanges) {
+        return ExchangeListResponse.builder()
+                .exchangePageResponse(exchanges)
+                .build();
+    }
+
+    // MyExchangeListResponse 생성 메서드
+    public static MyExchangeListResponse toMyExchangePaginationResponse(Page<MyExchangeResponse> myExchanges) {
+        return MyExchangeListResponse.builder()
+                .myExchangePageResponse(myExchanges)
                 .build();
     }
 

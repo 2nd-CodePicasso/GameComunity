@@ -17,6 +17,7 @@ import java.util.List;
 public class RoomConnectorImpl implements RoomConnector {
     private final RoomRepository roomRepository;
     private final JPAQueryFactory jpaQueryFactory;
+
     @Override
     public ChatRoom save(ChatRoom chatRoom) {
         return roomRepository.save(chatRoom);
@@ -26,20 +27,23 @@ public class RoomConnectorImpl implements RoomConnector {
     public List<ChatRoom> findAll() {
         QChatRoom chatRoom = QChatRoom.chatRoom;
         QUser user = QUser.user;
+
         return jpaQueryFactory.select(chatRoom)
                 .from(chatRoom)
-                .leftJoin(chatRoom.user,user).fetchJoin()
+                .leftJoin(chatRoom.user, user).fetchJoin()
                 .fetch();
     }
 
     @Override
     public ChatRoom findByName(String roomName) {
-        return roomRepository.findByName(roomName).orElseThrow(()->new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
+        return roomRepository.findByName(roomName)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
     }
 
     @Override
     public ChatRoom findByIdAndUserId(Long roomId, Long userId) {
-        return roomRepository.findByIdAndUserId(roomId, userId).orElseThrow(() -> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
+        return roomRepository.findByIdAndUserId(roomId, userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
     }
 
     @Override
@@ -49,7 +53,8 @@ public class RoomConnectorImpl implements RoomConnector {
 
     @Override
     public ChatRoom findById(Long roomId) {
-        return roomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
     }
 
     public boolean isSecurityById(Long roomId) {

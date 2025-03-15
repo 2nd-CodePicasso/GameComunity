@@ -32,7 +32,7 @@ public class MyExchange extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private StatusType statusType;
 
-    public void changeStatus(StatusType statusType){
+    public void changeStatus(StatusType statusType) {
         this.statusType = statusType;
     }
 }

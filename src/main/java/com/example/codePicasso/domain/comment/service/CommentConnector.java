@@ -7,7 +7,6 @@ import java.util.List;
 
 @Component
 public interface CommentConnector {
-
     Comment save(Comment comment);
 
     List<Comment> findAllByPostId(Long postId);

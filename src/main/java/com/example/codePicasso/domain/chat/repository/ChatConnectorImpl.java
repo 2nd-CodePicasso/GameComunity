@@ -15,7 +15,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ChatConnectorImpl implements ChatConnector {
-
     private final ChatRepository chatsRepository;
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -27,12 +26,13 @@ public class ChatConnectorImpl implements ChatConnector {
     @Override
     public List<Chat> findAll(Long roomId, int size, Long chatId, LocalDateTime lastTime) {
         QChat chat = QChat.chat;
-        return  jpaQueryFactory.selectFrom(chat)
+
+        return jpaQueryFactory.selectFrom(chat)
                 .where(chat.chatRoom.id.eq(roomId))
                 .where(chat.createdAt.lt(lastTime)
                         .or(chat.createdAt.eq(lastTime)
                                 .and(chat.id.lt(chatId))))
-                .orderBy(chat.createdAt.desc(),chat.id.desc())
+                .orderBy(chat.createdAt.desc(), chat.id.desc())
                 .limit(size)
                 .fetch();
     }
@@ -44,6 +44,7 @@ public class ChatConnectorImpl implements ChatConnector {
 
     @Override
     public Chat findById(Long aLong) {
-        return chatsRepository.findById(aLong).orElseThrow(()-> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
+        return chatsRepository.findById(aLong)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHATTING_NOT_FOUND));
     }
 }

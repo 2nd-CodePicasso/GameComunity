@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class AdminConnectorImpl implements AdminConnector {
-
     private final AdminRepository adminRepository;
 
     @Override

@@ -114,8 +114,8 @@ class GameServiceTest {
         GameGetAllResponse response = gameService.getAllGames();
 
         // THEN
-        assertEquals(mockGame1.getGameTitle(), response.responses().get(0).gameTitle());
-        assertEquals(mockGame3.getGameTitle(), response.responses().get(1).gameTitle());
+        assertEquals(mockGame1.getGameTitle(), response.gameResponses().get(0).gameTitle());
+        assertEquals(mockGame3.getGameTitle(), response.gameResponses().get(1).gameTitle());
     }
 
     // ✅성공 케이스
@@ -129,9 +129,9 @@ class GameServiceTest {
         GameGetAllResponse response = gameService.getAllGamesIgnoreStatus();
 
         // THEN
-        assertEquals(mockGame1.getGameTitle(), response.responses().get(0).gameTitle());
-        assertEquals(mockGame2.getGameTitle(), response.responses().get(1).gameTitle());
-        assertEquals(mockGame3.getGameTitle(), response.responses().get(2).gameTitle());
+        assertEquals(mockGame1.getGameTitle(), response.gameResponses().get(0).gameTitle());
+        assertEquals(mockGame2.getGameTitle(), response.gameResponses().get(1).gameTitle());
+        assertEquals(mockGame3.getGameTitle(), response.gameResponses().get(2).gameTitle());
     }
 
     // ✅성공 케이스
