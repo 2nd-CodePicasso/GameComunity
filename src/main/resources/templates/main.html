@@ -533,7 +533,7 @@
             const responseData = await response.json();
             console.log("최신 소식 데이터:", responseData); // ✅ 응답 구조 확인
 
-            const newsList = responseData.data.newsList; // ✅ 최신 소식 리스트 추출
+            const newsList = responseData.data.postResponses[1]; ; // ✅ 최신 소식 리스트 추출
 
             if (!Array.isArray(newsList)) {
                 throw new Error("newsList의 데이터 형식이 배열이 아닙니다.");
