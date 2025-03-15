@@ -203,9 +203,9 @@ public class PostConnectorImpl implements PostConnector {
                         post.createdAt,
                         post.updatedAt))
                 .from(post)
-                .leftJoin(post.user, user).fetchJoin()
-                .leftJoin(post.category, category).fetchJoin()
-                .leftJoin(post.game, game).fetchJoin()
+                .join(post.user, user)
+                .join(post.category, category)
+                .join(post.game, game)
                 .where(post.status.eq(PostStatus.RECOMMENDED))
                 .orderBy(post.viewCount.desc())
                 .offset(0)
