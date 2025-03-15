@@ -14,11 +14,11 @@ public record MyExchangeResponse(
 ) {
     @QueryProjection
     public MyExchangeResponse(
-        Long id,
-        Long exchangeId,
-        Long userId,
-        String contact,
-        StatusType statusType
+            Long id,
+            Long exchangeId,
+            Long userId,
+            String contact,
+            StatusType statusType
     ) {
         this.id = id;
         this.exchangeId = exchangeId;

@@ -13,7 +13,6 @@ import com.example.codePicasso.global.common.ApiResponse;
 import com.example.codePicasso.global.common.CustomUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +36,7 @@ public class ExchangeController {
 
         return ApiResponse.created(response);
     }
-
-    // Todo return 방식 통일하는게 좋아보임
-
+    
     // 거래소 게시글 목록 조회 (200 OK)
     @GetMapping("/{tradeType}/list")
     public ResponseEntity<ApiResponse<ExchangeListResponse>> getAllExchange(

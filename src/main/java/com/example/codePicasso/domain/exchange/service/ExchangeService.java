@@ -60,8 +60,8 @@ public class ExchangeService {
     public ExchangeListResponse getExchanges(TradeType tradeType, Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ExchangeResponse> exchanges = (gameId == null)
-            ? exchangeConnector.findByTradeType(tradeType, pageable)
-            : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
+                ? exchangeConnector.findByTradeType(tradeType, pageable)
+                : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
         return DtoFactory.toExchangePaginationResponse(exchanges);
     }
 

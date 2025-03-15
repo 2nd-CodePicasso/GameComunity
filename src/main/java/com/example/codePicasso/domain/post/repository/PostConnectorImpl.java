@@ -37,7 +37,8 @@ public class PostConnectorImpl implements PostConnector {
     // gameId로 게시글 전체 조회
     @Override
     public Page<PostResponse> findAllByGameId(Long gameId, Pageable pageable) {
-        List<PostResponse> posts = queryFactory.select(new QPostResponse(
+        List<PostResponse> posts = queryFactory
+                .select(new QPostResponse(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -64,7 +65,8 @@ public class PostConnectorImpl implements PostConnector {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
 
-        JPAQuery<Long> count = queryFactory.select(post.count())
+        JPAQuery<Long> count = queryFactory
+                .select(post.count())
                 .from(post)
                 .where(post.game.id.eq(gameId));
 
@@ -74,7 +76,8 @@ public class PostConnectorImpl implements PostConnector {
     // 게임별 추천게시물 조회
     @Override
     public Page<PostResponse> findAllRecommendedOfGame(Long gameId, PostStatus postStatus, Pageable pageable) {
-        List<PostResponse> posts = queryFactory.select(new QPostResponse(
+        List<PostResponse> posts = queryFactory
+                .select(new QPostResponse(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -101,7 +104,8 @@ public class PostConnectorImpl implements PostConnector {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
 
-        JPAQuery<Long> count = queryFactory.select(post.count())
+        JPAQuery<Long> count = queryFactory
+                .select(post.count())
                 .from(post)
                 .where(post.game.id.eq(gameId), post.status.eq(postStatus));
 
@@ -111,7 +115,8 @@ public class PostConnectorImpl implements PostConnector {
     // categoryId로 게시글 전체 조회
     @Override
     public Page<PostResponse> findAllByCategoryId(Long categoryId, Pageable pageable) {
-        List<PostResponse> posts = queryFactory.select(new QPostResponse(
+        List<PostResponse> posts = queryFactory
+                .select(new QPostResponse(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -138,7 +143,8 @@ public class PostConnectorImpl implements PostConnector {
             throw new InvalidRequestException(ErrorCode.POST_NOT_FOUND);
         }
 
-        JPAQuery<Long> count = queryFactory.select(post.count())
+        JPAQuery<Long> count = queryFactory
+                .select(post.count())
                 .from(post)
                 .where(post.category.id.eq(categoryId));
 
@@ -148,7 +154,8 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 개별 조회
     @Override
     public Post findById(Long postId) {
-        Post foundPost = queryFactory.select(post)
+        Post foundPost = queryFactory
+                .select(post)
                 .from(post)
                 .leftJoin(post.user, user).fetchJoin()
                 .leftJoin(post.category, category).fetchJoin()
@@ -166,7 +173,8 @@ public class PostConnectorImpl implements PostConnector {
     // 게시글 수정
     @Override
     public Post findByIdAndUserId(Long postId, Long userId) {
-        Post foundPost = queryFactory.select(post)
+        Post foundPost = queryFactory
+                .select(post)
                 .from(post)
                 .leftJoin(post.user, user).fetchJoin()
                 .leftJoin(post.category, category).fetchJoin()

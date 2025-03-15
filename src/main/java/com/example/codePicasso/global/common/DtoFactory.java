@@ -175,15 +175,15 @@ public class DtoFactory {
     // ExchangeListResponse 생성 메서드
     public static ExchangeListResponse toExchangePaginationResponse(Page<ExchangeResponse> exchanges) {
         return ExchangeListResponse.builder()
-            .exchangePageResponse(exchanges)
-            .build();
+                .exchangePageResponse(exchanges)
+                .build();
     }
 
     // MyExchangeListResponse 생성 메서드
     public static MyExchangeListResponse toMyExchangePaginationResponse(Page<MyExchangeResponse> myExchanges) {
         return MyExchangeListResponse.builder()
-            .myExchangePageResponse(myExchanges)
-            .build();
+                .myExchangePageResponse(myExchanges)
+                .build();
     }
 
     public static ReviewResponse toReviewDto(Review review) {

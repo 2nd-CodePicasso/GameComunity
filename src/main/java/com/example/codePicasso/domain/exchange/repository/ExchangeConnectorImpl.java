@@ -3,7 +3,6 @@ package com.example.codePicasso.domain.exchange.repository;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
 import com.example.codePicasso.domain.exchange.dto.response.QExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
-import com.example.codePicasso.domain.exchange.entity.QExchange;
 import com.example.codePicasso.domain.exchange.entity.TradeType;
 import com.example.codePicasso.domain.exchange.service.ExchangeConnector;
 import com.example.codePicasso.global.exception.base.NotFoundException;
@@ -18,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.example.codePicasso.domain.exchange.entity.QExchange.exchange;
+
 @Component
 @RequiredArgsConstructor
 public class ExchangeConnectorImpl implements ExchangeConnector {
@@ -31,9 +32,8 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
 
     @Override
     public Page<ExchangeResponse> findByTradeType(TradeType tradeType, Pageable pageable) {
-        QExchange exchange = QExchange.exchange;
-
-        List<ExchangeResponse> results = queryFactory.select(new QExchangeResponse(
+        List<ExchangeResponse> results = queryFactory
+                .select(new QExchangeResponse(
                         exchange.id,
                         exchange.user.id,
                         exchange.game.id,
@@ -43,8 +43,7 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
                         exchange.quantity,
                         exchange.contact,
                         exchange.tradeType,
-                        exchange.isCompleted
-                ))
+                        exchange.isCompleted))
                 .from(exchange)
                 .where(exchange.tradeType.eq(tradeType).and(exchange.isCompleted.isFalse()))
                 .orderBy(exchange.id.desc())
@@ -52,18 +51,18 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> total = queryFactory.select(exchange.count())
+        JPAQuery<Long> count = queryFactory
+                .select(exchange.count())
                 .from(exchange)
                 .where(exchange.tradeType.eq(tradeType).and(exchange.isCompleted.isFalse()));
 
-        return PageableExecutionUtils.getPage(results, pageable, total::fetchOne);
+        return PageableExecutionUtils.getPage(results, pageable, count::fetchOne);
     }
 
     @Override
     public Page<ExchangeResponse> findByGameIdAndTradeType(Long gameId, TradeType tradeType, Pageable pageable) {
-        QExchange exchange = QExchange.exchange;
-
-        List<ExchangeResponse> results = queryFactory.select(new QExchangeResponse(
+        List<ExchangeResponse> results = queryFactory
+                .select(new QExchangeResponse(
                         exchange.id,
                         exchange.user.id,
                         exchange.game.id,
@@ -73,8 +72,7 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
                         exchange.quantity,
                         exchange.contact,
                         exchange.tradeType,
-                        exchange.isCompleted
-                ))
+                        exchange.isCompleted))
                 .from(exchange)
                 .where(exchange.game.id.eq(gameId)
                         .and(exchange.tradeType.eq(tradeType))
@@ -84,18 +82,17 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> total = queryFactory.select(exchange.count())
+        JPAQuery<Long> count = queryFactory.select(exchange.count())
                 .from(exchange)
                 .where(exchange.game.id.eq(gameId)
                         .and(exchange.tradeType.eq(tradeType))
                         .and(exchange.isCompleted.isFalse()));
 
-        return PageableExecutionUtils.getPage(results, pageable, total::fetchOne);
+        return PageableExecutionUtils.getPage(results, pageable, count::fetchOne);
     }
 
     @Override
     public ExchangeResponse findByIdAndIsCompleted(Long id) {
-        QExchange exchange = QExchange.exchange;
 
         return queryFactory
                 .select(new QExchangeResponse(
@@ -108,8 +105,7 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
                         exchange.quantity,
                         exchange.contact,
                         exchange.tradeType,
-                        exchange.isCompleted
-                ))
+                        exchange.isCompleted))
                 .from(exchange)
                 .where(exchange.id.eq(id).and(exchange.isCompleted.isFalse()))
                 .fetchOne();
