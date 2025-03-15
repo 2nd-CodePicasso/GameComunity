@@ -88,7 +88,6 @@ public class DtoFactory {
                 postId(post.postId())
                 .gameId(post.gameId())
                 .categoryId(post.categoryId())
-                .userId(post.userId())
                 .categoryName(post.categoryName())
                 .title(post.title())
                 .nickname(post.nickname())
@@ -115,7 +114,6 @@ public class DtoFactory {
         return CommentResponse.builder().
                 commentId(comment.getId())
                 .postId(comment.getPost().getId())
-                .userId(comment.getUser().getId())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
@@ -132,7 +130,6 @@ public class DtoFactory {
         return CommentResponse.builder().
                 commentId(comment.getId())
                 .postId(comment.getPost().getId())
-                .userId(comment.getUser().getId())
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
                 .createdAt(comment.getCreatedAt())
@@ -166,7 +163,6 @@ public class DtoFactory {
     public static ExchangeResponse toExchangeDto(Exchange exchange) {
         return ExchangeResponse.builder()
                 .id(exchange.getId())
-                .userId(exchange.getUser().getId())
                 .gameId(exchange.getGame().getId())
                 .title(exchange.getTitle())
                 .price(exchange.getPrice())
@@ -181,7 +177,6 @@ public class DtoFactory {
         return MyExchangeResponse.builder()
                 .id(myExchange.getId())
                 .exchangeId(myExchange.getExchange().getId())
-                .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
                 .statusType(myExchange.getStatusType())
                 .build();
@@ -205,7 +200,6 @@ public class DtoFactory {
         return ReviewResponse.builder()
                 .id(review.getId())
                 .exchangeId(review.getExchange().getId())
-                .userId(review.getUser().getId())
                 .rating(review.getRating())
                 .review(review.getReview())
                 .build();

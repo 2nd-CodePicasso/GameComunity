@@ -7,8 +7,8 @@ import lombok.Builder;
 @Builder
 public record ExchangeResponse(
         Long id,
-        Long userId,
         Long gameId,
+        String nickname,
         String title,
         int price,
         String description,
@@ -20,8 +20,8 @@ public record ExchangeResponse(
     @QueryProjection
     public ExchangeResponse(
             Long id,
-            Long userId,
             Long gameId,
+            String nickname,
             String title,
             int price,
             String description,
@@ -31,8 +31,8 @@ public record ExchangeResponse(
             boolean isCompleted
     ) {
         this.id = id;
-        this.userId = userId;
         this.gameId = gameId;
+        this.nickname = nickname;
         this.title = title;
         this.price = price;
         this.description = description;
