@@ -10,7 +10,9 @@ import com.example.codePicasso.domain.chat.entity.GlobalChat;
 import com.example.codePicasso.domain.chat.entity.Notification;
 import com.example.codePicasso.domain.comment.dto.response.CommentResponse;
 import com.example.codePicasso.domain.comment.entity.Comment;
+import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
@@ -160,20 +162,6 @@ public class DtoFactory {
                 .build();
     }
 
-    public static ExchangeResponse toExchangeResponseDto(ExchangeResponse exchange) {
-        return ExchangeResponse.builder()
-                .id(exchange.id())
-                .userId(exchange.userId())
-                .gameId(exchange.gameId())
-                .title(exchange.title())
-                .price(exchange.price())
-                .description(exchange.description())
-                .contact(exchange.contact())
-                .quantity(exchange.quantity())
-                .tradeType(exchange.tradeType())
-                .build();
-    }
-
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {
         return MyExchangeResponse.builder()
                 .id(myExchange.getId())
@@ -182,6 +170,20 @@ public class DtoFactory {
                 .contact(myExchange.getContact())
                 .statusType(myExchange.getStatusType())
                 .build();
+    }
+
+    // ExchangeListResponse 생성 메서드
+    public static ExchangeListResponse toExchangePaginationResponse(Page<ExchangeResponse> exchanges) {
+        return ExchangeListResponse.builder()
+            .exchangePageResponse(exchanges)
+            .build();
+    }
+
+    // MyExchangeListResponse 생성 메서드
+    public static MyExchangeListResponse toMyExchangePaginationResponse(Page<MyExchangeResponse> myExchanges) {
+        return MyExchangeListResponse.builder()
+            .myExchangePageResponse(myExchanges)
+            .build();
     }
 
     public static ReviewResponse toReviewDto(Review review) {

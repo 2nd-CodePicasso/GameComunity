@@ -3,7 +3,9 @@ package com.example.codePicasso.domain.exchange.service;
 import com.example.codePicasso.domain.exchange.dto.request.ExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.MyExchangeRequest;
 import com.example.codePicasso.domain.exchange.dto.request.PutMyExchangeRequest;
+import com.example.codePicasso.domain.exchange.dto.response.ExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.ExchangeResponse;
+import com.example.codePicasso.domain.exchange.dto.response.MyExchangeListResponse;
 import com.example.codePicasso.domain.exchange.dto.response.MyExchangeResponse;
 import com.example.codePicasso.domain.exchange.entity.Exchange;
 import com.example.codePicasso.domain.exchange.entity.MyExchange;
@@ -55,14 +57,12 @@ public class ExchangeService {
     }
 
     // 거래소 아이템 조회 (페이지네이션 적용)
-    public Page<ExchangeResponse> getExchanges(TradeType tradeType, Long gameId, int page, int size) {
+    public ExchangeListResponse getExchanges(TradeType tradeType, Long gameId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-
         Page<ExchangeResponse> exchanges = (gameId == null)
-                ? exchangeConnector.findByTradeType(tradeType, pageable)
-                : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
-
-        return exchanges.map(DtoFactory::toExchangeResponseDto);
+            ? exchangeConnector.findByTradeType(tradeType, pageable)
+            : exchangeConnector.findByGameIdAndTradeType(gameId, tradeType, pageable);
+        return DtoFactory.toExchangePaginationResponse(exchanges);
     }
 
     // 거래소 아이템 조회_특정 아이템
@@ -128,12 +128,11 @@ public class ExchangeService {
     }
 
     // 내 거래 목록 조회 (200 OK)
-    public Page<MyExchangeResponse> getAllMyExchange(TradeType tradeType, Long userId, int page, int size) {
+    public MyExchangeListResponse getAllMyExchange(TradeType tradeType, Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<MyExchangeResponse> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, tradeType, pageable);
 
-        Page<MyExchange> myExchanges = myExchangeConnector.findByUserIdAndTradeType(userId, tradeType, pageable);
-
-        return myExchanges.map(DtoFactory::toMyExchangeDto);
+        return DtoFactory.toMyExchangePaginationResponse(myExchanges);
     }
 
     // 내 거래 목록 단일 조회 (200 OK)

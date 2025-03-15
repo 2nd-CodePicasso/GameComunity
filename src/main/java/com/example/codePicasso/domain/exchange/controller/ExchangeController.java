@@ -48,11 +48,9 @@ public class ExchangeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<ExchangeResponse> responses = exchangeService.getExchanges(tradeType, gameId, page, size);
+        ExchangeListResponse response = exchangeService.getExchanges(tradeType, gameId, page, size);
 
-        return ApiResponse.success(ExchangeListResponse.builder()
-                .exchangePageResponse(responses)
-                .build());
+        return ApiResponse.success(response);
     }
 
     // 거래소의 판매 게시글 세부페이지 조회 (200 OK)
@@ -114,9 +112,9 @@ public class ExchangeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<MyExchangeResponse> responses = exchangeService.getAllMyExchange(tradeType, user.getUserId(), page, size);
+        MyExchangeListResponse response = exchangeService.getAllMyExchange(tradeType, user.getUserId(), page, size);
 
-        return ApiResponse.success(MyExchangeListResponse.builder().myExchangePageResponse(responses).build());
+        return ApiResponse.success(response);
     }
 
     // 내 거래 목록 단일 조회 (200 OK)
