@@ -425,7 +425,7 @@
         <!-- 메인 콘텐츠 -->
         <div class="desktop-main">
             <!-- 인기 게임 카드 -->
-            <div class="content-card">
+            <div class="content-card" id="popular-games-card">
                 <div class="card-header">인기 게임</div>
                 <div class="card-body">
                     <div class="popular-content-grid">
@@ -446,7 +446,7 @@
             </div>
 
             <!-- 최신 소식 카드 -->
-            <div class="content-card">
+            <div class="content-card" id="latest-news-card">
                 <div class="card-header">최신 소식</div>
                 <div class="card-body">
                     <div class="news-item">
@@ -473,7 +473,7 @@
             </div>
 
             <!-- 인기 게시글 카드 -->
-            <div class="content-card">
+            <div class="content-card" id="popular-posts-card">
                 <div class="card-header">인기 게시글</div>
                 <div class="card-body">
                     <div class="news-item">
@@ -546,7 +546,7 @@
     }
 
     function renderLatestNews(newsList) {
-        const cardBody = document.querySelector(".content-card .card-body");
+        const cardBody = document.querySelector("#latest-news-card .card-body");
         cardBody.innerHTML = ""; // ✅ 기존 목록 초기화
 
         newsList.forEach(news => {
@@ -564,7 +564,7 @@
     }
     // ✅ 인기 게시글을 동적으로 렌더링하는 함수
     function renderRecommendedPosts(posts) {
-        const cardBody = document.querySelector(".content-card .card-body");
+        const cardBody = document.querySelector("#popular-posts-card .card-body");
         cardBody.innerHTML = ""; // 기존 목록 초기화
 
         posts.forEach(post => {
