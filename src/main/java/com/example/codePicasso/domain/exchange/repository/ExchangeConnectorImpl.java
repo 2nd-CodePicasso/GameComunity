@@ -35,8 +35,8 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
         List<ExchangeResponse> results = queryFactory
                 .select(new QExchangeResponse(
                         exchange.id,
-                        exchange.user.id,
                         exchange.game.id,
+                        exchange.user.nickname,
                         exchange.title,
                         exchange.price,
                         exchange.description,
@@ -64,8 +64,8 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
         List<ExchangeResponse> results = queryFactory
                 .select(new QExchangeResponse(
                         exchange.id,
-                        exchange.user.id,
                         exchange.game.id,
+                        exchange.user.nickname,
                         exchange.title,
                         exchange.price,
                         exchange.description,
@@ -97,8 +97,8 @@ public class ExchangeConnectorImpl implements ExchangeConnector {
         return queryFactory
                 .select(new QExchangeResponse(
                         exchange.id,
-                        exchange.user.id,
                         exchange.game.id,
+                        exchange.user.nickname,
                         exchange.title,
                         exchange.price,
                         exchange.description,

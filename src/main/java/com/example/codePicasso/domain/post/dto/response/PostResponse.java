@@ -11,7 +11,6 @@ public record PostResponse(
         Long postId,
         Long gameId,
         Long categoryId,
-        Long userId,
         String categoryName,
         String title,
         String nickname,
@@ -26,7 +25,6 @@ public record PostResponse(
             Long postId,
             Long gameId,
             Long categoryId,
-            Long userId,
             String categoryName,
             String title,
             String nickname,
@@ -38,7 +36,6 @@ public record PostResponse(
         this.postId = postId;
         this.gameId = gameId;
         this.categoryId = categoryId;
-        this.userId = userId;
         this.categoryName = categoryName;
         this.title = title;
         this.nickname = nickname;
