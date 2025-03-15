@@ -190,7 +190,9 @@ public class PostConnectorImpl implements PostConnector {
     @Override
     public List<Post> findByRecentPost(int size, int page) {
         return queryFactory.selectFrom(post)
-
+                .leftJoin(post.user, user).fetchJoin()
+                .leftJoin(post.category, category).fetchJoin()
+                .leftJoin(post.game, game).fetchJoin()
                 .where(post.status.eq(PostStatus.RECOMMENDED))
                 .orderBy(post.viewCount.desc())
                 .limit(size)
