@@ -98,11 +98,9 @@ public class PostService {
     }
 
     public PostListResponse getRecentPost(int size, int page) {
-        List<Post> byRecentPost =
-                postConnector.findByRecentPost(size, page);
+        List<PostResponse> byRecentPost = postConnector.findByRecentPost(size, page);
         return PostListResponse.builder()
-                .postResponses(byRecentPost.stream()
-                        .map(DtoFactory::toPostDto).toList())
+                .postResponses(byRecentPost)
                 .build();
     }
 

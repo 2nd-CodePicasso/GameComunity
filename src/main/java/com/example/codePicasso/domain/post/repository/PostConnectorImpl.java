@@ -188,13 +188,27 @@ public class PostConnectorImpl implements PostConnector {
     }
 
     @Override
-    public List<Post> findByRecentPost(int size, int page) {
-        return queryFactory.selectFrom(post)
+    public List<PostResponse> findByRecentPost(int size, int page) {
+        return queryFactory.select(new QPostResponse(
+                        post.id,
+                        post.game.id,
+                        post.category.id,
+                        post.user.id,
+                        post.category.categoryName,
+                        post.title,
+                        post.user.nickname,
+                        post.description,
+                        post.viewCount,
+                        post.status,
+                        post.createdAt,
+                        post.updatedAt))
+                .from(post)
                 .leftJoin(post.user, user).fetchJoin()
                 .leftJoin(post.category, category).fetchJoin()
                 .leftJoin(post.game, game).fetchJoin()
                 .where(post.status.eq(PostStatus.RECOMMENDED))
                 .orderBy(post.viewCount.desc())
+                .offset(0)
                 .limit(size)
                 .fetch()
         ;
