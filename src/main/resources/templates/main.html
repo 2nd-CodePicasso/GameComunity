@@ -27,7 +27,7 @@
             margin: 40px auto;
             background-color: white;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             position: relative;
         }
@@ -62,7 +62,7 @@
         }
 
         .desktop-nav a:hover {
-            background-color: rgba(255,255,255,0.2);
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         /* 데스크탑 레이아웃 */
@@ -77,7 +77,7 @@
             background-color: white;
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .desktop-main {
@@ -90,7 +90,7 @@
             border-radius: 8px;
             padding: 24px;
             width: 100%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             margin-bottom: 30px;
         }
 
@@ -156,7 +156,7 @@
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .buttons-container {
@@ -180,14 +180,14 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             transition: all 0.2s ease;
             text-decoration: none;
         }
 
         .page-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .icon {
@@ -230,7 +230,7 @@
         .content-card {
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             margin-bottom: 24px;
             overflow: hidden;
         }
@@ -264,7 +264,7 @@
 
         .popular-content-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .news-item {
@@ -346,26 +346,28 @@
             <!-- 로그인 여부에 따라 다른 내용 표시 -->
             <div id="non-logged-in-content">
                 <!-- 비로그인 상태: 로그인 폼 -->
-                    <h2 class="form-title">로그인</h2>
+                <h2 class="form-title">로그인</h2>
 
-                    <div class="form-group">
-                        <label for="username" class="form-label">아이디</label>
-                        <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요" required>
-                    </div>
+                <div class="form-group">
+                    <label for="username" class="form-label">아이디</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요"
+                           required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="password" class="form-label">비밀번호</label>
-                        <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
-                    </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요"
+                           required>
+                </div>
 
-                    <div class="buttons-container">
-                        <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
-                        <a href="/auth/signup" class="btn btn-outline">회원가입</a>
-                    </div>
+                <div class="buttons-container">
+                    <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
+                    <a href="/auth/signup" class="btn btn-outline">회원가입</a>
+                </div>
 
-                    <div style="text-align: center; margin-top: 16px;">
-                        <a href="#" class="text-link">아이디/비밀번호 찾기</a>
-                    </div>
+                <div style="text-align: center; margin-top: 16px;">
+                    <a href="#" class="text-link">아이디/비밀번호 찾기</a>
+                </div>
             </div>
 
             <!-- 로그인한 경우: 회원 정보 -->
@@ -450,24 +452,24 @@
                 <div class="card-header">최신 소식</div>
                 <div class="card-body">
                     <div class="news-item">
-                        <span class="news-category">공지</span>
-                        <div class="news-title">서버 점검 안내 (3/12 02:00~06:00)</div>
-                        <div class="news-date">1시간 전</div>
+                        <span class="news-category">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #20c997;">이벤트</span>
-                        <div class="news-title">봄맞이 특별 이벤트 - 출석체크 보상 2배</div>
-                        <div class="news-date">3시간 전</div>
+                        <span class="news-category" style="background-color: #20c997;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #845ef7;">업데이트</span>
-                        <div class="news-title">3월 2주차 패치노트 안내</div>
-                        <div class="news-date">어제</div>
+                        <span class="news-category" style="background-color: #845ef7;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #ff922b;">거래소</span>
-                        <div class="news-title">아이템 거래소 수수료 인하 이벤트</div>
-                        <div class="news-date">2일 전</div>
+                        <span class="news-category" style="background-color: #ff922b;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                 </div>
             </div>
@@ -477,19 +479,19 @@
                 <div class="card-header">인기 게시글</div>
                 <div class="card-body">
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #339af0;">정보</span>
-                        <div class="news-title">오버워치 신규 영웅 스킬 가이드</div>
-                        <div class="news-date">조회 1,245</div>
+                        <span class="news-category" style="background-color: #339af0;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #ff6b6b;">공략</span>
-                        <div class="news-title">배그 신규 맵 전략적 위치 총정리</div>
-                        <div class="news-date">조회 982</div>
+                        <span class="news-category" style="background-color: #ff6b6b;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #cc5de8;">팁</span>
-                        <div class="news-title">롤 시즌13 승급전 꿀팁</div>
-                        <div class="news-date">조회 854</div>
+                        <span class="news-category" style="background-color: #cc5de8;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                 </div>
             </div>
@@ -533,7 +535,8 @@
             const responseData = await response.json();
             console.log("최신 소식 데이터:", responseData); // ✅ 응답 구조 확인
 
-            const newsList = responseData.data.postResponses[1]; ; // ✅ 최신 소식 리스트 추출
+            const newsList = responseData.data.postResponses[1];
+            ; // ✅ 최신 소식 리스트 추출
 
             if (!Array.isArray(newsList)) {
                 throw new Error("newsList의 데이터 형식이 배열이 아닙니다.");
@@ -554,14 +557,15 @@
             newsItem.classList.add("news-item");
 
             newsItem.innerHTML = `
-            <span class="news-category" style="background-color: ${getCategoryColor(news.category)};">${news.category}</span>
+         <span class="news-category" style="background-color: ${getCategoryColor(news.categoryName)};">${news.categoryName}</span>
             <div class="news-title">${news.title}</div>
-            <div class="news-date">${news.timeAgo}</div>
+             <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
         `;
 
             cardBody.appendChild(newsItem); // ✅ 동적으로 추가
         });
     }
+
     // ✅ 인기 게시글을 동적으로 렌더링하는 함수
     function renderRecommendedPosts(posts) {
         const cardBody = document.querySelector("#popular-posts-card .card-body");
@@ -580,6 +584,7 @@
             cardBody.appendChild(newsItem); // 리스트에 추가
         });
     }
+
     function getCategoryColor(categoryName) {
         return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     }
@@ -622,6 +627,7 @@
             .catch(error => console.error("Error:", error));
 
     }
+
     function checkLoginStatus() {
         const token = localStorage.getItem("jwtToken");  // localStorage에서 JWT 토큰 확인
 
@@ -695,7 +701,7 @@
     }
 
     // ✅ 페이지 로드 시 로그인 상태 확인
-    window.onload = function() {
+    window.onload = function () {
         checkLoginStatus(); // ✅ 기존 로그인 상태 체크 함수 실행
         fetchRecommendedPosts(); // ✅ 인기 게시글 가져오기 실행
         fetchLatestNews(); // ✅ 최신 소식 가져오기
