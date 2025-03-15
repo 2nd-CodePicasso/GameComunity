@@ -5,8 +5,10 @@ import com.example.codePicasso.domain.post.dto.response.QPostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.post.service.PostConnector;
+import com.example.codePicasso.domain.recommend.entity.QRecommend;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -190,8 +192,9 @@ public class PostConnectorImpl implements PostConnector {
 
     // 인기 게시글 조회
     @Override
-    public List<PostResponse> findByPopularPost(int size, int page) {
-        List<PostResponse> postResponses = queryFactory.select(new QPostResponse(
+    public List<Tuple> findByPopularPost(int size, int page) {
+        QRecommend recommend = QRecommend.recommend;
+        return queryFactory.select(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -203,40 +206,24 @@ public class PostConnectorImpl implements PostConnector {
                         post.viewCount,
                         post.status,
                         post.createdAt,
-                        post.updatedAt))
+                        post.updatedAt,
+                        recommend.count()
+                )
                 .from(post)
+                .leftJoin(recommend).on(recommend.post.id.eq(post.id))
+                .groupBy(post.id, post.game.id, post.category.id, post.user.id,
+                        post.category.categoryName, post.title, post.user.nickname,
+                        post.description, post.viewCount, post.status,
+                        post.createdAt, post.updatedAt)
                 .join(post.user, user)
                 .join(post.category, category)
                 .join(post.game, game)
                 .where(post.status.eq(PostStatus.RECOMMENDED))
-                .orderBy(post.viewCount.desc())
+                .orderBy(recommend.count().desc())
                 .offset(0)
                 .limit(size)
                 .fetch();
 
-        if (postResponses.size() < size) {
-            List<PostResponse> olderPosts = queryFactory
-                    .select(new QPostResponse(
-                            post.id, post.game.id, post.category.id, post.user.id, post.category.categoryName,
-                            post.title, post.user.nickname, post.description, post.viewCount,
-                            post.status, post.createdAt, post.updatedAt
-                    ))
-                    .from(post)
-                    .join(post.user, user)
-                    .join(post.category, category)
-                    .join(post.game, game)
-                    .where(
-                            post.status.eq(PostStatus.RECOMMENDED)
-                                    .and(post.createdAt.before(LocalDateTime.now().minusDays(7)))
-                    )
-                    .orderBy(post.viewCount.desc())
-                    .limit(size - postResponses.size())
-                    .fetch();
-
-            postResponses.addAll(olderPosts);
-        }
-
-        return postResponses;
     }
 
     // 최신 게시글 조회

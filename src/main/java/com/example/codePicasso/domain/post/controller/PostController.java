@@ -2,6 +2,7 @@ package com.example.codePicasso.domain.post.controller;
 
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
@@ -137,11 +138,11 @@ public class PostController {
      * @return
      */
     @GetMapping("/hi/popular")
-    public ResponseEntity<ApiResponse<PostListResponse>> getPopularPost(
+    public ResponseEntity<ApiResponse<PostPopularListResponse>> getPopularPost(
             @RequestParam(defaultValue = "4") int size,
             @RequestParam(defaultValue = "0") int page
     ) {
-        PostListResponse popularPost = postService.getPopularPost(size, page);
+        PostPopularListResponse popularPost = postService.getPopularPost(size, page);
 
         return ApiResponse.success(popularPost);
     }

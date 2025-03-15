@@ -19,6 +19,7 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
@@ -28,6 +29,7 @@ import com.example.codePicasso.domain.user.dto.response.UserInfoResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
+import com.querydsl.core.Tuple;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -258,9 +260,9 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostListResponse toPopularDto(List<PostResponse> byRecentPost) {
-        return PostListResponse.builder()
-                .postResponses(byRecentPost)
+    public static PostPopularListResponse toPopularDto(List<Tuple> byRecentPost) {
+        return PostPopularListResponse.builder()
+                .postList(byRecentPost)
                 .build();
     }
 

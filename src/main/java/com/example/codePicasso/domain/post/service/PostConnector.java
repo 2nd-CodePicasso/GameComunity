@@ -3,6 +3,7 @@ package com.example.codePicasso.domain.post.service;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
+import com.querydsl.core.Tuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public interface PostConnector {
 
     void delete(Post deletePost);
 
-    List<PostResponse> findByPopularPost(int size, int page);
+    List<Tuple> findByPopularPost(int size, int page);
 
     List<PostResponse> findByRecentPost(int size, int page);
 }

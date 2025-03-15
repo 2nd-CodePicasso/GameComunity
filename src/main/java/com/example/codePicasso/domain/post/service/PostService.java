@@ -5,12 +5,14 @@ import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.post.dto.PostEvent;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -98,8 +100,8 @@ public class PostService {
     }
 
     // 인기 게시글 조회
-    public PostListResponse getPopularPost(int size, int page) {
-        List<PostResponse> byPopularPost = postConnector.findByPopularPost(size, page);
+    public PostPopularListResponse getPopularPost(int size, int page) {
+        List<Tuple> byPopularPost = postConnector.findByPopularPost(size, page);
 
         return DtoFactory.toPopularDto(byPopularPost);
 
