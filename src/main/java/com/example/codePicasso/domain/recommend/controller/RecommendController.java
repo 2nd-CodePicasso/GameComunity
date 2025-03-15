@@ -20,6 +20,7 @@ public class RecommendController {
             @AuthenticationPrincipal CustomUser user
     ) {
         Integer response = recommendService.doRecommend(postId, user.getUserId());
+
         return ApiResponse.success(response);
     }
 
@@ -28,6 +29,7 @@ public class RecommendController {
             @PathVariable Long postId
     ) {
         Integer count = recommendService.countRecommendOfPost(postId);
+
         return ApiResponse.success(count);
     }
 
@@ -37,6 +39,7 @@ public class RecommendController {
             @AuthenticationPrincipal CustomUser user
     ) {
         recommendService.undoRecommend(postId, user.getUserId());
+
         return ApiResponse.noContentAndSendMessage("추천이 취소되었습니다.");
     }
 }

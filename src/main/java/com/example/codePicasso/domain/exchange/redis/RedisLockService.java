@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class RedisLockService {
-
     private final RedissonClient redissonClient;
     private static final String LOCK_PREFIX = "exchange:lock";
 
@@ -29,16 +28,15 @@ public class RedisLockService {
         }
     }
 
-
     /**
      * 락 해제
      */
     public void releaseLock(Long exchangeId) {
         String lockKey = LOCK_PREFIX + exchangeId;
         RLock lock = redissonClient.getLock(lockKey);
+
         if (lock.isHeldByCurrentThread()) {
             lock.unlock();
         }
     }
-
 }

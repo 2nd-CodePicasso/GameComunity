@@ -20,6 +20,7 @@ public class CommentController {
 
     /**
      * 댓글 생성
+     *
      * @param postId
      * @param request (text)
      * @return 생성된 댓글
@@ -50,6 +51,7 @@ public class CommentController {
 
     /**
      * 댓글 조회
+     *
      * @param postId
      * @return
      */
@@ -58,15 +60,17 @@ public class CommentController {
             @PathVariable("postId") Long postId
     ) {
         CommentListResponse responses = commentService.findAllByPostId(postId);
+
         return ApiResponse.success(responses);
     }
 
 
     /**
      * 댓글 수정
+     *
      * @param commentId
-     * @param user (유저검증용)
-     * @param request (text)
+     * @param user      (유저검증용)
+     * @param request   (text)
      * @return
      */
     @PatchMapping("/{commentId}")
@@ -76,12 +80,13 @@ public class CommentController {
             @Valid @RequestBody CommentRequest request
     ) {
         CommentResponse commentResponse = commentService.updateComment(commentId, user.getUserId(), request);
+
         return ApiResponse.success(commentResponse);
     }
 
-
     /**
      * 댓글 삭제
+     *
      * @param commentId
      * @param user
      * @return
@@ -92,8 +97,7 @@ public class CommentController {
             @AuthenticationPrincipal CustomUser user
     ) {
         commentService.deleteComment(commentId, user.getUserId());
+
         return ApiResponse.noContent();
     }
-
-
 }

@@ -12,6 +12,7 @@ public class PasswordEncoder {
 
     public boolean matches(String password, String encodedPassword) {
         BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), encodedPassword);
+
         return result.verified;
     }
 }

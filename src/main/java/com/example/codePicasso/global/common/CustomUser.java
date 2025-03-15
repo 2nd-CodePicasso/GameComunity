@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 public class CustomUser extends User {
-
     private Long userId;
 
     public CustomUser(String username, Collection<? extends GrantedAuthority> authorities) {

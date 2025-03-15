@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification,Long> {
-    
     Optional<Notification> findTopByChatRoomIdOrderByCreatedTimeDesc(Long roomId);
 
     List<Notification> findAllByChatRoomId(Long roomId);

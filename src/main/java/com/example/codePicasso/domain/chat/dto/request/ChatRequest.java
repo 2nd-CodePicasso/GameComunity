@@ -8,7 +8,6 @@ public record ChatRequest(
         String message,
         String imageUrl
 ) {
-
     public GlobalChat toEntityFromGlobalChat(Long userId, String emoji, String username) {
         return GlobalChat.builder()
                 .userId(userId)
@@ -26,5 +25,4 @@ public record ChatRequest(
                 .chatRoom(chatRoom)
                 .build();
     }
-
 }

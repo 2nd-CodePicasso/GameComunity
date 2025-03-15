@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record GameGetAllResponse(
-        List<GameResponse> responses
+        List<GameResponse> gameResponses
 ) {
 }

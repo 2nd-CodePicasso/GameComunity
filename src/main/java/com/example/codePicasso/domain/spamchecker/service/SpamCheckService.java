@@ -8,11 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class SpamCheckService {
-
     private final SpamApiClient spamApiClient;
 
     public ApiResponse checkSpam(String number) {
         return spamApiClient.checkSpamNumber(number);
     }
 }
-

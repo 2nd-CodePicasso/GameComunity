@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RedisPublisher {
-
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final GlobalChatConnector globalChatConnector;
@@ -27,6 +26,7 @@ public class RedisPublisher {
         String parsedMessage = EmojiParser.parseToUnicode(chatRequest.message());
         GlobalChat globalChat = chatRequest.toEntityFromGlobalChat(userId, parsedMessage, username);
         GlobalChatResponse globalChatDto = DtoFactory.toGlobalChatDto(globalChat);
+
         try {
             String messageInfo = objectMapper.writeValueAsString(globalChatDto);
             stringRedisTemplate.convertAndSend("redis", messageInfo);
@@ -34,6 +34,7 @@ public class RedisPublisher {
             log.info(e.getMessage());
             throw new JacksonFailException(ErrorCode.REDIS_JACKSON_EXCEPTION);
         }
+
         globalChatConnector.save(globalChat);
     }
 }

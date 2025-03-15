@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AdminService {
-
     private final AdminConnector adminConnector;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public AdminResponse addAdmin(AdminRequest adminRequest) {
+
         if (adminConnector.existsByLoginId(adminRequest.loginId())) {
             throw new DuplicateException(ErrorCode.ID_ALREADY_EXISTS);
         }
@@ -28,6 +28,7 @@ public class AdminService {
 
         Admin admin = adminRequest.toEntity(encodedPassword);
         adminConnector.save(admin);
+
         return DtoFactory.toAdminDto(admin);
     }
 }

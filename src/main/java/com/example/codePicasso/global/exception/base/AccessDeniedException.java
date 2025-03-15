@@ -5,7 +5,7 @@ import com.example.codePicasso.global.exception.enums.ErrorCode;
 
 public class AccessDeniedException extends BusinessException {
 
-  public AccessDeniedException(ErrorCode errorCode) {
-    super(errorCode);
-  }
+    public AccessDeniedException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 }
