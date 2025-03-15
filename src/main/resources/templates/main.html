@@ -523,6 +523,45 @@
         }
     }
 
+    async function fetchLatestNews() {
+        try {
+            const response = await fetch("/posts/hi/recent"); // ✅ 최신 소식 요청
+            if (!response.ok) {
+                throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
+            }
+
+            const responseData = await response.json();
+            console.log("최신 소식 데이터:", responseData); // ✅ 응답 구조 확인
+
+            const newsList = responseData.data.newsList; // ✅ 최신 소식 리스트 추출
+
+            if (!Array.isArray(newsList)) {
+                throw new Error("newsList의 데이터 형식이 배열이 아닙니다.");
+            }
+
+            renderLatestNews(newsList); // ✅ 최신 소식 UI 업데이트
+        } catch (error) {
+            console.error("최신 소식 가져오기 실패:", error);
+        }
+    }
+
+    function renderLatestNews(newsList) {
+        const cardBody = document.querySelector(".content-card .card-body");
+        cardBody.innerHTML = ""; // ✅ 기존 목록 초기화
+
+        newsList.forEach(news => {
+            const newsItem = document.createElement("div");
+            newsItem.classList.add("news-item");
+
+            newsItem.innerHTML = `
+            <span class="news-category" style="background-color: ${getCategoryColor(news.category)};">${news.category}</span>
+            <div class="news-title">${news.title}</div>
+            <div class="news-date">${news.timeAgo}</div>
+        `;
+
+            cardBody.appendChild(newsItem); // ✅ 동적으로 추가
+        });
+    }
     // ✅ 인기 게시글을 동적으로 렌더링하는 함수
     function renderRecommendedPosts(posts) {
         const cardBody = document.querySelector(".content-card .card-body");
@@ -659,6 +698,7 @@
     window.onload = function() {
         checkLoginStatus(); // ✅ 기존 로그인 상태 체크 함수 실행
         fetchRecommendedPosts(); // ✅ 인기 게시글 가져오기 실행
+        fetchLatestNews(); // ✅ 최신 소식 가져오기
     };
 
     // ✅ 로컬스토리지 변경 감지 (MutationObserver 대체)
