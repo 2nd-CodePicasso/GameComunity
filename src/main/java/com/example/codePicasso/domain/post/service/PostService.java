@@ -103,7 +103,7 @@ public class PostService {
     public PostPopularListResponse getPopularPost(int size, int page) {
         List<Tuple> byPopularPost = postConnector.findByPopularPost(size, page);
 
-        return DtoFactory.toPopularDto(byPopularPost);
+        return DtoFactory.toPopularListDto(byPopularPost);
 
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Builder
 public record PostPopularListResponse (
-        List<Tuple> postList
+        List<PostPopularResponse> postList
 ){
 
 }
