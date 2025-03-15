@@ -8,7 +8,6 @@ import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
-import com.example.codePicasso.domain.post.repository.PostDocumentRepository;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -32,7 +31,7 @@ public class PostService {
     private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final PostDocumentRepository postDocumentRepository;
+//    private final PostDocumentRepository postDocumentRepository;
 
     // 게시글 생성
     @Transactional

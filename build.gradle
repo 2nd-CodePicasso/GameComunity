@@ -71,8 +71,8 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-    // Elasticsearch
-    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+//    // Elasticsearch
+//    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
 
     // RabbitMQ
