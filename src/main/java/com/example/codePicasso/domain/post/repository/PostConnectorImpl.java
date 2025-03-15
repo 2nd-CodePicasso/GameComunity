@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.codePicasso.domain.category.entity.QCategory.category;
@@ -189,7 +190,7 @@ public class PostConnectorImpl implements PostConnector {
 
     @Override
     public List<PostResponse> findByRecentPost(int size, int page) {
-        return queryFactory.select(new QPostResponse(
+        List<PostResponse> postResponses = queryFactory.select(new QPostResponse(
                         post.id,
                         post.game.id,
                         post.category.id,
@@ -206,11 +207,34 @@ public class PostConnectorImpl implements PostConnector {
                 .join(post.user, user)
                 .join(post.category, category)
                 .join(post.game, game)
-                .where(post.status.eq(PostStatus.RECOMMENDED))
+                .where(post.status.eq(PostStatus.RECOMMENDED).and(post.createdAt.after(LocalDateTime.now().minusDays(7))))
                 .orderBy(post.viewCount.desc())
                 .offset(0)
                 .limit(size)
-                .fetch()
-        ;
+                .fetch();
+
+        if (postResponses.size() < size) {
+            List<PostResponse> olderPosts = queryFactory
+                    .select(new QPostResponse(
+                            post.id, post.game.id, post.category.id, post.user.id, post.category.categoryName,
+                            post.title, post.user.nickname, post.description, post.viewCount,
+                            post.status, post.createdAt, post.updatedAt
+                    ))
+                    .from(post)
+                    .join(post.user, user)
+                    .join(post.category, category)
+                    .join(post.game, game)
+                    .where(
+                            post.status.eq(PostStatus.RECOMMENDED)
+                                    .and(post.createdAt.before(LocalDateTime.now().minusDays(7)))
+                    )
+                    .orderBy(post.viewCount.desc())
+                    .limit(size - postResponses.size())
+                    .fetch();
+
+            postResponses.addAll(olderPosts);
+        }
+
+        return postResponses;
     }
 }
