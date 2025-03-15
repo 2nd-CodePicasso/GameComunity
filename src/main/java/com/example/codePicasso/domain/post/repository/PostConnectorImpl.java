@@ -216,11 +216,11 @@ public class PostConnectorImpl implements PostConnector {
                         post.status,
                         post.createdAt,
                         post.updatedAt,
-                        recommend.count()
+                        recommend.id.count()
                 )
                 .from(post)
                 .leftJoin(recommend).on(recommend.post.id.eq(post.id))
-                .groupBy(post.id, post.game.id, post.category.id, post.user.id,
+                .groupBy(post.id, post.game.id, post.category.id,
                         post.category.categoryName, post.title, post.user.nickname,
                         post.description, post.viewCount, post.status,
                         post.createdAt, post.updatedAt)

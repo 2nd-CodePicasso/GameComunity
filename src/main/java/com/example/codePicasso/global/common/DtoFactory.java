@@ -22,8 +22,11 @@ import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResp
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.entity.QPost;
+import com.example.codePicasso.domain.recommend.entity.QRecommend;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
 import com.example.codePicasso.domain.review.entity.Review;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
@@ -255,15 +258,34 @@ public class DtoFactory {
                 .build();
     }
 
-    public static PostPopularListResponse toPopularDto(List<Tuple> byRecentPost) {
+    public static PostPopularListResponse toPopularListDto(List<Tuple> byRecentPost) {
         return PostPopularListResponse.builder()
-                .postList(byRecentPost)
+                .postList(byRecentPost.stream().map(DtoFactory::toPopularDto).toList())
                 .build();
     }
 
     public static PostListResponse toRecentDto(List<PostResponse> recentPost) {
         return PostListResponse.builder()
                 .postResponses(recentPost)
+                .build();
+    }
+
+    public static PostPopularResponse toPopularDto(Tuple tuple) {
+        QPost post = QPost.post;
+        QRecommend recommend = QRecommend.recommend;
+        return PostPopularResponse.builder()
+                .id(tuple.get(post.id))
+                .gameId(tuple.get(post.game.id))
+                .categoryId(tuple.get(post.category.id))
+                .categoryName(tuple.get(post.category.categoryName))
+                .title(tuple.get(post.title))
+                .nickname(tuple.get(post.user.nickname))
+                .description(tuple.get(post.description))
+                .viewCount(tuple.get(post.viewCount))
+                .status(tuple.get(post.status))
+                .createdAt(tuple.get(post.createdAt))
+                .updatedAt(tuple.get(post.updatedAt))
+                .recommendCount(tuple.get(recommend.count()))
                 .build();
     }
 }
