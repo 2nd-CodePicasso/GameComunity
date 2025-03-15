@@ -558,8 +558,8 @@
 
             newsItem.innerHTML = `
          <span class="news-category" style="background-color: ${getCategoryColor(news.categoryName)};">${news.categoryName}</span>
-            <div class="news-title">${news.title}</div>
-             <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
+         <div class="news-title">${news.title}</div>
+         <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
         `;
 
             cardBody.appendChild(newsItem); // ✅ 동적으로 추가
@@ -694,6 +694,21 @@
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
+    function formatTimeAgo(isoString) {
+        const createdAt = new Date(isoString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - createdAt) / 1000); // ✅ 현재 시간과의 차이 (초 단위)
+
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds}초 전`; // ✅ 1분 미만
+        } else if (diffInSeconds < 3600) {
+            return `${Math.floor(diffInSeconds / 60)}분 전`; // ✅ 1시간 미만
+        } else if (diffInSeconds < 86400) {
+            return `${Math.floor(diffInSeconds / 3600)}시간 전`; // ✅ 24시간 미만
+        } else {
+            return `${Math.floor(diffInSeconds / 86400)}일 전`; // ✅ 하루 이상
+        }
+    }
     function logout() {
         localStorage.removeItem("jwtToken");  // ✅ JWT 토큰 삭제
         alert("로그아웃 되었습니다.");
