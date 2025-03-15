@@ -2,22 +2,27 @@ package com.example.codePicasso.domain.post.service;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
+import com.example.codePicasso.domain.post.dto.PostEvent;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
+import com.example.codePicasso.domain.post.repository.PostDocumentRepository;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -27,6 +32,8 @@ public class PostService {
     private final PostConnector postConnector;
     private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final PostDocumentRepository postDocumentRepository;
 
     // 게시글 생성
     @Transactional
@@ -35,6 +42,7 @@ public class PostService {
         Category category = categoryConnector.findById(request.categoryId());
         Post createPost = request.toEntity(user, category.getGame(), category);
         Post save = postConnector.save(createPost);
+        applicationEventPublisher.publishEvent(new PostEvent(save));
         return DtoFactory.toPostDto(save);
     }
 
@@ -79,7 +87,7 @@ public class PostService {
         }
 
         foundPost.updatePost(postRequest.title(), postRequest.description());
-
+        applicationEventPublisher.publishEvent(new PostEvent(foundPost));
         return DtoFactory.toPostDto(foundPost);
     }
 
@@ -90,4 +98,17 @@ public class PostService {
 
         postConnector.delete(deletePost);
     }
+
+    public PostListResponse getRecentPost(int size, int page) {
+        List<Post> byRecentPost =
+                postConnector.findByRecentPost(size, page);
+        return PostListResponse.builder()
+                .postResponses(byRecentPost.stream()
+                        .map(DtoFactory::toPostDto).toList())
+                .build();
+    }
+
+//    public PostResponse elaGetPost(String categoryId) {
+//        postDocumentRepository.findByCategoryId(categoryId);
+//    }
 }

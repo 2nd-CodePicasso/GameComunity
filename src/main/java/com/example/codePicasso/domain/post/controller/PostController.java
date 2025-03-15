@@ -128,4 +128,20 @@ public class PostController {
         postService.deletePost(postId, user.getUserId());
         return ApiResponse.noContent();
     }
+
+    @GetMapping("/hi/recent")
+    public ResponseEntity<ApiResponse<PostListResponse>> getRecentPost(
+            @RequestParam(defaultValue = "4") int size,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        PostListResponse recentPost = postService.getRecentPost(size, page);
+        return ApiResponse.success(recentPost);
+    }
+
+//    @GetMapping("/ela/{text}")
+//    public ResponseEntity<ApiResponse<PostResponse>> elaelaGetPost(@PathVariable String text) {
+//        postService.elaGetPost(text);
+//        return ApiResponse.success();
+//    }
+
 }
