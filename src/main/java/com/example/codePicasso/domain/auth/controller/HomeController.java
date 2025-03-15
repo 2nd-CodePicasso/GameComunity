@@ -15,4 +15,24 @@ public class HomeController {
     public String chat() {
         return "chat";
     }
+
+    @GetMapping("/main/hi/game")
+    public String main() {
+        return "main";
+    }
+
+    @GetMapping("/signup/hi/game")
+    public String signup() {
+        return "signup";
+    }
+
+    @GetMapping("/exchange/hi/game")
+    public String exchange() {
+        return "exchange";
+    }
+
+    @GetMapping("/gameboard/hi/game")
+    public String gameBoard() {
+        return "gameboard";
+    }
 }

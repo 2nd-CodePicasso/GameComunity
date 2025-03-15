@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이템 거래소</title>
+  <style>
+    /* 공통 스타일 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 모드 토글 스위치 */
+    .device-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background-color: #495057;
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .device-toggle button {
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      background: none;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .device-toggle button.active {
+      background-color: #343a40;
+      color: white;
+    }
+
+    /* 모바일 컨테이너 */
+    .mobile-container {
+      width: 390px;
+      height: 670px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+      display: none;
+    }
+
+    /* 데스크탑 컨테이너 */
+    .desktop-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+      display: block;
+    }
+
+    /* 데스크탑 헤더 */
+    .desktop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: #ff922b;
+      color: white;
+    }
+
+    .desktop-logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .desktop-nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .desktop-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .desktop-nav a:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .desktop-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .desktop-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .desktop-btn-primary {
+      background-color: white;
+      color: #ff922b;
+    }
+
+    .desktop-btn-primary:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    /* 데스크탑 레이아웃 */
+    .desktop-layout {
+      display: flex;
+      background-color: #f8f9fa;
+    }
+
+    .desktop-sidebar {
+      width: 280px;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .desktop-main {
+      flex: 1;
+      padding: 24px;
+    }
+
+    /* 데스크탑 탭 메뉴 */
+    .desktop-tabs {
+      display: flex;
+      margin-bottom: 24px;
+    }
+
+    .desktop-tab {
+      padding: 12px 24px;
+      background-color: #e9ecef;
+      color: #495057;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      margin-right: 4px;
+    }
+
+    .desktop-tab.active {
+      background-color: #4dabf7;
+      color: white;
+    }
+
+    /* 게임 리스트 */
+    .desktop-game-list {
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .desktop-game-header {
+      display: flex;
+      background-color: #ff922b;
+      color: white;
+      padding: 16px 24px;
+    }
+
+    .desktop-game-header-item {
+      flex: 1;
+      text-align: center;
+      font-weight: 500;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .desktop-game-header-item.active {
+      background-color: #e67700;
+    }
+
+    .desktop-game-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 16px;
+      gap: 16px;
+    }
+
+    .desktop-game-item {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e9ecef;
+    }
+
+    .desktop-game-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+
+    /* 검색 영역 */
+    .desktop-search {
+      margin-bottom: 24px;
+    }
+
+    .desktop-search-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    /* 주요 카테고리 */
+    .desktop-categories {
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .desktop-category-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .desktop-category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .desktop-category-item {
+      padding: 12px 16px;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .desktop-category-item:hover {
+      background-color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .desktop-category-item.active {
+      background-color: #4dabf7;
+      color: white;
+      border-color: #4dabf7;
+    }
+
+    /* 알림 영역 */
+    .desktop-notification {
+      margin-bottom: 24px;
+      padding: 12px 16px;
+      background-color: #fff9db;
+      border-radius: 8px;
+      border-left: 4px solid #fcc419;
+      color: #e67700;
+    }
+
+    /* 모바일 스타일 */
+    .mobile-content {
+      padding: 0;
+      position: relative;
+      height: 100%;
+      background-color: #f8f9fa;
+      box-sizing: border-box;
+    }
+
+    .mobile-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px;
+      background-color: #fff;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .mobile-back-button {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #495057;
+      cursor: pointer;
+      background-color: #f1f3f5;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+
+    .mobile-register-button {
+      background-color: #ffc107;
+      color: #212529;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .mobile-tab-menu {
+      display: flex;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .mobile-tab {
+      flex: 1;
+      text-align: center;
+      padding: 16px 0;
+      background-color: #e9ecef;
+      color: #495057;
+      cursor: pointer;
+    }
+
+    .mobile-tab.active {
+      background-color: #4dabf7;
+      color: white;
+      font-weight: 500;
+    }
+
+    .mobile-notification {
+      background-color: #ff922b;
+      color: white;
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .mobile-filter-header {
+      display: flex;
+      border-bottom: 1px solid #e9ecef;
+      background-color: #ff922b;
+    }
+
+    .mobile-filter-item {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .mobile-filter-item.active {
+      background-color: #e67700;
+    }
+
+    .mobile-item-list {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .mobile-item-list td {
+      padding: 16px;
+      border-bottom: 1px solid #e9ecef;
+      font-size: 14px;
+      color: #495057;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .mobile-item-list td:hover {
+      background-color: #f8f9fa;
+    }
+
+    .mobile-search-bar {
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+      background-color: #f1f3f5;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .mobile-search-input {
+      width: 80%;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .mobile-game-list-dropdown {
+      position: relative;
+      margin: 16px;
+    }
+
+    .mobile-dropdown-button {
+      background-color: #9775fa;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      display: block;
+    }
+
+    .mobile-dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      width: 100%;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 1;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .mobile-dropdown-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e9ecef;
+      cursor: pointer;
+    }
+
+    .mobile-dropdown-item:hover {
+      background-color: #f1f3f5;
+    }
+
+    /* 판매 인기 게임 목록 - 기본적으로 숨김 */
+    .mobile-sell-popular {
+      display: none;
+    }
+
+    /* 구매 인기 게임 목록 - 기본적으로 표시 */
+    .mobile-buy-popular {
+      display: table;
+    }
+  </style>
+</head>
+<body>
+<!-- 모드 토글 스위치 -->
+<div class="device-toggle">
+  <button class="active" id="desktopBtn">데스크탑</button>
+  <button id="mobileBtn">모바일</button>
+</div>
+
+<!-- 모바일 컨테이너 -->
+<div class="mobile-container" id="mobileView">
+  <div class="mobile-content">
+    <!-- 헤더 영역 -->
+    <div class="mobile-header">
+      <div class="mobile-back-button">← 뒤로가기</div>
+      <div class="mobile-register-button">아이템 등록</div>
+    </div>
+
+    <!-- 게임 목록 드롭다운 -->
+    <div class="mobile-game-list-dropdown">
+      <div class="mobile-dropdown-button" id="mobileDropdownBtn">게임 목록</div>
+      <div class="mobile-dropdown-content" id="mobileGameDropdown">
+        <div class="mobile-dropdown-item">메이플스토리</div>
+        <div class="mobile-dropdown-item">배그</div>
+        <div class="mobile-dropdown-item">롤지미</div>
+        <div class="mobile-dropdown-item">오버워치</div>
+        <div class="mobile-dropdown-item">던전앤파이터</div>
+        <div class="mobile-dropdown-item">로스트아크</div>
+        <div class="mobile-dropdown-item">리그오브레전드</div>
+        <div class="mobile-dropdown-item">디아블로4</div>
+      </div>
+    </div>
+
+    <!-- 탭 메뉴 -->
+    <div class="mobile-tab-menu">
+      <div class="mobile-tab active" id="mobileBuyTab">구매</div>
+      <div class="mobile-tab" id="mobileSellTab">판매</div>
+    </div>
+
+    <!-- 알림 -->
+    <div class="mobile-notification">* 일주일 기준입니다.</div>
+
+    <!-- 필터 헤더 -->
+    <div class="mobile-filter-header">
+      <div class="mobile-filter-item active" id="mobileBuyFilterBtn">구매 인기 게임</div>
+      <div class="mobile-filter-item" id="mobileSellFilterBtn">판매 인기 게임</div>
+    </div>
+
+    <!-- 구매 인기 게임 목록 -->
+    <table class="mobile-item-list mobile-buy-popular" id="mobileBuyPopular">
+      <tr>
+        <td>메이플스토리</td>
+        <td>메이플스토리2</td>
+      </tr>
+      <tr>
+        <td>배그</td>
+        <td>오버워치</td>
+      </tr>
+      <tr>
+        <td>롤지미</td>
+        <td>배그2</td>
+      </tr>
+      <tr>
+        <td>오버워치2</td>
+        <td>롤지미2</td>
+      </tr>
+      <tr>
+        <td>던전앤파이터</td>
+        <td>로스트아크</td>
+      </tr>
+    </table>
+
+    <!-- 판매 인기 게임 목록 -->
+    <table class="mobile-item-list mobile-sell-popular" id="mobileSellPopular">
+      <tr>
+        <td>메이플스토리</td>
+        <td>워크래프트</td>
+      </tr>
+      <tr>
+        <td>로스트아크</td>
+        <td>오버워치</td>
+      </tr>
+      <tr>
+        <td>디아블로4</td>
+        <td>배그</td>
+      </tr>
+      <tr>
+        <td>리그오브레전드</td>
+        <td>롤지미</td>
+      </tr>
+      <tr>
+        <td>피파온라인4</td>
+        <td>스타크래프트</td>
+      </tr>
+    </table>
+
+    <!-- 검색 바 -->
+    <div class="mobile-search-bar">
+      <input type="text" class="mobile-search-input" placeholder="게임명을 입력하세요">
+    </div>
+  </div>
+</div>
+
+<!-- 데스크탑 컨테이너 -->
+<div class="desktop-container" id="desktopView">
+  <!-- 데스크탑 헤더 -->
+  <div class="desktop-header">
+    <div class="desktop-logo">아이템 거래소</div>
+    <div class="desktop-nav">
+      <a href="#">홈</a>
+      <a href="#">게시판</a>
+      <a href="#">아이템 거래소</a>
+      <a href="#">채팅방</a>
+      <a href="#">공지사항</a>
+    </div>
+    <div class="desktop-actions">
+      <button class="desktop-btn desktop-btn-primary">아이템 등록</button>
+    </div>
+  </div>
+
+  <!-- 데스크탑 레이아웃 -->
+  <div class="desktop-layout">
+    <!-- 사이드바 -->
+    <div class="desktop-sidebar">
+      <!-- 검색 영역 -->
+      <div class="desktop-search">
+        <input type="text" class="desktop-search-input" placeholder="게임명을 입력하세요">
+      </div>
+
+      <!-- 주요 카테고리 -->
+      <div class="desktop-categories">
+        <div class="desktop-category-title">인기 카테고리</div>
+        <div class="desktop-category-list">
+          <div class="desktop-category-item active">모든 게임</div>
+          <div class="desktop-category-item">RPG</div>
+          <div class="desktop-category-item">FPS</div>
+          <div class="desktop-category-item">MOBA</div>
+          <div class="desktop-category-item">전략</div>
+          <div class="desktop-category-item">스포츠</div>
+        </div>
+      </div>
+
+      <!-- 거래 옵션 -->
+      <div class="desktop-categories">
+        <div class="desktop-category-title">거래 옵션</div>
+        <div class="desktop-category-list">
+          <div class="desktop-category-item">전체 거래 내역</div>
+          <div class="desktop-category-item">내 거래 내역</div>
+          <div class="desktop-category-item">찜한 아이템</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="desktop-main">
+      <!-- 알림 영역 -->
+      <div class="desktop-notification">
+        * 일주일 기준입니다.
+      </div>
+
+      <!-- 탭 메뉴 -->
+      <div class="desktop-tabs">
+        <div class="desktop-tab active" id="desktopBuyTab">구매</div>
+        <div class="desktop-tab" id="desktopSellTab">판매</div>
+      </div>
+
+      <!-- 게임 리스트 -->
+      <div class="desktop-game-list">
+        <div class="desktop-game-header">
+          <div class="desktop-game-header-item active" id="desktopBuyFilterBtn">구매 인기 게임</div>
+          <div class="desktop-game-header-item" id="desktopSellFilterBtn">판매 인기 게임</div>
+        </div>
+
+        <!-- 구매 인기 게임 그리드 -->
+        <div class="desktop-game-grid" id="desktopBuyPopular">
+          <div class="desktop-game-item">메이플스토리</div>
+          <div class="desktop-game-item">배그</div>
+          <div class="desktop-game-item">오버워치</div>
+          <div class="desktop-game-item">로스트아크</div>
+          <div class="desktop-game-item">롤지미</div>
+          <div class="desktop-game-item">던전앤파이터</div>
+          <div class="desktop-game-item">메이플스토리2</div>
+          <div class="desktop-game-item">배그2</div>
+          <div class="desktop-game-item">오버워치2</div>
+          <div class="desktop-game-item">롤지미2</div>
+          <div class="desktop-game-item">리그오브레전드</div>
+          <div class="desktop-game-item">디아블로4</div>
+        </div>
+
+        <!-- 판매 인기 게임 그리드 (기본 숨김) -->
+        <div class="desktop-game-grid" id="desktopSellPopular" style="display: none;">
+          <div class="desktop-game-item">메이플스토리</div>
+          <div class="desktop-game-item">워크래프트</div>
+          <div class="desktop-game-item">로스트아크</div>
+          <div class="desktop-game-item">오버워치</div>
+          <div class="desktop-game-item">디아블로4</div>
+          <div class="desktop-game-item">배그</div>
+          <div class="desktop-game-item">리그오브레전드</div>
+          <div class="desktop-game-item">롤지미</div>
+          <div class="desktop-game-item">피파온라인4</div>
+          <div class="desktop-game-item">스타크래프트</div>
+          <div class="desktop-game-item">서든어택</div>
+          <div class="desktop-game-item">발로란트</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // DOM이 완전히 로드된 후 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    // 요소 선택
+    const mobileView = document.getElementById('mobileView');
+    const desktopView = document.getElementById('desktopView');
+    const desktopBtn = document.getElementById('desktopBtn');
+    const mobileBtn = document.getElementById('mobileBtn');
+
+    // 모바일 요소
+    const mobileBuyTab = document.getElementById('mobileBuyTab');
+    const mobileSellTab = document.getElementById('mobileSellTab');
+    const mobileBuyFilterBtn = document.getElementById('mobileBuyFilterBtn');
+    const mobileSellFilterBtn = document.getElementById('mobileSellFilterBtn');
+    const mobileBuyPopular = document.getElementById('mobileBuyPopular');
+    const mobileSellPopular = document.getElementById('mobileSellPopular');
+    const mobileDropdownBtn = document.getElementById('mobileDropdownBtn');
+    const mobileGameDropdown = document.getElementById('mobileGameDropdown');
+
+    // 데스크탑 요소
+    const desktopBuyTab = document.getElementById('desktopBuyTab');
+    const desktopSellTab = document.getElementById('desktopSellTab');
+    const desktopBuyFilterBtn = document.getElementById('desktopBuyFilterBtn');
+    const desktopSellFilterBtn = document.getElementById('desktopSellFilterBtn');
+    const desktopBuyPopular = document.getElementById('desktopBuyPopular');
+    const desktopSellPopular = document.getElementById('desktopSellPopular');
+
+    // 모바일/데스크탑 토글
+    desktopBtn.addEventListener('click', function() {
+      mobileView.style.display = 'none';
+      desktopView.style.display = 'block';
+      desktopBtn.classList.add('active');
+      mobileBtn.classList.remove('active');
+    });
+
+    mobileBtn.addEventListener('click', function() {
+      mobileView.style.display = 'block';
+      desktopView.style.display = 'none';
+      desktopBtn.classList.remove('active');
+      mobileBtn.classList.add('active');
+    });
+
+    // 모바일 탭 전환
+    mobileBuyTab.addEventListener('click', function() {
+      mobileBuyTab.classList.add('active');
+      mobileSellTab.classList.remove('active');
+    });
+
+    mobileSellTab.addEventListener('click', function() {
+      mobileBuyTab.classList.remove('active');
+      mobileSellTab.classList.add('active');
+    });
+
+    // 모바일 필터 토글
+    mobileBuyFilterBtn.addEventListener('click', function() {
+      mobileBuyPopular.style.display = 'table';
+      mobileSellPopular.style.display = 'none';
+      mobileBuyFilterBtn.classList.add('active');
+      mobileSellFilterBtn.classList.remove('active');
+    });
+
+    mobileSellFilterBtn.addEventListener('click', function() {
+      mobileBuyPopular.style.display = 'none';
+      mobileSellPopular.style.display = 'table';
+      mobileBuyFilterBtn.classList.remove('active');
+      mobileSellFilterBtn.classList.add('active');
+    });
+
+    // 모바일 드롭다운 토글
+    mobileDropdownBtn.addEventListener('click', function() {
+      if (mobileGameDropdown.style.display === 'block') {
+        mobileGameDropdown.style.display = 'none';
+      } else {
+        mobileGameDropdown.style.display = 'block';
+      }
+    });
+
+    // 데스크탑 탭 전환
+    desktopBuyTab.addEventListener('click', function() {
+      desktopBuyTab.classList.add('active');
+      desktopSellTab.classList.remove('active');
+    });
+
+    desktopSellTab.addEventListener('click', function() {
+      desktopBuyTab.classList.remove('active');
+      desktopSellTab.classList.add('active');
+    });
+
+    // 데스크탑 필터 토글
+    desktopBuyFilterBtn.addEventListener('click', function() {
+      desktopBuyPopular.style.display = 'grid';
+      desktopSellPopular.style.display = 'none';
+      desktopBuyFilterBtn.classList.add('active');
+      desktopSellFilterBtn.classList.remove('active');
+    });
+
+    desktopSellFilterBtn.addEventListener('click', function() {
+      desktopBuyPopular.style.display = 'none';
+      desktopSellPopular.style.display = 'grid';
+      desktopBuyFilterBtn.classList.remove('active');
+      desktopSellFilterBtn.classList.add('active');
+    });
+
+    // 드롭다운 외부 클릭 시 닫기
+    document.addEventListener('click', function(event) {
+      if (!event.target.matches('#mobileDropdownBtn')) {
+        if (mobileGameDropdown.style.display === 'block') {
+          mobileGameDropdown.style.display = 'none';
+        }
+      }
+    });
+
+    // 게임 항목 클릭
+    const gameItems = document.querySelectorAll('.desktop-game-item, .mobile-item-list td');
+    gameItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        alert(item.textContent + ' 거래 페이지로 이동합니다.');
+        // 실제 구현에서는 아래와 같이 페이지 이동 코드 작성
+        // window.location.href = '/game/' + encodeURIComponent(item.textContent);
+      });
+    });
+  });
+</script>
+</body>
+</html>
