@@ -173,16 +173,16 @@ public class DtoFactory {
 
     public static ExchangeResponse toExchangeResponseDto(ExchangeResponse exchange) {
         return ExchangeResponse.builder()
-            .id(exchange.id())
-            .userId(exchange.userId())
-            .gameId(exchange.gameId())
-            .title(exchange.title())
-            .price(exchange.price())
-            .description(exchange.description())
-            .contact(exchange.contact())
-            .quantity(exchange.quantity())
-            .tradeType(exchange.tradeType())
-            .build();
+                .id(exchange.id())
+                .userId(exchange.userId())
+                .gameId(exchange.gameId())
+                .title(exchange.title())
+                .price(exchange.price())
+                .description(exchange.description())
+                .contact(exchange.contact())
+                .quantity(exchange.quantity())
+                .tradeType(exchange.tradeType())
+                .build();
     }
 
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {
@@ -261,6 +261,12 @@ public class DtoFactory {
     public static PostListResponse toPopularDto(List<PostResponse> byRecentPost) {
         return PostListResponse.builder()
                 .postResponses(byRecentPost)
+                .build();
+    }
+
+    public static PostListResponse toRecentDto(List<PostResponse> recentPost) {
+        return PostListResponse.builder()
+                .postResponses(recentPost)
                 .build();
     }
 }

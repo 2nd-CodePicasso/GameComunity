@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.codePicasso.domain.category.entity.QCategory.category;
@@ -187,8 +188,9 @@ public class PostConnectorImpl implements PostConnector {
         postRepository.delete(deletePost);
     }
 
+    // 인기 게시글 조회
     @Override
-    public List<PostResponse> findByRecentPost(int size, int page) {
+    public List<PostResponse> findByPopularPost(int size, int page) {
         return queryFactory.select(new QPostResponse(
                         post.id,
                         post.game.id,
@@ -210,7 +212,33 @@ public class PostConnectorImpl implements PostConnector {
                 .orderBy(post.viewCount.desc())
                 .offset(0)
                 .limit(size)
-                .fetch()
-        ;
+                .fetch();
+    }
+
+    // 최신 게시글 조회
+    @Override
+    public List<PostResponse> findByRecentPost(int size, int page) {
+        return queryFactory.select(new QPostResponse(
+                        post.id,
+                        post.game.id,
+                        post.category.id,
+                        post.user.id,
+                        post.category.categoryName,
+                        post.title,
+                        post.user.nickname,
+                        post.description,
+                        post.viewCount,
+                        post.status,
+                        post.createdAt,
+                        post.updatedAt))
+                .from(post)
+                .join(post.user, user)
+                .join(post.category, category)
+                .join(post.game, game)
+                .where(post.createdAt.goe(LocalDateTime.now().minusDays(3)))
+                .orderBy(post.createdAt.desc())
+                .offset(0)
+                .limit(size)
+                .fetch();
     }
 }

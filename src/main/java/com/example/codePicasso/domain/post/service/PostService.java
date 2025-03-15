@@ -97,10 +97,19 @@ public class PostService {
         postConnector.delete(deletePost);
     }
 
-    public PostListResponse getRecentPost(int size, int page) {
-        List<PostResponse> byRecentPost = postConnector.findByRecentPost(size, page);
-        return DtoFactory.toPopularDto(byRecentPost);
+    // 인기 게시글 조회
+    public PostListResponse getPopularPost(int size, int page) {
+        List<PostResponse> byPopularPost = postConnector.findByPopularPost(size, page);
 
+        return DtoFactory.toPopularDto(byPopularPost);
+
+    }
+
+    // 최신 게시글 조회
+    public PostListResponse getRecentPost(int size, int page) {
+        List<PostResponse> recentPost = postConnector.findByRecentPost(size, page);
+
+        return DtoFactory.toRecentDto(recentPost);
     }
 
 //    public PostResponse elaGetPost(String categoryId) {

@@ -25,5 +25,7 @@ public interface PostConnector {
 
     void delete(Post deletePost);
 
+    List<PostResponse> findByPopularPost(int size, int page);
+
     List<PostResponse> findByRecentPost(int size, int page);
 }

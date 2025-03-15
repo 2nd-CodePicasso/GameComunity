@@ -26,7 +26,9 @@ import java.util.List;
                 // category_id 인덱스
                 @Index(name = "idx_post_category_id", columnList = "category_id"),
                 // status 인덱스
-                @Index(name = "idx_post_game_status", columnList = "game_id, status")
+                @Index(name = "idx_post_game_status", columnList = "game_id, status"),
+                // createdAt 인덱스
+                @Index(name = "idx_post_createdAt", columnList = "createdAt")
         }
 )
 @Getter
