@@ -26,6 +26,7 @@ import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
 import com.example.codePicasso.domain.review.entity.Review;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
+import com.example.codePicasso.domain.user.dto.response.UserInfoResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
@@ -51,6 +52,13 @@ public class DtoFactory {
                 loginId(user.getLoginId()).
                 nickname(user.getNickname()).
                 build();
+    }
+
+    public static UserInfoResponse toUserInfoDto(User user) {
+        return UserInfoResponse.builder()
+                .nickname(user.getNickname())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 
     public static PostResponse toPostDto(Post post) {

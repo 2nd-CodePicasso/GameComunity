@@ -39,7 +39,7 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if (url.matches(".*/hi/.*") || url.matches("/index.html") || url.startsWith("/ws")) {
+        if (url.matches(".*/hi/.*")||url.startsWith("/ws")) {
             chain.doFilter(request, response);
             return;
         }

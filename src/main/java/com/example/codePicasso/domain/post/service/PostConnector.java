@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface PostConnector {
     Post save(Post post);
@@ -22,4 +24,6 @@ public interface PostConnector {
     Post findByIdAndUserId(Long postId, Long userId);
 
     void delete(Post deletePost);
+
+    List<Post> findByRecentPost(int size, int postConnector);
 }
