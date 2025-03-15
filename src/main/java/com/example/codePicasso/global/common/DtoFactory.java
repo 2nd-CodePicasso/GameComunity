@@ -169,6 +169,20 @@ public class DtoFactory {
                 .build();
     }
 
+    public static ExchangeResponse toExchangeResponseDto(ExchangeResponse exchange) {
+        return ExchangeResponse.builder()
+            .id(exchange.id())
+            .userId(exchange.userId())
+            .gameId(exchange.gameId())
+            .title(exchange.title())
+            .price(exchange.price())
+            .description(exchange.description())
+            .contact(exchange.contact())
+            .quantity(exchange.quantity())
+            .tradeType(exchange.tradeType())
+            .build();
+    }
+
     public static MyExchangeResponse toMyExchangeDto(MyExchange myExchange) {
         return MyExchangeResponse.builder()
                 .id(myExchange.getId())
