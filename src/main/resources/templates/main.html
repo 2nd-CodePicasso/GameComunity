@@ -501,15 +501,23 @@
 
     async function fetchRecommendedPosts() {
         try {
-            const response = await fetch(`/posts/hi/popular`); // ✅ 인기 게시글 요청 (3개만)
+            const response = await fetch(`/posts/hi/popular`);
             if (!response.ok) {
-                throw new Error('서버 응답 오류');
+                throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
             }
 
-            const responseData = await response.json(); // ✅ JSON 데이터 변환
-            const posts = responseData.data.posts; // ✅ 게시글 목록 추출
+            const responseData = await response.json();
+            console.log("서버 응답 데이터:", responseData); // ✅ 응답 구조 확인
 
-            renderRecommendedPosts(posts); // ✅ 인기 게시글 렌더링
+            // ✅ postList에서 실제 배열만 추출
+            const posts = responseData.data.postList[1];
+
+            if (!Array.isArray(posts)) {
+                throw new Error("postList의 데이터 형식이 배열이 아닙니다.");
+            }
+
+            renderRecommendedPosts(posts);
+
         } catch (error) {
             console.error("인기 게시글 가져오기 실패:", error);
         }
@@ -525,9 +533,9 @@
             newsItem.classList.add("news-item");
 
             newsItem.innerHTML = `
-            <span class="news-category" style="background-color: ${getCategoryColor(post.category)};">${post.category}</span>
+            <span class="news-category" style="background-color: ${getCategoryColor(post.categoryName)};">${post.categoryName}</span>
             <div class="news-title">${post.title}</div>
-            <div class="news-date">조회 ${post.views.toLocaleString()}</div>
+            <div class="news-date">조회 ${post.viewCount.toLocaleString()}</div>
         `;
 
             cardBody.appendChild(newsItem); // 리스트에 추가
