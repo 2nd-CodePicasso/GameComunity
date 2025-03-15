@@ -129,7 +129,7 @@ public class PostController {
         return ApiResponse.noContent();
     }
 
-    @GetMapping("/hi/recent")
+    @GetMapping("/hi/popular")
     public ResponseEntity<ApiResponse<PostListResponse>> getRecentPost(
             @RequestParam(defaultValue = "4") int size,
             @RequestParam(defaultValue = "0") int page

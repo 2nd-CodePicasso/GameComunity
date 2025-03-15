@@ -30,6 +30,8 @@ import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public class DtoFactory {
 
     public static CategoryResponse toCategoryDto(Category category) {
@@ -253,6 +255,12 @@ public class DtoFactory {
                 .message(globalChat.getContent())
                 .imageUrl(globalChat.getImageUrl())
                 .createdAt(globalChat.getCreatedAt())
+                .build();
+    }
+
+    public static PostListResponse toPopularDto(List<PostResponse> byRecentPost) {
+        return PostListResponse.builder()
+                .postResponses(byRecentPost)
                 .build();
     }
 }

@@ -99,9 +99,8 @@ public class PostService {
 
     public PostListResponse getRecentPost(int size, int page) {
         List<PostResponse> byRecentPost = postConnector.findByRecentPost(size, page);
-        return PostListResponse.builder()
-                .postResponses(byRecentPost)
-                .build();
+        return DtoFactory.toPopularDto(byRecentPost);
+
     }
 
 //    public PostResponse elaGetPost(String categoryId) {
