@@ -206,7 +206,6 @@ public class PostConnectorImpl implements PostConnector {
     // 인기 게시글 조회
     @Override
     public List<Tuple> findByPopularPost(int size, int page) {
-        QRecommend recommend = QRecommend.recommend;
         return queryFactory.select(
                         post.id,
                         post.game.id,
@@ -218,20 +217,14 @@ public class PostConnectorImpl implements PostConnector {
                         post.viewCount,
                         post.status,
                         post.createdAt,
-                        post.updatedAt,
-                        recommend.id.count()
+                        post.updatedAt
                 )
                 .from(post)
-                .leftJoin(recommend).on(recommend.post.id.eq(post.id))
-                .groupBy(post.id, post.game.id, post.category.id,
-                        post.category.categoryName, post.title, post.user.nickname,
-                        post.description, post.viewCount, post.status,
-                        post.createdAt, post.updatedAt)
                 .join(post.user, user)
                 .join(post.category, category)
                 .join(post.game, game)
                 .where(post.status.eq(PostStatus.RECOMMENDED))
-                .orderBy(recommend.count().desc())
+                .orderBy(post.viewCount.desc())
                 .offset(0)
                 .limit(size)
                 .fetch();

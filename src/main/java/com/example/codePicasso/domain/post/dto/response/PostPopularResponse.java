@@ -17,7 +17,6 @@ public record PostPopularResponse(
         Integer viewCount,
         PostStatus status,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt,
-        Long recommendCount
+        LocalDateTime updatedAt
 ) {
 }

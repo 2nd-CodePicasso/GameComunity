@@ -278,7 +278,6 @@ public class DtoFactory {
 
     public static PostPopularResponse toPopularDto(Tuple tuple) {
         QPost post = QPost.post;
-        QRecommend recommend = QRecommend.recommend;
         return PostPopularResponse.builder()
                 .id(tuple.get(post.id))
                 .gameId(tuple.get(post.game.id))
@@ -291,7 +290,6 @@ public class DtoFactory {
                 .status(tuple.get(post.status))
                 .createdAt(tuple.get(post.createdAt))
                 .updatedAt(tuple.get(post.updatedAt))
-                .recommendCount(tuple.get(recommend.count()))
                 .build();
     }
 }
