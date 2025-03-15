@@ -199,4 +199,15 @@ public class PostConnectorImpl implements PostConnector {
     public void delete(Post deletePost) {
         postRepository.delete(deletePost);
     }
+
+    @Override
+    public List<Post> findByRecentPost(int size, int page) {
+        return queryFactory.selectFrom(post)
+
+                .where(post.status.eq(PostStatus.RECOMMENDED))
+                .orderBy(post.viewCount.desc())
+                .limit(size)
+                .fetch()
+        ;
+    }
 }

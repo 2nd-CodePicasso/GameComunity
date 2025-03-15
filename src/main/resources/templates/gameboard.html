@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게임 게시판 목록</title>
+  <style>
+    /* 공통 스타일 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 모드 토글 스위치 */
+    .device-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background-color: #495057;
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .device-toggle button {
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      background: none;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .device-toggle button.active {
+      background-color: #343a40;
+      color: white;
+    }
+
+    /* 모바일 컨테이너 */
+    .mobile-container {
+      width: 390px;
+      height: 670px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+      display: none;
+    }
+
+    /* 데스크탑 컨테이너 */
+    .desktop-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+      display: block;
+    }
+
+    /* 모바일 스타일 */
+    .mobile-content {
+      position: relative;
+      height: 100%;
+      background-color: #f1f3f5;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background-color: #fff;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .mobile-back-button {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #495057;
+      cursor: pointer;
+    }
+
+    .mobile-header-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #212529;
+    }
+
+    .mobile-page-title {
+      padding: 20px 16px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #212529;
+      background-color: #dee2e6;
+    }
+
+    .mobile-game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 1px;
+      background-color: #e9ecef;
+      flex-grow: 1;
+    }
+
+    .mobile-game-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 0;
+      background-color: #fff;
+      text-align: center;
+      cursor: pointer;
+      font-size: 15px;
+      color: #495057;
+      transition: background-color 0.2s;
+    }
+
+    .mobile-game-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .mobile-search-bar {
+      padding: 16px;
+      background-color: #fff;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .mobile-search-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    /* 데스크탑 스타일 */
+    .desktop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: #339af0;
+      color: white;
+    }
+
+    .desktop-logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .desktop-nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    .desktop-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .desktop-nav a:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .desktop-layout {
+      display: flex;
+      background-color: #f8f9fa;
+    }
+
+    .desktop-sidebar {
+      width: 280px;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .desktop-main {
+      flex: 1;
+      padding: 24px;
+    }
+
+    .desktop-search {
+      margin-bottom: 24px;
+    }
+
+    .desktop-search-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .desktop-categories {
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .desktop-category-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .desktop-category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .desktop-category-item {
+      padding: 12px 16px;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .desktop-category-item:hover {
+      background-color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .desktop-category-item.active {
+      background-color: #339af0;
+      color: white;
+      border-color: #339af0;
+    }
+
+    .desktop-board-section {
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
+    }
+
+    .desktop-board-header {
+      padding: 16px 24px;
+      background-color: #339af0;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .desktop-board-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 16px;
+      gap: 16px;
+    }
+
+    .desktop-board-item {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e9ecef;
+    }
+
+    .desktop-board-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+
+    .desktop-popular-boards {
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .desktop-popular-header {
+      padding: 16px 24px;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+      font-size: 18px;
+      font-weight: 600;
+      color: #212529;
+    }
+
+    .desktop-popular-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 16px;
+      gap: 16px;
+    }
+
+    .desktop-popular-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e9ecef;
+    }
+
+    .desktop-popular-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      background-color: white;
+    }
+
+    .desktop-popular-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background-color: #339af0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .desktop-popular-label {
+      font-size: 15px;
+      color: #495057;
+    }
+  </style>
+</head>
+<body>
+<!-- 모드 토글 스위치 -->
+<div class="device-toggle">
+  <button class="active" id="desktopBtn">데스크탑</button>
+  <button id="mobileBtn">모바일</button>
+</div>
+
+<!-- 모바일 컨테이너 -->
+<div class="mobile-container" id="mobileView">
+  <div class="mobile-content">
+    <!-- 헤더 -->
+    <div class="mobile-header">
+      <div class="mobile-back-button">← 뒤로가기</div>
+      <div class="mobile-header-title">게시판</div>
+      <div style="width: 70px;"></div> <!-- 균형을 위한 빈 공간 -->
+    </div>
+
+    <!-- 페이지 제목 -->
+    <div class="mobile-page-title">생성된 게임 게시판</div>
+
+    <!-- 게임 그리드 -->
+    <div class="mobile-game-grid">
+      <div class="mobile-game-item">롤</div>
+      <div class="mobile-game-item">배그</div>
+      <div class="mobile-game-item">오버워치</div>
+      <div class="mobile-game-item">로스트아크</div>
+      <div class="mobile-game-item">롤지미</div>
+      <div class="mobile-game-item">던전앤파이팅</div>
+      <div class="mobile-game-item">메이플스토리</div>
+      <div class="mobile-game-item">리니지</div>
+      <div class="mobile-game-item">디아블로4</div>
+      <div class="mobile-game-item">피파온라인4</div>
+      <div class="mobile-game-item">서든어택</div>
+      <div class="mobile-game-item">발로란트</div>
+    </div>
+
+    <!-- 검색 바 -->
+    <div class="mobile-search-bar">
+      <input type="text" class="mobile-search-input" placeholder="게임 검색">
+    </div>
+  </div>
+</div>
+
+<!-- 데스크탑 컨테이너 -->
+<div class="desktop-container" id="desktopView">
+  <!-- 데스크탑 헤더 -->
+  <div class="desktop-header">
+    <div class="desktop-logo">게임 게시판</div>
+    <div class="desktop-nav">
+      <a href="#">홈</a>
+      <a href="#">게시판</a>
+      <a href="#">아이템 거래소</a>
+      <a href="#">채팅방</a>
+      <a href="#">공지사항</a>
+    </div>
+    <div class="desktop-actions">
+    </div>
+  </div>
+
+  <!-- 데스크탑 레이아웃 -->
+  <div class="desktop-layout">
+    <!-- 사이드바 -->
+    <div class="desktop-sidebar">
+      <!-- 검색 영역 -->
+      <div class="desktop-search">
+        <input type="text" class="desktop-search-input" placeholder="게임 검색">
+      </div>
+
+      <!-- 주요 카테고리 -->
+      <div class="desktop-categories">
+        <div class="desktop-category-title">게임 분류</div>
+        <div class="desktop-category-list">
+          <div class="desktop-category-item active">전체</div>
+          <div class="desktop-category-item">RPG</div>
+          <div class="desktop-category-item">FPS</div>
+          <div class="desktop-category-item">MOBA</div>
+          <div class="desktop-category-item">전략</div>
+          <div class="desktop-category-item">스포츠</div>
+        </div>
+      </div>
+
+      <!-- 인기 게시판 -->
+      <div class="desktop-categories">
+        <div class="desktop-category-title">인기 게시판</div>
+        <div class="desktop-category-list">
+          <div class="desktop-category-item">리그 오브 레전드</div>
+          <div class="desktop-category-item">배틀그라운드</div>
+          <div class="desktop-category-item">오버워치</div>
+          <div class="desktop-category-item">로스트아크</div>
+          <div class="desktop-category-item">메이플스토리</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="desktop-main">
+      <!-- 게임 게시판 섹션 -->
+      <div class="desktop-board-section">
+        <div class="desktop-board-header">
+          생성된 게임 게시판
+        </div>
+        <div class="desktop-board-grid">
+          <div class="desktop-board-item">롤</div>
+          <div class="desktop-board-item">배그</div>
+          <div class="desktop-board-item">오버워치</div>
+          <div class="desktop-board-item">로스트아크</div>
+          <div class="desktop-board-item">롤지미</div>
+          <div class="desktop-board-item">던전앤파이팅</div>
+          <div class="desktop-board-item">메이플스토리</div>
+          <div class="desktop-board-item">리니지</div>
+          <div class="desktop-board-item">디아블로4</div>
+          <div class="desktop-board-item">피파온라인4</div>
+          <div class="desktop-board-item">서든어택</div>
+          <div class="desktop-board-item">발로란트</div>
+          <div class="desktop-board-item">스타크래프트</div>
+          <div class="desktop-board-item">워크래프트3</div>
+          <div class="desktop-board-item">포트나이트</div>
+          <div class="desktop-board-item">에이펙스 레전드</div>
+        </div>
+      </div>
+
+      <!-- 인기 게시판 -->
+      <div class="desktop-popular-boards">
+        <div class="desktop-popular-header">
+          최근 활발한 게시판
+        </div>
+        <div class="desktop-popular-grid">
+          <div class="desktop-popular-item">
+            <div class="desktop-popular-icon">롤</div>
+            <div class="desktop-popular-label">리그 오브 레전드</div>
+          </div>
+          <div class="desktop-popular-item">
+            <div class="desktop-popular-icon">배</div>
+            <div class="desktop-popular-label">배틀그라운드</div>
+          </div>
+          <div class="desktop-popular-item">
+            <div class="desktop-popular-icon">오</div>
+            <div class="desktop-popular-label">오버워치 2</div>
+          </div>
+          <div class="desktop-popular-item">
+            <div class="desktop-popular-icon">로</div>
+            <div class="desktop-popular-label">로스트아크</div>
+          </div>
+          <div class="desktop-popular-item">
+            <div class="desktop-popular-icon">메</div>
+            <div class="desktop-popular-label">메이플스토리</div>
+          </div>
+          <div class="desktop-popular-item">
+            <div class="desktop-popular-icon">디</div>
+            <div class="desktop-popular-label">디아블로 4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // DOM이 완전히 로드된 후 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    // 요소 선택
+    const mobileView = document.getElementById('mobileView');
+    const desktopView = document.getElementById('desktopView');
+    const desktopBtn = document.getElementById('desktopBtn');
+    const mobileBtn = document.getElementById('mobileBtn');
+
+    // 모바일/데스크탑 토글
+    desktopBtn.addEventListener('click', function() {
+      mobileView.style.display = 'none';
+      desktopView.style.display = 'block';
+      desktopBtn.classList.add('active');
+      mobileBtn.classList.remove('active');
+    });
+
+    mobileBtn.addEventListener('click', function() {
+      mobileView.style.display = 'block';
+      desktopView.style.display = 'none';
+      desktopBtn.classList.remove('active');
+      mobileBtn.classList.add('active');
+    });
+
+    // 게임 항목 클릭 이벤트
+    const gameItems = document.querySelectorAll('.mobile-game-item, .desktop-board-item, .desktop-popular-item, .desktop-category-item');
+    gameItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        let gameName = item.textContent.trim();
+        if (item.classList.contains('desktop-popular-item')) {
+          gameName = item.querySelector('.desktop-popular-label').textContent.trim();
+        }
+        alert(gameName + ' 게시판으로 이동합니다.');
+        // 실제 구현에서는 아래와 같이 페이지 이동 코드 작성
+        // window.location.href = '/board/' + encodeURIComponent(gameName);
+      });
+    });
+
+    // 카테고리 항목 클릭 이벤트
+    const categoryItems = document.querySelectorAll('.desktop-category-item');
+    categoryItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        // 현재 활성화된 항목에서 active 클래스 제거
+        document.querySelector('.desktop-category-item.active').classList.remove('active');
+        // 클릭된 항목에 active 클래스 추가
+        item.classList.add('active');
+      });
+    });
+  });
+</script>
+</body>
+</html>

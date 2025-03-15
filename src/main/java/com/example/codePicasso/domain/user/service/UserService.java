@@ -1,6 +1,7 @@
 package com.example.codePicasso.domain.user.service;
 
 import com.example.codePicasso.domain.user.dto.request.UserRequest;
+import com.example.codePicasso.domain.user.dto.response.UserInfoResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -66,5 +67,11 @@ public class UserService {
             throw new BusinessException(ErrorCode.KAKAO_EXCEPTION);
         }
         return null;
+    }
+
+    public UserInfoResponse getUserInfo(Long userId) {
+        User user = userConnector.findById(userId);
+
+        return DtoFactory.toUserInfoDto(user);
     }
 }
