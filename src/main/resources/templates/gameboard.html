@@ -500,24 +500,51 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", async function () {
-    const gameBoardGrid = document.getElementById("gameBoardGrid");
+    console.log("📡 /games API 요청 시작");
 
     try {
-      const response = await fetch("/games/hi/all"); // 🚀 게임 목록 GET 요청
-      if (!response.ok) throw new Error("서버 응답 실패");
+      const response = await fetch("/games", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json" // ✅ JSON 헤더 추가
+        }
+      });
+
+      console.log("📡 서버 응답 상태 코드:", response.status);
+
+      if (!response.ok) throw new Error("🚨 서버 응답 실패: " + response.status);
 
       const responseData = await response.json();
-      const games = responseData.data; // ✅ API 응답 데이터 구조에 맞춰 게임 리스트 추출
+      console.log("📡 서버 응답 데이터:", responseData);
+
+      // ✅ API 응답 구조에서 gameResponses 배열 추출
+      let games = responseData.data.gameResponses;
+
+      // ✅ ImmutableCollections$ListN 구조 해제
+      if (Array.isArray(games) && games.length === 2 && Array.isArray(games[1])) {
+        games = games[1]; // ✅ 실제 게임 배열만 추출
+      } else {
+        console.warn("🚨 gameResponses 구조가 예상과 다릅니다.", games);
+        games = []; // ✅ 비정상적인 경우 빈 배열 처리
+      }
+
+      if (games.length === 0) {
+        console.warn("⚠️ 게임 목록이 비어 있습니다.");
+      }
 
       // ✅ 게임 리스트 UI에 추가
+      const gameBoardGrid = document.getElementById("gameBoardGrid");
+      gameBoardGrid.innerHTML = ""; // 기존 내용 초기화
+
       games.forEach(game => {
         const gameItem = document.createElement("div");
         gameItem.classList.add("desktop-board-item");
-        gameItem.textContent = game.name;
+        gameItem.textContent = game.gameTitle; // ✅ gameTitle 사용
         gameBoardGrid.appendChild(gameItem);
       });
+
     } catch (error) {
-      console.error("게임 목록 불러오기 실패:", error);
+      console.error("🚨 게임 목록 불러오기 실패:", error);
     }
   });
   // DOM이 완전히 로드된 후 실행
