@@ -26,7 +26,6 @@ import com.example.codePicasso.domain.post.dto.response.PostPopularResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.entity.QPost;
-import com.example.codePicasso.domain.recommend.entity.QRecommend;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
 import com.example.codePicasso.domain.review.entity.Review;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
@@ -260,7 +259,8 @@ public class DtoFactory {
 
     public static PostPopularListResponse toPopularListDto(List<Tuple> byRecentPost) {
         return PostPopularListResponse.builder()
-                .postList(byRecentPost.stream().map(DtoFactory::toPopularDto).toList())
+                .postList(byRecentPost.stream().map(DtoFactory::toPopularDto)
+                        .toList())
                 .build();
     }
 

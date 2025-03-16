@@ -5,7 +5,6 @@ import com.example.codePicasso.domain.post.dto.response.QPostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.post.service.PostConnector;
-import com.example.codePicasso.domain.recommend.entity.QRecommend;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import com.querydsl.core.Tuple;
