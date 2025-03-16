@@ -1052,7 +1052,6 @@
                             <!-- connectToRoom() 후 탭 버튼이 동적으로 생성됨 -->
                         </div>
                         <button class="chat-action-button" id="showRoomsWidget" title="채팅방 목록">🏠</button>
-                        <button class="chat-action-button" id="minimizeChat" title="최소화">-</button>
                         <button class="chat-action-button" id="closeChat" title="닫기">×</button>
                     </div>
                 </div>
@@ -1163,8 +1162,6 @@
             console.log(`채팅방 ${room.roomId} (${room.roomName}) 구독 성공!`);
         }
 
-        // 현재 접속한 채팅방으로 설정 후 채팅 내역 로드
-        createRoomTab(room);
 
         loadChatHistoryForRoom(room.roomId);
     }
@@ -1493,55 +1490,6 @@
     }
 
 
-    // 이전 메시지 로드
-    function loadOlderMessages() {
-        if (chatLoadingInProgress) return;
-        chatLoadingInProgress = true;
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
-            chatLoadingInProgress = false;
-            return;
-        }
-        if (!chatOldestId || !chatOldestTime) {
-            chatLoadingInProgress = false;
-            return;
-        }
-        let url;
-        if (chatCurrentRoom) {
-            url = `/chats/${chatCurrentRoom}?size=${chatSize}&chatId=${chatOldestId}&lastTime=${encodeURIComponent(chatOldestTime)}`;
-        } else {
-            url = `/chats/history?size=${chatSize}&chatId=${chatOldestId}&lastTime=${encodeURIComponent(chatOldestTime)}`;
-        }
-        const prevScrollHeight = messagesContainer.scrollHeight;
-        fetch(url, {
-            method: 'GET',
-            headers: { 'Authorization': token }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const messages = data && data.data ? (chatCurrentRoom ? data.data.chatResponses : data.data.chatsResponses) : [];
-                if (!Array.isArray(messages) || messages.length === 0) return;
-                messages.forEach(message => {
-                    showChatMessage(message, true);
-                });
-                if (messages.length > 0) {
-                    chatOldestId = messages[messages.length - 1].chatsId;
-                    chatOldestTime = messages[messages.length - 1].createdAt;
-                }
-                const newScrollHeight = messagesContainer.scrollHeight;
-                messagesContainer.scrollTop = newScrollHeight - prevScrollHeight;
-            })
-            .catch(error => console.error('이전 메시지 로드 중 오류 발생:', error))
-            .finally(() => {
-                chatLoadingInProgress = false;
-            });
-    }
-
 
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1594,56 +1542,6 @@
             .catch(error => console.error('채팅방 목록 불러오는 중 오류 발생:', error));
     }
 
-    // 채팅방 목록 활성 상태 업데이트
-    function updateRoomListActiveStatus() {
-        const roomItems = document.querySelectorAll('.chat-room-item');
-        roomItems.forEach(item => {
-            item.classList.remove('chat-room-active');
-            const roomNameEl = item.querySelector('.chat-room-name');
-            if (roomNameEl) {
-                const roomName = roomNameEl.textContent.replace('🔒', '').trim();
-                if (roomName === chatCurrentRoomName) {
-                    item.classList.add('chat-room-active');
-                }
-            }
-        });
-    }
-
-
-
-    // 채팅방 내역 로드
-    function loadChatHistoryForRoom(roomId) {
-        const token = localStorage.getItem('jwtToken');
-        if (!token || !roomId) return;
-        let chatId = 0;
-        let lastTime = toISO8601Local(new Date());
-        fetch(`/chats/${roomId}?size=${chatSize}&chatId=${chatId}&lastTime=${encodeURIComponent(lastTime)}`, {
-            method: 'GET',
-            headers: { 'Authorization': token }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data && data.data && Array.isArray(data.data.chatResponses)) {
-                    const messages = data.data.chatResponses;
-                    messages.reverse();
-                    if (messagesContainer) messagesContainer.innerHTML = '';
-                    messages.forEach(message => {
-                        showChatMessage(message, false);
-                    });
-                    if (messages.length > 0) {
-                        chatOldestId = messages[0].chatsId;
-                        chatOldestTime = messages[0].createdAt;
-                    }
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }
-            })
-            .catch(error => console.error('채팅방 내역 로드 중 오류 발생:', error));
-    }
 
     // 이전 메시지 로드
     function loadOlderMessages() {
@@ -1845,6 +1743,24 @@
                 } else {
                     alert('비밀번호를 입력해주세요.');
                 }
+            });
+        }
+        if (closeChat) {
+            closeChat.addEventListener('click', function() {
+                // 1) chatWidget을 아예 닫고 싶다면 minimized 클래스를 추가해서 숨긴다
+                chatWidget.classList.add('minimized');
+
+                // 2) 또는 DOM에서 완전히 제거하고 싶다면
+                // chatWidget.remove();
+            });
+        }
+        if (closeRoomsWidget) {
+            closeRoomsWidget.addEventListener('click', function() {
+                // 1) chatWidget을 아예 닫고 싶다면 minimized 클래스를 추가해서 숨긴다
+                chatRoomsWidget.classList.remove('visible');
+
+                // 2) 또는 DOM에서 완전히 제거하고 싶다면
+                // chatWidget.remove();
             });
         }
         const isSecurityInput = document.getElementById('isSecurityInput');
