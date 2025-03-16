@@ -11,7 +11,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
       background-color: #f5f5f5;
@@ -19,7 +18,6 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
     /* 데스크탑 컨테이너 */
     .desktop-container {
       width: 100%;
@@ -32,7 +30,6 @@
       position: relative;
       display: block;
     }
-
     /* 데스크탑 스타일 */
     .desktop-header {
       display: flex;
@@ -42,17 +39,14 @@
       background-color: #339af0;
       color: white;
     }
-
     .desktop-logo {
       font-size: 24px;
       font-weight: 700;
     }
-
     .desktop-nav {
       display: flex;
       gap: 24px;
     }
-
     .desktop-nav a {
       color: white;
       text-decoration: none;
@@ -61,32 +55,26 @@
       border-radius: 4px;
       transition: background-color 0.2s;
     }
-
     .desktop-nav a:hover {
       background-color: rgba(255,255,255,0.2);
     }
-
     .desktop-layout {
       display: flex;
       background-color: #f8f9fa;
     }
-
     .desktop-sidebar {
       width: 280px;
       background-color: white;
       padding: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-
     .desktop-main {
       flex: 1;
       padding: 24px;
     }
-
     .desktop-search {
       margin-bottom: 24px;
     }
-
     .desktop-search-input {
       width: 100%;
       padding: 12px 16px;
@@ -94,24 +82,20 @@
       border-radius: 8px;
       font-size: 16px;
     }
-
     .desktop-categories {
       margin-top: 24px;
       margin-bottom: 24px;
     }
-
     .desktop-category-title {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 16px;
     }
-
     .desktop-category-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-
     .desktop-category-item {
       padding: 12px 16px;
       border-radius: 8px;
@@ -120,19 +104,16 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-
     .desktop-category-item:hover {
       background-color: white;
       transform: translateY(-2px);
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-
     .desktop-category-item.active {
       background-color: #339af0;
       color: white;
       border-color: #339af0;
     }
-
     .desktop-board-section {
       background-color: white;
       border-radius: 12px;
@@ -140,7 +121,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       margin-bottom: 24px;
     }
-
     .desktop-board-header {
       padding: 16px 24px;
       background-color: #339af0;
@@ -148,14 +128,12 @@
       font-size: 18px;
       font-weight: 600;
     }
-
     .desktop-board-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       padding: 16px;
       gap: 16px;
     }
-
     .desktop-board-item {
       background-color: #f8f9fa;
       border-radius: 8px;
@@ -165,20 +143,17 @@
       transition: all 0.2s;
       border: 1px solid #e9ecef;
     }
-
     .desktop-board-item:hover {
       transform: translateY(-3px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       background-color: white;
     }
-
     .desktop-popular-boards {
       background-color: white;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-
     .desktop-popular-header {
       padding: 16px 24px;
       background-color: #f8f9fa;
@@ -187,14 +162,12 @@
       font-weight: 600;
       color: #212529;
     }
-
     .desktop-popular-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       padding: 16px;
       gap: 16px;
     }
-
     .desktop-popular-item {
       display: flex;
       align-items: center;
@@ -206,13 +179,11 @@
       transition: all 0.2s;
       border: 1px solid #e9ecef;
     }
-
     .desktop-popular-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
       background-color: white;
     }
-
     .desktop-popular-icon {
       width: 24px;
       height: 24px;
@@ -225,10 +196,46 @@
       font-size: 14px;
       font-weight: bold;
     }
-
     .desktop-popular-label {
       font-size: 15px;
       color: #495057;
+    }
+    /* 로딩 인디케이터 스타일 */
+    .loading-indicator {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: #868e96;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: #339af0;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    /* 에러 메시지 스타일 */
+    .error-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: #e03131;
+      background-color: #fff5f5;
+      border: 1px solid #ffc9c9;
+      border-radius: 8px;
+    }
+    /* 빈 메시지 스타일 */
+    .empty-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: #868e96;
     }
   </style>
 </head>
@@ -245,8 +252,7 @@
       <a href="#">채팅방</a>
       <a href="#">공지사항</a>
     </div>
-    <div class="desktop-actions">
-    </div>
+    <div class="desktop-actions"></div>
   </div>
 
   <!-- 데스크탑 레이아웃 -->
@@ -275,7 +281,7 @@
       <div class="desktop-categories">
         <div class="desktop-category-title">인기 게시판</div>
         <div class="desktop-category-list">
-          <!-- 인기 게시판 항목은 별도 구현 -->
+          <!-- 인기 게시판 항목은 동적으로 채워짐 -->
         </div>
       </div>
     </div>
@@ -289,7 +295,11 @@
         </div>
         <!-- 동적으로 게임 목록 로딩 -->
         <div class="desktop-board-grid" id="desktopBoardGrid">
-          <!-- JS로 채워짐 -->
+          <!-- 초기 로딩 상태 표시 -->
+          <div class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <div>게임 목록을 불러오는 중입니다...</div>
+          </div>
         </div>
       </div>
 
@@ -330,60 +340,197 @@
 </div>
 
 <script>
-  // DOM이 완전히 로드된 후 실행
-  document.addEventListener('DOMContentLoaded', function() {
-    // 게임 항목 클릭 이벤트
-    const gameItems = document.querySelectorAll('.desktop-board-item, .desktop-popular-item, .desktop-category-item');
-    gameItems.forEach(function(item) {
-      item.addEventListener('click', function() {
-        let gameName = item.textContent.trim();
-        if (item.classList.contains('desktop-popular-item')) {
-          gameName = item.querySelector('.desktop-popular-label').textContent.trim();
-        }
-        alert(gameName + ' 게시판으로 이동합니다.');
-        // 실제 구현에서는 아래와 같이 페이지 이동 코드 작성
-        // window.location.href = '/board/' + encodeURIComponent(gameName);
-      });
-    });
+  // 개선된 게임 목록 불러오기 함수 (응답 구조에 맞게 수정)
+  async function fetchGameList() {
+    try {
+      // 로딩 상태 표시
+      const desktopGrid = document.getElementById('desktopBoardGrid');
+      if (desktopGrid) {
+        desktopGrid.innerHTML = `
+          <div class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <div>게임 목록을 불러오는 중입니다...</div>
+          </div>
+        `;
+      }
 
-    // 카테고리 항목 클릭 이벤트
-    const categoryItems = document.querySelectorAll('.desktop-category-item');
-    categoryItems.forEach(function(item) {
-      item.addEventListener('click', function() {
-        // 현재 활성화된 항목에서 active 클래스 제거
-        document.querySelector('.desktop-category-item.active').classList.remove('active');
-        // 클릭된 항목에 active 클래스 추가
-        item.classList.add('active');
-      });
-    });
+      const response = await fetch('/games', { method: 'GET' });
+      if (!response.ok) {
+        throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
+      }
 
-    // 게임 목록 로드 호출
-    loadGameList();
-  });
+      const responseData = await response.json();
+      console.log("서버 응답 데이터:", responseData);
 
-  // 게임 목록을 컨트롤러에서 받아와서 게임 이름만 표시
-  function loadGameList() {
-    fetch('/games', { method: 'GET' })
-            .then(response => response.json())
-            .then(data => {
-              if (data.successOrFail && data.data && data.data.gameResponses) {
-                const games = data.data.gameResponses;
-                const desktopGrid = document.getElementById('desktopBoardGrid');
-                desktopGrid.innerHTML = '';
-                games.forEach(game => {
-                  // 데스크탑 항목 생성
-                  const desktopItem = document.createElement('div');
-                  desktopItem.className = 'desktop-board-item';
-                  desktopItem.textContent = game.gameTitle;
-                  desktopItem.addEventListener('click', () => {
-                    window.location.href = '/board/' + encodeURIComponent(game.gameTitle);
-                  });
-                  desktopGrid.appendChild(desktopItem);
-                });
-              }
-            })
-            .catch(error => console.error('게임 목록 로딩 중 오류:', error));
+      // GameGetAllResponse 구조: { successOrFail: true, data: { gameResponses: [...] } }
+      if (!responseData.successOrFail || !responseData.data || !responseData.data.gameResponses) {
+        throw new Error("서버 응답 데이터 형식이 올바르지 않습니다.");
+      }
+
+      // 응답의 gameResponses가 중첩 배열인 경우 실제 배열를 꺼내기
+      let rawGameResponses = responseData.data.gameResponses;
+      let games;
+      if (Array.isArray(rawGameResponses) && rawGameResponses.length === 2 && Array.isArray(rawGameResponses[1])) {
+        games = rawGameResponses[1];
+      } else {
+        games = rawGameResponses;
+      }
+
+      if (!Array.isArray(games)) {
+        throw new Error("게임 목록의 데이터 형식이 배열이 아닙니다.");
+      }
+
+      // 게임 목록 렌더링
+      renderGameList(games);
+
+      // 인기 게시판 목록 업데이트
+      updatePopularGameList(games);
+
+      // 전역 변수로 저장 (검색 기능 등에서 사용)
+      window.allGames = games;
+
+    } catch (error) {
+      console.error("게임 목록 가져오기 실패:", error);
+      renderErrorMessage("게임 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.");
+    }
   }
+
+  // 게임 목록을 화면에 렌더링하는 함수
+  function renderGameList(games) {
+    const desktopGrid = document.getElementById('desktopBoardGrid');
+    if (!desktopGrid) {
+      console.error("desktopBoardGrid 요소를 찾을 수 없습니다.");
+      return;
+    }
+    // 기존 목록 초기화
+    desktopGrid.innerHTML = '';
+
+    // 게임이 없는 경우
+    if (games.length === 0) {
+      const emptyMessage = document.createElement('div');
+      emptyMessage.className = 'empty-message';
+      emptyMessage.textContent = '등록된 게임이 없습니다.';
+      desktopGrid.appendChild(emptyMessage);
+      return;
+    }
+
+    // 각 게임마다 항목 생성하여 추가
+    games.forEach(game => {
+      const gameItem = document.createElement('div');
+      gameItem.className = 'desktop-board-item';
+      gameItem.textContent = game.gameTitle || '게임 제목 없음';
+
+      // 클릭 이벤트 리스너 추가
+      gameItem.addEventListener('click', () => {
+        const gameName = game.gameTitle;
+        console.log(`${gameName} 게시판으로 이동합니다.`);
+        window.location.href = `/board/${encodeURIComponent(gameName)}`;
+      });
+
+      desktopGrid.appendChild(gameItem);
+    });
+  }
+
+  // 인기 게시판 목록 업데이트 함수
+  function updatePopularGameList(games) {
+    // 상위 6개 게임만 표시 (실제로는 인기도에 따른 정렬이 필요)
+    const popularGames = [...games].slice(0, 6);
+    const popularList = document.querySelector('.desktop-category-list:last-child');
+    if (!popularList) {
+      console.warn("인기 게시판 목록 요소를 찾을 수 없습니다.");
+      return;
+    }
+    // 기존 항목 제거
+    popularList.innerHTML = '';
+    // 인기 게임이 없는 경우
+    if (popularGames.length === 0) {
+      const emptyItem = document.createElement('div');
+      emptyItem.className = 'desktop-category-item';
+      emptyItem.textContent = '인기 게시판이 없습니다';
+      emptyItem.style.color = '#868e96';
+      popularList.appendChild(emptyItem);
+      return;
+    }
+    // 인기 게임 목록 추가
+    popularGames.forEach(game => {
+      const gameItem = document.createElement('div');
+      gameItem.className = 'desktop-category-item';
+      gameItem.textContent = game.gameTitle || '게임 제목 없음';
+      gameItem.addEventListener('click', () => {
+        const gameName = game.gameTitle;
+        window.location.href = `/board/${encodeURIComponent(gameName)}`;
+      });
+      popularList.appendChild(gameItem);
+    });
+  }
+
+  // 에러 메시지 표시 함수
+  function renderErrorMessage(message) {
+    const desktopGrid = document.getElementById('desktopBoardGrid');
+    if (!desktopGrid) return;
+    desktopGrid.innerHTML = '';
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    desktopGrid.appendChild(errorDiv);
+  }
+
+  // 게임 검색 기능 구현
+  function setupGameSearch() {
+    const searchInput = document.querySelector('.desktop-search-input');
+    if (!searchInput) return;
+    searchInput.addEventListener('input', function() {
+      const allGames = window.allGames || [];
+      const searchTerm = this.value.trim().toLowerCase();
+      if (!searchTerm) {
+        renderGameList(allGames);
+        return;
+      }
+      const filteredGames = allGames.filter(game => {
+        const gameTitle = (game.gameTitle || '').toLowerCase();
+        return gameTitle.includes(searchTerm);
+      });
+      renderGameList(filteredGames);
+    });
+  }
+
+  // 게임 카테고리 필터링 기능
+  function setupCategoryFilter() {
+    const categoryItems = document.querySelectorAll('.desktop-category-item');
+    categoryItems.forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelector('.desktop-category-item.active').classList.remove('active');
+        this.classList.add('active');
+        const category = this.textContent.trim();
+        const allGames = window.allGames || [];
+        if (category === '전체') {
+          renderGameList(allGames);
+          return;
+        }
+        // 게임 데이터에 gameCategory 필드가 있다고 가정
+        const filteredGames = allGames.filter(game =>
+                (game.gameCategory || '').toLowerCase() === category.toLowerCase()
+        );
+        renderGameList(filteredGames);
+      });
+    });
+  }
+
+  // 페이지 로드 시 실행
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchGameList();
+    setupGameSearch();
+    setupCategoryFilter();
+    // 인기 게시판 항목 이벤트 설정
+    const popularItems = document.querySelectorAll('.desktop-popular-item');
+    popularItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const gameName = item.querySelector('.desktop-popular-label').textContent.trim();
+        console.log(`${gameName} 게시판으로 이동합니다.`);
+        window.location.href = `/board/${encodeURIComponent(gameName)}`;
+      });
+    });
+  });
 </script>
 </body>
 </html>
