@@ -20,48 +20,6 @@
       min-height: 100vh;
     }
 
-    /* 모드 토글 스위치 */
-    .device-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background-color: #495057;
-      color: white;
-      border-radius: 8px;
-      display: flex;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .device-toggle button {
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      background: none;
-      color: rgba(255,255,255,0.6);
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    .device-toggle button.active {
-      background-color: #343a40;
-      color: white;
-    }
-
-    /* 모바일 컨테이너 */
-    .mobile-container {
-      width: 390px;
-      height: 670px;
-      margin: 40px auto;
-      background-color: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      overflow: hidden;
-      position: relative;
-      display: none;
-    }
-
     /* 데스크탑 컨테이너 */
     .desktop-container {
       width: 100%;
@@ -73,87 +31,6 @@
       overflow: hidden;
       position: relative;
       display: block;
-    }
-
-    /* 모바일 스타일 */
-    .mobile-content {
-      position: relative;
-      height: 100%;
-      background-color: #f1f3f5;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .mobile-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px;
-      background-color: #fff;
-      border-bottom: 1px solid #e9ecef;
-    }
-
-    .mobile-back-button {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      color: #495057;
-      cursor: pointer;
-    }
-
-    .mobile-header-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #212529;
-    }
-
-    .mobile-page-title {
-      padding: 20px 16px;
-      font-size: 18px;
-      font-weight: 600;
-      color: #212529;
-      background-color: #dee2e6;
-    }
-
-    .mobile-game-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-gap: 1px;
-      background-color: #e9ecef;
-      flex-grow: 1;
-    }
-
-    .mobile-game-item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px 0;
-      background-color: #fff;
-      text-align: center;
-      cursor: pointer;
-      font-size: 15px;
-      color: #495057;
-      transition: background-color 0.2s;
-    }
-
-    .mobile-game-item:hover {
-      background-color: #f8f9fa;
-    }
-
-    .mobile-search-bar {
-      padding: 16px;
-      background-color: #fff;
-      border-top: 1px solid #e9ecef;
-    }
-
-    .mobile-search-input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #ced4da;
-      border-radius: 6px;
-      font-size: 14px;
-      box-sizing: border-box;
     }
 
     /* 데스크탑 스타일 */
@@ -356,48 +233,6 @@
   </style>
 </head>
 <body>
-<!-- 모드 토글 스위치 -->
-<div class="device-toggle">
-  <button class="active" id="desktopBtn">데스크탑</button>
-  <button id="mobileBtn">모바일</button>
-</div>
-
-<!-- 모바일 컨테이너 -->
-<div class="mobile-container" id="mobileView">
-  <div class="mobile-content">
-    <!-- 헤더 -->
-    <div class="mobile-header">
-      <div class="mobile-back-button">← 뒤로가기</div>
-      <div class="mobile-header-title">게시판</div>
-      <div style="width: 70px;"></div> <!-- 균형을 위한 빈 공간 -->
-    </div>
-
-    <!-- 페이지 제목 -->
-    <div class="mobile-page-title">생성된 게임 게시판</div>
-
-    <!-- 게임 그리드 -->
-    <div class="mobile-game-grid">
-      <div class="mobile-game-item">롤</div>
-      <div class="mobile-game-item">배그</div>
-      <div class="mobile-game-item">오버워치</div>
-      <div class="mobile-game-item">로스트아크</div>
-      <div class="mobile-game-item">롤지미</div>
-      <div class="mobile-game-item">던전앤파이팅</div>
-      <div class="mobile-game-item">메이플스토리</div>
-      <div class="mobile-game-item">리니지</div>
-      <div class="mobile-game-item">디아블로4</div>
-      <div class="mobile-game-item">피파온라인4</div>
-      <div class="mobile-game-item">서든어택</div>
-      <div class="mobile-game-item">발로란트</div>
-    </div>
-
-    <!-- 검색 바 -->
-    <div class="mobile-search-bar">
-      <input type="text" class="mobile-search-input" placeholder="게임 검색">
-    </div>
-  </div>
-</div>
-
 <!-- 데스크탑 컨테이너 -->
 <div class="desktop-container" id="desktopView">
   <!-- 데스크탑 헤더 -->
@@ -440,11 +275,7 @@
       <div class="desktop-categories">
         <div class="desktop-category-title">인기 게시판</div>
         <div class="desktop-category-list">
-          <div class="desktop-category-item">리그 오브 레전드</div>
-          <div class="desktop-category-item">배틀그라운드</div>
-          <div class="desktop-category-item">오버워치</div>
-          <div class="desktop-category-item">로스트아크</div>
-          <div class="desktop-category-item">메이플스토리</div>
+          <!-- 인기 게시판 항목은 별도 구현 -->
         </div>
       </div>
     </div>
@@ -456,13 +287,13 @@
         <div class="desktop-board-header">
           생성된 게임 게시판
         </div>
-        <div class="desktop-board-grid" id="gameBoardGrid">
-          <div class="desktop-board-item">포트나이트</div>
-          <div class="desktop-board-item">에이펙스 레전드</div>
+        <!-- 동적으로 게임 목록 로딩 -->
+        <div class="desktop-board-grid" id="desktopBoardGrid">
+          <!-- JS로 채워짐 -->
         </div>
       </div>
 
-      <!-- 인기 게시판 -->
+      <!-- 인기 게시판 (예시) -->
       <div class="desktop-popular-boards">
         <div class="desktop-popular-header">
           최근 활발한 게시판
@@ -499,79 +330,10 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", async function () {
-    console.log("📡 /games API 요청 시작");
-
-    try {
-      const response = await fetch("/games/hi/all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json" // ✅ JSON 헤더 추가
-        }
-      });
-
-      console.log("📡 서버 응답 상태 코드:", response.status);
-
-      if (!response.ok) throw new Error("🚨 서버 응답 실패: " + response.status);
-
-      const responseData = await response.json();
-      console.log("📡 서버 응답 데이터:", responseData);
-
-      // ✅ API 응답 구조에서 gameResponses 배열 추출
-      let games = responseData.data.gameResponses;
-
-      // ✅ ImmutableCollections$ListN 구조 해제
-      if (Array.isArray(games) && games.length === 2 && Array.isArray(games[1])) {
-        games = games[1]; // ✅ 실제 게임 배열만 추출
-      } else {
-        console.warn("🚨 gameResponses 구조가 예상과 다릅니다.", games);
-        games = []; // ✅ 비정상적인 경우 빈 배열 처리
-      }
-
-      if (games.length === 0) {
-        console.warn("⚠️ 게임 목록이 비어 있습니다.");
-      }
-
-      // ✅ 게임 리스트 UI에 추가
-      const gameBoardGrid = document.getElementById("gameBoardGrid");
-      gameBoardGrid.innerHTML = ""; // 기존 내용 초기화
-
-      games.forEach(game => {
-        const gameItem = document.createElement("div");
-        gameItem.classList.add("desktop-board-item");
-        gameItem.textContent = game.gameTitle; // ✅ gameTitle 사용
-        gameBoardGrid.appendChild(gameItem);
-      });
-
-    } catch (error) {
-      console.error("🚨 게임 목록 불러오기 실패:", error);
-    }
-  });
   // DOM이 완전히 로드된 후 실행
   document.addEventListener('DOMContentLoaded', function() {
-    // 요소 선택
-    const mobileView = document.getElementById('mobileView');
-    const desktopView = document.getElementById('desktopView');
-    const desktopBtn = document.getElementById('desktopBtn');
-    const mobileBtn = document.getElementById('mobileBtn');
-
-    // 모바일/데스크탑 토글
-    desktopBtn.addEventListener('click', function() {
-      mobileView.style.display = 'none';
-      desktopView.style.display = 'block';
-      desktopBtn.classList.add('active');
-      mobileBtn.classList.remove('active');
-    });
-
-    mobileBtn.addEventListener('click', function() {
-      mobileView.style.display = 'block';
-      desktopView.style.display = 'none';
-      desktopBtn.classList.remove('active');
-      mobileBtn.classList.add('active');
-    });
-
     // 게임 항목 클릭 이벤트
-    const gameItems = document.querySelectorAll('.mobile-game-item, .desktop-board-item, .desktop-popular-item, .desktop-category-item');
+    const gameItems = document.querySelectorAll('.desktop-board-item, .desktop-popular-item, .desktop-category-item');
     gameItems.forEach(function(item) {
       item.addEventListener('click', function() {
         let gameName = item.textContent.trim();
@@ -594,7 +356,34 @@
         item.classList.add('active');
       });
     });
+
+    // 게임 목록 로드 호출
+    loadGameList();
   });
+
+  // 게임 목록을 컨트롤러에서 받아와서 게임 이름만 표시
+  function loadGameList() {
+    fetch('/games', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+              if (data.successOrFail && data.data && data.data.gameResponses) {
+                const games = data.data.gameResponses;
+                const desktopGrid = document.getElementById('desktopBoardGrid');
+                desktopGrid.innerHTML = '';
+                games.forEach(game => {
+                  // 데스크탑 항목 생성
+                  const desktopItem = document.createElement('div');
+                  desktopItem.className = 'desktop-board-item';
+                  desktopItem.textContent = game.gameTitle;
+                  desktopItem.addEventListener('click', () => {
+                    window.location.href = '/board/' + encodeURIComponent(game.gameTitle);
+                  });
+                  desktopGrid.appendChild(desktopItem);
+                });
+              }
+            })
+            .catch(error => console.error('게임 목록 로딩 중 오류:', error));
+  }
 </script>
 </body>
 </html>
