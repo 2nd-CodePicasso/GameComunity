@@ -16,7 +16,7 @@ import java.util.Map;
 public class KaKaoService {
 
     private static final String CLIENT_ID = "4b10ae0ea74ca704d208eb841074fa20";
-    private static final String REDIRECT_URI = "http://localhost:8080/auth/hi/kakao/signup";
+    private static final String REDIRECT_URI = "http://obfgamers.com:8080/auth/hi/kakao/signup";
     private static final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private final WebClient webClient;
 
