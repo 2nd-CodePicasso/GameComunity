@@ -456,21 +456,7 @@
         <div class="desktop-board-header">
           생성된 게임 게시판
         </div>
-        <div class="desktop-board-grid">
-          <div class="desktop-board-item">롤</div>
-          <div class="desktop-board-item">배그</div>
-          <div class="desktop-board-item">오버워치</div>
-          <div class="desktop-board-item">로스트아크</div>
-          <div class="desktop-board-item">롤지미</div>
-          <div class="desktop-board-item">던전앤파이팅</div>
-          <div class="desktop-board-item">메이플스토리</div>
-          <div class="desktop-board-item">리니지</div>
-          <div class="desktop-board-item">디아블로4</div>
-          <div class="desktop-board-item">피파온라인4</div>
-          <div class="desktop-board-item">서든어택</div>
-          <div class="desktop-board-item">발로란트</div>
-          <div class="desktop-board-item">스타크래프트</div>
-          <div class="desktop-board-item">워크래프트3</div>
+        <div class="desktop-board-grid" id="gameBoardGrid">
           <div class="desktop-board-item">포트나이트</div>
           <div class="desktop-board-item">에이펙스 레전드</div>
         </div>
@@ -513,6 +499,27 @@
 </div>
 
 <script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    const gameBoardGrid = document.getElementById("gameBoardGrid");
+
+    try {
+      const response = await fetch("/games/hi/all"); // 🚀 게임 목록 GET 요청
+      if (!response.ok) throw new Error("서버 응답 실패");
+
+      const responseData = await response.json();
+      const games = responseData.data; // ✅ API 응답 데이터 구조에 맞춰 게임 리스트 추출
+
+      // ✅ 게임 리스트 UI에 추가
+      games.forEach(game => {
+        const gameItem = document.createElement("div");
+        gameItem.classList.add("desktop-board-item");
+        gameItem.textContent = game.name;
+        gameBoardGrid.appendChild(gameItem);
+      });
+    } catch (error) {
+      console.error("게임 목록 불러오기 실패:", error);
+    }
+  });
   // DOM이 완전히 로드된 후 실행
   document.addEventListener('DOMContentLoaded', function() {
     // 요소 선택
