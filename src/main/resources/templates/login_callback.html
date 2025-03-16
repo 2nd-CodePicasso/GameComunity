@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카카오 로그인 완료</title>
+</head>
+<body>
+<h2>카카오 로그인 중...</h2>
+
+<script>
+  // ✅ Thymeleaf에서 받은 카카오 토큰
+  const kakaoToken = "[[${kakaoToken}]]";
+
+  if (kakaoToken) {
+    // ✅ 부모 창(원래 페이지)에 토큰 전달
+    window.opener.postMessage({ kakaoToken: kakaoToken }, "*");
+
+    // ✅ 팝업 자동 닫기
+    window.close();
+  } else {
+    document.body.innerHTML = "<h2>로그인 실패: 토큰 없음</h2><button onclick='window.close()'>닫기</button>";
+  }
+</script>
+</body>
+</html>
