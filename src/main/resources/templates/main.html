@@ -1929,13 +1929,6 @@
         });
     }
 
-    document.getElementById("latest-news-card").addEventListener("click", function() {
-        const cardId = this.id;
-        // localStorage에 cardId 저장
-        localStorage.setItem("postId", cardId);
-
-        window.location.href = '/boardeatail/hi/game';
-    });
 
     function getCategoryColor(categoryName) {
         return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
