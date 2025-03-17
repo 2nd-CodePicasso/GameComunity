@@ -1910,21 +1910,23 @@
 
             newsItem.innerHTML = `
             <span class="news-category" style="background-color: ${getCategoryColor(post.categoryName)};">${post.categoryName}</span>
-            <div class="news-title" id="${post.id}">${post.title}</div>
+            <div class="news-title" id="latest-news-card-${post.id}">${post.title}</div>
             <div class="news-date">조회 ${post.viewCount.toLocaleString()}</div>
         `;
 
             cardBody.appendChild(newsItem); // 리스트에 추가
+
+            document.getElementById(`latest-news-card-${post.id}`).addEventListener("click", function() {
+                const cardId = post.id;
+                // localStorage에 cardId 저장
+                localStorage.setItem("postId", cardId);
+
+                window.location.href = '/boardeatail/hi/game';
+            });
         });
     }
 
-    document.getElementById(post.id).addEventListener("click", function() {
-        const cardId = this.id;
-        // localStorage에 cardId 저장
-        localStorage.setItem("postId", cardId);
 
-        window.location.href = '/boardeatail/hi/game';
-    });
 
     function getCategoryColor(categoryName) {
         return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
