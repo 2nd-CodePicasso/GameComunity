@@ -1910,7 +1910,11 @@
         const clickedTitle = event.target.closest(".news-title"); // 클릭된 요소가 `.news-title`인지 확인
 
         if (clickedTitle) {
-            const postId = clickedTitle.getAttribute("data-post-id"); // ✅ `data-post-id`에서 ID 가져오기
+            const postId = clickedTitle.getAttribute("data-post-id");
+            if (!postId) {
+                console.log("❌ `data-post-id` 속성이 없음");
+                return;
+            }// ✅ `data-post-id`에서 ID 가져오기
             localStorage.setItem("postId", postId); // ✅ postId 저장
             window.location.href = "/boardeatail/hi/game"; // ✅ 페이지 이동
         }
@@ -1940,7 +1944,6 @@
         });
     }
 
-    // ✅ 이벤트 위임: `.card-body`에 클릭 이벤트 추가
     document.querySelector("#popular-posts-card .card-body").addEventListener("click", function(event) {
         const clickedTitle = event.target.closest(".news-title"); // 클릭한 요소가 .news-title인지 확인
 
@@ -1950,6 +1953,7 @@
             window.location.href = "/boardeatail/hi/game"; // 페이지 이동
         }
     });
+    // ✅ 이벤트 위임: `.card-body`에 클릭 이벤트 추가
 
 
 
