@@ -57,7 +57,7 @@ public class HomeController {
     }
     @GetMapping("/boardeatail/hi/game")
     public String boarDetailMain() {
-        return "board_main";
+        return "board_details";
     }
 
 
