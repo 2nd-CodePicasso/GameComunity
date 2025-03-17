@@ -1890,10 +1890,21 @@
             newsItem.classList.add("news-item");
 
             newsItem.innerHTML = `
-         <span class="news-category" style="background-color: ${getCategoryColor(news.categoryName)};">${news.categoryName}</span>
-         <div class="news-title">${news.title}</div>
-         <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
+            <span class="news-category" style="background-color: ${getCategoryColor(news.categoryName)};">
+                ${news.categoryName}
+            </span>
+            <div class="news-title" data-post-id="${news.id}">
+                ${news.title}
+            </div>
+            <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
         `;
+
+            // ✅ 클릭 이벤트 추가
+            newsItem.querySelector('.news-title').addEventListener('click', function() {
+                const postId = this.getAttribute('data-post-id'); // 실제 게시글 ID
+                localStorage.setItem("postId", postId); // postId 저장
+                window.location.href = '/boardeatail/hi/game';
+            });
 
             cardBody.appendChild(newsItem); // ✅ 동적으로 추가
         });
