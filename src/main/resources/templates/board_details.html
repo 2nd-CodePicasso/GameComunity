@@ -796,14 +796,13 @@
             <h1 class="post-title" id="title-post">시즌13 미드라인 티어리스트 공유합니다</h1>
             <div class="post-meta">
               <div class="post-author-info">
-                <div class="post-author-avatar" id="category-name">롤</div>
-                <span class="post-author-name">롤챔프</span>
-                <span class="post-date">2025-03-14 14:23</span>
-                <span class="post-category">정보</span>
-                <span class="badge badge-recommended">추천</span>
+                <div class="post-author-avatar" id ="game-name">롤</div>
+                <span class="post-author-name" id ="post-author">롤챔프</span>
+                <span class="post-date" id="post-dayday">2025-03-14 14:23</span>
+                <span class="post-category" id="category-name">정보</span>
               </div>
               <div class="post-stats">
-                <div class="post-stat-item">
+                <div class="post-stat-item" id="viewCount">
                   <i class="far fa-eye"></i>
                   <span>248</span>
                 </div>
@@ -820,48 +819,9 @@
           </div>
           
           <!-- 게시글 본문 -->
-          <div class="post-content">
+          <div class="post-content" id="post-descrpibtion">
             <p>안녕하세요, 롤챔프입니다. 현재 시즌13에서 미드라인 챔피언들의 티어리스트를 정리해봤습니다. 패치 13.5 기준이며, 솔로 랭크 플레이 데이터를 바탕으로 작성되었습니다.</p>
-            
-            <h2>S 티어 (최상위 픽)</h2>
-            <p>
-              1. <strong>야스오</strong> - 높은 기동성과 데미지로 현 메타에서 강세<br>
-              2. <strong>카타리나</strong> - 로밍 능력과 팀파이트 기여도가 매우 높음<br>
-              3. <strong>빅토르</strong> - 안정적인 레이닝과 후반 화력이 뛰어남<br>
-              4. <strong>아리</strong> - 기동성과 CC가 좋고 안전한 픽
-            </p>
-
-            
-            <h2>A 티어 (상위 픽)</h2>
-            <p>
-              1. <strong>오리아나</strong> - 팀 전투에서 강력한 궁극기<br>
-              2. <strong>럭스</strong> - 원거리 CC와 높은 화력<br>
-              3. <strong>르블랑</strong> - 암살 능력과 기동성이 뛰어남<br>
-              4. <strong>아칼리</strong> - 1대1 전투에서 강력한 성능<br>
-              5. <strong>제드</strong> - 암살자로서 높은 데미지
-            </p>
-            
-            <h2>B 티어 (평균 이상)</h2>
-            <p>
-              1. <strong>애니비아</strong> - 맵 컨트롤이 우수함<br>
-              2. <strong>사일러스</strong> - 다재다능한 챔피언<br>
-              3. <strong>벡스</strong> - CC와 범위 데미지가 좋음<br>
-              4. <strong>트위스티드 페이트</strong> - 맵 장악력이 뛰어남<br>
-              5. <strong>피즈</strong> - 암살 능력 우수
-            </p>
-            
-            <h2>C 티어 (상황에 따라 좋음)</h2>
-            <p>
-              1. <strong>신드라</strong> - 특정 매치업에서 유리<br>
-              2. <strong>제라스</strong> - 원거리 포킹이 좋음<br>
-              3. <strong>탈리야</strong> - 로밍 능력이 뛰어남<br>
-              4. <strong>말자하</strong> - CC와 서포트 능력 좋음
-            </p>
-            
-            <h2>주의사항</h2>
-            <p>이 티어리스트는 일반적인 상황을 기준으로 작성되었습니다. 실제 게임에서는 상대 챔피언과의 상성, 팀 구성, 개인 숙련도에 따라 달라질 수 있습니다. 자신이 숙련된 챔피언으로 플레이하는 것이 티어가 높은 챔피언을 처음 사용하는 것보다 더 효과적일 수 있습니다.</p>
           </div>
-          
           <!-- 게시글 액션 버튼 -->
           <div class="post-actions">
             <div class="post-buttons">
@@ -987,9 +947,12 @@
   // 게시물 정보를 화면에 렌더링하는 예시 함수
   function renderPost(post) {
     document.getElementById('title-post').textContent = post.title;
-    document.getElementById('post-author').textContent = post.author;
-    document.getElementById('post-date').textContent = post.createdDate;
+    document.getElementById('game-name').textContent = post.gameTitle;
+    document.getElementById('post-author').textContent = post.nickname;
+    document.getElementById('post-dayday').textContent = post.createdAt;
     document.getElementById('category-name').innerHTML = post.categoryName;
+    document.getElementById('#viewCount span').innerHTML = post.viewCount;
+    document.getElementById('post-descrpibtion').innerHTML = post.description;
   }
 
   function login() {
