@@ -1910,7 +1910,7 @@
 
             newsItem.innerHTML = `
             <span class="news-category" style="background-color: ${getCategoryColor(post.categoryName)};">${post.categoryName}</span>
-            <div class="news-title" id="${post.id}" id="latest-news-card">${post.title}</div>
+            <div class="news-title" id="${post.id}">${post.title}</div>
             <div class="news-date">조회 ${post.viewCount.toLocaleString()}</div>
         `;
 
@@ -1918,7 +1918,7 @@
         });
     }
 
-    document.getElementById("latest-news-card").addEventListener("click", function() {
+    document.getElementById(post.id).addEventListener("click", function() {
         const cardId = this.id;
         // localStorage에 cardId 저장
         localStorage.setItem("postId", cardId);
