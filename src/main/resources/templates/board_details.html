@@ -696,9 +696,7 @@
 </head>
 <body>
   <!-- 데모 컨트롤 -->
-  <div style="position: fixed; top: 10px; left: 10px; z-index: 1000; background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-    <button onclick="toggleLoginStatus()" style="padding: 5px 10px;">로그인 상태 전환</button>
-  </div>
+
   
   <!-- 데스크탑 컨테이너 -->
   <div class="desktop-container">
@@ -707,10 +705,9 @@
       <div class="desktop-logo">게임 커뮤니티</div>
       <div class="desktop-nav">
         <a href="/">홈</a>
-        <a href="/boards" class="active">게시판</a>
-        <a href="/items">아이템 거래소</a>
+        <a href="/gameboard/hi/game" class="active">게시판</a>
+        <a href="/exchange/hi/game">아이템 거래소</a>
         <a href="/chats">채팅방</a>
-        <a href="/notices">공지사항</a>
       </div>
     </div>
     
@@ -721,7 +718,6 @@
         <!-- 로그인 여부에 따라 다른 내용 표시 -->
         <div id="non-logged-in-content">
           <!-- 비로그인 상태: 로그인 폼 -->
-          <form action="/auth/login" method="post" class="login-form">
             <h2 class="form-title">로그인</h2>
             
             <div class="form-group">
@@ -735,14 +731,13 @@
             </div>
             
             <div class="buttons-container">
-              <button type="submit" class="btn btn-primary">로그인</button>
-              <a href="/auth/signup" class="btn btn-outline">회원가입</a>
+              <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
+              <a href="/signup/hi/game" class="btn btn-outline">회원가입</a>
             </div>
             
             <div style="text-align: center; margin-top: 16px;">
               <a href="#" class="text-link">아이디/비밀번호 찾기</a>
             </div>
-          </form>
         </div>
         
         <!-- 로그인한 경우: 회원 정보 -->
@@ -759,29 +754,15 @@
               </div>
             </div>
             <div class="profile-details">
-              <div class="user-nickname">게임마스터</div>
-              <div class="user-id">gamemaster</div>
+              <div class="user-nickname" id="user-nickname">로딩 중...</div>
+              <div class="user-id" id="join-date">로딩 중...</div>
             </div>
           </div>
-          
-          <div class="user-stats">
-            <div class="stat-item">
-              <div class="stat-label">작성글</div>
-              <div class="stat-value">12</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">댓글</div>
-              <div class="stat-value">48</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-label">가입일</div>
-              <div class="stat-value">2025-01-15</div>
-            </div>
-          </div>
+
           
           <div class="buttons-container">
             <a href="/users/my-profile" class="btn btn-outline">내 프로필</a>
-            <a href="/auth/logout" class="btn btn-outline">로그아웃</a>
+            <a href="#" class="btn btn-outline" onclick="logout()">로그아웃</a>
           </div>
         </div>
         
@@ -789,24 +770,17 @@
         <div style="margin-top: 24px;">
           <h3 style="margin-bottom: 16px; font-size: 16px; color: #495057;">바로가기</h3>
           <div class="pages-section">
-            <a href="/boards" class="page-button">
+            <a href="/gameboard/hi/game" class="page-button">
               <div class="icon board-icon">B</div>
               <div>
                 <div class="page-title">게시판</div>
               </div>
             </a>
             
-            <a href="/items" class="page-button">
+            <a href="/exchange/hi/game" class="page-button">
               <div class="icon item-icon">I</div>
               <div>
                 <div class="page-title">아이템 거래소</div>
-              </div>
-            </a>
-            
-            <a href="/chats" class="page-button">
-              <div class="icon chat-icon">C</div>
-              <div>
-                <div class="page-title">채팅방</div>
               </div>
             </a>
           </div>
@@ -937,58 +911,7 @@
                 <div class="comment-action">답글</div>
               </div>
             </div>
-            
-            <!-- 댓글 아이템 2 -->
-            <div class="comment-item">
-              <div class="comment-header">
-                <div class="comment-author">
-                  <div class="comment-author-avatar">롤</div>
-                  <div class="comment-author-name">롤챔프</div>
-                </div>
-                <div class="comment-date">2025-03-14 15:02</div>
-              </div>
-              <div class="comment-content">
-                @다이아티어 좋은 의견 감사합니다! 벡스는 사실 A-/B+ 정도로 경계선에 있는 챔피언입니다. 최근 패치에서 약간 너프되어서 B티어로 내려왔지만, 숙련자 손에서는 충분히 A티어급 활약이 가능합니다.
-              </div>
-              <div class="comment-actions">
-                <div class="comment-action">답글</div>
-              </div>
-            </div>
-            
-            <!-- 댓글 아이템 3 -->
-            <div class="comment-item">
-              <div class="comment-header">
-                <div class="comment-author">
-                  <div class="comment-author-avatar">정</div>
-                  <div class="comment-author-name">정글의왕</div>
-                </div>
-                <div class="comment-date">2025-03-14 15:30</div>
-              </div>
-              <div class="comment-content">
-                제 의견으로는 카타리나가 과대평가된 것 같습니다. 고티어에서는 카운터가 너무 많고 CC기가 없어서 한계가 있더라고요. 차라리 아리나 르블랑이 더 안정적이고 팀 기여도도 높은 것 같습니다.
-              </div>
-              <div class="comment-actions">
-                <div class="comment-action">답글</div>
-              </div>
-            </div>
-            
-            <!-- 댓글 아이템 4 -->
-            <div class="comment-item">
-              <div class="comment-header">
-                <div class="comment-author">
-                  <div class="comment-author-avatar">미</div>
-                  <div class="comment-author-name">미드장인</div>
-                </div>
-                <div class="comment-date">2025-03-14 16:15</div>
-              </div>
-              <div class="comment-content">
-                정리 감사합니다! 다음엔 티어별 게임 운영 방법이나 아이템 빌드도 같이 정리해주시면 더 좋을 것 같아요 ^^
-              </div>
-              <div class="comment-actions">
-                <div class="comment-action">답글</div>
-              </div>
-            </div>
-          </div>
+
           
           <!-- 댓글 작성 폼 -->
           <div class="comment-form">
@@ -1013,3 +936,131 @@
             <i class="fas fa-chevron-right"></i>
           </a>
         </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</body>
+<script>
+
+  function login() {
+    // 입력값 가져오기
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    // JSON 데이터 생성
+    const loginData = {
+      loginId: username,
+      password: password
+    };
+
+    // 서버로 POST 요청 보내기
+    fetch("/auth/hi/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"  // JSON 데이터임을 명시
+      },
+      body: JSON.stringify(loginData)  // JSON 문자열로 변환하여 전송
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("로그인 실패");
+              }
+              return response.json();// JSON 응답을 파싱
+            })
+            .then(data => {
+              if (data.successOrFail && data.data && data.data.token) {
+                const token = data.data.token; // ✅ JWT 토큰 추출
+                localStorage.setItem("jwtToken", token); // ✅ JWT 토큰 저장
+                alert("로그인 성공!");
+                checkLoginStatus() // ✅ 홈 화면으로 이동
+              } else {
+                throw new Error("토큰이 존재하지 않습니다.");
+              }
+            })
+            .catch(error => console.error("Error:", error));
+
+  }
+
+  function checkLoginStatus() {
+    const token = localStorage.getItem("jwtToken");  // localStorage에서 JWT 토큰 확인
+
+    const nonLoggedInContent = document.getElementById("non-logged-in-content");
+    const loggedInContent = document.getElementById("logged-in-content");
+    fetchUserInfo();
+    const nickname = document.getElementById("user-nickname");
+    const createdAt = document.getElementById("join-date");
+    const isUserInfoValid = token && nickname && createdAt;
+    if (isUserInfoValid) {
+      // ✅ 토큰이 있으면 로그인 상태
+      loggedInContent.style.display = "block";
+      nonLoggedInContent.style.display = "none";
+
+    } else {
+      // ❌ 토큰이 없으면 로그아웃 상태
+      loggedInContent.style.display = "none";
+      nonLoggedInContent.style.display = "block";
+    }
+  }
+  function fetchUserInfo() {
+    const token = localStorage.getItem("jwtToken");
+
+    if (!token) {
+      console.error("JWT 토큰 없음. 로그인 필요.");
+      return;
+    }
+
+    fetch("/users", {  // ✅ GET 요청
+      method: "GET",
+      headers: {
+        "Authorization": `${token}` // ✅ 서버에 JWT 토큰 전달
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("유저 정보 불러오기 실패");
+              }
+              return response.json();
+            })
+            .then(response => {
+              const rawDate = response.data.createdAt || null;
+              const formattedDate = rawDate ? formatDateTime(rawDate) : "정보 없음";
+
+              // ✅ 받은 데이터를 UI에 적용
+              document.getElementById("user-nickname").innerText = response.data.nickname || "알 수 없음";
+              document.getElementById("join-date").innerText = formattedDate;
+            })
+            .catch(error => console.error("Error:", error));
+  }
+
+  function formatDateTime(isoString) {
+    const date = new Date(isoString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // ✅ 월 (1월 = 0이므로 +1)
+    const day = String(date.getDate()).padStart(2, '0'); // ✅ 일
+    const hours = String(date.getHours()).padStart(2, '0'); // ✅ 시
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // ✅ 분
+    const seconds = String(date.getSeconds()).padStart(2, '0'); // ✅ 초
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  function logout() {
+    localStorage.removeItem("jwtToken");  // ✅ JWT 토큰 삭제
+    alert("로그아웃 되었습니다.");
+    checkLoginStatus();  // ✅ 상태 즉시 반영
+  }
+
+  window.onload = function () {
+    checkLoginStatus(); // ✅ 기존 로그인 상태 체크 함수 실행
+  };
+
+  // ✅ 로컬스토리지 변경 감지 (MutationObserver 대체)
+  window.addEventListener("storage", (event) => {
+    if (event.key === "jwtToken") {
+      checkLoginStatus();  // ✅ 토큰 변경 감지 시 상태 업데이트
+    }
+  });
+
+</script>
