@@ -71,6 +71,8 @@ public class DtoFactory {
         return PostResponse.builder().
                 postId(post.getId())
                 .gameId(post.getGame().getId())
+                .gameTitle(post.getGame().getGameTitle())
+                .categoryId(post.getCategory().getId())
                 .categoryName(post.getCategory().getCategoryName())
                 .title(post.getTitle())
                 .nickname(post.getUser().getNickname())
@@ -86,6 +88,7 @@ public class DtoFactory {
         return PostResponse.builder().
                 postId(post.postId())
                 .gameId(post.gameId())
+                .gameTitle(post.gameTitle())
                 .categoryId(post.categoryId())
                 .categoryName(post.categoryName())
                 .title(post.title())

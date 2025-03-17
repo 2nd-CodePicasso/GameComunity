@@ -121,6 +121,7 @@ public class PostService {
         return DtoFactory.toRecentDto(recentPost);
     }
 
+    // 엘라스틱 서치용
 //    public PostResponse elaGetPost(String categoryId) {
 //        postDocumentRepository.findByCategoryId(categoryId);
 //    }

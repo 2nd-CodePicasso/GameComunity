@@ -170,6 +170,7 @@ public class PostController {
         return ApiResponse.success(recentPost);
     }
 
+    // 엘라스틱 서치용
 //    @GetMapping("/ela/{text}")
 //    public ResponseEntity<ApiResponse<PostResponse>> elaelaGetPost(@PathVariable String text) {
 //        postService.elaGetPost(text);

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public record PostResponse(
         Long postId,
         Long gameId,
+        String gameTitle,
         Long categoryId,
         String categoryName,
         String title,
@@ -24,6 +25,7 @@ public record PostResponse(
     public PostResponse(
             Long postId,
             Long gameId,
+            String gameTitle,
             Long categoryId,
             String categoryName,
             String title,
@@ -35,6 +37,7 @@ public record PostResponse(
             LocalDateTime updatedAt) {
         this.postId = postId;
         this.gameId = gameId;
+        this.gameTitle = gameTitle;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.title = title;

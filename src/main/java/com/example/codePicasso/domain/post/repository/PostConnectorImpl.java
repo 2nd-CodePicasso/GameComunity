@@ -43,6 +43,7 @@ public class PostConnectorImpl implements PostConnector {
                 .select(new QPostResponse(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
                         post.category.categoryName,
                         post.title,
@@ -81,6 +82,7 @@ public class PostConnectorImpl implements PostConnector {
                 .select(new QPostResponse(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
                         post.category.categoryName,
                         post.title,
@@ -119,6 +121,7 @@ public class PostConnectorImpl implements PostConnector {
                 .select(new QPostResponse(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
                         post.category.categoryName,
                         post.title,
@@ -205,6 +208,7 @@ public class PostConnectorImpl implements PostConnector {
         return queryFactory.select(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
                         post.category.categoryName,
                         post.title,
@@ -224,7 +228,6 @@ public class PostConnectorImpl implements PostConnector {
                 .offset(0)
                 .limit(size)
                 .fetch();
-
     }
 
     // 최신 게시글 조회
@@ -233,6 +236,7 @@ public class PostConnectorImpl implements PostConnector {
         return queryFactory.select(new QPostResponse(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
                         post.category.categoryName,
                         post.title,
