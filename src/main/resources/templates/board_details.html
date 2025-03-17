@@ -951,7 +951,7 @@
     document.getElementById('post-author').textContent = post.nickname;
     document.getElementById('post-dayday').textContent = post.createdAt;
     document.getElementById('category-name').innerHTML = post.categoryName;
-    document.getElementById('#viewCount span').innerHTML = post.viewCount;
+    document.querySelector('#viewCount span').innerHTML = post.viewCount;
     document.getElementById('post-descrpibtion').innerHTML = post.description;
   }
 
