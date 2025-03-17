@@ -1911,11 +1911,6 @@
 
         if (clickedTitle) {
             const postId = clickedTitle.getAttribute("data-post-id");
-            if (postId) {
-                console.log("❌ `data-post-id` 속성이 없음");
-                console.log(postId)
-                return;
-            }// ✅ `data-post-id`에서 ID 가져오기
             localStorage.setItem("postId", postId); // ✅ postId 저장
             window.location.href = "/boardeatail/hi/game"; // ✅ 페이지 이동
         }
