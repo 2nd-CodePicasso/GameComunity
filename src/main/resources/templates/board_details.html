@@ -943,8 +943,13 @@
 <script>
 
   function loadPost() {
-    console.log("너 돌아가냐?")
+    console.log("너 돌아가냐?");
     const postId = localStorage.getItem('postId');
+
+    if (!postId) {
+      console.error("localStorage에 postId가 없습니다.");
+      return;
+    }
 
     fetch(`/posts/hi/${postId}`, {
       method: 'GET',
@@ -959,12 +964,15 @@
               return response.json();
             })
             .then(apiResponse => {
-              if (apiResponse.success) {
+              console.log("서버 응답:", apiResponse);
+
+              // ✅ `successOrFail`이 true인 경우만 실행
+              if (apiResponse.successOrFail) {
                 const post = apiResponse.data;
                 console.log('게시물 정보:', post);
                 renderPost(post); // 받아온 게시물 정보를 화면에 출력하는 함수 호출
               } else {
-                console.error('게시물 조회 실패:', apiResponse.error);
+                console.error('게시물 조회 실패:', apiResponse.message);
               }
             })
             .catch(error => {
