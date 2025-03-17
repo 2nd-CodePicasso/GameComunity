@@ -1914,7 +1914,7 @@
             <div class="news-date">조회 ${post.viewCount.toLocaleString()}</div>
         `;
 
-            cardBody.appendChild(newsItem); // 리스트에 추가
+             // 리스트에 추가
 
             document.getElementById(`latest-news-card-${post.id}`).addEventListener("click", function() {
                 const cardId = post.id;
@@ -1923,6 +1923,7 @@
 
                 window.location.href = '/boardeatail/hi/game';
             });
+            cardBody.appendChild(newsItem);
         });
     }
 
