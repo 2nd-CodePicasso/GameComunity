@@ -1141,6 +1141,7 @@
         }
     }
     function connectToRoom(room) {
+        unsubscribeFromGlobalChat()
         console.log('Room ID:', room.roomId);
         const token = localStorage.getItem('jwtToken');
 
@@ -1163,7 +1164,7 @@
             console.log(`채팅방 ${room.roomId} (${room.roomName}) 구독 성공!`);
         }
 
-
+        chatCurrentRoom = room.roomId;
         loadChatHistoryForRoom(room.roomId);
     }
 
@@ -1284,6 +1285,22 @@
             }
         }, { 'Authorization': token });
         chatSubscriptions['global'] = subscription;
+    }
+
+    // 전체 채팅 구독 해제 함수
+    function unsubscribeFromGlobalChat() {
+        // 1. 전역 채팅에 대한 구독 객체가 존재하는지 확인합니다.
+        if (chatSubscriptions['global']) {
+            // 2. 구독 객체의 unsubscribe() 메서드를 호출하여 구독을 해제합니다.
+            chatSubscriptions['global'].unsubscribe();
+
+            // 3. 구독 해제 후, 구독 객체를 chatSubscriptions에서 제거하여 상태를 업데이트합니다.
+            delete chatSubscriptions['global'];
+            console.log('Global chat subscription has been unsubscribed.');
+        } else {
+            // 구독 객체가 없으면 이미 해제된 상태임을 알립니다.
+            console.log('No global chat subscription found.');
+        }
     }
 
     // 채팅 메시지 전송 함수
