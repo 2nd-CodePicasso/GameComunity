@@ -51,5 +51,14 @@ public class HomeController {
     public String gameBoard() {
         return "gameboard";
     }
+    @GetMapping("/boardmain/hi/game")
+    public String boardMain() {
+        return "board_main";
+    }
+    @GetMapping("/boardeatail/hi/game")
+    public String boarDetailMain() {
+        return "board_main";
+    }
+
 
 }
