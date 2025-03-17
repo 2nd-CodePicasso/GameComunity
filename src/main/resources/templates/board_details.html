@@ -796,7 +796,7 @@
             <h1 class="post-title">시즌13 미드라인 티어리스트 공유합니다</h1>
             <div class="post-meta">
               <div class="post-author-info">
-                <div class="post-author-avatar">롤</div>
+                <div class="post-author-avatar" id="category-name">롤</div>
                 <span class="post-author-name">롤챔프</span>
                 <span class="post-date">2025-03-14 14:23</span>
                 <span class="post-category">정보</span>
@@ -981,7 +981,7 @@
     document.getElementById('post-title').textContent = post.title;
     document.getElementById('post-author').textContent = post.author;
     document.getElementById('post-date').textContent = post.createdDate;
-    document.getElementById('post-content').innerHTML = post.content;
+    document.getElementById('category-name').innerHTML = post.categoryName;
   }
 
   function login() {

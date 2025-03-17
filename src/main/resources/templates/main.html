@@ -1908,11 +1908,22 @@
             const newsItem = document.createElement("div");
             newsItem.classList.add("news-item");
 
-            newsItem.innerHTML = `
-            <span class="news-category" style="background-color: ${getCategoryColor(post.categoryName)};">${post.categoryName}</span>
-            <div class="news-title" id="latest-news-card">${post.title}</div>
+            nnewsItem.innerHTML = `
+            <span class="news-category" style="background-color: ${getCategoryColor(post.categoryName)};">
+              ${post.categoryName}
+            </span>
+            <div class="news-title" data-post-id="${post.id}">
+              ${post.title}
+            </div>
             <div class="news-date">조회 ${post.viewCount.toLocaleString()}</div>
         `;
+
+            // 클릭 이벤트를 여기서 추가합니다.
+            newsItem.querySelector('.news-title').addEventListener('click', function() {
+                const postId = this.getAttribute('data-post-id'); // 실제 게시글 ID
+                localStorage.setItem("postId", postId); // 올바른 postId 저장
+                window.location.href = '/boardeatail/hi/game';
+            });
 
             cardBody.appendChild(newsItem); // 리스트에 추가
         });
