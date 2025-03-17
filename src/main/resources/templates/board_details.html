@@ -830,8 +830,7 @@
               3. <strong>빅토르</strong> - 안정적인 레이닝과 후반 화력이 뛰어남<br>
               4. <strong>아리</strong> - 기동성과 CC가 좋고 안전한 픽
             </p>
-            
-            <img src="/api/placeholder/800/400" alt="S 티어 챔피언 통계" style="width: 100%; max-width: 800px;">
+
             
             <h2>A 티어 (상위 픽)</h2>
             <p>
@@ -942,6 +941,48 @@
   </div>
 </body>
 <script>
+
+  function loadPost() {
+    console.log("너 돌아가냐?")
+    const postId = localStorage.getItem('postId');
+
+    fetch(`/posts/hi/${postId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`서버 응답 실패: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(apiResponse => {
+              if (apiResponse.success) {
+                const post = apiResponse.data;
+                console.log('게시물 정보:', post);
+                renderPost(post); // 받아온 게시물 정보를 화면에 출력하는 함수 호출
+              } else {
+                console.error('게시물 조회 실패:', apiResponse.error);
+              }
+            })
+            .catch(error => {
+              console.error('요청 중 에러:', error);
+            });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    loadPost();
+  });
+
+  // 게시물 정보를 화면에 렌더링하는 예시 함수
+  function renderPost(post) {
+    document.getElementById('post-title').textContent = post.title;
+    document.getElementById('post-author').textContent = post.author;
+    document.getElementById('post-date').textContent = post.createdDate;
+    document.getElementById('post-content').innerHTML = post.content;
+  }
 
   function login() {
     // 입력값 가져오기
