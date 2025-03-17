@@ -1885,6 +1885,7 @@
         const cardBody = document.querySelector("#latest-news-card .card-body");
         cardBody.innerHTML = ""; // ✅ 기존 목록 초기화
 
+        console.log(newsList)
         newsList.forEach(news => {
             const newsItem = document.createElement("div");
             newsItem.classList.add("news-item");
