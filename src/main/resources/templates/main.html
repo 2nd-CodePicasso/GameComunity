@@ -1052,7 +1052,7 @@
                             <!-- connectToRoom() 후 탭 버튼이 동적으로 생성됨 -->
                         </div>
                         <button class="chat-action-button" id="showRoomsWidget" title="채팅방 목록">🏠</button>
-                        <button class="chat-action-button" id="minimazeChat" title="전채 채팅방으로"></button>
+                        <button class="chat-action-button" id="minimazeChat" title="전채 채팅방으로">🌐</button>
                         <button class="chat-action-button" id="closeChat" title="닫기">×</button>
                     </div>
                 </div>
@@ -1271,10 +1271,31 @@
         }
     }
 
+    // 특정 채팅방의 구독을 해제하는 함수
+    function unsubscribeFromRoomChat(roomId) {
+        // roomSubscriptions 객체에 해당 roomId의 구독이 있는지 확인
+        if (roomSubscriptions[roomId]) {
+            // 구독 객체의 unsubscribe() 메서드를 호출해 구독 해제
+            roomSubscriptions[roomId].unsubscribe();
+            // 구독 상태를 나타내는 객체에서 해당 항목 삭제
+            delete roomSubscriptions[roomId];
+            console.log(`채팅방 ${roomId}의 구독이 해제되었습니다.`);
+        } else {
+            console.log(`채팅방 ${roomId}에 대한 구독이 존재하지 않습니다.`);
+        }
+    }
+
+
     // 전체 채팅 구독 함수
     function subscribeToGlobalChat() {
         const token = localStorage.getItem('jwtToken');
         if (!chatStompClient || !chatStompClient.connected || !token) return;
+        // 만약 특정 채팅방에 현재 구독되어 있다면, 해당 구독 해제
+        if (chatCurrentRoom && roomSubscriptions[chatCurrentRoom]) {
+            unsubscribeFromRoomChat(chatCurrentRoom);
+            // 선택적으로 현재 활성화된 채팅방 정보를 초기화할 수도 있습니다.
+            chatCurrentRoom = null;
+        }
         if (chatSubscriptions['global']) return;
         const subscription = chatStompClient.subscribe('/topic/hi', function (messageOutput) {
             try {
@@ -1285,6 +1306,14 @@
             }
         }, { 'Authorization': token });
         chatSubscriptions['global'] = subscription;
+        const minimazeChatButton = document.getElementById('minimazeChat');
+
+        // 버튼에 클릭 이벤트 리스너를 추가합니다.
+        minimazeChatButton.addEventListener('click', function() {
+            // 버튼 클릭 시 subscribeToGlobalChat 함수를 실행합니다.
+            subscribeToGlobalChat();
+            loadChatHistory()
+        })
     }
 
     // 전체 채팅 구독 해제 함수
@@ -1439,6 +1468,12 @@
     // 채팅 내역 로드 (전체 채팅)
     function loadChatHistory() {
         const token = localStorage.getItem('jwtToken');
+
+        const chatContainer = document.getElementById('messages');
+
+// 기존에 불러왔던 메시지 기록을 초기화(모두 제거)
+        chatContainer.innerHTML = '';
+
         if (!token) return;
         let chatId = 0;
         let lastTime = toISO8601Local(new Date());
