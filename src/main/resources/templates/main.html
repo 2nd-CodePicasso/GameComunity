@@ -1889,15 +1889,31 @@
             const newsItem = document.createElement("div");
             newsItem.classList.add("news-item");
 
+            // ✅ `data-post-id` 속성 추가 (게시글 ID 저장)
             newsItem.innerHTML = `
-         <span class="news-category" style="background-color: ${getCategoryColor(news.categoryName)};">${news.categoryName}</span>
-         <div class="news-title">${news.title}</div>
-         <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
+            <span class="news-category" style="background-color: ${getCategoryColor(news.categoryName)};">
+                ${news.categoryName}
+            </span>
+            <div class="news-title" data-post-id="${news.id}">
+                ${news.title}
+            </div>
+            <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
         `;
 
             cardBody.appendChild(newsItem); // ✅ 동적으로 추가
         });
     }
+
+    // ✅ 이벤트 위임 방식 적용 (부모 요소에서 클릭 이벤트 감지)
+    document.querySelector("#latest-news-card .card-body").addEventListener("click", function(event) {
+        const clickedTitle = event.target.closest(".news-title"); // 클릭된 요소가 `.news-title`인지 확인
+
+        if (clickedTitle) {
+            const postId = clickedTitle.getAttribute("data-post-id"); // ✅ `data-post-id`에서 ID 가져오기
+            localStorage.setItem("postId", postId); // ✅ postId 저장
+            window.location.href = "/boardeatail/hi/game"; // ✅ 페이지 이동
+        }
+    });
 
     // ✅ 인기 게시글을 동적으로 렌더링하는 함수
     function renderRecommendedPosts(posts) {
