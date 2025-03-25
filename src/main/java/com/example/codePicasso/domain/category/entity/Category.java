@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "categories")
 @Builder
 public class Category extends TimeStamp {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

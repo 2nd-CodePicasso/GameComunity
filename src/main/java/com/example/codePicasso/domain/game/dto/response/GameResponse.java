@@ -12,5 +12,4 @@ public record GameResponse(
         LocalDateTime created_at,
         LocalDateTime updated_at
 ) {
-
 }

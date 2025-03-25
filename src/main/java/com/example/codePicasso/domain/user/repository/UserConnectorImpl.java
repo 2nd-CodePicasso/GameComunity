@@ -13,7 +13,6 @@ public class UserConnectorImpl implements UserConnector {
     private final UserRepository userRepository;
 
     @Override
-
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -25,12 +24,14 @@ public class UserConnectorImpl implements UserConnector {
 
     @Override
     public User findByLoginId(String s) {
-        return userRepository.findByLoginId(s).orElseThrow(()->new NotFoundException(ErrorCode.NOT_FOUND_ID));
+        return userRepository.findByLoginId(s)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_ID));
     }
 
     @Override
     public User findById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override

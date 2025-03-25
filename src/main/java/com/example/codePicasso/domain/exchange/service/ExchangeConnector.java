@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface ExchangeConnector {
-
     Exchange save(Exchange exchange);
 
     Page<ExchangeResponse> findByTradeType(TradeType tradeType, Pageable pageable);

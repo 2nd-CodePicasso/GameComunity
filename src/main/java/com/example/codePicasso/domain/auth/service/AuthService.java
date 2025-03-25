@@ -1,6 +1,6 @@
 package com.example.codePicasso.domain.auth.service;
 
-import com.example.codePicasso.domain.auth.dto.request.SigninRequest;
+import com.example.codePicasso.domain.auth.dto.request.SignInRequest;
 import com.example.codePicasso.domain.auth.dto.response.JwtTokenResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
@@ -21,24 +21,27 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public JwtTokenResponse loginUser(SigninRequest signinRequest) {
+    public JwtTokenResponse loginUser(SignInRequest signinRequest) {
         User user = userConnector.findByLoginId(signinRequest.loginId());
 
         if (!passwordEncoder.matches(signinRequest.password(), user.getPassword())) {
             throw new InvalidRequestException(ErrorCode.PW_ERROR);
         }
-        String token = jwtUtil.createToken(user.getId(),user.getUserStatus(),user.getNickname());
+
+        String token = jwtUtil.createToken(user.getId(), user.getUserStatus(), user.getNickname());
 
         return JwtTokenResponse.builder().token(token).build();
     }
 
-    public JwtTokenResponse loginAdmin(SigninRequest signinRequest) {
+    public JwtTokenResponse loginAdmin(SignInRequest signinRequest) {
         Admin admin = adminConnector.findByLoginId(signinRequest.loginId());
 
         if (!passwordEncoder.matches(signinRequest.password(), admin.getPassword())) {
             throw new InvalidRequestException(ErrorCode.PW_ERROR);
         }
-        String token = jwtUtil.createToken(admin.getId(), admin.getUserStatus(),"관리자");
+
+        String token = jwtUtil.createToken(admin.getId(), admin.getUserStatus(), "관리자");
+
         return JwtTokenResponse.builder().token(token).build();
     }
 }

@@ -1,4 +1,4 @@
-    package com.example.codePicasso.domain.chat.controller;
+package com.example.codePicasso.domain.chat.controller;
 
     import com.example.codePicasso.domain.chat.dto.request.ChatRequest;
     import com.example.codePicasso.domain.chat.dto.request.NotificationRequest;

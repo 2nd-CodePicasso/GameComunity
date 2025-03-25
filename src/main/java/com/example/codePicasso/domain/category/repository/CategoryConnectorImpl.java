@@ -20,14 +20,14 @@ public class CategoryConnectorImpl implements CategoryConnector {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Category findById(Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
+    public Category save(Category createCategory) {
+        return categoryRepository.save(createCategory);
     }
 
     @Override
-    public Category save(Category createCategory) {
-        return categoryRepository.save(createCategory);
+    public Category findById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override
@@ -37,9 +37,11 @@ public class CategoryConnectorImpl implements CategoryConnector {
                 .leftJoin(category.game, game).fetchJoin()
                 .where(category.game.id.eq(gameId))
                 .fetch();
+
         if (foundCategory.isEmpty()) {
             throw new InvalidRequestException(ErrorCode.CATEGORY_NOT_FOUND);
         }
+
         return foundCategory;
     }
 

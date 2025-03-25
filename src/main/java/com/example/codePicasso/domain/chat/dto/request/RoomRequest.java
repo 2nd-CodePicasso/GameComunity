@@ -8,7 +8,6 @@ public record RoomRequest(
         boolean isSecurity,
         String password
 ) {
-
     public ChatRoom toEntity(User user, String encodedPassword) {
         return ChatRoom.builder()
                 .name(name)

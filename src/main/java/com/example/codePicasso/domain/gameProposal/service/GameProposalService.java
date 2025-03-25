@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GameProposalService {
-
     private final GameProposalConnector gameProposalConnector;
     private final UserConnector userConnector;
     private final AdminConnector adminConnector;
@@ -39,7 +38,7 @@ public class GameProposalService {
         ProposalStatus status = gameProposalConnector.existsByGameTitle(request.gameTitle())
                 ? ProposalStatus.REJECTED : ProposalStatus.WAITING;
 
-        GameProposal proposal = request.toEntity(foundUser,status);
+        GameProposal proposal = request.toEntity(foundUser, status);
 
         GameProposal save = gameProposalConnector.save(proposal);
 
@@ -48,29 +47,36 @@ public class GameProposalService {
 
     public GameProposalGetManyResponse getAllProposals() {
         return new GameProposalGetManyResponse(gameProposalConnector.findAll().stream()
-                .map(DtoFactory::toGameProposalDto).toList());
+                .map(DtoFactory::toGameProposalDto)
+                .toList());
     }
 
     public GameProposalGetManyResponse getProposalsByStatus(ProposalStatus status) {
         return new GameProposalGetManyResponse(gameProposalConnector.findAllByStatus(status).stream()
-                .map(DtoFactory::toGameProposalDto).toList());
+                .map(DtoFactory::toGameProposalDto)
+                .toList());
     }
 
     public GameProposalGetManyResponse getProposalsByUserId(Long userId) {
         return new GameProposalGetManyResponse(gameProposalConnector.findAllByUserId(userId).stream()
-                .map(DtoFactory::toGameProposalDto).toList());
+                .map(DtoFactory::toGameProposalDto)
+                .toList());
     }
 
     @Transactional
     public GameProposalResponse cancelProposal(Long proposalId, Long userId) {
         GameProposal foundProposal = gameProposalConnector.findById(proposalId);
+
         if (foundProposal.getStatus() != ProposalStatus.WAITING) {
             throw new ConflictException(ErrorCode.PROPOSAL_ALREADY_REVIEWED);
         }
+
         if (!foundProposal.getUser().getId().equals(userId)) {
             throw new AccessDeniedException(ErrorCode.NOT_YOUR_PROPOSAL);
         }
+
         foundProposal.updateStatus(ProposalStatus.CANCELED);
+
         return DtoFactory.toGameProposalDto(foundProposal);
     }
 

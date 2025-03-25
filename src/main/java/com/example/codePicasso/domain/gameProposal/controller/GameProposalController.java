@@ -18,14 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/proposals")
 public class GameProposalController {
-
     private final GameProposalService gameProposalService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<GameProposalResponse>> createGameProposal(
             @Valid @RequestBody CreateGameProposalRequest request,
             @AuthenticationPrincipal CustomUser user
-            ) {
+    ) {
         GameProposalResponse response = gameProposalService.createProposal(request, user.getUserId());
 
         return ApiResponse.created(response);
@@ -34,6 +33,7 @@ public class GameProposalController {
     @GetMapping("/admin/all")
     public ResponseEntity<ApiResponse<GameProposalGetManyResponse>> getAllProposalsApi() {
         GameProposalGetManyResponse response = gameProposalService.getAllProposals();
+
         return ApiResponse.success(response);
     }
 
@@ -42,6 +42,7 @@ public class GameProposalController {
             @RequestParam ProposalStatus status
     ) {
         GameProposalGetManyResponse response = gameProposalService.getProposalsByStatus(status);
+
         return ApiResponse.success(response);
     }
 
@@ -50,6 +51,7 @@ public class GameProposalController {
             @AuthenticationPrincipal CustomUser user
     ) {
         GameProposalGetManyResponse response = gameProposalService.getProposalsByUserId(user.getUserId());
+
         return ApiResponse.success(response);
     }
 

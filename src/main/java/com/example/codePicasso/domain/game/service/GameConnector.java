@@ -7,15 +7,15 @@ import java.util.List;
 
 @Component
 public interface GameConnector {
-    public Game save(Game game);
+    Game save(Game game);
 
-    public List<Game> findAllForUser();
+    List<Game> findAllForUser();
 
-    public List<Game> findAllForAdmin();
+    List<Game> findAllForAdmin();
 
-    public Game findByIdForUser(Long id);
+    Game findByIdForUser(Long id);
 
-    public Game findByIdForAdmin(Long gameId);
+    Game findByIdForAdmin(Long gameId);
 
-    public void deleteGameById(Long gameId);
+    void deleteGameById(Long gameId);
 }

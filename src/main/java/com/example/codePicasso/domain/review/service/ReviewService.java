@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReviewService {
-
     private final ReviewConnector reviewConnector;
     private final MyExchangeConnector myExchangeConnector;
 
