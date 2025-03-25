@@ -2,13 +2,11 @@ package com.example.codePicasso.domain.post.service;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
-import com.example.codePicasso.domain.post.dto.PostEvent;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
-import com.example.codePicasso.domain.post.repository.PostDocumentRepository;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
@@ -32,7 +30,7 @@ public class PostService {
     private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final PostDocumentRepository postDocumentRepository;
+
 
     // 게시글 생성
     @Transactional
@@ -43,8 +41,7 @@ public class PostService {
         Post createPost = request.toEntity(user, category.getGame(), category);
 
         Post save = postConnector.save(createPost);
-        applicationEventPublisher.publishEvent(new PostEvent(save));
-      
+
         return DtoFactory.toPostDto(save);
     }
 
@@ -93,7 +90,6 @@ public class PostService {
         }
 
         foundPost.updatePost(postRequest.title(), postRequest.description());
-        applicationEventPublisher.publishEvent(new PostEvent(foundPost));
         return DtoFactory.toPostDto(foundPost);
     }
 
@@ -114,7 +110,5 @@ public class PostService {
                 .build();
     }
 
-//    public PostResponse elaGetPost(String categoryId) {
-//        postDocumentRepository.findByCategoryId(categoryId);
-//    }
+
 }

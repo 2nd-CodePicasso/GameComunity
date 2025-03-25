@@ -46,7 +46,6 @@ public class RabbitMQConfig {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
         cachingConnectionFactory.setHost("localhost");
         cachingConnectionFactory.setPort(5672);
-        cachingConnectionFactory.setCacheMode(CachingConnectionFactory.CacheMode.CONNECTION);
         return cachingConnectionFactory;
     }
 

@@ -36,7 +36,7 @@ package com.example.codePicasso.domain.chat.controller;
           //  redisPublisher.publishMessage(chatRequest,Long.valueOf(userId),username);
 
             //레빗MQ
-            rabbitPublisher.publishMessage(chatRequest, Long.valueOf(userId), username);
+        //    rabbitPublisher.publishMessage(chatRequest, Long.valueOf(userId), username);
         }
 
         @MessageMapping("/send/room/{roomId}")
