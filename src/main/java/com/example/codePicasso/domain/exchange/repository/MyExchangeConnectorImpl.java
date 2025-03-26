@@ -41,7 +41,7 @@ public class MyExchangeConnectorImpl implements MyExchangeConnector {
                 .select(new QMyExchangeResponse(
                         myExchange.id,
                         myExchange.exchange.id,
-                        myExchange.user.id,
+                        myExchange.user.nickname,
                         myExchange.contact,
                         myExchange.statusType))
                 .from(myExchange)

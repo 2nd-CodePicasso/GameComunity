@@ -1,197 +1,281 @@
-import React, { useState } from 'react';
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임 커뮤니티 - 회원가입</title>
+    <style>
+        /* 공통 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-const SignupForm = () => {
-const [formData, setFormData] = useState({
-loginId: '',
-nickname: '',
-password: '',
-confirmPassword: ''
-});
+        body {
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState('');
-const [success, setSuccess] = useState(false);
+        /* 데스크탑 컨테이너 */
+        .desktop-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+        }
 
-const handleChange = (e) => {
-const { name, value } = e.target;
-setFormData(prevData => ({
-...prevData,
-[name]: value
-}));
-};
+        /* 헤더 */
+        .desktop-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 24px;
+            background-color: #4263eb;
+            color: white;
+        }
 
-const validateForm = () => {
-if (!formData.loginId.trim()) {
-setError('아이디를 입력해주세요.');
-return false;
-}
+        .desktop-logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
 
-if (!formData.nickname.trim()) {
-setError('닉네임을 입력해주세요.');
-return false;
-}
+        /* 폼 컨테이너 */
+        .signup-content {
+            padding: 30px;
+        }
 
-if (!formData.password) {
-setError('비밀번호를 입력해주세요.');
-return false;
-}
+        .form-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 24px;
+            text-align: center;
+        }
 
-if (formData.password !== formData.confirmPassword) {
-setError('비밀번호가 일치하지 않습니다.');
-return false;
-}
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-return true;
-};
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+        }
 
-const handleSubmit = async (e) => {
-e.preventDefault();
-setError('');
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
 
-if (!validateForm()) {
-return;
-}
+        .form-input:focus {
+            outline: none;
+            border-color: #4263eb;
+            box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+        }
 
-try {
-setLoading(true);
+        .form-text {
+            font-size: 13px;
+            color: #868e96;
+            margin-top: 6px;
+        }
 
-// 회원가입 요청 객체 생성 (UserRequest에 맞춤)
-const userRequest = {
-loginId: formData.loginId,
-nickname: formData.nickname,
-password: formData.password
-};
+        .error-message {
+            color: #e03131;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
 
-// API 요청
-const response = await fetch('/auth/hi/users', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json'
-},
-body: JSON.stringify(userRequest)
-});
+        .is-invalid {
+            border-color: #e03131;
+        }
 
-const data = await response.json();
+        .btn {
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            border: none;
+            padding: 14px 15px;
+            font-size: 15px;
+            width: 100%;
+        }
 
-if (!response.ok) {
-throw new Error(data.message || '회원가입에 실패했습니다.');
-}
+        .btn-primary {
+            background-color: #4263eb;
+            color: white;
+        }
 
-// 성공 처리
-setSuccess(true);
-setFormData({
-loginId: '',
-nickname: '',
-password: '',
-confirmPassword: ''
-});
+        .btn-outline {
+            background-color: transparent;
+            color: #495057;
+            border: 1px solid #e9ecef;
+        }
 
-} catch (err) {
-setError(err.message || '회원가입 중 오류가 발생했습니다.');
-} finally {
-setLoading(false);
-}
-};
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
 
-return (
-<div className="flex justify-center items-center min-h-screen bg-gray-100">
-  <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-    <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">회원가입</h2>
+        .buttons-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
 
-    {success ? (
-    <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-      <strong className="font-bold">성공!</strong>
-      <span className="block sm:inline"> 회원가입이 완료되었습니다. 로그인해주세요.</span>
+        .text-center {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .text-link {
+            color: #4263eb;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .text-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop-container">
+        <!-- 헤더 -->
+        <div class="desktop-header">
+            <div class="desktop-logo">게임 커뮤니티</div>
+        </div>
+
+        <!-- 회원가입 폼 -->
+        <div class="signup-content">
+            <h2 class="form-title">회원가입</h2>
+
+            <form id="signupForm">
+                <!-- 아이디 입력 -->
+                <div class="form-group">
+                    <label for="loginId" class="form-label">아이디</label>
+                    <input type="text" class="form-input" id="loginId" name="loginId" required>
+                    <div class="form-text">4~20자의 영문, 숫자를 사용할 수 있습니다.</div>
+                    <div id="loginIdError" class="error-message">4~20자의 영문, 숫자만 사용 가능합니다.</div>
+                </div>
+
+                <!-- 비밀번호 입력 -->
+                <div class="form-group">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" class="form-input" id="password" name="password" required>
+                    <div class="form-text">8~20자의 영문, 숫자, 특수문자를 조합하여 사용하세요.</div>
+                    <div id="passwordError" class="error-message">8~20자의 영문, 숫자, 특수문자 조합이 필요합니다.</div>
+                </div>
+
+                <!-- 비밀번호 확인 (검증용) -->
+                <div class="form-group">
+                    <label for="passwordConfirm" class="form-label">비밀번호 확인</label>
+                    <input type="password" class="form-input" id="passwordConfirm" required>
+                    <div id="passwordConfirmError" class="error-message">비밀번호가 일치하지 않습니다.</div>
+                </div>
+
+                <!-- 닉네임 입력 -->
+                <div class="form-group">
+                    <label for="nickname" class="form-label">닉네임</label>
+                    <input type="text" class="form-input" id="nickname" name="nickname" required>
+                    <div class="form-text">2~10자의 한글, 영문, 숫자를 사용할 수 있습니다.</div>
+                    <div id="nicknameError" class="error-message">2~10자의 한글, 영문, 숫자만 사용 가능합니다.</div>
+                </div>
+
+                <!-- 버튼 영역 -->
+                <div class="buttons-container">
+                    <button type="submit" class="btn btn-primary" id="signupButton">가입하기</button>
+                    <a href="/" class="btn btn-outline">홈으로 돌아가기</a>
+                </div>
+            </form>
+        </div>
     </div>
-    ) : (
-    <form onSubmit={handleSubmit}>
-      {error && (
-      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-        <span className="block sm:inline">{error}</span>
-      </div>
-      )}
 
-      <div className="mb-4">
-        <label htmlFor="loginId" className="block text-gray-700 text-sm font-bold mb-2">
-          아이디
-        </label>
-        <input
-                type="text"
-                id="loginId"
-                name="loginId"
-                value={formData.loginId}
-                onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="아이디를 입력하세요"
-        />
-      </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupButton = document.getElementById('signupButton');
 
-      <div className="mb-4">
-        <label htmlFor="nickname" className="block text-gray-700 text-sm font-bold mb-2">
-          닉네임
-        </label>
-        <input
-                type="text"
-                id="nickname"
-                name="nickname"
-                value={formData.nickname}
-                onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="닉네임을 입력하세요"
-        />
-      </div>
+            signupButton.addEventListener('click', function(e) {
+                e.preventDefault();
 
-      <div className="mb-4">
-        <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
-          비밀번호
-        </label>
-        <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="비밀번호를 입력하세요"
-        />
-      </div>
+                // ✅ 입력된 회원 정보 가져오기
+                const loginId = document.getElementById("loginId").value;
+                const password = document.getElementById("password").value;
+                const passwordConfirm = document.getElementById("passwordConfirm").value;
+                const nickname = document.getElementById("nickname").value;
 
-      <div className="mb-6">
-        <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-bold mb-2">
-          비밀번호 확인
-        </label>
-        <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="비밀번호를 다시 입력하세요"
-        />
-      </div>
+                // ✅ 비밀번호 확인
+                if (password !== passwordConfirm) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
 
-      <div className="flex items-center justify-between">
-        <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                disabled={loading}
-        >
-          {loading ? '처리 중...' : '회원가입'}
-        </button>
-      </div>
+                // ✅ 카카오 로그인 팝업 열기
+                const kakaoAuthUrl = "https://kauth.kakao.com/oauth/authorize?client_id=4b10ae0ea74ca704d208eb841074fa20&redirect_uri=http://obfgamers.com:8080/auth/hi/kakao/signup&response_type=code";
+                const popup = window.open(kakaoAuthUrl, "kakaoLoginPopup", "width=500,height=600");
 
-      <div className="mt-4 text-center text-sm">
-        <span className="text-gray-600">이미 계정이 있으신가요?</span>
-        <a href="/login" className="text-blue-500 hover:text-blue-700 ml-1">
-          로그인하기
-        </a>
-      </div>
-    </form>
-    )}
-  </div>
-</div>
-);
-};
+                // ✅ 팝업에서 결과 받기
+                window.addEventListener("message", async function(event) {
+                    if (event.origin !== window.location.origin) return;
 
-export default SignupForm;
+                    console.log("받은 데이터:", event.data);
+
+                    if (event.data.kakaoToken) {
+                        const kakaoToken = event.data.kakaoToken;
+
+                        // ✅ 카카오 토큰을 포함하여 회원가입 요청 보내기
+                        try {
+                            const response = await fetch("/auth/hi/users", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    loginId: loginId,
+                                    password: password,
+                                    nickname: nickname,
+                                    kakaoToken: kakaoToken // ✅ 카카오 토큰 포함
+                                })
+                            });
+
+                            const responseData = await response.json();
+                            console.log("서버 응답:", responseData);
+
+                            if (response.ok) {
+                                alert("회원가입 성공!");
+                                window.location.href = "/main/hi/game"; // 로그인 페이지로 이동
+                            } else {
+                                alert("회원가입 실패: " + (responseData.message || "서버 오류"));
+                            }
+                        } catch (error) {
+                            console.error("회원가입 요청 중 오류:", error);
+                            alert("회원가입 요청 중 오류 발생");
+                        }
+                    } else {
+                        alert("카카오 로그인 실패: 토큰이 없습니다.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

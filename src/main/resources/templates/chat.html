@@ -125,7 +125,7 @@
     let oldestChatId = null;  // 가장 오래된 메시지의 ID
     let oldestChatTime = null;  // 가장 오래된 메시지의 생성 시간
     let loadingInProgress = false;  // 중복 호출 방지를 위한 플래그
-    let roomSubscriptions = {};
+
 
     let globalOldestChatId = null;
     let globalOldestChatTime= null;
@@ -159,6 +159,7 @@
     }
 
 
+
     function connectToRoom(room) {
         console.log('이게 룸아이디', room.roomId);
         if (!stompClient || !stompClient.connected) {
@@ -184,39 +185,39 @@
         loadChatHistoryForRoom(room.roomId);
     }
 
-    function createRoom() {
-        const roomName = document.getElementById('roomNameInput').value.trim();
-        const isSecurity = document.getElementById('isSecurityInput').checked;
-        const password = document.getElementById('passwordInput').value.trim();
-
-        if (roomName) {
-            fetch('/room', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: JSON.stringify({
-                    name: roomName,
-                    isSecurity: isSecurity,
-                    password: isSecurity ? password : ''
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.successOrFail) {
-                        const room = data.data;
-                        alert(`채팅방 "${room.roomName}"이(가) 생성되었습니다!`);
-                        loadRooms();
-                    } else {
-                        alert('채팅방 생성에 실패했습니다.');
-                    }
-                })
-                .catch(error => console.error('채팅방 생성 중 오류 발생:', error));
-        } else {
-            alert('채팅방 이름을 입력해 주세요!');
-        }
-    }
+    // function createRoom() {
+    //     const roomName = document.getElementById('roomNameInput').value.trim();
+    //     const isSecurity = document.getElementById('isSecurityInput').checked;
+    //     const password = document.getElementById('passwordInput').value.trim();
+    //
+    //     if (roomName) {
+    //         fetch('/room', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': token
+    //             },
+    //             body: JSON.stringify({
+    //                 name: roomName,
+    //                 isSecurity: isSecurity,
+    //                 password: isSecurity ? password : ''
+    //             })
+    //         })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 if (data.successOrFail) {
+    //                     const room = data.data;
+    //                     alert(`채팅방 "${room.roomName}"이(가) 생성되었습니다!`);
+    //                     loadRooms();
+    //                 } else {
+    //                     alert('채팅방 생성에 실패했습니다.');
+    //                 }
+    //             })
+    //             .catch(error => console.error('채팅방 생성 중 오류 발생:', error));
+    //     } else {
+    //         alert('채팅방 이름을 입력해 주세요!');
+    //     }
+    // }
 
     // 이미지 태그를 #messages 안에 추가하는 함수
     function addImageToMessages(fileUrl, altText = 'Uploaded Image', width = '200px', height = '200px') {

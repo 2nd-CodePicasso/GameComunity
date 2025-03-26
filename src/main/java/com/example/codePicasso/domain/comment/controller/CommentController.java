@@ -32,6 +32,7 @@ public class CommentController {
             @Valid @RequestBody CommentRequest request
     ) {
         CommentResponse commentResponse = commentService.createComment(postId, user.getUserId(), request);
+
         return ApiResponse.created(commentResponse);
     }
 
@@ -45,6 +46,7 @@ public class CommentController {
             @Valid @RequestBody CommentRequest request
     ) {
         CommentResponse replyResponse = commentService.createReply(parentId, user.getUserId(), request);
+
         return ApiResponse.created(replyResponse);
     }
 

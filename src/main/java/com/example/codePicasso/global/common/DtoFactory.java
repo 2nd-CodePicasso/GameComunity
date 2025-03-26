@@ -21,8 +21,11 @@ import com.example.codePicasso.domain.game.entity.Game;
 import com.example.codePicasso.domain.gameProposal.dto.response.GameProposalResponse;
 import com.example.codePicasso.domain.gameProposal.entity.GameProposal;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
+import com.example.codePicasso.domain.post.entity.QPost;
 import com.example.codePicasso.domain.review.dto.response.ReviewResponse;
 import com.example.codePicasso.domain.review.entity.Review;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
@@ -30,7 +33,10 @@ import com.example.codePicasso.domain.user.dto.response.UserInfoResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
 import com.example.codePicasso.domain.user.entity.Admin;
 import com.example.codePicasso.domain.user.entity.User;
+import com.querydsl.core.Tuple;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public class DtoFactory {
     public static CategoryResponse toCategoryDto(Category category) {
@@ -65,6 +71,8 @@ public class DtoFactory {
         return PostResponse.builder().
                 postId(post.getId())
                 .gameId(post.getGame().getId())
+                .gameTitle(post.getGame().getGameTitle())
+                .categoryId(post.getCategory().getId())
                 .categoryName(post.getCategory().getCategoryName())
                 .title(post.getTitle())
                 .nickname(post.getUser().getNickname())
@@ -80,8 +88,8 @@ public class DtoFactory {
         return PostResponse.builder().
                 postId(post.postId())
                 .gameId(post.gameId())
+                .gameTitle(post.gameTitle())
                 .categoryId(post.categoryId())
-                .userId(post.userId())
                 .categoryName(post.categoryName())
                 .title(post.title())
                 .nickname(post.nickname())
@@ -108,7 +116,6 @@ public class DtoFactory {
         return CommentResponse.builder().
                 commentId(comment.getId())
                 .postId(comment.getPost().getId())
-                .userId(comment.getUser().getId())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
@@ -125,7 +132,6 @@ public class DtoFactory {
         return CommentResponse.builder().
                 commentId(comment.getId())
                 .postId(comment.getPost().getId())
-                .userId(comment.getUser().getId())
                 .nickname(comment.getUser().getNickname())
                 .text(comment.getText())
                 .createdAt(comment.getCreatedAt())
@@ -159,7 +165,6 @@ public class DtoFactory {
     public static ExchangeResponse toExchangeDto(Exchange exchange) {
         return ExchangeResponse.builder()
                 .id(exchange.getId())
-                .userId(exchange.getUser().getId())
                 .gameId(exchange.getGame().getId())
                 .title(exchange.getTitle())
                 .price(exchange.getPrice())
@@ -174,7 +179,6 @@ public class DtoFactory {
         return MyExchangeResponse.builder()
                 .id(myExchange.getId())
                 .exchangeId(myExchange.getExchange().getId())
-                .userId(myExchange.getUser().getId())
                 .contact(myExchange.getContact())
                 .statusType(myExchange.getStatusType())
                 .build();
@@ -198,7 +202,6 @@ public class DtoFactory {
         return ReviewResponse.builder()
                 .id(review.getId())
                 .exchangeId(review.getExchange().getId())
-                .userId(review.getUser().getId())
                 .rating(review.getRating())
                 .review(review.getReview())
                 .build();
@@ -254,6 +257,36 @@ public class DtoFactory {
                 .message(globalChat.getContent())
                 .imageUrl(globalChat.getImageUrl())
                 .createdAt(globalChat.getCreatedAt())
+                .build();
+    }
+
+    public static PostPopularListResponse toPopularListDto(List<Tuple> byRecentPost) {
+        return PostPopularListResponse.builder()
+                .postList(byRecentPost.stream().map(DtoFactory::toPopularDto)
+                        .toList())
+                .build();
+    }
+
+    public static PostListResponse toRecentDto(List<PostResponse> recentPost) {
+        return PostListResponse.builder()
+                .postResponses(recentPost)
+                .build();
+    }
+
+    public static PostPopularResponse toPopularDto(Tuple tuple) {
+        QPost post = QPost.post;
+        return PostPopularResponse.builder()
+                .id(tuple.get(post.id))
+                .gameId(tuple.get(post.game.id))
+                .categoryId(tuple.get(post.category.id))
+                .categoryName(tuple.get(post.category.categoryName))
+                .title(tuple.get(post.title))
+                .nickname(tuple.get(post.user.nickname))
+                .description(tuple.get(post.description))
+                .viewCount(tuple.get(post.viewCount))
+                .status(tuple.get(post.status))
+                .createdAt(tuple.get(post.createdAt))
+                .updatedAt(tuple.get(post.updatedAt))
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.example.codePicasso.domain.post.controller;
 
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.service.PostService;
 import com.example.codePicasso.global.common.ApiResponse;
@@ -136,15 +137,40 @@ public class PostController {
         return ApiResponse.noContent();
     }
 
+    /**
+     * 인기 게시글 조회
+     *
+     * @param size
+     * @param page
+     * @return
+     */
+    @GetMapping("/hi/popular")
+    public ResponseEntity<ApiResponse<PostPopularListResponse>> getPopularPost(
+            @RequestParam(defaultValue = "4") int size,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        PostPopularListResponse popularPost = postService.getPopularPost(size, page);
+
+        return ApiResponse.success(popularPost);
+    }
+
+    /**
+     * 최신 게시글 조회
+     * @param size
+     * @param page
+     * @return
+     */
     @GetMapping("/hi/recent")
     public ResponseEntity<ApiResponse<PostListResponse>> getRecentPost(
             @RequestParam(defaultValue = "4") int size,
             @RequestParam(defaultValue = "0") int page
     ) {
         PostListResponse recentPost = postService.getRecentPost(size, page);
+
         return ApiResponse.success(recentPost);
     }
 
+    // 엘라스틱 서치용
 //    @GetMapping("/ela/{text}")
 //    public ResponseEntity<ApiResponse<PostResponse>> elaelaGetPost(@PathVariable String text) {
 //        postService.elaGetPost(text);

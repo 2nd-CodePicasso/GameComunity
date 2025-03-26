@@ -62,6 +62,4 @@ public class Comment extends TimeStamp {
     public boolean isReply() {
         return this.parent != null;
     }
-
-
 }

@@ -404,9 +404,9 @@
   <div class="desktop-header">
     <div class="desktop-logo">게임 게시판</div>
     <div class="desktop-nav">
-      <a href="#">홈</a>
-      <a href="#">게시판</a>
-      <a href="#">아이템 거래소</a>
+      <a href="/main/hi/game">홈</a>
+      <a href="/gameboard/hi/game">게시판</a>
+      <a href="/exchange/hi/game">아이템 거래소</a>
       <a href="#">채팅방</a>
       <a href="#">공지사항</a>
     </div>
@@ -456,21 +456,7 @@
         <div class="desktop-board-header">
           생성된 게임 게시판
         </div>
-        <div class="desktop-board-grid">
-          <div class="desktop-board-item">롤</div>
-          <div class="desktop-board-item">배그</div>
-          <div class="desktop-board-item">오버워치</div>
-          <div class="desktop-board-item">로스트아크</div>
-          <div class="desktop-board-item">롤지미</div>
-          <div class="desktop-board-item">던전앤파이팅</div>
-          <div class="desktop-board-item">메이플스토리</div>
-          <div class="desktop-board-item">리니지</div>
-          <div class="desktop-board-item">디아블로4</div>
-          <div class="desktop-board-item">피파온라인4</div>
-          <div class="desktop-board-item">서든어택</div>
-          <div class="desktop-board-item">발로란트</div>
-          <div class="desktop-board-item">스타크래프트</div>
-          <div class="desktop-board-item">워크래프트3</div>
+        <div class="desktop-board-grid" id="gameBoardGrid">
           <div class="desktop-board-item">포트나이트</div>
           <div class="desktop-board-item">에이펙스 레전드</div>
         </div>
@@ -513,6 +499,54 @@
 </div>
 
 <script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    console.log("📡 /games API 요청 시작");
+
+    try {
+      const response = await fetch("/games/hi/all", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json" // ✅ JSON 헤더 추가
+        }
+      });
+
+      console.log("📡 서버 응답 상태 코드:", response.status);
+
+      if (!response.ok) throw new Error("🚨 서버 응답 실패: " + response.status);
+
+      const responseData = await response.json();
+      console.log("📡 서버 응답 데이터:", responseData);
+
+      // ✅ API 응답 구조에서 gameResponses 배열 추출
+      let games = responseData.data.gameResponses;
+
+      // ✅ ImmutableCollections$ListN 구조 해제
+      if (Array.isArray(games) && games.length === 2 && Array.isArray(games[1])) {
+        games = games[1]; // ✅ 실제 게임 배열만 추출
+      } else {
+        console.warn("🚨 gameResponses 구조가 예상과 다릅니다.", games);
+        games = []; // ✅ 비정상적인 경우 빈 배열 처리
+      }
+
+      if (games.length === 0) {
+        console.warn("⚠️ 게임 목록이 비어 있습니다.");
+      }
+
+      // ✅ 게임 리스트 UI에 추가
+      const gameBoardGrid = document.getElementById("gameBoardGrid");
+      gameBoardGrid.innerHTML = ""; // 기존 내용 초기화
+
+      games.forEach(game => {
+        const gameItem = document.createElement("div");
+        gameItem.classList.add("desktop-board-item");
+        gameItem.textContent = game.gameTitle; // ✅ gameTitle 사용
+        gameBoardGrid.appendChild(gameItem);
+      });
+
+    } catch (error) {
+      console.error("🚨 게임 목록 불러오기 실패:", error);
+    }
+  });
   // DOM이 완전히 로드된 후 실행
   document.addEventListener('DOMContentLoaded', function() {
     // 요소 선택

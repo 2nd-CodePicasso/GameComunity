@@ -9,7 +9,6 @@ import java.util.List;
 public record CommentResponse(
         Long commentId,
         Long postId,
-        Long userId,
         Long parentId,
         String nickname,
         String text,

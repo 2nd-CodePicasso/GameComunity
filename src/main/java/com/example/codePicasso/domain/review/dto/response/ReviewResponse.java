@@ -6,7 +6,7 @@ import lombok.Builder;
 public record ReviewResponse(
         Long id,
         Long exchangeId,
-        Long userId,
+        String nickname,
         int rating,
         String review
 ) {

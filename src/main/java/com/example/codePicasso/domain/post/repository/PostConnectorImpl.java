@@ -7,6 +7,7 @@ import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.post.service.PostConnector;
 import com.example.codePicasso.global.exception.base.InvalidRequestException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.codePicasso.domain.category.entity.QCategory.category;
@@ -41,8 +43,8 @@ public class PostConnectorImpl implements PostConnector {
                 .select(new QPostResponse(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
-                        post.user.id,
                         post.category.categoryName,
                         post.title,
                         post.user.nickname,
@@ -80,8 +82,8 @@ public class PostConnectorImpl implements PostConnector {
                 .select(new QPostResponse(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
-                        post.user.id,
                         post.category.categoryName,
                         post.title,
                         post.user.nickname,
@@ -119,8 +121,8 @@ public class PostConnectorImpl implements PostConnector {
                 .select(new QPostResponse(
                         post.id,
                         post.game.id,
+                        post.game.gameTitle,
                         post.category.id,
-                        post.user.id,
                         post.category.categoryName,
                         post.title,
                         post.user.nickname,
@@ -200,14 +202,58 @@ public class PostConnectorImpl implements PostConnector {
         postRepository.delete(deletePost);
     }
 
+    // 인기 게시글 조회
     @Override
-    public List<Post> findByRecentPost(int size, int page) {
-        return queryFactory.selectFrom(post)
-
+    public List<Tuple> findByPopularPost(int size, int page) {
+        return queryFactory.select(
+                        post.id,
+                        post.game.id,
+                        post.game.gameTitle,
+                        post.category.id,
+                        post.category.categoryName,
+                        post.title,
+                        post.user.nickname,
+                        post.description,
+                        post.viewCount,
+                        post.status,
+                        post.createdAt,
+                        post.updatedAt
+                )
+                .from(post)
+                .join(post.user, user)
+                .join(post.category, category)
+                .join(post.game, game)
                 .where(post.status.eq(PostStatus.RECOMMENDED))
                 .orderBy(post.viewCount.desc())
+                .offset(0)
                 .limit(size)
-                .fetch()
-        ;
+                .fetch();
+    }
+
+    // 최신 게시글 조회
+    @Override
+    public List<PostResponse> findByRecentPost(int size, int page) {
+        return queryFactory.select(new QPostResponse(
+                        post.id,
+                        post.game.id,
+                        post.game.gameTitle,
+                        post.category.id,
+                        post.category.categoryName,
+                        post.title,
+                        post.user.nickname,
+                        post.description,
+                        post.viewCount,
+                        post.status,
+                        post.createdAt,
+                        post.updatedAt))
+                .from(post)
+                .join(post.user, user)
+                .join(post.category, category)
+                .join(post.game, game)
+                .where(post.createdAt.goe(LocalDateTime.now().minusDays(3)))
+                .orderBy(post.createdAt.desc())
+                .offset(0)
+                .limit(size)
+                .fetch();
     }
 }

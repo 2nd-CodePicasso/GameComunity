@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게임 커뮤니티 - 메인</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
         /* 공통 스타일 */
         * {
@@ -27,7 +29,7 @@
             margin: 40px auto;
             background-color: white;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             position: relative;
         }
@@ -62,7 +64,7 @@
         }
 
         .desktop-nav a:hover {
-            background-color: rgba(255,255,255,0.2);
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         /* 데스크탑 레이아웃 */
@@ -77,7 +79,7 @@
             background-color: white;
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .desktop-main {
@@ -90,7 +92,7 @@
             border-radius: 8px;
             padding: 24px;
             width: 100%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             margin-bottom: 30px;
         }
 
@@ -156,7 +158,7 @@
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .buttons-container {
@@ -180,14 +182,14 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             transition: all 0.2s ease;
             text-decoration: none;
         }
 
         .page-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .icon {
@@ -230,7 +232,7 @@
         .content-card {
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             margin-bottom: 24px;
             overflow: hidden;
         }
@@ -264,7 +266,7 @@
 
         .popular-content-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .news-item {
@@ -323,6 +325,496 @@
         .text-link:hover {
             text-decoration: underline;
         }
+
+        /* 채팅 위젯 스타일 */
+        .chat-widgets-group {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .chat-widgets-container {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chat-toggle-button {
+            width: 60px;
+            height: 60px;
+            background-color: #4263eb;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .chat-toggle-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .chat-widget {
+            width: 350px;
+            height: 500px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            transform-origin: bottom right;
+        }
+
+        .chat-widget.minimized {
+            transform: scale(0);
+            opacity: 0;
+            height: 0;
+            margin-bottom: 0;
+        }
+
+        .chat-rooms-widget {
+            width: 280px;
+            height: 500px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            transform: translateX(10px);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .chat-rooms-widget.visible {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chat-header {
+            padding: 16px;
+            background-color: #4263eb;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .chat-header-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .chat-header-room-name {
+            font-weight: 700;
+            font-size: 16px;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-action-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .chat-action-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .chat-rooms-panel {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .chat-room-form {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+
+        .chat-room-form h3 {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #212529;
+        }
+
+        .chat-form-group {
+            margin-bottom: 12px;
+        }
+
+        .chat-form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #495057;
+        }
+
+        .chat-form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .chat-form-input:focus {
+            outline: none;
+            border-color: #4263eb;
+            box-shadow: 0 0 0 2px rgba(66, 99, 235, 0.1);
+        }
+
+        .chat-form-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .chat-form-checkbox input {
+            margin-right: 8px;
+        }
+
+        .chat-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .chat-btn-primary {
+            background-color: #4263eb;
+            color: white;
+        }
+
+        .chat-btn-primary:hover {
+            background-color: #3b5bdb;
+        }
+
+        .chat-room-list {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .chat-room-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .chat-room-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .chat-room-name {
+            font-weight: 500;
+            color: #212529;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-room-lock {
+            margin-left: 6px;
+            font-size: 12px;
+            color: #868e96;
+        }
+
+        .chat-room-active {
+            background-color: #e7f5ff;
+            border-color: #4263eb;
+        }
+
+        .chat-messages-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .chat-message {
+            margin-bottom: 12px;
+            max-width: 85%;
+        }
+
+        .chat-message-incoming {
+            align-self: flex-start;
+        }
+
+        .chat-message-outgoing {
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .chat-message-content {
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .chat-message-incoming .chat-message-content {
+            background-color: #f1f3f5;
+            color: #212529;
+            border-top-left-radius: 4px;
+        }
+
+        .chat-message-outgoing .chat-message-content {
+            background-color: #4263eb;
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .chat-message-info {
+            display: flex;
+            font-size: 12px;
+            color: #868e96;
+            margin-top: 4px;
+        }
+
+        .chat-message-incoming .chat-message-info {
+            justify-content: flex-start;
+        }
+
+        .chat-message-outgoing .chat-message-info {
+            justify-content: flex-end;
+        }
+
+        .chat-message-username {
+            font-weight: 500;
+            margin-right: 6px;
+        }
+
+        .chat-message-time {
+            font-size: 11px;
+        }
+
+        .chat-input-container {
+            padding: 12px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #4263eb;
+        }
+
+        .chat-send-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #4263eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .chat-send-button:hover {
+            background-color: #3b5bdb;
+        }
+
+        .chat-attach-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #f8f9fa;
+            color: #495057;
+            border: 1px solid #ced4da;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .chat-attach-button:hover {
+            background-color: #e9ecef;
+        }
+
+        .chat-file-input {
+            display: none;
+        }
+
+        .chat-login-required {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .chat-login-icon {
+            font-size: 48px;
+            color: #ced4da;
+            margin-bottom: 16px;
+        }
+
+        .chat-login-message {
+            color: #495057;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .chat-login-button {
+            padding: 8px 16px;
+            background-color: #4263eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-login-button:hover {
+            background-color: #3b5bdb;
+        }
+
+        /* 응답 시간 스타일 */
+        .chat-response-time {
+            font-size: 11px;
+            color: #868e96;
+            text-align: center;
+            margin: 8px 0;
+        }
+
+        /* 비밀방 비밀번호 입력 모달 */
+        .chat-password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .chat-password-modal.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .chat-password-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .chat-password-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #212529;
+        }
+
+        .chat-password-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .chat-password-button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .chat-password-button-cancel {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .chat-password-button-submit {
+            background-color: #4263eb;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -346,26 +838,26 @@
             <!-- 로그인 여부에 따라 다른 내용 표시 -->
             <div id="non-logged-in-content">
                 <!-- 비로그인 상태: 로그인 폼 -->
-                    <h2 class="form-title">로그인</h2>
+                <h2 class="form-title">로그인</h2>
 
-                    <div class="form-group">
-                        <label for="username" class="form-label">아이디</label>
-                        <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요" required>
-                    </div>
+                <div class="form-group">
+                    <label for="username" class="form-label">아이디</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요" required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="password" class="form-label">비밀번호</label>
-                        <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
-                    </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                </div>
 
-                    <div class="buttons-container">
-                        <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
-                        <a href="/auth/signup" class="btn btn-outline">회원가입</a>
-                    </div>
+                <div class="buttons-container">
+                    <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
+                    <a href="/signup/hi/game" class="btn btn-outline">회원가입</a>
+                </div>
 
-                    <div style="text-align: center; margin-top: 16px;">
-                        <a href="#" class="text-link">아이디/비밀번호 찾기</a>
-                    </div>
+                <div style="text-align: center; margin-top: 16px;">
+                    <a href="#" class="text-link">아이디/비밀번호 찾기</a>
+                </div>
             </div>
 
             <!-- 로그인한 경우: 회원 정보 -->
@@ -392,7 +884,6 @@
                     <a href="#" class="btn btn-outline" onclick="logout()">로그아웃</a>
                 </div>
             </div>
-
 
             <!-- 바로가기 메뉴 -->
             <div style="margin-top: 24px;">
@@ -425,7 +916,7 @@
         <!-- 메인 콘텐츠 -->
         <div class="desktop-main">
             <!-- 인기 게임 카드 -->
-            <div class="content-card">
+            <div class="content-card" id="popular-games-card">
                 <div class="card-header">인기 게임</div>
                 <div class="card-body">
                     <div class="popular-content-grid">
@@ -446,92 +937,1024 @@
             </div>
 
             <!-- 최신 소식 카드 -->
-            <div class="content-card">
+            <div class="content-card" id="latest-news-card">
                 <div class="card-header">최신 소식</div>
                 <div class="card-body">
                     <div class="news-item">
-                        <span class="news-category">공지</span>
-                        <div class="news-title">서버 점검 안내 (3/12 02:00~06:00)</div>
-                        <div class="news-date">1시간 전</div>
+                        <span class="news-category">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #20c997;">이벤트</span>
-                        <div class="news-title">봄맞이 특별 이벤트 - 출석체크 보상 2배</div>
-                        <div class="news-date">3시간 전</div>
+                        <span class="news-category" style="background-color: #20c997;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #845ef7;">업데이트</span>
-                        <div class="news-title">3월 2주차 패치노트 안내</div>
-                        <div class="news-date">어제</div>
+                        <span class="news-category" style="background-color: #845ef7;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #ff922b;">거래소</span>
-                        <div class="news-title">아이템 거래소 수수료 인하 이벤트</div>
-                        <div class="news-date">2일 전</div>
+                        <span class="news-category" style="background-color: #ff922b;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                 </div>
             </div>
 
             <!-- 인기 게시글 카드 -->
-            <div class="content-card">
+            <div class="content-card" id="popular-posts-card">
                 <div class="card-header">인기 게시글</div>
                 <div class="card-body">
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #339af0;">정보</span>
-                        <div class="news-title">오버워치 신규 영웅 스킬 가이드</div>
-                        <div class="news-date">조회 1,245</div>
+                        <span class="news-category" style="background-color: #339af0;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #ff6b6b;">공략</span>
-                        <div class="news-title">배그 신규 맵 전략적 위치 총정리</div>
-                        <div class="news-date">조회 982</div>
+                        <span class="news-category" style="background-color: #ff6b6b;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                     <div class="news-item">
-                        <span class="news-category" style="background-color: #cc5de8;">팁</span>
-                        <div class="news-title">롤 시즌13 승급전 꿀팁</div>
-                        <div class="news-date">조회 854</div>
+                        <span class="news-category" style="background-color: #cc5de8;">로딩중</span>
+                        <div class="news-title">로딩중</div>
+                        <div class="news-date">로딩중</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- 채팅 위젯 그룹 -->
+<div class="chat-widgets-group">
+    <div class="chat-widgets-container">
+        <!-- 채팅방 목록 위젯 -->
+        <div class="chat-rooms-widget" id="chatRoomsWidget">
+            <div class="chat-header">
+                <div class="chat-header-title">채팅방 목록</div>
+                <div class="chat-header-actions">
+                    <button class="chat-action-button" id="closeRoomsWidget">×</button>
+                </div>
+            </div>
+
+            <div class="chat-content">
+                <div class="chat-rooms-panel">
+                    <!-- 채팅방 생성 폼 -->
+                    <div class="chat-room-form">
+                        <h3>채팅방 생성</h3>
+                        <div class="chat-form-group">
+                            <label for="roomNameInput" class="chat-form-label">채팅방 이름</label>
+                            <input type="text" id="roomNameInput" class="chat-form-input" placeholder="채팅방 이름을 입력하세요" />
+                        </div>
+
+                        <div class="chat-form-checkbox">
+                            <input type="checkbox" id="isSecurityInput" />
+                            <label for="isSecurityInput" class="chat-form-label">비밀방 설정</label>
+                        </div>
+
+                        <div class="chat-form-group" id="passwordGroup" style="display: none;">
+                            <label for="passwordInput" class="chat-form-label">비밀번호</label>
+                            <input type="password" id="passwordInput" class="chat-form-input" placeholder="비밀번호를 입력하세요" />
+                        </div>
+
+                        <button class="chat-btn chat-btn-primary" onclick="createRoom()">채팅방 생성</button>
+                    </div>
+
+                    <!-- 채팅방 목록 -->
+                    <h3 style="margin-bottom: 12px; font-size: 15px; color: #212529;">채팅방 목록</h3>
+                    <ul class="chat-room-list" id="roomList">
+                        <!-- 채팅방 목록이 여기에 동적으로 추가됨 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인 채팅 위젯 -->
+        <div class="chat-widget minimized" id="chatWidget">
+            <!-- 채팅 로그인 필요 화면 (로그인 안 된 경우) -->
+            <div class="chat-login-required" id="chatLoginRequired">
+                <div class="chat-login-icon">🔒</div>
+                <div class="chat-login-message">채팅 기능을 이용하려면 로그인이 필요합니다.</div>
+                <button class="chat-login-button" onclick="redirectToLogin()">로그인하기</button>
+            </div>
+
+            <!-- 채팅 컨텐츠 (로그인 된 경우) -->
+            <div id="chatContent" style="display: none; height: 100%; flex-direction: column;">
+                <!-- 헤더 -->
+                <div class="chat-header">
+                    <div class="chat-header-room-name" id="currentRoomName">전체 채팅</div>
+                    <div class="chat-header-actions">
+                        <!-- 추가: 여러 방을 탭으로 보여줄 컨테이너 -->
+                        <div class="chat-header-room-tabs" id="chatTabs" style="display: flex; gap: 6px;">
+                            <!-- connectToRoom() 후 탭 버튼이 동적으로 생성됨 -->
+                        </div>
+                        <button class="chat-action-button" id="showRoomsWidget" title="채팅방 목록">🏠</button>
+                        <button class="chat-action-button" id="minimazeChat" title="전채 채팅방으로">🌐</button>
+                        <button class="chat-action-button" id="closeChat" title="닫기">×</button>
+                    </div>
+                </div>
+
+                <!-- 메인 채팅 패널 -->
+                <div class="chat-content">
+                    <div class="chat-messages-panel" id="chatMessagesPanel">
+                        <div class="chat-messages-container" id="messages">
+                            <!-- 채팅 메시지가 여기에 동적으로 추가됨 -->
+                        </div>
+
+                        <div class="chat-response-time" id="response-time">응답 시간: -</div>
+
+                        <div class="chat-input-container">
+                            <label for="fileInput" class="chat-attach-button" title="파일 첨부">📎</label>
+                            <input type="file" id="fileInput" class="chat-file-input" />
+                            <input type="text" id="messageInput" class="chat-input" placeholder="메시지를 입력하세요..." />
+                            <button class="chat-send-button" id="sendButton" title="전송">➤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 채팅 토글 버튼 -->
+    <div class="chat-toggle-button" id="chatToggleButton">
+        💬
+    </div>
+</div>
+
+<!-- 비밀방 비밀번호 입력 모달 -->
+<div class="chat-password-modal" id="passwordModal">
+    <div class="chat-password-container">
+        <div class="chat-password-title">비밀방 비밀번호 입력</div>
+        <div class="chat-form-group">
+            <label for="roomPasswordInput" class="chat-form-label">비밀번호</label>
+            <input type="password" id="roomPasswordInput" class="chat-form-input" placeholder="비밀번호를 입력하세요" />
+        </div>
+        <div class="chat-password-buttons">
+            <button class="chat-password-button chat-password-button-cancel" id="cancelPasswordButton">취소</button>
+            <button class="chat-password-button chat-password-button-submit" id="submitPasswordButton">확인</button>
+        </div>
+    </div>
+</div>
 </body>
 <script>
+    // ================================================
+    // 전역 변수 선언 (모든 함수에서 접근 가능)
+    // ================================================
+    let chatWidget, chatRoomsWidget, chatToggleButton, minimizeChat, closeChat,
+        closeRoomsWidget, showRoomsWidget, passwordModal, cancelPasswordButton,
+        submitPasswordButton, chatLoginRequired, chatContent, messageInput,
+        sendButton, fileInput, messagesContainer;
 
-    async function fetchRecommendedPosts(gameId) {
+    let chatStompClient = null;
+    let chatMessageSendTime = null;
+    let chatCurrentRoom = null;
+    let chatCurrentRoomName = "전체 채팅";
+    let chatSize = 10;
+    let chatOldestId = null;
+    let chatOldestTime = null;
+    let chatLoadingInProgress = false;
+    let chatSubscriptions = {};
+    let tempSelectedRoom = null;
+    let roomSubscriptions = {};
+
+    // ================================================
+    // 함수 선언 (호이스팅 적용)
+    // ================================================
+
+    // 로그인 상태 확인 함수
+    function checkChatLoginStatus() {
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            if (chatLoginRequired) chatLoginRequired.style.display = 'none';
+            if (chatContent) chatContent.style.display = 'flex';
+            if (!chatStompClient || !chatStompClient.connected) {
+                connectChat();
+            }
+        } else {
+            if (chatLoginRequired) chatLoginRequired.style.display = 'flex';
+            if (chatContent) chatContent.style.display = 'none';
+            if (chatRoomsWidget) chatRoomsWidget.classList.remove('visible');
+            disconnectChat();
+        }
+    }
+    function connectToRoom(room) {
+        unsubscribeFromGlobalChat()
+        console.log('Room ID:', room.roomId);
+        const token = localStorage.getItem('jwtToken');
+
+        // 이미 해당 방에 대한 구독이 있는지 확인합니다.
+        if (!chatStompClient || !chatStompClient.connected) {
+            console.log('stompClient가 연결되지 않았습니다.');
+            return;
+        }
+
+        // 이미 해당 방에 대한 구독이 있는지 확인합니다.
+        if (roomSubscriptions[room.roomId]) {
+            console.log(`채팅방 ${room.roomId}는 이미 구독 중입니다.`);
+        }else {
+            // 채팅방 구독 시작 및 구독 객체를 저장
+            let subscription = chatStompClient.subscribe(`/topic/${room.roomId}`, function (messageOutput) {
+                console.log('메시지 수신:', messageOutput.body);
+                showRoomMessage(JSON.parse(messageOutput.body));
+            }, {'Authorization': token});
+            roomSubscriptions[room.roomId] = subscription; // 구독 상태 저장
+            console.log(`채팅방 ${room.roomId} (${room.roomName}) 구독 성공!`);
+        }
+
+        chatCurrentRoom = room.roomId;
+        loadChatHistoryForRoom(room.roomId);
+    }
+
+
+    function createRoom() {
+        // localStorage에서 토큰 가져오기
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+
+        // DOM 요소에서 입력 값 가져오기
+        const roomNameInput = document.getElementById('roomNameInput');
+        const isSecurityInput = document.getElementById('isSecurityInput');
+        const passwordInput = document.getElementById('passwordInput');
+
+        const roomName = roomNameInput ? roomNameInput.value.trim() : '';
+        const isSecurity = isSecurityInput ? isSecurityInput.checked : false;
+        const password = passwordInput ? passwordInput.value.trim() : '';
+
+        // 채팅방 이름이 입력되지 않은 경우
+        if (!roomName) {
+            alert('채팅방 이름을 입력해 주세요!');
+            return;
+        }
+
+        // 서버에 채팅방 생성 요청
+        fetch('/room', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            },
+            body: JSON.stringify({
+                name: roomName,
+                isSecurity: isSecurity,
+                password: isSecurity ? password : ''
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.successOrFail) {
+                    const room = data.data;
+                    alert(`채팅방 "${room.roomName}"이(가) 생성되었습니다!`);
+
+                    // 입력 필드 초기화 및 비밀번호 입력 그룹 숨기기
+                    if (roomNameInput) roomNameInput.value = '';
+                    if (isSecurityInput) isSecurityInput.checked = false;
+                    if (passwordInput) {
+                        passwordInput.value = '';
+                        const passwordGroup = document.getElementById('passwordGroup');
+                        if (passwordGroup) passwordGroup.style.display = 'none';
+                    }
+
+                    // 채팅방 목록 갱신
+                    loadRooms();
+                } else {
+                    alert('채팅방 생성에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('채팅방 생성 중 오류 발생:', error);
+                alert('채팅방 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+            });
+    }
+
+    // 채팅 연결 함수
+    function connectChat() {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) return;
         try {
-            const response = await fetch(`/hi/games/${gameId}/recommended?size=3`); // ✅ 인기 게시글 요청 (3개만)
+            const socket = new SockJS('/ws');
+            chatStompClient = Stomp.over(socket);
+            chatStompClient.debug = null;
+            chatStompClient.connect({ 'Authorization': token }, function (frame) {
+                console.log('채팅 연결 성공');
+                subscribeToGlobalChat();
+                loadChatHistory();
+            }, function (error) {
+                console.error('채팅 연결 실패:', error);
+                setTimeout(connectChat, 5000);
+            });
+        } catch (error) {
+            console.error('채팅 연결 중 오류 발생:', error);
+        }
+    }
+
+    // 채팅 연결 해제 함수
+    function disconnectChat() {
+        if (chatStompClient && chatStompClient.connected) {
+            // 모든 구독 해제
+            for (const roomId in chatSubscriptions) {
+                if (chatSubscriptions[roomId]) {
+                    chatSubscriptions[roomId].unsubscribe();
+                    delete chatSubscriptions[roomId];
+                }
+            }
+            chatStompClient.disconnect();
+            chatStompClient = null;
+            chatCurrentRoom = null;
+            chatCurrentRoomName = "전체 채팅";
+            if (messagesContainer) messagesContainer.innerHTML = '';
+        }
+    }
+
+    // 특정 채팅방의 구독을 해제하는 함수
+    function unsubscribeFromRoomChat(roomId) {
+        // roomSubscriptions 객체에 해당 roomId의 구독이 있는지 확인
+        if (roomSubscriptions[roomId]) {
+            // 구독 객체의 unsubscribe() 메서드를 호출해 구독 해제
+            roomSubscriptions[roomId].unsubscribe();
+            // 구독 상태를 나타내는 객체에서 해당 항목 삭제
+            delete roomSubscriptions[roomId];
+            console.log(`채팅방 ${roomId}의 구독이 해제되었습니다.`);
+        } else {
+            console.log(`채팅방 ${roomId}에 대한 구독이 존재하지 않습니다.`);
+        }
+    }
+
+
+    // 전체 채팅 구독 함수
+    function subscribeToGlobalChat() {
+        const token = localStorage.getItem('jwtToken');
+        if (!chatStompClient || !chatStompClient.connected || !token) return;
+        // 만약 특정 채팅방에 현재 구독되어 있다면, 해당 구독 해제
+        if (chatCurrentRoom && roomSubscriptions[chatCurrentRoom]) {
+            unsubscribeFromRoomChat(chatCurrentRoom);
+            // 선택적으로 현재 활성화된 채팅방 정보를 초기화할 수도 있습니다.
+            chatCurrentRoom = null;
+        }
+        if (chatSubscriptions['global']) return;
+        const subscription = chatStompClient.subscribe('/topic/hi', function (messageOutput) {
+            try {
+                const message = JSON.parse(messageOutput.body);
+                showChatMessage(message);
+            } catch (error) {
+                console.error('메시지 파싱 중 오류 발생:', error);
+            }
+        }, { 'Authorization': token });
+        chatSubscriptions['global'] = subscription;
+        const minimazeChatButton = document.getElementById('minimazeChat');
+
+        // 버튼에 클릭 이벤트 리스너를 추가합니다.
+        minimazeChatButton.addEventListener('click', function() {
+            // 버튼 클릭 시 subscribeToGlobalChat 함수를 실행합니다.
+            subscribeToGlobalChat();
+            loadChatHistory()
+        })
+    }
+
+    // 전체 채팅 구독 해제 함수
+    function unsubscribeFromGlobalChat() {
+        // 1. 전역 채팅에 대한 구독 객체가 존재하는지 확인합니다.
+        if (chatSubscriptions['global']) {
+            // 2. 구독 객체의 unsubscribe() 메서드를 호출하여 구독을 해제합니다.
+            chatSubscriptions['global'].unsubscribe();
+
+            // 3. 구독 해제 후, 구독 객체를 chatSubscriptions에서 제거하여 상태를 업데이트합니다.
+            delete chatSubscriptions['global'];
+            console.log('Global chat subscription has been unsubscribed.');
+        } else {
+            // 구독 객체가 없으면 이미 해제된 상태임을 알립니다.
+            console.log('No global chat subscription found.');
+        }
+    }
+
+    // 채팅 메시지 전송 함수
+    function sendMessage() {
+        const token = localStorage.getItem('jwtToken');
+        const msgInput = document.getElementById('messageInput');
+        const messageContent = msgInput.value.trim();
+        if (!messageContent || !chatStompClient || !chatStompClient.connected) return;
+        const chatMessage = { message: messageContent };
+        chatMessageSendTime = new Date();
+        let destination = '/app/send/all';
+        if (chatCurrentRoom) {
+            destination = `/app/send/room/${chatCurrentRoom}`;
+        }
+        chatStompClient.send(destination, { 'Authorization': token }, JSON.stringify(chatMessage));
+        msgInput.value = '';
+        msgInput.focus();
+    }
+
+    function showRoomMessage(message, prepend = false) {
+        console.log("Room message received:", message);
+        // 기존에 쓰던 messagesContainer를 사용
+          if (!messagesContainer) return;
+
+        // 현재 사용자 닉네임
+        const currentUserNickname = localStorage.getItem('userNickname');
+
+        // 메시지 컨테이너 생성 (일관된 스타일 적용)
+        const messageElement = document.createElement('div');
+        messageElement.className = message.username === currentUserNickname
+            ? 'room-message room-message-outgoing'
+            : 'room-message room-message-incoming';
+
+        // 메시지 내용 생성 (텍스트 메시지)
+        const messageContent = document.createElement('div');
+        messageContent.className = 'room-message-content';
+        if (message.message && message.message.trim() !== "") {
+            messageContent.textContent = message.message;
+        } else {
+            // 내용이 없으면 그냥 반환
+            return;
+        }
+        messageElement.appendChild(messageContent);
+
+        // 메시지 정보(사용자명, 시간) 생성
+        const messageInfo = document.createElement('div');
+        messageInfo.className = 'room-message-info';
+        if (message.username !== currentUserNickname) {
+            const usernameSpan = document.createElement('span');
+            usernameSpan.className = 'room-message-username';
+            usernameSpan.textContent = message.username || '알 수 없음';
+            messageInfo.appendChild(usernameSpan);
+        }
+        const createdAt = new Date(message.createdAt);
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'room-message-time';
+        timeSpan.textContent = formatChatTime(createdAt);
+        messageInfo.appendChild(timeSpan);
+
+        messageElement.appendChild(messageInfo);
+
+        // prepend 여부에 따라 메시지 추가
+        if (prepend) {
+            messagesContainer.insertBefore(messageElement, messagesContainer.firstChild);
+        } else {
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    }
+    // 채팅 메시지 표시 함수
+    function showChatMessage(message, prepend = false) {
+        console.log("메시지 보여주기 작동중~")
+        if (!messagesContainer) return;
+        const messageElement = document.createElement('div');
+        const currentUserNickname = localStorage.getItem('userNickname');
+        // 메시지 유형에 따른 클래스 설정
+        messageElement.className = message.username === currentUserNickname
+            ? 'chat-message chat-message-outgoing'
+            : 'chat-message chat-message-incoming';
+
+        if (message.imageUrl && message.imageUrl.trim() !== "") {
+            const messageContentDiv = document.createElement('div');
+            messageContentDiv.className = 'chat-message-content';
+            const imgElement = document.createElement('img');
+            imgElement.src = message.imageUrl;
+            imgElement.alt = '이미지';
+            imgElement.style.maxWidth = '100%';
+            imgElement.style.height = 'auto';
+            imgElement.style.borderRadius = '8px';
+            imgElement.style.cursor = 'pointer';
+            imgElement.addEventListener('click', () => window.open(message.imageUrl, '_blank'));
+            messageContentDiv.appendChild(imgElement);
+            messageElement.appendChild(messageContentDiv);
+        } else if (message.message && message.message.trim() !== "") {
+            const messageContentDiv = document.createElement('div');
+            messageContentDiv.className = 'chat-message-content';
+            messageContentDiv.textContent = message.message;
+            messageElement.appendChild(messageContentDiv);
+        } else {
+            return;
+        }
+        const messageInfo = document.createElement('div');
+        messageInfo.className = 'chat-message-info';
+        if (message.username !== currentUserNickname) {
+            const usernameSpan = document.createElement('span');
+            usernameSpan.className = 'chat-message-username';
+            usernameSpan.textContent = message.username || '알 수 없음';
+            messageInfo.appendChild(usernameSpan);
+        }
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'chat-message-time';
+        const createdAt = new Date(message.createdAt);
+        timeSpan.textContent = formatChatTime(createdAt);
+        messageInfo.appendChild(timeSpan);
+        messageElement.appendChild(messageInfo);
+        if (prepend) {
+            messagesContainer.insertBefore(messageElement, messagesContainer.firstChild);
+        } else {
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            if (message.username === currentUserNickname && chatMessageSendTime) {
+                const responseTime = new Date(message.createdAt) - chatMessageSendTime;
+                showResponseTime(responseTime);
+            }
+        }
+    }
+
+    // 응답 시간 표시 함수
+    function showResponseTime(time) {
+        const responseTimeDiv = document.getElementById('response-time');
+        if (responseTimeDiv) {
+            responseTimeDiv.textContent = `응답 시간: ${time}ms`;
+        }
+    }
+
+    // 채팅 내역 로드 (전체 채팅)
+    function loadChatHistory() {
+        const token = localStorage.getItem('jwtToken');
+
+        const chatContainer = document.getElementById('messages');
+
+// 기존에 불러왔던 메시지 기록을 초기화(모두 제거)
+        chatContainer.innerHTML = '';
+
+        if (!token) return;
+        let chatId = 0;
+        let lastTime = toISO8601Local(new Date());
+        const url = `/chats/history?size=${chatSize}&chatId=${chatId}&lastTime=${encodeURIComponent(lastTime)}`;
+        console.log("lastTime:", lastTime);
+        console.log("url:", url);
+
+        fetch(url, {
+            method: 'GET',
+            headers: { 'Authorization': token }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response data:", data);
+                // 수정: 실제 메시지 배열은 chatsResponses[1]에 들어있음
+                if (data && data.data && Array.isArray(data.data.chatsResponses) && data.data.chatsResponses.length > 1) {
+                    const messages = data.data.chatsResponses[1];
+                    // messages 배열 확인
+                    console.log("Extracted messages:", messages);
+                    messages.reverse();
+                    messages.forEach(message => {
+                        showChatMessage(message, false);
+                    });
+                    if (messages.length > 0) {
+                        chatOldestId = messages[0].chatsId;
+                        chatOldestTime = messages[0].createdAt;
+                    }
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            })
+            .catch(error => console.error('채팅 내역 로드 중 오류 발생:', error));
+    }
+
+
+    // 채팅방 내역 로드
+    function loadChatHistoryForRoom(roomId) {
+        const token = localStorage.getItem('jwtToken');
+        if (!token || !roomId) return;
+        let chatId = 0;
+        let lastTime = toISO8601Local(new Date());
+        const url = `/chats/${roomId}?size=${chatSize}&chatId=${chatId}&lastTime=${encodeURIComponent(lastTime)}`;
+        fetch(url, {
+            method: 'GET',
+            headers: { 'Authorization': token }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data && Array.isArray(data.data.chatResponses)) {
+                    // 실제 메시지 배열가 두번째 요소에 위치하는지 확인
+                    let messages = data.data.chatResponses;
+                    if (messages.length > 1 && Array.isArray(messages[1])) {
+                        messages = messages[1];
+                    }
+                    messages.reverse();
+                    messagesContainer.innerHTML = '';
+                    messages.forEach(message => {
+                        showRoomMessage(message, false);
+                    });
+                    if (messages.length > 0) {
+                        chatOldestId = messages[0].chatsId;
+                        chatOldestTime = messages[0].createdAt;
+                    }
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            })
+            .catch(error => console.error('채팅방 내역 로드 중 오류 발생:', error));
+    }
+
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const showRoomsWidget = document.getElementById('showRoomsWidget');
+        const chatRoomsWidget = document.getElementById('chatRoomsWidget');
+
+        if (showRoomsWidget && chatRoomsWidget) {
+            showRoomsWidget.addEventListener('click', () => {
+                chatRoomsWidget.classList.add('visible');
+                loadRooms();
+            });
+        }
+    });
+
+    function loadRooms() {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) return;
+
+        fetch('/room', {
+            method: 'GET',
+            headers: { 'Authorization': token }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('room response:', data);
+                const roomList = document.getElementById('roomList');
+                roomList.innerHTML = '';
+
+                let rooms = [];
+                if (data.successOrFail && data.data) {
+                    // 만약 roomResponses가 [typeInfo, 실제 배열] 형태라면
+                    if (Array.isArray(data.data.roomResponses)) {
+                        if (data.data.roomResponses.length > 1 && Array.isArray(data.data.roomResponses[1])) {
+                            rooms = data.data.roomResponses[1];
+                        } else {
+                            rooms = data.data.roomResponses;
+                        }
+                    }
+                }
+
+                if (rooms && Array.isArray(rooms)) {
+                    rooms.forEach(room => {
+                        const roomElement = document.createElement('li');
+                        roomElement.textContent = `${room.roomName} (${room.isSecurity ? '🔒' : '🔓'})`;
+                        roomElement.onclick = () => connectToRoom(room);
+                        roomList.appendChild(roomElement);
+                    });
+                }
+            })
+            .catch(error => console.error('채팅방 목록 불러오는 중 오류 발생:', error));
+    }
+
+
+    // 이전 메시지 로드
+    function loadOlderMessages() {
+        if (chatLoadingInProgress) return;
+        chatLoadingInProgress = true;
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            chatLoadingInProgress = false;
+            return;
+        }
+        if (!chatOldestId || !chatOldestTime) {
+            chatLoadingInProgress = false;
+            return;
+        }
+        let url;
+        if (chatCurrentRoom) {
+            url = `/chats/${chatCurrentRoom}?size=${chatSize}&chatId=${chatOldestId}&lastTime=${encodeURIComponent(chatOldestTime)}`;
+        } else {
+            url = `/chats/history?size=${chatSize}&chatId=${chatOldestId}&lastTime=${encodeURIComponent(chatOldestTime)}`;
+        }
+        const previousScrollHeight = messagesContainer.scrollHeight;
+        fetch(url, {
+            method: 'GET',
+            headers: { 'Authorization': token }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const messages = data && data.data ? (chatCurrentRoom ? data.data.chatResponses : data.data.chatsResponses) : [];
+                if (!Array.isArray(messages) || messages.length === 0) {
+                    return;
+                }
+                messages.forEach(message => {
+                    showChatMessage(message, true);
+                });
+                if (messages.length > 0) {
+                    chatOldestId = messages[messages.length - 1].chatsId;
+                    chatOldestTime = messages[messages.length - 1].createdAt;
+                }
+                const newScrollHeight = messagesContainer.scrollHeight;
+                messagesContainer.scrollTop = newScrollHeight - previousScrollHeight;
+            })
+            .catch(error => console.error('이전 메시지 로드 중 오류 발생:', error))
+            .finally(() => {
+                chatLoadingInProgress = false;
+            });
+    }
+
+    // 파일 업로드 처리 함수
+    function handleFileUpload() {
+        const token = localStorage.getItem('jwtToken');
+        const file = fileInput.files[0];
+        if (!file) return;
+        const maxSize = 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('파일 크기는 10MB 이하여야 합니다.');
+            fileInput.value = '';
+            return;
+        }
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('이미지 파일만 업로드할 수 있습니다.');
+            fileInput.value = '';
+            return;
+        }
+        const filename = encodeURIComponent(file.name);
+        fetch(`/images/hi/bye?filename=${filename}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.successOrFail && data.data) {
+                    const presignedUrl = data.data;
+                    return fetch(presignedUrl, {
+                        method: 'PUT',
+                        body: file,
+                        headers: { 'Content-Type': file.type }
+                    });
+                } else {
+                    throw new Error('URL 생성 실패');
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    const fileUrl = response.url.split('?')[0];
+                    const message = { imageUrl: fileUrl, message: "" };
+                    sendImageMessage(message);
+                } else {
+                    throw new Error('파일 업로드 실패');
+                }
+            })
+            .catch(error => {
+                console.error('파일 업로드 중 오류 발생:', error);
+                alert('파일 업로드에 실패했습니다.');
+            })
+            .finally(() => {
+                fileInput.value = '';
+            });
+    }
+
+    // 이미지 메시지 전송 함수
+    function sendImageMessage(message) {
+        const token = localStorage.getItem('jwtToken');
+        if (!chatStompClient || !chatStompClient.connected) {
+            alert('채팅 서버에 연결되어 있지 않습니다.');
+            return;
+        }
+        let destination = '/app/send/all';
+        if (chatCurrentRoom) {
+            destination = `/app/send/room/${chatCurrentRoom}`;
+        }
+        chatStompClient.send(destination, { 'Authorization': token }, JSON.stringify(message));
+    }
+
+    // 시간 형식 변환 함수 (ISO 8601)
+    function toISO8601Local(date) {
+        let timezoneOffset = -date.getTimezoneOffset();
+        let timezoneSign = timezoneOffset >= 0 ? '+' : '-';
+        let timezoneHours = String(Math.floor(Math.abs(timezoneOffset) / 60)).padStart(2, '0');
+        let timezoneMinutes = String(Math.abs(timezoneOffset) % 60).padStart(2, '0');
+        let localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+        let isoString = localDate.toISOString().replace('Z', `${timezoneSign}${timezoneHours}:${timezoneMinutes}`);
+        return isoString;
+    }
+
+    // 채팅 시간 형식 변환 함수
+    function formatChatTime(date) {
+        return date.toLocaleString('ko-KR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+    }
+
+    // ================================================
+    // DOMContentLoaded 이벤트: DOM 요소 바인딩 및 이벤트 리스너 설정
+    // ================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        chatWidget = document.getElementById('chatWidget');
+        chatRoomsWidget = document.getElementById('chatRoomsWidget');
+        chatToggleButton = document.getElementById('chatToggleButton');
+        minimizeChat = document.getElementById('minimizeChat');
+        closeChat = document.getElementById('closeChat');
+        closeRoomsWidget = document.getElementById('closeRoomsWidget');
+        showRoomsWidget = document.getElementById('showRoomsWidget');
+        passwordModal = document.getElementById('passwordModal');
+        cancelPasswordButton = document.getElementById('cancelPasswordButton');
+        submitPasswordButton = document.getElementById('submitPasswordButton');
+        chatLoginRequired = document.getElementById('chatLoginRequired');
+        chatContent = document.getElementById('chatContent');
+        messageInput = document.getElementById('messageInput');
+        sendButton = document.getElementById('sendButton');
+        fileInput = document.getElementById('fileInput');
+        messagesContainer = document.getElementById('messages');
+
+        if (chatToggleButton) {
+            chatToggleButton.addEventListener('click', function() {
+                chatWidget.classList.toggle('minimized');
+                checkChatLoginStatus();
+            });
+        }
+        if (sendButton) {
+            sendButton.addEventListener('click', sendMessage);
+        }
+        if (messageInput) {
+            messageInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') sendMessage();
+            });
+        }
+        if (fileInput) {
+            fileInput.addEventListener('change', handleFileUpload);
+        }
+        if (messagesContainer) {
+            messagesContainer.addEventListener('scroll', function() {
+                if (this.scrollTop < 50 && !chatLoadingInProgress) {
+                    loadOlderMessages();
+                }
+            });
+        }
+        if (cancelPasswordButton) {
+            cancelPasswordButton.addEventListener('click', function() {
+                passwordModal.classList.remove('visible');
+                tempSelectedRoom = null;
+            });
+        }
+        if (submitPasswordButton) {
+            submitPasswordButton.addEventListener('click', function() {
+                const password = document.getElementById('roomPasswordInput').value.trim();
+                if (password && tempSelectedRoom) {
+                    verifyRoomPassword(tempSelectedRoom, password);
+                } else {
+                    alert('비밀번호를 입력해주세요.');
+                }
+            });
+        }
+        if (closeChat) {
+            closeChat.addEventListener('click', function() {
+                // 1) chatWidget을 아예 닫고 싶다면 minimized 클래스를 추가해서 숨긴다
+                chatWidget.classList.add('minimized');
+
+                // 2) 또는 DOM에서 완전히 제거하고 싶다면
+                // chatWidget.remove();
+            });
+        }
+        if (closeRoomsWidget) {
+            closeRoomsWidget.addEventListener('click', function() {
+                // 1) chatWidget을 아예 닫고 싶다면 minimized 클래스를 추가해서 숨긴다
+                chatRoomsWidget.classList.remove('visible');
+
+                // 2) 또는 DOM에서 완전히 제거하고 싶다면
+                // chatWidget.remove();
+            });
+        }
+        const isSecurityInput = document.getElementById('isSecurityInput');
+        if (isSecurityInput) {
+            isSecurityInput.addEventListener('change', function() {
+                const passwordGroup = document.getElementById('passwordGroup');
+                if (this.checked) {
+                    passwordGroup.style.display = 'block';
+                } else {
+                    passwordGroup.style.display = 'none';
+                    document.getElementById('passwordInput').value = '';
+                }
+            });
+        }
+        // 기타 DOM 요소에 대한 이벤트 리스너 등록...
+
+        checkChatLoginStatus();
+    });
+
+
+    async function fetchRecommendedPosts() {
+        try {
+            const response = await fetch(`/posts/hi/popular`);
             if (!response.ok) {
-                throw new Error('서버 응답 오류');
+                throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
             }
 
-            const responseData = await response.json(); // ✅ JSON 데이터 변환
-            const posts = responseData.data.posts; // ✅ 게시글 목록 추출
+            const responseData = await response.json();
+            console.log("서버 응답 데이터:", responseData); // ✅ 응답 구조 확인
 
-            renderRecommendedPosts(posts); // ✅ 인기 게시글 렌더링
+            // ✅ postList에서 실제 배열만 추출
+            const posts = responseData.data.postList[1];
+
+            if (!Array.isArray(posts)) {
+                throw new Error("postList의 데이터 형식이 배열이 아닙니다.");
+            }
+
+            renderRecommendedPosts(posts);
+
         } catch (error) {
             console.error("인기 게시글 가져오기 실패:", error);
         }
     }
 
+    async function fetchLatestNews() {
+        try {
+            const response = await fetch("/posts/hi/recent"); // ✅ 최신 소식 요청
+            if (!response.ok) {
+                throw new Error(`서버 응답 오류 (HTTP ${response.status})`);
+            }
+
+            const responseData = await response.json();
+            console.log("최신 소식 데이터:", responseData); // ✅ 응답 구조 확인
+
+            const newsList = responseData.data.postResponses[1];
+            ; // ✅ 최신 소식 리스트 추출
+
+            if (!Array.isArray(newsList)) {
+                throw new Error("newsList의 데이터 형식이 배열이 아닙니다.");
+            }
+
+            renderLatestNews(newsList); // ✅ 최신 소식 UI 업데이트
+        } catch (error) {
+            console.error("최신 소식 가져오기 실패:", error);
+        }
+    }
+
+    function renderLatestNews(newsList) {
+        const cardBody = document.querySelector("#latest-news-card .card-body");
+        cardBody.innerHTML = ""; // ✅ 기존 목록 초기화
+
+        console.log(newsList)
+        newsList.forEach(news => {
+            const newsItem = document.createElement("div");
+            newsItem.classList.add("news-item");
+
+            // ✅ `data-post-id` 속성 추가 (게시글 ID 저장)
+            newsItem.innerHTML = `
+            <span class="news-category" style="background-color: ${getCategoryColor(news.categoryName)};">
+                ${news.categoryName}
+            </span>
+            <div class="news-title" data-post-id="${news.postId}">
+                ${news.title}
+            </div>
+            <div class="news-date">${formatTimeAgo(news.createdAt)}</div>
+        `;
+
+            cardBody.appendChild(newsItem); // ✅ 동적으로 추가
+        });
+    }
+
+    // ✅ 이벤트 위임 방식 적용 (부모 요소에서 클릭 이벤트 감지)
+    document.querySelector("#latest-news-card .card-body").addEventListener("click", function(event) {
+        const clickedTitle = event.target.closest(".news-title"); // 클릭된 요소가 `.news-title`인지 확인
+
+        if (clickedTitle) {
+            const postId = clickedTitle.getAttribute("data-post-id");
+            localStorage.setItem("postId", postId); // ✅ postId 저장
+            window.location.href = "/boardeatail/hi/game"; // ✅ 페이지 이동
+        }
+    });
+
     // ✅ 인기 게시글을 동적으로 렌더링하는 함수
     function renderRecommendedPosts(posts) {
-        const cardBody = document.querySelector(".content-card .card-body");
+        const cardBody = document.querySelector("#popular-posts-card .card-body");
         cardBody.innerHTML = ""; // 기존 목록 초기화
 
         posts.forEach(post => {
             const newsItem = document.createElement("div");
             newsItem.classList.add("news-item");
 
+            // ✅ `id`를 없애고 `data-post-id` 속성을 사용해 데이터를 저장
             newsItem.innerHTML = `
-            <span class="news-category" style="background-color: ${getCategoryColor(post.category)};">${post.category}</span>
-            <div class="news-title">${post.title}</div>
-            <div class="news-date">조회 ${post.views.toLocaleString()}</div>
+            <span class="news-category" style="background-color: ${getCategoryColor(post.categoryName)};">
+                ${post.categoryName}
+            </span>
+            <div class="news-title" data-post-id="${post.id}">
+                ${post.title}
+            </div>
+            <div class="news-date">조회 ${post.viewCount.toLocaleString()}</div>
         `;
 
-            cardBody.appendChild(newsItem); // 리스트에 추가
+            cardBody.appendChild(newsItem);
         });
+    }
+
+    document.querySelector("#popular-posts-card .card-body").addEventListener("click", function(event) {
+        const clickedTitle = event.target.closest(".news-title"); // 클릭한 요소가 .news-title인지 확인
+
+        if (clickedTitle) {
+            const cardId = clickedTitle.getAttribute("data-post-id"); // ✅ `data-post-id`에서 ID 가져오기
+            localStorage.setItem("postId", cardId); // postId 저장
+            window.location.href = "/boardeatail/hi/game"; // 페이지 이동
+        }
+    });
+    // ✅ 이벤트 위임: `.card-body`에 클릭 이벤트 추가
+
+
+
+    function getCategoryColor(categoryName) {
+        return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     }
 
     function login() {
@@ -572,6 +1995,7 @@
             .catch(error => console.error("Error:", error));
 
     }
+
     function checkLoginStatus() {
         const token = localStorage.getItem("jwtToken");  // localStorage에서 JWT 토큰 확인
 
@@ -638,6 +2062,21 @@
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
+    function formatTimeAgo(isoString) {
+        const createdAt = new Date(isoString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - createdAt) / 1000); // ✅ 현재 시간과의 차이 (초 단위)
+
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds}초 전`; // ✅ 1분 미만
+        } else if (diffInSeconds < 3600) {
+            return `${Math.floor(diffInSeconds / 60)}분 전`; // ✅ 1시간 미만
+        } else if (diffInSeconds < 86400) {
+            return `${Math.floor(diffInSeconds / 3600)}시간 전`; // ✅ 24시간 미만
+        } else {
+            return `${Math.floor(diffInSeconds / 86400)}일 전`; // ✅ 하루 이상
+        }
+    }
     function logout() {
         localStorage.removeItem("jwtToken");  // ✅ JWT 토큰 삭제
         alert("로그아웃 되었습니다.");
@@ -645,7 +2084,11 @@
     }
 
     // ✅ 페이지 로드 시 로그인 상태 확인
-    window.onload = checkLoginStatus;
+    window.onload = function () {
+        checkLoginStatus(); // ✅ 기존 로그인 상태 체크 함수 실행
+        fetchRecommendedPosts(); // ✅ 인기 게시글 가져오기 실행
+        fetchLatestNews(); // ✅ 최신 소식 가져오기
+    };
 
     // ✅ 로컬스토리지 변경 감지 (MutationObserver 대체)
     window.addEventListener("storage", (event) => {

@@ -3,6 +3,7 @@ package com.example.codePicasso.domain.auth.controller;
 import com.example.codePicasso.domain.auth.dto.request.SignInRequest;
 import com.example.codePicasso.domain.auth.dto.response.JwtTokenResponse;
 import com.example.codePicasso.domain.auth.service.AuthService;
+import com.example.codePicasso.domain.auth.service.KaKaoService;
 import com.example.codePicasso.domain.user.dto.request.AdminRequest;
 import com.example.codePicasso.domain.user.dto.request.UserRequest;
 import com.example.codePicasso.domain.user.dto.response.AdminResponse;
@@ -12,10 +13,7 @@ import com.example.codePicasso.domain.user.service.UserService;
 import com.example.codePicasso.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor

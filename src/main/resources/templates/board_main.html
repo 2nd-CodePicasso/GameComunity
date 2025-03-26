@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게임 커뮤니티 - 리그 오브 레전드 게시판</title>
+  <style>
+    /* 공통 스타일 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* 데스크탑 컨테이너 */
+    .desktop-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* 데스크탑 헤더 */
+    .desktop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: #4263eb;
+      color: white;
+    }
+    
+    .desktop-logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    
+    .desktop-nav {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .desktop-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .desktop-nav a:hover, .desktop-nav a.active {
+      background-color: rgba(255,255,255,0.2);
+    }
+    
+    /* 데스크탑 레이아웃 */
+    .desktop-layout {
+      display: flex;
+      gap: 24px;
+      padding: 24px;
+    }
+    
+    .desktop-sidebar {
+      width: 280px;
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .desktop-main {
+      flex: 1;
+    }
+    
+    /* 로그인 폼 스타일 */
+    .login-form {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .form-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #212529;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #495057;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #4263eb;
+      box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+    }
+    
+    .btn {
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+      border: none;
+      padding: 10px 15px;
+      font-size: 14px;
+      width: 100%;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background-color: #4263eb;
+      color: white;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: #495057;
+      border: 1px solid #e9ecef;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .buttons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    /* 페이지 섹션 버튼들 */
+    .pages-section {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .page-button {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    
+    .page-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      color: white;
+      font-size: 18px;
+    }
+    
+    .board-icon {
+      background-color: #339af0;
+    }
+    
+    .item-icon {
+      background-color: #20c997;
+    }
+    
+    .chat-icon {
+      background-color: #845ef7;
+    }
+    
+    .page-title {
+      font-weight: 600;
+      color: #212529;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    
+    .page-description {
+      color: #868e96;
+      font-size: 13px;
+    }
+    
+    /* 사용자 정보 카드 스타일 */
+    .user-info-card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+
+    .user-info-header {
+      margin-bottom: 20px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-image {
+      margin-right: 16px;
+    }
+
+    .avatar-circle {
+      width: 50px;
+      height: 50px;
+      background-color: #4263eb;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .profile-details {
+      flex: 1;
+    }
+
+    .user-nickname {
+      font-weight: 600;
+      font-size: 18px;
+      color: #212529;
+      margin-bottom: 4px;
+    }
+
+    .user-id {
+      color: #868e96;
+      font-size: 14px;
+    }
+
+    .user-stats {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-top: 1px solid #e9ecef;
+      border-bottom: 1px solid #e9ecef;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-label {
+      color: #868e96;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      font-size: 16px;
+      color: #212529;
+    }
+    
+    /* 게시판 헤더 */
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .board-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #212529;
+    }
+    
+    .board-description {
+      font-size: 15px;
+      color: #495057;
+      margin-top: 6px;
+    }
+    
+    /* 게시글 목록 스타일 */
+    .post-list {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    
+    .post-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .post-table th,
+    .post-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .post-table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+      font-size: 14px;
+    }
+    
+    .post-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .post-table tr:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .post-title {
+      font-weight: 500;
+      color: #212529;
+      text-decoration: none;
+    }
+    
+    .post-title:hover {
+      color: #4263eb;
+      text-decoration: underline;
+    }
+    
+    .post-id {
+      font-weight: 600;
+      color: #495057;
+      text-align: center;
+      min-width: 50px;
+    }
+    
+    .post-author {
+      color: #495057;
+      font-weight: 500;
+    }
+    
+    .post-date {
+      color: #868e96;
+      font-size: 13px;
+    }
+    
+    /* 상태 배지 */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-recommended {
+      background-color: #ffe066;
+      color: #f08c00;
+    }
+    
+    .badge-normal {
+      background-color: #e9ecef;
+      color: #495057;
+    }
+    
+    /* 게시판 하단 액션 */
+    .board-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    
+    .action-btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .action-btn-primary {
+      background-color: #4263eb;
+      color: white;
+      border: none;
+    }
+    
+    .action-btn-primary:hover {
+      background-color: #3b5bdb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* 페이지네이션 */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 20px;
+    }
+    
+    .page-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background-color: #fff;
+      border: 1px solid #e9ecef;
+      color: #495057;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    
+    .page-item.active {
+      background-color: #4263eb;
+      color: white;
+      border-color: #4263eb;
+    }
+    
+    .page-item:hover:not(.active) {
+      background-color: #f8f9fa;
+      border-color: #ced4da;
+    }
+    
+    .page-item.disabled {
+      color: #ced4da;
+      cursor: not-allowed;
+    }
+    
+    /* 검색 폼 */
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .search-select {
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #495057;
+      background-color: white;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .search-button {
+      padding: 8px 16px;
+      background-color: #4263eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- 데스크탑 컨테이너 -->
+  <div class="desktop-container">
+    <!-- 데스크탑 헤더 -->
+    <div class="desktop-header">
+      <div class="desktop-logo">게임 커뮤니티</div>
+      <div class="desktop-nav">
+        <a href="/">홈</a>
+        <a href="/boards" class="active">게시판</a>
+        <a href="/items">아이템 거래소</a>
+        <a href="/chats">채팅방</a>
+        <a href="/notices">공지사항</a>
+      </div>
+    </div>
+    
+    <!-- 데스크탑 레이아웃 -->
+    <div class="desktop-layout">
+      <!-- 사이드바 -->
+      <div class="desktop-sidebar">
+        <!-- 로그인 여부에 따라 다른 내용 표시 -->
+        <div id="non-logged-in-content">
+          <!-- 비로그인 상태: 로그인 폼 -->
+          <form action="/auth/login" method="post" class="login-form">
+            <h2 class="form-title">로그인</h2>
+            
+            <div class="form-group">
+              <label for="username" class="form-label">아이디</label>
+              <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="password" class="form-label">비밀번호</label>
+              <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+            </div>
+            
+            <div class="buttons-container">
+              <button type="submit" class="btn btn-primary">로그인</button>
+              <a href="/auth/signup" class="btn btn-outline">회원가입</a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 16px;">
+              <a href="#" class="text-link">아이디/비밀번호 찾기</a>
+            </div>
+          </form>
+        </div>
+        
+        <!-- 로그인한 경우: 회원 정보 -->
+        <div id="logged-in-content" style="display: none;" class="user-info-card">
+          <div class="user-info-header">
+            <h2 class="form-title">회원 정보</h2>
+          </div>
+          
+          <div class="user-profile">
+            <div class="profile-image">
+              <!-- 기본 프로필 이미지 -->
+              <div class="avatar-circle">
+                <span class="avatar-text">G</span>
+              </div>
+            </div>
+            <div class="profile-details">
+              <div class="user-nickname">게임마스터</div>
+              <div class="user-id">gamemaster</div>
+            </div>
+          </div>
+          
+          <div class="user-stats">
+            <div class="stat-item">
+              <div class="stat-label">작성글</div>
+              <div class="stat-value">12</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">댓글</div>
+              <div class="stat-value">48</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">가입일</div>
+              <div class="stat-value">2025-01-15</div>
+            </div>
+          </div>
+          
+          <div class="buttons-container">
+            <a href="/users/my-profile" class="btn btn-outline">내 프로필</a>
+            <a href="/auth/logout" class="btn btn-outline">로그아웃</a>
+          </div>
+        </div>
+        
+        <!-- 바로가기 메뉴 -->
+        <div style="margin-top: 24px;">
+          <h3 style="margin-bottom: 16px; font-size: 16px; color: #495057;">바로가기</h3>
+          <div class="pages-section">
+            <a href="/boards" class="page-button">
+              <div class="icon board-icon">B</div>
+              <div>
+                <div class="page-title">게시판</div>
+              </div>
+            </a>
+            
+            <a href="/items" class="page-button">
+              <div class="icon item-icon">I</div>
+              <div>
+                <div class="page-title">아이템 거래소</div>
+              </div>
+            </a>
+            
+            <a href="/chats" class="page-button">
+              <div class="icon chat-icon">C</div>
+              <div>
+                <div class="page-title">채팅방</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 메인 콘텐츠 -->
+      <div class="desktop-main">
+        <!-- 게시판 헤더 -->
+        <div class="board-header">
+          <div>
+            <h1 class="board-title">리그 오브 레전드</h1>
+            <p class="board-description">인기 MOBA 게임 리그 오브 레전드 관련 정보와 전략을 공유하는 공간입니다.</p>
+          </div>
+        </div>
+        
+        <!-- 검색 폼 -->
+        <div class="search-container">
+          <select class="search-select">
+            <option value="title">제목</option>
+            <option value="content">내용</option>
+            <option value="author">작성자</option>
+            <option value="title_content">제목+내용</option>
+          </select>
+          <input type="text" class="search-input" placeholder="검색어를 입력하세요">
+          <button class="search-button">검색</button>
+        </div>
+        
+        <!-- 게시글 목록 -->
+        <div class="post-list">
+          <table class="post-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">번호</th>
+                <th>제목</th>
+                <th style="width: 120px;">작성자</th>
+                <th style="width: 100px;">상태</th>
+                <th style="width: 120px;">작성일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 공지 게시글 -->
+              <tr style="background-color: #f8f9fa;">
+                <td class="post-id">공지</td>
+                <td>
+                  <a href="/boards/lol/post/notice1" class="post-title">리그 오브 레전드 게시판 이용 규칙</a>
+                </td>
+                <td class="post-author">관리자</td>
+                <td><span class="badge badge-recommended">공지</span></td>
+                <td class="post-date">2025-03-01</td>
+              </tr>
+              
+              <!-- 일반 게시글 -->
+              <tr>
+                <td class="post-id">15</td>
+                <td>
+                  <a href="/boards/lol/post/15" class="post-title">시즌13 미드라인 티어리스트 공유합니다</a>
+                </td>
+                <td class="post-author">롤챔프</td>
+                <td><span class="badge badge-recommended">추천</span></td>
+                <td class="post-date">2025-03-14</td>
+              </tr>
+              <tr>
+                <td class="post-id">14</td>
+                <td>
+                  <a href="/boards/lol/post/14" class="post-title">신규 챔피언 루네라 스킬 분석 및 빌드 가이드</a>
+                </td>
+                <td class="post-author">가이드마스터</td>
+                <td><span class="badge badge-recommended">추천</span></td>
+                <td class="post-date">2025-03-13</td>
+              </tr>
+              <tr>
+                <td class="post-id">13</td>
+                <td>
+                  <a href="/boards/lol/post/13" class="post-title">정글러를 위한 효율적인 클리어 루트</a>
+                </td>
+                <td class="post-author">정글의왕</td>
+                <td><span class="badge badge-normal">일반</span></td>
+                <td class="post-date">2025-03-12</td>
+              </tr>
+              <tr>
+                <td class="post-id">12</td>
+                <td>
+                  <a href="/boards/lol/post/12" class="post-title">롤 대회 일정 정보 공유</a>
+                </td>
+                <td class="post-author">e스포츠팬</td>
+                <td><span class="badge badge-normal">일반</span></td>
+                <td class="post-date">2025-03-11</td>
+              </tr>
+              <tr>
+                <td class="post-id">11</td>
+                <td>
+                  <a href="/boards/lol/post/11" class="post-title">탑 캐리형 챔피언 추천 부탁드립니다</a>
+                </td>
+                <td class="post-author">탑솔러</td>
+                <td><span class="badge badge-normal">일반</span></td>
+                <td class="post-date">2025-03-10</td>
+              </tr>
+              <tr>
+                <td class="post-id">10</td>
+                <td>
+                  <a href="/boards/lol/post/10" class="post-title">서폿 아이템 패치 변경점 정리</a>
+                </td>
+                <td class="post-author">서폿케리</td>
+                <td><span class="badge badge-normal">일반</span></td>
+                <td class="post-date">2025-03-09</td>
+              </tr>
+              <tr>
+                <td class="post-id">9</td>
+                <td>
+                  <a href="/boards/lol/post/9" class="post-title">신규 룬 조합으로 승률 상승 팁</a>
+                </td>
+                <td class="post-author">승률왕</td>
+                <td><span class="badge badge-recommended">추천</span></td>
+                <td class="post-date">2025-03-08</td>
+              </tr>
+              <tr>
+                <td class="post-id">8</td>
+                <td>
+                  <a href="/boards/lol/post/8" class="post-title">랭크 등급별 특징과 공략법</a>
+                </td>
+                <td class="post-author">다이아티어</td>
+                <td><span class="badge badge-normal">일반</span></td>
+                <td class="post-date">2025-03-07</td>
+              </tr>
+              <tr>
+                <td class="post-id">7</td>
+                <td>
+                  <a href="/boards/lol/post/7" class="post-title">원딜 포지션 초보자 가이드</a>
+                </td>
+                <td class="post-author">에이디캐리</td>
+                <td><span class="badge badge-normal">일반</span></td>
+                <td class="post-date">2025-03-06</td>
+              </tr>
+              <tr>
+                <td class="post-id">6</td>
+                <td>
+                  <a href="/boards/lol/post/6" class="post-title">롤 인벤 업데이트 소식</a>
+                </td>
+                <td class="post-author">정보통</td>
+                <td><span class="badge badge-normal">일반</span></td>
+                <td class="post-date">2025-03-05</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- 게시판 하단 액션 -->
+        <div class="board-actions">
+          <div class="pagination">
+            <a href="#" class="page-item">1</a>
+            <a href="#" class="page-item active">2</a>
+            <a href="#" class="page-item">3</a>
+            <a href="#" class="page-item">4</a>
+            <a href="#" class="page-item">5</a>
+            <a href="#" class="page-item">></a>
+          </div>
+          <a href="/boards/lol/post/write" class="action-btn action-btn-primary">
+            <i class="fas fa-pencil-alt" style="margin-right: 6px;"></i>
+            글쓰기
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 로그인 상태 전환 함수
+      window.toggleLoginStatus = function() {
+        const nonLoggedInContent = document.getElementById('non-logged-in-content');
+        const loggedInContent = document.getElementById('logged-in-content');
+        
+        if (nonLoggedInContent.style.display === 'none') {
+          // 로그아웃 상태로 전환
+          nonLoggedInContent.style.display = 'block';
+          loggedInContent.style.display = 'none';
+        } else {
+          // 로그인 상태로 전환
+          nonLoggedInContent.style.display = 'none';
+          loggedInContent.style.display = 'block';
+        }
+      };
+    });
+  </script>
+</body>
+</html>

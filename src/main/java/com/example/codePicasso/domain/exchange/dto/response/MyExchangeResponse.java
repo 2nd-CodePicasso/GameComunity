@@ -8,7 +8,7 @@ import lombok.Builder;
 public record MyExchangeResponse(
         Long id,
         Long exchangeId,
-        Long userId,
+        String nickname,
         String contact,
         StatusType statusType
 ) {
@@ -16,13 +16,13 @@ public record MyExchangeResponse(
     public MyExchangeResponse(
             Long id,
             Long exchangeId,
-            Long userId,
+            String nickname,
             String contact,
             StatusType statusType
     ) {
         this.id = id;
         this.exchangeId = exchangeId;
-        this.userId = userId;
+        this.nickname = nickname;
         this.contact = contact;
         this.statusType = statusType;
     }

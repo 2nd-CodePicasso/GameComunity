@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게임 커뮤니티 - 시즌13 미드라인 티어리스트 공유합니다</title>
+  <style>
+    /* 공통 스타일 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* 데스크탑 컨테이너 */
+    .desktop-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* 데스크탑 헤더 */
+    .desktop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: #4263eb;
+      color: white;
+    }
+    
+    .desktop-logo {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    
+    .desktop-nav {
+      display: flex;
+      gap: 24px;
+    }
+    
+    .desktop-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .desktop-nav a:hover, .desktop-nav a.active {
+      background-color: rgba(255,255,255,0.2);
+    }
+    
+    /* 데스크탑 레이아웃 */
+    .desktop-layout {
+      display: flex;
+      gap: 24px;
+      padding: 24px;
+    }
+    
+    .desktop-sidebar {
+      width: 280px;
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .desktop-main {
+      flex: 1;
+    }
+    
+    /* 로그인 폼 스타일 */
+    .login-form {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .form-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #212529;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #495057;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #4263eb;
+      box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+    }
+    
+    .btn {
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+      border: none;
+      padding: 10px 15px;
+      font-size: 14px;
+      width: 100%;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background-color: #4263eb;
+      color: white;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: #495057;
+      border: 1px solid #e9ecef;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .buttons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    /* 페이지 섹션 버튼들 */
+    .pages-section {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .page-button {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    
+    .page-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      color: white;
+      font-size: 18px;
+    }
+    
+    .board-icon {
+      background-color: #339af0;
+    }
+    
+    .item-icon {
+      background-color: #20c997;
+    }
+    
+    .chat-icon {
+      background-color: #845ef7;
+    }
+    
+    .page-title {
+      font-weight: 600;
+      color: #212529;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    
+    .page-description {
+      color: #868e96;
+      font-size: 13px;
+    }
+    
+    /* 사용자 정보 카드 스타일 */
+    .user-info-card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+
+    .user-info-header {
+      margin-bottom: 20px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-image {
+      margin-right: 16px;
+    }
+
+    .avatar-circle {
+      width: 50px;
+      height: 50px;
+      background-color: #4263eb;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .profile-details {
+      flex: 1;
+    }
+
+    .user-nickname {
+      font-weight: 600;
+      font-size: 18px;
+      color: #212529;
+      margin-bottom: 4px;
+    }
+
+    .user-id {
+      color: #868e96;
+      font-size: 14px;
+    }
+
+    .user-stats {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-top: 1px solid #e9ecef;
+      border-bottom: 1px solid #e9ecef;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-label {
+      color: #868e96;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      font-size: 16px;
+      color: #212529;
+    }
+    
+    /* 게시글 상세 페이지 스타일 */
+    .post-detail-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    
+    .post-header {
+      padding: 24px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .post-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #212529;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    
+    .post-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #868e96;
+      font-size: 14px;
+    }
+    
+    .post-author-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .post-author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #4263eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    
+    .post-author-name {
+      font-weight: 600;
+      color: #495057;
+      margin-right: 10px;
+    }
+    
+    .post-date {
+      color: #adb5bd;
+    }
+    
+    .post-stats {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .post-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .post-category {
+      display: inline-block;
+      background-color: #e9ecef;
+      color: #495057;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-right: 10px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-recommended {
+      background-color: #ffe066;
+      color: #f08c00;
+    }
+    
+    .badge-normal {
+      background-color: #e9ecef;
+      color: #495057;
+    }
+    
+    .post-content {
+      padding: 24px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #212529;
+    }
+    
+    .post-content p {
+      margin-bottom: 16px;
+    }
+    
+    .post-content img {
+      max-width: 100%;
+      height: auto;
+      margin: 16px 0;
+      border-radius: 8px;
+    }
+    
+    .post-content h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 32px 0 16px;
+      color: #212529;
+    }
+    
+    .post-content h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 24px 0 12px;
+      color: #212529;
+    }
+    
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-top: 1px solid #e9ecef;
+    }
+    
+    .post-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .post-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e9ecef;
+      background-color: white;
+      color: #495057;
+    }
+    
+    .post-button:hover {
+      background-color: #f8f9fa;
+      border-color: #ced4da;
+    }
+    
+    .post-button.active {
+      background-color: #edf2ff;
+      border-color: #4263eb;
+      color: #4263eb;
+    }
+    
+    .author-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .author-action {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    
+    .edit-button {
+      background-color: #4263eb;
+      color: white;
+      border: none;
+    }
+    
+    .edit-button:hover {
+      background-color: #3b5bdb;
+    }
+    
+    .delete-button {
+      background-color: white;
+      color: #e03131;
+      border: 1px solid #e03131;
+    }
+    
+    .delete-button:hover {
+      background-color: #fff5f5;
+    }
+    
+    /* 댓글 스타일 */
+    .comments-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    
+    .comments-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #e9ecef;
+      font-size: 18px;
+      font-weight: 600;
+      color: #212529;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .comments-count {
+      font-weight: 700;
+      color: #4263eb;
+    }
+    
+    .comments-list {
+      padding: 0;
+    }
+    
+    .comment-item {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .comment-item:last-child {
+      border-bottom: none;
+    }
+    
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .comment-author {
+      display: flex;
+      align-items: center;
+    }
+    
+    .comment-author-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #4263eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      margin-right: 8px;
+    }
+    
+    .comment-author-name {
+      font-weight: 600;
+      color: #495057;
+      font-size: 15px;
+    }
+    
+    .comment-date {
+      color: #adb5bd;
+      font-size: 13px;
+    }
+    
+    .comment-content {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #212529;
+    }
+    
+    .comment-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    
+    .comment-action {
+      color: #868e96;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    
+    .comment-action:hover {
+      color: #4263eb;
+    }
+    
+    /* 댓글 작성 폼 */
+    .comment-form {
+      padding: 20px 24px;
+      border-top: 1px solid #e9ecef;
+    }
+    
+    .comment-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px 15px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      resize: vertical;
+      font-size: 14px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+    
+    .comment-textarea:focus {
+      outline: none;
+      border-color: #4263eb;
+      box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+    }
+    
+    .comment-submit {
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .comment-button {
+      padding: 8px 18px;
+      background-color: #4263eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .comment-button:hover {
+      background-color: #3b5bdb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* 게시글 하단 버튼 */
+    .post-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    
+    .post-nav-button {
+      padding: 10px 16px;
+      background-color: white;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #495057;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .post-nav-button:hover {
+      background-color: #f8f9fa;
+      border-color: #ced4da;
+    }
+    
+    .post-nav-button i {
+      margin-right: 8px;
+    }
+    
+    .post-nav-button.next i {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+  </style>
+  <!-- 아이콘 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- 데모 컨트롤 -->
+
+  
+  <!-- 데스크탑 컨테이너 -->
+  <div class="desktop-container">
+    <!-- 데스크탑 헤더 -->
+    <div class="desktop-header">
+      <div class="desktop-logo">게임 커뮤니티</div>
+      <div class="desktop-nav">
+        <a href="/main/hi/game">홈</a>
+        <a href="/gameboard/hi/game" class="active">게시판</a>
+        <a href="/exchange/hi/game">아이템 거래소</a>
+        <a href="/chats">채팅방</a>
+      </div>
+    </div>
+    
+    <!-- 데스크탑 레이아웃 -->
+    <div class="desktop-layout">
+      <!-- 사이드바 -->
+      <div class="desktop-sidebar">
+        <!-- 로그인 여부에 따라 다른 내용 표시 -->
+        <div id="non-logged-in-content">
+          <!-- 비로그인 상태: 로그인 폼 -->
+            <h2 class="form-title">로그인</h2>
+            
+            <div class="form-group">
+              <label for="username" class="form-label">아이디</label>
+              <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="password" class="form-label">비밀번호</label>
+              <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+            </div>
+            
+            <div class="buttons-container">
+              <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
+              <a href="/signup/hi/game" class="btn btn-outline">회원가입</a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 16px;">
+              <a href="#" class="text-link">아이디/비밀번호 찾기</a>
+            </div>
+        </div>
+        
+        <!-- 로그인한 경우: 회원 정보 -->
+        <div id="logged-in-content" style="display: none;" class="user-info-card">
+          <div class="user-info-header">
+            <h2 class="form-title">회원 정보</h2>
+          </div>
+          
+          <div class="user-profile">
+            <div class="profile-image">
+              <!-- 기본 프로필 이미지 -->
+              <div class="avatar-circle">
+                <span class="avatar-text">G</span>
+              </div>
+            </div>
+            <div class="profile-details">
+              <div class="user-nickname" id="user-nickname">로딩 중...</div>
+              <div class="user-id" id="join-date">로딩 중...</div>
+            </div>
+          </div>
+
+          
+          <div class="buttons-container">
+            <a href="/users/my-profile" class="btn btn-outline">내 프로필</a>
+            <a href="#" class="btn btn-outline" onclick="logout()">로그아웃</a>
+          </div>
+        </div>
+        
+        <!-- 바로가기 메뉴 -->
+        <div style="margin-top: 24px;">
+          <h3 style="margin-bottom: 16px; font-size: 16px; color: #495057;">바로가기</h3>
+          <div class="pages-section">
+            <a href="/gameboard/hi/game" class="page-button">
+              <div class="icon board-icon">B</div>
+              <div>
+                <div class="page-title">게시판</div>
+              </div>
+            </a>
+            
+            <a href="/exchange/hi/game" class="page-button">
+              <div class="icon item-icon">I</div>
+              <div>
+                <div class="page-title">아이템 거래소</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 메인 콘텐츠 -->
+      <div class="desktop-main">
+        <!-- 게시글 상세 -->
+        <div class="post-detail-container">
+          <!-- 게시글 헤더 -->
+          <div class="post-header">
+            <h1 class="post-title" id="title-post">시즌13 미드라인 티어리스트 공유합니다</h1>
+            <div class="post-meta">
+              <div class="post-author-info">
+                <div class="post-author-avatar" id ="game-name">롤</div>
+                <span class="post-author-name" id ="post-author">롤챔프</span>
+                <span class="post-date" id="post-dayday">2025-03-14 14:23</span>
+                <span class="post-category" id="category-name">정보</span>
+              </div>
+              <div class="post-stats">
+                <div class="post-stat-item" id="viewCount">
+                  <i class="far fa-eye"></i>
+                  <span>248</span>
+                </div>
+                <div class="post-stat-item">
+                  <i class="far fa-comment"></i>
+                  <span>15</span>
+                </div>
+                <div class="post-stat-item">
+                  <i class="far fa-thumbs-up"></i>
+                  <span>42</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 게시글 본문 -->
+          <div class="post-content" id="post-description">
+            <p>안녕하세요, 롤챔프입니다. 현재 시즌13에서 미드라인 챔피언들의 티어리스트를 정리해봤습니다. 패치 13.5 기준이며, 솔로 랭크 플레이 데이터를 바탕으로 작성되었습니다.</p>
+          </div>
+          <!-- 게시글 액션 버튼 -->
+          <div class="post-actions">
+            <div class="post-buttons">
+              <button class="post-button" id="likeButton">
+                <i class="far fa-thumbs-up"></i>
+                <span>좋아요</span>
+                <span>(42)</span>
+              </button>
+              <button class="post-button">
+                <i class="far fa-bookmark"></i>
+                <span>저장</span>
+              </button>
+              <button class="post-button">
+                <i class="fas fa-share-alt"></i>
+                <span>공유</span>
+              </button>
+            </div>
+            <div class="author-actions">
+              <a href="/boards/lol/post/15/edit" class="author-action edit-button">수정</a>
+              <button class="author-action delete-button">삭제</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 댓글 섹션 -->
+        <div class="comments-container">
+          <div class="comments-header">
+            <div>댓글 <span class="comments-count">15</span></div>
+          </div>
+          
+          <!-- 댓글 목록 -->
+          <div class="comments-list">
+            <!-- 댓글 아이템 1 -->
+            <div class="comment-item">
+              <div class="comment-header">
+                <div class="comment-author">
+                  <div class="comment-author-avatar">다</div>
+                  <div class="comment-author-name">다이아티어</div>
+                </div>
+                <div class="comment-date">2025-03-14 14:45</div>
+              </div>
+              <div class="comment-content">
+                벡스가 B티어인건 좀 의외네요. 현재 메타에선 A티어는 되지 않나요? 제 경험상 미드 벡스는 꽤 강력한것 같은데요.
+              </div>
+              <div class="comment-actions">
+                <div class="comment-action">답글</div>
+              </div>
+            </div>
+
+          
+          <!-- 댓글 작성 폼 -->
+          <div class="comment-form">
+            <textarea class="comment-textarea" placeholder="댓글을 작성하세요..."></textarea>
+            <div class="comment-submit">
+              <button class="comment-button">댓글 작성</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 게시글 네비게이션 -->
+        <div class="post-navigation">
+          <a href="/boards/lol/post/14" class="post-nav-button">
+            <i class="fas fa-chevron-left"></i>
+            이전 글
+          </a>
+          <a href="/boards/lol" class="post-nav-button">
+            목록
+          </a>
+          <a href="/boards/lol/post/16" class="post-nav-button next">
+            다음 글
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</body>
+<script>
+
+  function loadPost() {
+    console.log("너 돌아가냐?");
+    const postId = localStorage.getItem('postId');
+
+    if (!postId) {
+      console.error("localStorage에 postId가 없습니다.");
+      return;
+    }
+
+    fetch(`/posts/hi/${postId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`서버 응답 실패: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(apiResponse => {
+              console.log("서버 응답:", apiResponse);
+
+              // ✅ `successOrFail`이 true인 경우만 실행
+              if (apiResponse.successOrFail) {
+                const post = apiResponse.data;
+                console.log('게시물 정보:', post);
+                renderPost(post); // 받아온 게시물 정보를 화면에 출력하는 함수 호출
+              } else {
+                console.error('게시물 조회 실패:', apiResponse.message);
+              }
+            })
+            .catch(error => {
+              console.error('요청 중 에러:', error);
+            });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    loadPost();
+  });
+
+  // 게시물 정보를 화면에 렌더링하는 예시 함수
+  function renderPost(post) {
+    document.getElementById('title-post').textContent = post.title;
+    document.getElementById('game-name').textContent = post.gameTitle;
+    document.getElementById('post-author').textContent = post.nickname;
+    document.getElementById('post-dayday').textContent = post.createdAt;
+    document.getElementById('category-name').innerHTML = post.categoryName;
+    document.querySelector('#viewCount span').innerHTML = post.viewCount;
+    document.getElementById('post-description').innerHTML = post.description;
+  }
+
+  function login() {
+    // 입력값 가져오기
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    // JSON 데이터 생성
+    const loginData = {
+      loginId: username,
+      password: password
+    };
+
+    // 서버로 POST 요청 보내기
+    fetch("/auth/hi/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"  // JSON 데이터임을 명시
+      },
+      body: JSON.stringify(loginData)  // JSON 문자열로 변환하여 전송
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("로그인 실패");
+              }
+              return response.json();// JSON 응답을 파싱
+            })
+            .then(data => {
+              if (data.successOrFail && data.data && data.data.token) {
+                const token = data.data.token; // ✅ JWT 토큰 추출
+                localStorage.setItem("jwtToken", token); // ✅ JWT 토큰 저장
+                alert("로그인 성공!");
+                checkLoginStatus() // ✅ 홈 화면으로 이동
+              } else {
+                throw new Error("토큰이 존재하지 않습니다.");
+              }
+            })
+            .catch(error => console.error("Error:", error));
+
+  }
+
+  function checkLoginStatus() {
+    const token = localStorage.getItem("jwtToken");  // localStorage에서 JWT 토큰 확인
+
+    const nonLoggedInContent = document.getElementById("non-logged-in-content");
+    const loggedInContent = document.getElementById("logged-in-content");
+    fetchUserInfo();
+    const nickname = document.getElementById("user-nickname");
+    const createdAt = document.getElementById("join-date");
+    const isUserInfoValid = token && nickname && createdAt;
+    if (isUserInfoValid) {
+      // ✅ 토큰이 있으면 로그인 상태
+      loggedInContent.style.display = "block";
+      nonLoggedInContent.style.display = "none";
+
+    } else {
+      // ❌ 토큰이 없으면 로그아웃 상태
+      loggedInContent.style.display = "none";
+      nonLoggedInContent.style.display = "block";
+    }
+  }
+  function fetchUserInfo() {
+    const token = localStorage.getItem("jwtToken");
+
+    if (!token) {
+      console.error("JWT 토큰 없음. 로그인 필요.");
+      return;
+    }
+
+    fetch("/users", {  // ✅ GET 요청
+      method: "GET",
+      headers: {
+        "Authorization": `${token}` // ✅ 서버에 JWT 토큰 전달
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("유저 정보 불러오기 실패");
+              }
+              return response.json();
+            })
+            .then(response => {
+              const rawDate = response.data.createdAt || null;
+              const formattedDate = rawDate ? formatDateTime(rawDate) : "정보 없음";
+
+              // ✅ 받은 데이터를 UI에 적용
+              document.getElementById("user-nickname").innerText = response.data.nickname || "알 수 없음";
+              document.getElementById("join-date").innerText = formattedDate;
+            })
+            .catch(error => console.error("Error:", error));
+  }
+
+  function formatDateTime(isoString) {
+    const date = new Date(isoString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // ✅ 월 (1월 = 0이므로 +1)
+    const day = String(date.getDate()).padStart(2, '0'); // ✅ 일
+    const hours = String(date.getHours()).padStart(2, '0'); // ✅ 시
+    const minutes = String(date.getMinutes()).padStart(2, '0'); // ✅ 분
+    const seconds = String(date.getSeconds()).padStart(2, '0'); // ✅ 초
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  function logout() {
+    localStorage.removeItem("jwtToken");  // ✅ JWT 토큰 삭제
+    alert("로그아웃 되었습니다.");
+    checkLoginStatus();  // ✅ 상태 즉시 반영
+  }
+
+  window.onload = function () {
+    checkLoginStatus(); // ✅ 기존 로그인 상태 체크 함수 실행
+  };
+
+  // ✅ 로컬스토리지 변경 감지 (MutationObserver 대체)
+  window.addEventListener("storage", (event) => {
+    if (event.key === "jwtToken") {
+      checkLoginStatus();  // ✅ 토큰 변경 감지 시 상태 업데이트
+    }
+  });
+
+</script>

@@ -4,12 +4,14 @@ import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
+import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostResponse;
 import com.example.codePicasso.domain.post.entity.Post;
 import com.example.codePicasso.domain.post.enums.PostStatus;
 import com.example.codePicasso.domain.user.entity.User;
 import com.example.codePicasso.domain.user.service.UserConnector;
 import com.example.codePicasso.global.common.DtoFactory;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -101,13 +103,19 @@ public class PostService {
         postConnector.delete(deletePost);
     }
 
+    // 인기 게시글 조회
+    public PostPopularListResponse getPopularPost(int size, int page) {
+        List<Tuple> byPopularPost = postConnector.findByPopularPost(size, page);
+
+        return DtoFactory.toPopularListDto(byPopularPost);
+
+    }
+
+    // 최신 게시글 조회
     public PostListResponse getRecentPost(int size, int page) {
-        List<Post> byRecentPost =
-                postConnector.findByRecentPost(size, page);
-        return PostListResponse.builder()
-                .postResponses(byRecentPost.stream()
-                        .map(DtoFactory::toPostDto).toList())
-                .build();
+        List<PostResponse> recentPost = postConnector.findByRecentPost(size, page);
+
+        return DtoFactory.toRecentDto(recentPost);
     }
 
 

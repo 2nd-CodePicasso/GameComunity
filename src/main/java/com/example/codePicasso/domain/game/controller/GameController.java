@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class GameController {
     private final GameService gameService;
 
-    @GetMapping
+    @GetMapping("/hi/all")
     public ResponseEntity<ApiResponse<GameGetAllResponse>> getAllGames() {
         GameGetAllResponse response = gameService.getAllGames();
 
