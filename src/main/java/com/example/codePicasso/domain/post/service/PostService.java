@@ -2,7 +2,6 @@ package com.example.codePicasso.domain.post.service;
 
 import com.example.codePicasso.domain.category.entity.Category;
 import com.example.codePicasso.domain.category.service.CategoryConnector;
-import com.example.codePicasso.domain.post.dto.PostEvent;
 import com.example.codePicasso.domain.post.dto.request.PostRequest;
 import com.example.codePicasso.domain.post.dto.response.PostListResponse;
 import com.example.codePicasso.domain.post.dto.response.PostPopularListResponse;
@@ -33,7 +32,7 @@ public class PostService {
     private final CategoryConnector categoryConnector;
     private final UserConnector userConnector;
     private final ApplicationEventPublisher applicationEventPublisher;
-//    private final PostDocumentRepository postDocumentRepository;
+
 
     // 게시글 생성
     @Transactional
@@ -44,8 +43,7 @@ public class PostService {
         Post createPost = request.toEntity(user, category.getGame(), category);
 
         Post save = postConnector.save(createPost);
-        applicationEventPublisher.publishEvent(new PostEvent(save));
-      
+
         return DtoFactory.toPostDto(save);
     }
 
@@ -94,7 +92,6 @@ public class PostService {
         }
 
         foundPost.updatePost(postRequest.title(), postRequest.description());
-        applicationEventPublisher.publishEvent(new PostEvent(foundPost));
         return DtoFactory.toPostDto(foundPost);
     }
 
@@ -121,8 +118,5 @@ public class PostService {
         return DtoFactory.toRecentDto(recentPost);
     }
 
-    // 엘라스틱 서치용
-//    public PostResponse elaGetPost(String categoryId) {
-//        postDocumentRepository.findByCategoryId(categoryId);
-//    }
+
 }
