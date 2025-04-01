@@ -19,8 +19,9 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class S3Service {
     private final S3Presigner s3Presigner;
+
     @Value("${cloud.aws.credentials.bucketName}")
-    private final String bucketName;
+    private String bucketName;
 
     public String makePreSignedUrl(String fileName) {
         try {

@@ -1141,6 +1141,8 @@
         }
     }
 
+
+
     function connectToRoom(room) {
         unsubscribeFromGlobalChat()
         console.log('Room ID:', room.roomId);
@@ -2034,6 +2036,7 @@
         })
             .then(response => {
                 if (!response.ok) {
+                    localStorage.removeItem("jwtToken");
                     throw new Error("유저 정보 불러오기 실패");
                 }
                 return response.json();

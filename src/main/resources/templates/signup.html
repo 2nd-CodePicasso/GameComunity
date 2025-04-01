@@ -241,7 +241,7 @@
 
                     if (event.data.kakaoToken) {
                         const kakaoToken = event.data.kakaoToken;
-
+                        localStorage.setItem("kakaoToken", kakaoToken);
                         // ✅ 카카오 토큰을 포함하여 회원가입 요청 보내기
                         try {
                             const response = await fetch("/auth/hi/users", {
