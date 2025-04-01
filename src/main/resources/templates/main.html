@@ -2008,7 +2008,7 @@
         const nickname = document.getElementById("user-nickname");
         const createdAt = document.getElementById("join-date");
         const isUserInfoValid = token && nickname && createdAt;
-        if (isUserInfoValid) {
+        if (token) {
             // ✅ 토큰이 있으면 로그인 상태
             loggedInContent.style.display = "block";
             nonLoggedInContent.style.display = "none";
