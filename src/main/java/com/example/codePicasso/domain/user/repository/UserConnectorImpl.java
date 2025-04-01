@@ -40,7 +40,8 @@ public class UserConnectorImpl implements UserConnector {
     }
 
     @Override
-    public User findByKakaoId(Long aLong) {
-        return null;
+    public User findByKakaoId(Long kakaoId) {
+        return userRepository.findByKakaoId(kakaoId)
+                .orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 }
