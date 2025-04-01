@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.user.service;
 
+import com.example.codePicasso.domain.auth.service.KaKaoService;
 import com.example.codePicasso.domain.user.dto.request.UserRequest;
 import com.example.codePicasso.domain.user.dto.response.UserInfoResponse;
 import com.example.codePicasso.domain.user.dto.response.UserResponse;
@@ -25,10 +26,7 @@ public class UserService {
     private final UserConnector userConnector;
     private final PasswordEncoder passwordEncoder;
     private final WebClient webClient;
-
-    // Todo ???
-    public void exception() {
-    }
+    private final KaKaoService kaKaoService;
 
     @Transactional
     public UserResponse addUser(UserRequest userRequest) {
@@ -36,7 +34,7 @@ public class UserService {
             throw new DuplicateException(ErrorCode.ID_ALREADY_EXISTS);
         }
 
-        Long kakaoId = getKakaoId(userRequest.kakaoToken());
+        Long kakaoId = kaKaoService.getKakaoId(userRequest.kakaoToken());
 
         String encodePassword = passwordEncoder.encode(userRequest.password());
 
@@ -44,29 +42,6 @@ public class UserService {
         userConnector.save(user);
 
         return DtoFactory.toUserDto(user);
-    }
-
-    private Long getKakaoId(String kakaoToken) {
-        try {
-            Map<String, Object> body = webClient.get()
-                    .uri("https://kapi.kakao.com/v2/user/me")
-                    .header("Authorization", "Bearer " + kakaoToken)
-                    .header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-                    })
-                    .block();
-
-            if (body != null) {
-                String string = body.get("id").toString();
-
-                return Long.valueOf(string);
-            }
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            throw new BusinessException(ErrorCode.KAKAO_EXCEPTION);
-        }
-        return null;
     }
 
     public UserInfoResponse getUserInfo(Long userId) {

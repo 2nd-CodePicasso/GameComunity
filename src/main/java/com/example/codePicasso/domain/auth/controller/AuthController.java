@@ -1,5 +1,6 @@
 package com.example.codePicasso.domain.auth.controller;
 
+import com.example.codePicasso.domain.auth.dto.request.KakaoRequest;
 import com.example.codePicasso.domain.auth.dto.request.SignInRequest;
 import com.example.codePicasso.domain.auth.dto.response.JwtTokenResponse;
 import com.example.codePicasso.domain.auth.service.AuthService;
@@ -22,6 +23,16 @@ public class AuthController {
     private final UserService userService;
     private final AdminService adminService;
     private final AuthService authService;
+    private final KaKaoService kaKaoService;
+
+    @PostMapping("/kakao/login")
+    public ResponseEntity<ApiResponse<JwtTokenResponse>> loginKakao(
+            @RequestBody KakaoRequest kakaoRequest
+    ) {
+        Long kakaoId = kaKaoService.getKakaoId(kakaoRequest.kakaoToken());
+        JwtTokenResponse jwtTokenResponse = authService.loginKakao(kakaoId);
+        return ApiResponse.success(jwtTokenResponse);
+    }
 
     @PostMapping("/users")
     public ResponseEntity<ApiResponse<UserResponse>> addUser(

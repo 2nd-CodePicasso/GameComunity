@@ -53,6 +53,14 @@ cloud:
     credentials:
       access-key: ${s3.aKey}
       secret-key: ${s3.sKey}
+      bucketName: ${s3.bName}
+
+kakao:
+  config:
+    import: optional:myInfo.yml
+  clientId: ${kakao.clientId}
+  redirectURI: ${kakao.redirectURI}
+  tokenURL: ${kakao.tokenURL}
 
 api:
   spam-check:

@@ -262,6 +262,7 @@
 
                             if (response.ok) {
                                 alert("회원가입 성공!");
+
                                 window.location.href = "/main/hi/game"; // 로그인 페이지로 이동
                             } else {
                                 alert("회원가입 실패: " + (responseData.message || "서버 오류"));

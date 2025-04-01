@@ -44,4 +44,10 @@ public class AuthService {
 
         return JwtTokenResponse.builder().token(token).build();
     }
+
+    public JwtTokenResponse loginKakao(Long kakaoId) {
+        User user = userConnector.findByKakaoId(kakaoId);
+        String token = jwtUtil.createToken(user.getId(), user.getUserStatus(), user.getNickname());
+        return JwtTokenResponse.builder().token(token).build();
+    }
 }
