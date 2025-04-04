@@ -14,4 +14,6 @@ public interface UserConnector {
     User findById(Long userId);
 
     User findByNickname(String name);
+
+    User findByKakaoId(Long aLong);
 }

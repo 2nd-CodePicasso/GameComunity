@@ -842,12 +842,14 @@
 
                 <div class="form-group">
                     <label for="username" class="form-label">아이디</label>
-                    <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요" required>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="아이디를 입력하세요"
+                           required>
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="form-label">비밀번호</label>
-                    <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="비밀번호를 입력하세요"
+                           required>
                 </div>
 
                 <div class="buttons-container">
@@ -1007,17 +1009,18 @@
                         <h3>채팅방 생성</h3>
                         <div class="chat-form-group">
                             <label for="roomNameInput" class="chat-form-label">채팅방 이름</label>
-                            <input type="text" id="roomNameInput" class="chat-form-input" placeholder="채팅방 이름을 입력하세요" />
+                            <input type="text" id="roomNameInput" class="chat-form-input" placeholder="채팅방 이름을 입력하세요"/>
                         </div>
 
                         <div class="chat-form-checkbox">
-                            <input type="checkbox" id="isSecurityInput" />
+                            <input type="checkbox" id="isSecurityInput"/>
                             <label for="isSecurityInput" class="chat-form-label">비밀방 설정</label>
                         </div>
 
                         <div class="chat-form-group" id="passwordGroup" style="display: none;">
                             <label for="passwordInput" class="chat-form-label">비밀번호</label>
-                            <input type="password" id="passwordInput" class="chat-form-input" placeholder="비밀번호를 입력하세요" />
+                            <input type="password" id="passwordInput" class="chat-form-input"
+                                   placeholder="비밀번호를 입력하세요"/>
                         </div>
 
                         <button class="chat-btn chat-btn-primary" onclick="createRoom()">채팅방 생성</button>
@@ -1068,8 +1071,8 @@
 
                         <div class="chat-input-container">
                             <label for="fileInput" class="chat-attach-button" title="파일 첨부">📎</label>
-                            <input type="file" id="fileInput" class="chat-file-input" />
-                            <input type="text" id="messageInput" class="chat-input" placeholder="메시지를 입력하세요..." />
+                            <input type="file" id="fileInput" class="chat-file-input"/>
+                            <input type="text" id="messageInput" class="chat-input" placeholder="메시지를 입력하세요..."/>
                             <button class="chat-send-button" id="sendButton" title="전송">➤</button>
                         </div>
                     </div>
@@ -1090,7 +1093,7 @@
         <div class="chat-password-title">비밀방 비밀번호 입력</div>
         <div class="chat-form-group">
             <label for="roomPasswordInput" class="chat-form-label">비밀번호</label>
-            <input type="password" id="roomPasswordInput" class="chat-form-input" placeholder="비밀번호를 입력하세요" />
+            <input type="password" id="roomPasswordInput" class="chat-form-input" placeholder="비밀번호를 입력하세요"/>
         </div>
         <div class="chat-password-buttons">
             <button class="chat-password-button chat-password-button-cancel" id="cancelPasswordButton">취소</button>
@@ -1140,6 +1143,9 @@
             disconnectChat();
         }
     }
+
+
+
     function connectToRoom(room) {
         unsubscribeFromGlobalChat()
         console.log('Room ID:', room.roomId);
@@ -1997,25 +2003,65 @@
     }
 
     function checkLoginStatus() {
-        const token = localStorage.getItem("jwtToken");  // localStorage에서 JWT 토큰 확인
+    const jwtToken = localStorage.getItem("jwtToken");  // 기존 JWT 토큰 확인
+    const kakaoToken = localStorage.getItem("kakaoToken");  // 카카오 토큰 확인
 
-        const nonLoggedInContent = document.getElementById("non-logged-in-content");
-        const loggedInContent = document.getElementById("logged-in-content");
-        fetchUserInfo();
-        const nickname = document.getElementById("user-nickname");
-        const createdAt = document.getElementById("join-date");
-        const isUserInfoValid = token && nickname && createdAt;
-        if (isUserInfoValid) {
-            // ✅ 토큰이 있으면 로그인 상태
-            loggedInContent.style.display = "block";
-            nonLoggedInContent.style.display = "none";
+    const nonLoggedInContent = document.getElementById("non-logged-in-content");
+    const loggedInContent = document.getElementById("logged-in-content");
 
-        } else {
-            // ❌ 토큰이 없으면 로그아웃 상태
-            loggedInContent.style.display = "none";
-            nonLoggedInContent.style.display = "block";
-        }
+    // ✅ 카카오 토큰이 있는 경우, 서버로 로그인 요청
+    if (kakaoToken && !jwtToken) {
+        fetch("/auth/hi/kakao/login", {  // 서버의 카카오 로그인 엔드포인트
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                kakaoToken: kakaoToken
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("카카오 로그인 응답:", data);
+            if (data.successOrFail) {
+                const jwtToken = data.data?.token;
+                if (jwtToken) {
+                    // ✅ 서버로부터 새로운 JWT 토큰을 받아 저장
+                    localStorage.setItem("jwtToken", jwtToken);
+                    console.log("카카오 로그인 성공: ", jwtToken);
+
+                    // ✅ 로그인 상태를 바로 업데이트
+                    updateLoginStatus(jwtToken);
+                } else {
+                    console.error("카카오 로그인 실패: JWT 토큰 없음");
+                }
+            } else {
+                console.error("카카오 로그인 실패: ", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("카카오 로그인 요청 오류: ", error);
+        });
+        return;  // 비동기 처리 후 다시 검사하지 않도록 리턴
     }
+
+    // ✅ 기존 JWT 토큰이 있는 경우, 바로 로그인 상태 확인
+    updateLoginStatus(jwtToken);
+}
+// ✅ 로그인 상태를 업데이트하는 함수로 분리
+function updateLoginStatus(token) {
+    const nonLoggedInContent = document.getElementById("non-logged-in-content");
+    const loggedInContent = document.getElementById("logged-in-content");
+
+    if (token) {
+        loggedInContent.style.display = "block";
+        nonLoggedInContent.style.display = "none";
+        fetchUserInfo();  // 사용자 정보 가져오기
+    } else {
+        loggedInContent.style.display = "none";
+        nonLoggedInContent.style.display = "block";
+    }
+}
 
     function fetchUserInfo() {
         const token = localStorage.getItem("jwtToken");
@@ -2033,6 +2079,7 @@
         })
             .then(response => {
                 if (!response.ok) {
+                    localStorage.removeItem("jwtToken");
                     throw new Error("유저 정보 불러오기 실패");
                 }
                 return response.json();

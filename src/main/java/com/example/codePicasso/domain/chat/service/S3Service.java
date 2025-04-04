@@ -4,6 +4,7 @@ import com.example.codePicasso.global.exception.base.ImageIoException;
 import com.example.codePicasso.global.exception.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -18,7 +19,9 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class S3Service {
     private final S3Presigner s3Presigner;
-    private final String bucketName = "code-picasso-bucket";
+
+    @Value("${cloud.aws.credentials.bucketName}")
+    private String bucketName;
 
     public String makePreSignedUrl(String fileName) {
         try {
