@@ -30,13 +30,13 @@ package com.example.codePicasso.domain.chat.controller;
                 @Header("username") String username
         ) {
             //심플 메시지브로커+RDB
-           chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
+          // chatService.addForAllRoomToMessage(chatRequest, Long.valueOf(userId),username);
 
             //레디스+RDB
           //  redisPublisher.publishMessage(chatRequest,Long.valueOf(userId),username);
 
             //레빗MQ
-        //    rabbitPublisher.publishMessage(chatRequest, Long.valueOf(userId), username);
+           rabbitPublisher.publishMessage(chatRequest, Long.valueOf(userId), username);
         }
 
         @MessageMapping("/send/room/{roomId}")

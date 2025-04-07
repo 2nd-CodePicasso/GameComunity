@@ -59,6 +59,14 @@ public class HomeController {
     public String boarDetailMain() {
         return "board_details";
     }
+    @GetMapping("/proposal/hi/game")
+    public String proposal() {
+        return "proposal_admin";
+    }
+    @GetMapping("/main/hi/admin")
+    public String admin() {
+        return "main_admin";
+    }
 
 
 }

@@ -394,6 +394,7 @@
     <!-- 검색 바 -->
     <div class="mobile-search-bar">
       <input type="text" class="mobile-search-input" placeholder="게임 검색">
+
     </div>
   </div>
 </div>
@@ -421,6 +422,11 @@
       <!-- 검색 영역 -->
       <div class="desktop-search">
         <input type="text" class="desktop-search-input" placeholder="게임 검색">
+      </div>
+      <div class="game-proposal-bar">
+        <input type="text" class="game-title-input" placeholder="게임 제목 (최대 20자)">
+        <input type="text" class="game-description-input" placeholder="게임 설명 (최대 255자)">
+        <button id="create-proposal-btn">제안 생성</button>
       </div>
 
       <!-- 주요 카테고리 -->
@@ -499,6 +505,58 @@
 </div>
 
 <script>
+  function getJwtToken() {
+    return localStorage.getItem("jwtToken");
+  }
+
+  // 버튼 클릭 이벤트 핸들러
+  document.getElementById("create-proposal-btn").addEventListener("click", async function() {
+    const gameTitle = document.querySelector(".game-title-input").value;
+    const description = document.querySelector(".game-description-input").value;
+
+    // 유효성 검사
+    if (!gameTitle || gameTitle.length > 20) {
+      alert("게임 제목을 입력하세요. (최대 20자)");
+      return;
+    }
+
+    if (!description || description.length > 255) {
+      alert("게임 설명을 입력하세요. (최대 255자)");
+      return;
+    }
+
+    // JWT 토큰 가져오기
+    const token = getJwtToken();
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      // API 요청
+      const response = await fetch("/proposals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `${token}` // JWT 토큰 포함
+        },
+        body: JSON.stringify({
+          gameTitle: gameTitle,
+          description: description
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("제안 생성에 실패했습니다.");
+      }
+
+      const result = await response.json();
+      alert("제안이 성공적으로 생성되었습니다: " + (result.message || "성공"));
+    } catch (error) {
+      alert("요청 오류: " + error.message);
+    }
+  });
+
   document.addEventListener("DOMContentLoaded", async function () {
     console.log("📡 /games API 요청 시작");
 
