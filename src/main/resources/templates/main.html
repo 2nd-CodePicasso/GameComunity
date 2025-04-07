@@ -2061,11 +2061,11 @@
 function updateLoginStatus(token) {
     const nonLoggedInContent = document.getElementById("non-logged-in-content");
     const loggedInContent = document.getElementById("logged-in-content");
+
 fetchUserInfo();  // 사용자 정보 가져오기
     if (token) {
         loggedInContent.style.display = "block";
         nonLoggedInContent.style.display = "none";
-
     } else {
         loggedInContent.style.display = "none";
         nonLoggedInContent.style.display = "block";

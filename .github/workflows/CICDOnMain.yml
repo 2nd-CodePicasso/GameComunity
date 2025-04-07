@@ -85,14 +85,14 @@ jobs:
     - name: SSH 키 파일 생성
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
-        chmod 600 ec2_key.pem
+        chmod 400 ec2_key.pem
         cat ec2_key.pem
 
     - name: 배포
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
+        username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
