@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 상태 조회 드롭다운 및 버튼 -->
+<div class="proposal-status-bar">
+  <label for="proposal-status">상태 선택:</label>
+  <select id="proposal-status">
+    <option value="WAITING">대기 중</option>
+    <option value="CANCELED">취소됨</option>
+    <option value="APPROVED">승인됨</option>
+    <option value="REJECTED">거절됨</option>
+  </select>
+  <button id="get-proposals-btn">조회</button>
+</div>
+
+<div id="proposal-result"></div>
+</body>
+
+
+<script>
+  // JWT 토큰을 localStorage에서 가져오는 함수
+ function getJwtToken() {
+   return localStorage.getItem("jwtToken");
+ }
+
+ // 버튼 클릭 이벤트 핸들러
+ document.getElementById("get-proposals-btn").addEventListener("click", async function() {
+   const status = document.getElementById("proposal-status").value;
+
+   // JWT 토큰 가져오기
+   const token = getJwtToken();
+   if (!token) {
+     alert("로그인이 필요합니다.");
+     return;
+   }
+
+   try {
+     // API 요청
+     const response = await fetch(`/proposals/admin/status?status=${status}`, {
+       method: "GET",
+       headers: {
+         "Content-Type": "application/json",
+         "Authorization": `${token}` // ✅ JWT 토큰 형식 수정
+       }
+     });
+
+     // 응답 확인
+     if (!response.ok) {
+       throw new Error("API 요청에 실패했습니다.");
+     }
+
+     // JSON 파싱
+     const data = await response.json();
+
+     // 응답 데이터 확인
+     if (data.successOrFail && data.data && data.data.proposals) {
+       // proposals 필드의 두 번째 요소를 사용하여 목록 표시
+       displayProposals(data.data.proposals);
+     } else {
+       alert("조회 실패: " + (data.message || "알 수 없는 오류"));
+     }
+   } catch (error) {
+     console.error("Error:", error);
+     alert("요청 오류: " + error.message);
+   }
+ });
+
+ // 조회 결과 표시 함수
+ function displayProposals(proposals) {
+   const resultDiv = document.getElementById("proposal-result");
+   resultDiv.innerHTML = ""; // 기존 결과 초기화
+
+   // proposals가 배열이 아닐 경우 처리
+   if (!Array.isArray(proposals)) {
+     alert("데이터 형식이 올바르지 않습니다.");
+     return;
+   }
+
+   // proposals의 두 번째 요소를 실제 목록으로 사용
+   const proposalList = proposals[1];
+   if (!Array.isArray(proposalList) || proposalList.length === 0) {
+     resultDiv.textContent = "조회된 제안이 없습니다.";
+     return;
+   }
+
+   // 제안 목록 표시
+   const list = document.createElement("ul");
+   proposalList.forEach(proposal => {
+     const listItem = document.createElement("li");
+     listItem.textContent = `제목: ${proposal.gameTitle}, 상태: ${proposal.status}, 사용자: ${proposal.userLoginId}`;
+     list.appendChild(listItem);
+   });
+   resultDiv.appendChild(list);
+ }
+</script>
+</html>
