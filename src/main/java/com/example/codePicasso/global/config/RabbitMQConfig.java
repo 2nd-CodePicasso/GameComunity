@@ -21,23 +21,28 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue rabbitSaveQueue() {
-        return new Queue("rabbit.save", true);
+    public TopicExchange topicExchange() {
+        return new TopicExchange("roombit");
     }
 
     @Bean
-    public Queue anonymousQueue() {
+    public Queue fanOutAnonymousQueue() {
         return new AnonymousQueue();
     }
 
     @Bean
-    public Binding bindingReceiveQueue(FanoutExchange rabbitExchange, Queue anonymousQueue) {
-        return BindingBuilder.bind(anonymousQueue).to(rabbitExchange);
+    public Queue topicAnonymousQueue() {
+        return new AnonymousQueue();
     }
 
     @Bean
-    public Binding bindingSaveQueue(FanoutExchange rabbitExchange, Queue rabbitSaveQueue) {
-        return BindingBuilder.bind(rabbitSaveQueue).to(rabbitExchange);
+    public Binding topicBinding(Queue topicAnonymousQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(topicAnonymousQueue).to(topicExchange).with("room.*");
+    }
+
+    @Bean
+    public Binding fanOutQueue(FanoutExchange rabbitExchange, Queue fanOutAnonymousQueue) {
+        return BindingBuilder.bind(fanOutAnonymousQueue).to(rabbitExchange);
     }
 
 

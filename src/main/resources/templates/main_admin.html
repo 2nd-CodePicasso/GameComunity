@@ -7,6 +7,112 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
+        <!-- 3. 추가 CSS 스타일 (head 태그 내 style 태그에 추가) -->
+.admin-icon {
+    background-color: #f03e3e;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+}
+
+.badge-primary {
+    background-color: #4263eb;
+}
+
+.badge-warning {
+    background-color: #ff922b;
+}
+
+.badge-success {
+    background-color: #40c057;
+}
+
+.board-requests-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.board-requests-table th,
+.board-requests-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.board-requests-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.board-requests-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.action-button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.approve-button {
+    background-color: #40c057;
+    color: white;
+}
+
+.approve-button:hover {
+    background-color: #37b24d;
+}
+
+.reject-button {
+    background-color: #f03e3e;
+    color: white;
+    margin-left: 8px;
+}
+
+.reject-button:hover {
+    background-color: #e03131;
+}
+
+.view-all-button {
+    background-color: transparent;
+    border: none;
+    color: #4263eb;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.view-all-button:hover {
+    text-decoration: underline;
+}
+
+.action-buttons {
+    display: flex;
+}
+
+/* 수정된 카드 헤더 스타일: 헤더 내용을 양쪽 정렬하기 위함 */
+.card-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    font-size: 18px;
+    color: #212529;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
         /* 공통 스타일 */
         * {
             margin: 0;
@@ -917,6 +1023,56 @@
 
         <!-- 메인 콘텐츠 -->
         <div class="desktop-main">
+
+            <div class="content-card" id="board-requests-card">
+                <div class="card-header">
+                    <span>게시판 생성 요청</span>
+                    <button class="view-all-button" onclick="location.href='/admin/board-requests'">전체보기</button>
+                </div>
+                <div class="card-body">
+                    <table class="board-requests-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 15%;">요청 날짜</th>
+                            <th style="width: 20%;">요청자</th>
+                            <th style="width: 30%;">게시판 이름</th>
+                            <th style="width: 15%;">상태</th>
+                            <th style="width: 20%;">작업</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>2025-04-05</td>
+                            <td>game_lover</td>
+                            <td>디아블로 IV</td>
+                            <td><span class="badge badge-warning">대기중</span></td>
+                            <td class="action-buttons">
+                                <button class="action-button approve-button">승인</button>
+                                <button class="action-button reject-button">거부</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2025-04-04</td>
+                            <td>minecraft_king</td>
+                            <td>마인크래프트 모드</td>
+                            <td><span class="badge badge-warning">대기중</span></td>
+                            <td class="action-buttons">
+                                <button class="action-button approve-button">승인</button>
+                                <button class="action-button reject-button">거부</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2025-04-03</td>
+                            <td>fps_master</td>
+                            <td>발로란트 전략</td>
+                            <td><span class="badge badge-primary">승인됨</span></td>
+                            <td>-</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- 인기 게임 카드 -->
             <div class="content-card" id="popular-games-card">
                 <div class="card-header">인기 게임</div>
@@ -937,6 +1093,7 @@
                     </div>
                 </div>
             </div>
+
 
             <!-- 최신 소식 카드 -->
             <div class="content-card" id="latest-news-card">

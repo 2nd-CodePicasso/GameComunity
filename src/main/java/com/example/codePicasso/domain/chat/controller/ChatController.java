@@ -40,13 +40,14 @@ package com.example.codePicasso.domain.chat.controller;
         }
 
         @MessageMapping("/send/room/{roomId}")
-        public ChatResponse testMessage(
+        public void testMessage(
                 @Payload ChatRequest chatsRequest,
                 @DestinationVariable Long roomId,
                 @Header("userId") String userId,
                 @Header("username") String username
         ) {
-            return chatService.addForRoomToMessage(chatsRequest, roomId, Long.valueOf(userId),username);
+            rabbitPublisher.addForRoomToMessage(chatsRequest, roomId, Long.valueOf(userId), username);
+           // chatService.addForRoomToMessage(chatsRequest, roomId, Long.valueOf(userId),username);
         }
 
         @MessageMapping("/send/room/notification")
